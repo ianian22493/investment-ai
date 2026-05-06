@@ -11,7 +11,7 @@ TZ = ZoneInfo("Asia/Taipei")
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 from agents import (
-    market_overview, tw_short_term, tw_long_term,
+    market_overview, news_sentiment, tw_short_term, tw_long_term,
     us_portfolio, fx_fund, asset_allocation,
     devils_advocate, master_agent,
 )
@@ -48,7 +48,8 @@ def run_all():
 
     # Phase 1: Independent agents
     phase1 = [
-        ("market_overview", lambda: market_overview.run(market_data, portfolio)),
+        ("market_overview",  lambda: market_overview.run(market_data, portfolio)),
+        ("news_sentiment",   lambda: news_sentiment.run(market_data, portfolio)),
     ]
     for name, fn in phase1:
         print(f"  Running: {name}...")

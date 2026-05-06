@@ -5,7 +5,7 @@ Shioaji is used when SHIOAJI_API_KEY is present; falls back to yfinance automati
 """
 
 import json, os, time, requests
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 import yfinance as yf
 
@@ -170,9 +170,10 @@ def fetch_finmind_technical(code: str) -> dict:
     """Technical indicators from FinMind (free tier)."""
     try:
         today = date.today().strftime("%Y-%m-%d")
+        start = (date.today() - timedelta(days=180)).strftime("%Y-%m-%d")
         url = (
             f"https://api.finmindtrade.com/api/v4/data?"
-            f"dataset=TaiwanStockPrice&data_id={code}&start_date=2025-11-01&end_date={today}"
+            f"dataset=TaiwanStockPrice&data_id={code}&start_date={start}&end_date={today}"
         )
         r = requests.get(url, timeout=15)
         data = r.json()
@@ -220,6 +221,25 @@ def fetch_jpy_rate() -> dict:
     except Exception as e:
         print(f"  [WARN] JPY rate: {e}")
         return {}
+
+
+def fetch_news() -> dict:
+    """Recent market news via Google News RSS (no API key needed)."""
+    try:
+        import feedparser
+        tw_feed = feedparser.parse(
+            "https://news.google.com/rss/search?q=台股+股市&hl=zh-TW&gl=TW&ceid=TW:zh-Hant"
+        )
+        us_feed = feedparser.parse(
+            "https://news.google.com/rss/search?q=stock+market+Wall+Street&hl=en-US&gl=US&ceid=US:en"
+        )
+        tw = [e.title for e in tw_feed.entries[:12]]
+        us = [e.title for e in us_feed.entries[:10]]
+        print(f"  [News] TW:{len(tw)} US:{len(us)} headlines")
+        return {"tw": tw, "us": us}
+    except Exception as e:
+        print(f"  [WARN] News fetch: {e}")
+        return {"tw": [], "us": []}
 
 
 def fetch_usd_twd() -> float | None:
@@ -291,6 +311,9 @@ def run():
     print("  JPY rate...")
     jpy = fetch_jpy_rate()
 
+    print("  news headlines...")
+    news = fetch_news()
+
     print("  USD/TWD rate...")
     usd_twd = fetch_usd_twd() or 32.0
 
@@ -310,6 +333,7 @@ def run():
             **jpy
         },
         "portfolio_value": pf_value,
+        "news": news,
     }
 
     with open(MARKET_FILE, "w") as f:

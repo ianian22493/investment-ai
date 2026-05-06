@@ -280,6 +280,7 @@ a{color:var(--blue);text-decoration:none}
 
 <script>
 const AGENT_META = {
+  news_sentiment:   { name:"新聞情緒",   bias:"消息面分析",  icon:"📰" },
   market_overview:  { name:"市場總覽",   bias:"中立謹慎",   icon:"🌐" },
   tw_short_term:    { name:"台股短線",   bias:"激進偏見",   icon:"⚡" },
   tw_long_term:     { name:"台股長線",   bias:"保守偏見",   icon:"🏛" },
@@ -392,7 +393,7 @@ function renderMaster(master) {
 function renderAgents(agents) {
   const grid = document.getElementById("agentsGrid");
   const daOutput = agents.devils_advocate;
-  const agentOrder = ["market_overview","tw_short_term","tw_long_term","us_portfolio","fx_fund","asset_allocation"];
+  const agentOrder = ["news_sentiment","market_overview","tw_short_term","tw_long_term","us_portfolio","fx_fund","asset_allocation"];
 
   let html = "";
   for(const key of agentOrder) {
