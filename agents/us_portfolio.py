@@ -27,7 +27,7 @@ SYSTEM = """你是一位專注美股的長線成長型投資人。
 verdict 只能是：積極加碼 / 小幅加碼 / 持倉觀察 / 暫緩加碼 / 減碼部分高風險"""
 
 
-def run(market_data: dict, portfolio: dict, market_overview: dict) -> dict:
+def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}) -> dict:
     indices = market_data.get("indices", {})
     us_prices = market_data.get("us_stocks", {})
     fx = market_data.get("fx", {})
@@ -52,6 +52,10 @@ def run(market_data: dict, portfolio: dict, market_overview: dict) -> dict:
     lines.append(f"\n美股現值(TWD): {pv.get('us_stocks_twd','?'):,}")
     lines.append(f"美股現值(USD): ${pv.get('us_stocks_usd','?'):,}")
     lines.append(f"\n市場總覽: {market_overview.get('verdict')}")
+    if news_sentiment.get("verdict") not in (None, "ERROR", "無資料"):
+        lines.append(f"今日新聞情緒: {news_sentiment.get('verdict')} — {news_sentiment.get('summary','')[:100]}")
+        for insight in news_sentiment.get("key_insights", [])[:2]:
+            lines.append(f"  · {insight}")
 
     user_content = "\n".join(lines) + """
 

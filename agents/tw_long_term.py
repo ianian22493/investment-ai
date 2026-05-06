@@ -25,14 +25,13 @@ SYSTEM = """你是一位保守型的台股長線投資人，專注基本面和�
 4. 虧損部位特別審查（論述是否仍然成立？）
 
 【對虧損部位的特別規則】
-- 宏普 2536 (-42.65%)：必須判斷持有論述是否仍成立
-- 欣陸 3703 (-19.05%)：必須判斷持有論述是否仍成立
-- 玖鼎電力 4588 (-33.52%)：必須判斷持有論述是否仍成立
+- 宏普 2536、欣陸 3703、玖鼎電力 4588 為主要虧損部位（實際損益見分析資料）
+- 每檔都必須判斷持有論述是否仍成立，不能只因「跌了就該等回來」而續抱
 
 verdict 只能是：續抱 / 加碼 / 減碼 / 停損出場 / 觀察"""
 
 
-def run(market_data: dict, portfolio: dict, market_overview: dict) -> dict:
+def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}) -> dict:
     tw_stocks = portfolio.get("tw_stocks", [])
 
     lines = []
@@ -47,6 +46,8 @@ def run(market_data: dict, portfolio: dict, market_overview: dict) -> dict:
     lines.append(f"\n台股總市值: {portfolio['tw_summary']['total_value']:,}")
     lines.append(f"整體報酬: +{portfolio['tw_summary']['total_pnl_pct']}%")
     lines.append(f"\n市場總覽: {market_overview.get('verdict')} — {market_overview.get('summary','')[:80]}")
+    if news_sentiment.get("verdict") not in (None, "ERROR", "無資料"):
+        lines.append(f"今日新聞情緒: {news_sentiment.get('verdict')} — {news_sentiment.get('summary','')[:100]}")
 
     user_content = "\n".join(lines) + """
 

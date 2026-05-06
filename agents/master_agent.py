@@ -32,12 +32,13 @@ def run(all_outputs: dict) -> dict:
     sections = []
 
     agent_display_names = {
+        "news_sentiment":  "新聞情緒",
         "market_overview": "市場總覽",
-        "tw_short_term": "台股短線",
-        "tw_long_term": "台股長線",
-        "us_portfolio": "美股配置",
-        "fx_fund": "匯率/基金",
-        "asset_allocation": "資產配置",
+        "tw_short_term":   "台股短線",
+        "tw_long_term":    "台股長線",
+        "us_portfolio":    "美股配置",
+        "fx_fund":         "匯率/基金",
+        "asset_allocation":"資產配置",
         "devils_advocate": "反對派",
     }
 

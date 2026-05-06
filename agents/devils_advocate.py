@@ -31,10 +31,13 @@ verdict 只能是：強烈反對 / 部分反對 / 有所保留 / 勉強接受（
 def run(all_agent_outputs: dict) -> dict:
     summaries = []
     for agent_name, output in all_agent_outputs.items():
+        insights = "; ".join(output.get("key_insights", [])[:3])
+        risks = "; ".join(output.get("risk_flags", [])[:3])
         summaries.append(
-            f"【{agent_name}】verdict={output.get('verdict')} "
-            f"confidence={output.get('confidence')} "
-            f"summary={output.get('summary','')[:100]}"
+            f"【{agent_name}】verdict={output.get('verdict')} confidence={output.get('confidence')}\n"
+            f"  摘要: {output.get('summary','')[:120]}\n"
+            f"  洞察: {insights or '無'}\n"
+            f"  風險: {risks or '無'}"
         )
 
     # Collect all recommendations

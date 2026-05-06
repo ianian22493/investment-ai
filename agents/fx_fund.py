@@ -26,7 +26,7 @@ SYSTEM = """你是一位日幣匯率與基金策略專家。
 verdict 只能是：增加定額 / 維持定額 / 暫停定額 / 減少定額"""
 
 
-def run(market_data: dict, portfolio: dict, market_overview: dict) -> dict:
+def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}) -> dict:
     fx = market_data.get("fx", {})
     funds = portfolio.get("funds", [])
 
@@ -63,6 +63,8 @@ def run(market_data: dict, portfolio: dict, market_overview: dict) -> dict:
     total_twd = total_jpy * (twd_per_jpy or 0.215)
     lines.append(f"\n合計: ¥{total_jpy:,} ≈ NT${total_twd:,.0f}")
     lines.append(f"每月定額: ¥75,000 ≈ NT${75000*(twd_per_jpy or 0.215):,.0f}")
+    if news_sentiment.get("verdict") not in (None, "ERROR", "無資料"):
+        lines.append(f"\n今日新聞情緒: {news_sentiment.get('verdict')} — {news_sentiment.get('summary','')[:100]}")
 
     user_content = "\n".join(lines) + """
 

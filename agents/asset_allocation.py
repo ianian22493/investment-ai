@@ -30,7 +30,7 @@ SYSTEM = """你是一位偏執的資產配置風控專家，你的工作就是�
 verdict 只能是：安全 / 稍微過度集中 / 明顯過度集中 / 高風險 / 危險"""
 
 
-def run(market_data: dict, portfolio: dict, market_overview: dict) -> dict:
+def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}) -> dict:
     pv = market_data.get("portfolio_value", {})
     re = portfolio.get("real_estate", {})
     fx = market_data.get("fx", {})
@@ -73,6 +73,8 @@ def run(market_data: dict, portfolio: dict, market_overview: dict) -> dict:
         f"壓力測試後淨資產: {tw_val*0.6 + us_val*0.7 + fund_val*0.9 + re_val*0.8 - loan:,.0f}",
         f"\n市場總覽: {market_overview.get('verdict')}",
     ]
+    if news_sentiment.get("verdict") not in (None, "ERROR", "無資料"):
+        lines.append(f"今日新聞情緒: {news_sentiment.get('verdict')} — {news_sentiment.get('summary','')[:100]}")
 
     user_content = "\n".join(lines) + """
 

@@ -56,13 +56,14 @@ def run_all():
         outputs[name] = fn()
         print(f"    → {outputs[name].get('verdict')} (confidence: {outputs[name].get('confidence')})")
 
-    # Phase 2: Agents that depend on market_overview
+    # Phase 2: Agents that depend on market_overview + news_sentiment
+    news = outputs.get("news_sentiment", {})
     phase2 = [
-        ("tw_short_term",   lambda: tw_short_term.run(market_data, portfolio, outputs["market_overview"])),
-        ("tw_long_term",    lambda: tw_long_term.run(market_data, portfolio, outputs["market_overview"])),
-        ("us_portfolio",    lambda: us_portfolio.run(market_data, portfolio, outputs["market_overview"])),
-        ("fx_fund",         lambda: fx_fund.run(market_data, portfolio, outputs["market_overview"])),
-        ("asset_allocation",lambda: asset_allocation.run(market_data, portfolio, outputs["market_overview"])),
+        ("tw_short_term",   lambda: tw_short_term.run(market_data, portfolio, outputs["market_overview"], news)),
+        ("tw_long_term",    lambda: tw_long_term.run(market_data, portfolio, outputs["market_overview"], news)),
+        ("us_portfolio",    lambda: us_portfolio.run(market_data, portfolio, outputs["market_overview"], news)),
+        ("fx_fund",         lambda: fx_fund.run(market_data, portfolio, outputs["market_overview"], news)),
+        ("asset_allocation",lambda: asset_allocation.run(market_data, portfolio, outputs["market_overview"], news)),
     ]
     for name, fn in phase2:
         print(f"  Running: {name}...")

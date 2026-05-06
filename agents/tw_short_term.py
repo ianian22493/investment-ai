@@ -35,7 +35,7 @@ recommendations 必須包含：
 verdict 只能是：強力進攻 / 進攻 / 小幅進場 / 觀望 / 輕倉"""
 
 
-def run(market_data: dict, portfolio: dict, market_overview: dict) -> dict:
+def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}) -> dict:
     tw = market_data.get("tw_stocks", {})
     taiex = market_data.get("indices", {}).get("taiex", {})
 
@@ -58,6 +58,10 @@ def run(market_data: dict, portfolio: dict, market_overview: dict) -> dict:
         )
 
     lines.append(f"\n【市場總覽 Agent 方向】{market_overview.get('verdict')} — {market_overview.get('summary', '')[:80]}")
+    if news_sentiment.get("verdict") not in (None, "ERROR", "無資料"):
+        lines.append(f"【今日新聞情緒】{news_sentiment.get('verdict')} — {news_sentiment.get('summary','')[:100]}")
+        for insight in news_sentiment.get("key_insights", [])[:2]:
+            lines.append(f"  · {insight}")
 
     user_content = "\n".join(lines) + """
 
