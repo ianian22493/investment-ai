@@ -1,6 +1,7 @@
 """
 Market data fetcher — runs before agents every cycle.
-Sources: TWSE Open API, FinMind, yfinance, Frankfurter (JPY rate)
+Sources: 永豐 Shioaji (台股即時), TWSE Open API, FinMind, yfinance, Frankfurter (JPY rate)
+Shioaji is used when SHIOAJI_API_KEY is present; falls back to yfinance automatically.
 """
 
 import json, os, time, requests
@@ -41,8 +42,49 @@ def fetch_twse_index() -> dict:
     return result
 
 
-def fetch_tw_stocks() -> dict:
-    """Individual TW stock prices via yfinance (.TW suffix)."""
+def fetch_tw_stocks_shioaji() -> dict:
+    """台股即時報價 via 永豐 Shioaji（需 SHIOAJI_API_KEY + SHIOAJI_SECRET_KEY）."""
+    api_key    = os.environ.get("SHIOAJI_API_KEY")
+    secret_key = os.environ.get("SHIOAJI_SECRET_KEY")
+    if not api_key or not secret_key:
+        return {}
+    try:
+        import shioaji as sj
+        api = sj.Shioaji(simulation=False)
+        api.login(api_key=api_key, secret_key=secret_key)
+
+        contracts = []
+        for code in TW_CODES:
+            try:
+                contracts.append(api.Contracts.Stocks[code])
+            except Exception:
+                pass
+
+        snapshots = api.snapshots(contracts)
+        result = {}
+        for snap in snapshots:
+            code = snap.code
+            result[code] = {
+                "close":       round(float(snap.close), 2),
+                "open":        round(float(snap.open), 2),
+                "high":        round(float(snap.high), 2),
+                "low":         round(float(snap.low), 2),
+                "change_pct":  round(float(snap.change_rate), 2),
+                "volume":      int(snap.volume),
+                "amount":      int(snap.amount),
+                "source":      "shioaji_realtime",
+            }
+
+        api.logout()
+        print(f"  [Shioaji] 即時報價取得 {len(result)} 檔")
+        return result
+    except Exception as e:
+        print(f"  [WARN] Shioaji failed: {e} — falling back to yfinance")
+        return {}
+
+
+def fetch_tw_stocks_yfinance() -> dict:
+    """台股收盤價 via yfinance（備援，無 Shioaji 時使用）."""
     result = {}
     for code in TW_CODES:
         ticker = f"{code}.TW"
@@ -59,12 +101,19 @@ def fetch_tw_stocks() -> dict:
                     "change_pct": round(float((curr - prev) / prev * 100), 2),
                     "volume": int(vol),
                     "volume_ratio": round(float(vol / avg_vol), 2),
-                    "high_52w": round(float(hist["High"].max()), 2),
-                    "low_52w": round(float(hist["Low"].min()), 2),
+                    "source": "yfinance_eod",
                 }
         except Exception as e:
             print(f"  [WARN] TW {code}: {e}")
             result[code] = {}
+    return result
+
+
+def fetch_tw_stocks() -> dict:
+    """台股報價：優先用 Shioaji 即時，失敗則用 yfinance 收盤。"""
+    result = fetch_tw_stocks_shioaji()
+    if not result:
+        result = fetch_tw_stocks_yfinance()
     return result
 
 
