@@ -1,0 +1,49 @@
+name: 每日投資 AI 分析
+
+on:
+  schedule:
+    # 台灣時間：09:10 (01:10 UTC)、13:00 (05:00 UTC)、16:30 (08:30 UTC)
+    - cron: "10 1 * * 1-5"
+    - cron: "0 5 * * 1-5"
+    - cron: "30 8 * * 1-5"
+  workflow_dispatch:   # 允許手動觸發
+
+permissions:
+  contents: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch market data
+        run: python fetch_market_data.py
+        env:
+          PYTHONUNBUFFERED: "1"
+
+      - name: Run investment agents
+        run: python run_agents.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PYTHONUNBUFFERED: "1"
+
+      - name: Commit and push analysis
+        run: |
+          git config user.name  "Investment AI Bot"
+          git config user.email "bot@investment-ai.local"
+          git add data/analysis.json data/market_data.json
+          git diff --staged --quiet || git commit -m "chore: update analysis $(TZ='Asia/Taipei' date '+%Y-%m-%d %H:%M')"
+          git push

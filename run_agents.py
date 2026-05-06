@@ -1,0 +1,114 @@
+"""
+Investment AI Orchestrator
+Runs all agents in sequence and writes analysis.json for the frontend.
+"""
+
+import json, os, sys
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+TZ = ZoneInfo("Asia/Taipei")
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+
+from agents import (
+    market_overview, tw_short_term, tw_long_term,
+    us_portfolio, fx_fund, asset_allocation,
+    devils_advocate, master_agent,
+)
+
+
+def load_json(path: str) -> dict:
+    with open(path) as f:
+        return json.load(f)
+
+
+def save_json(data: dict, path: str):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def run_all():
+    t0 = datetime.now(TZ)
+    print(f"\n{'='*60}")
+    print(f"Investment AI — {t0.strftime('%Y-%m-%d %H:%M %Z')}")
+    print(f"{'='*60}\n")
+
+    # Load data
+    market_data_path = os.path.join(DATA_DIR, "market_data.json")
+    portfolio_path = os.path.join(DATA_DIR, "portfolio.json")
+
+    if not os.path.exists(market_data_path):
+        print("ERROR: market_data.json not found. Run fetch_market_data.py first.")
+        sys.exit(1)
+
+    market_data = load_json(market_data_path)
+    portfolio = load_json(portfolio_path)
+
+    outputs = {}
+
+    # Phase 1: Independent agents
+    phase1 = [
+        ("market_overview", lambda: market_overview.run(market_data, portfolio)),
+    ]
+    for name, fn in phase1:
+        print(f"  Running: {name}...")
+        outputs[name] = fn()
+        print(f"    → {outputs[name].get('verdict')} (confidence: {outputs[name].get('confidence')})")
+
+    # Phase 2: Agents that depend on market_overview
+    phase2 = [
+        ("tw_short_term",   lambda: tw_short_term.run(market_data, portfolio, outputs["market_overview"])),
+        ("tw_long_term",    lambda: tw_long_term.run(market_data, portfolio, outputs["market_overview"])),
+        ("us_portfolio",    lambda: us_portfolio.run(market_data, portfolio, outputs["market_overview"])),
+        ("fx_fund",         lambda: fx_fund.run(market_data, portfolio, outputs["market_overview"])),
+        ("asset_allocation",lambda: asset_allocation.run(market_data, portfolio, outputs["market_overview"])),
+    ]
+    for name, fn in phase2:
+        print(f"  Running: {name}...")
+        outputs[name] = fn()
+        print(f"    → {outputs[name].get('verdict')} (confidence: {outputs[name].get('confidence')})")
+
+    # Phase 3: Devil's Advocate sees all Phase 1+2 outputs
+    print(f"  Running: devils_advocate...")
+    outputs["devils_advocate"] = devils_advocate.run(outputs)
+    print(f"    → {outputs['devils_advocate'].get('verdict')}")
+
+    # Phase 4: Master Agent integrates everything
+    print(f"  Running: master_agent...")
+    outputs["master"] = master_agent.run(outputs)
+    print(f"    → FINAL: {outputs['master'].get('verdict')}")
+
+    # Build final analysis.json
+    analysis = {
+        "generated_at": t0.isoformat(),
+        "market_snapshot": {
+            "taiex": market_data["indices"].get("taiex", {}),
+            "sp500": market_data["indices"].get("sp500", {}),
+            "vix": market_data["indices"].get("vix", {}),
+            "usd_twd": market_data["fx"].get("usd_twd"),
+            "jpy_per_usd": market_data["fx"].get("jpy_per_usd"),
+            "twd_per_jpy": market_data["fx"].get("twd_per_jpy"),
+        },
+        "portfolio_value": market_data.get("portfolio_value", {}),
+        "agents": outputs,
+    }
+
+    out_path = os.path.join(DATA_DIR, "analysis.json")
+    save_json(analysis, out_path)
+
+    elapsed = (datetime.now(TZ) - t0).total_seconds()
+    print(f"\n{'='*60}")
+    print(f"Complete in {elapsed:.1f}s → data/analysis.json")
+    print(f"Master verdict: {outputs['master'].get('verdict')}")
+    print(f"{'='*60}\n")
+
+    # Print master summary to stdout for GitHub Actions log
+    master = outputs.get("master", {})
+    print("MASTER SUMMARY:")
+    print(master.get("summary", ""))
+    for i, rec in enumerate(master.get("recommendations", [])[:3], 1):
+        print(f"  {i}. [{rec.get('urgency')}] {rec.get('action')} {rec.get('target')}: {rec.get('detail','')}")
+
+
+if __name__ == "__main__":
+    run_all()

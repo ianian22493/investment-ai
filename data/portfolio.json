@@ -1,0 +1,81 @@
+{
+  "_comment": "Static portfolio snapshot — update manually when holdings change",
+  "_updated": "2026-05-06",
+
+  "tw_stocks": [
+    { "code": "00692", "name": "富邦公司治理",    "shares": 6699,  "value": 558387,  "cost": 241000,  "pnl": 317389, "pnl_pct": 131.70, "type": "ETF",  "strategy": "long" },
+    { "code": "00915", "name": "凱基優選高股息30","shares": 2000,  "value": 51418,   "cost": 16050,   "pnl": 35368,  "pnl_pct": 220.36, "type": "ETF",  "strategy": "long" },
+    { "code": "1104",  "name": "環泥",            "shares": 20000, "value": 563522,  "cost": 508982,  "pnl": 54540,  "pnl_pct": 10.72,  "type": "stock","strategy": "long" },
+    { "code": "2211",  "name": "長榮鋼",          "shares": 3100,  "value": 304619,  "cost": 265380,  "pnl": 39239,  "pnl_pct": 14.79,  "type": "stock","strategy": "both" },
+    { "code": "2330",  "name": "台積電",          "shares": 40,    "value": 89604,   "cost": 71700,   "pnl": 17904,  "pnl_pct": 24.97,  "type": "stock","strategy": "long" },
+    { "code": "2536",  "name": "宏普",            "shares": 5000,  "value": 101550,  "cost": 177057,  "pnl": -75507, "pnl_pct": -42.65, "type": "stock","strategy": "long", "watch": "stop_loss_review" },
+    { "code": "2834",  "name": "臺企銀",          "shares": 13000, "value": 209679,  "cost": 165731,  "pnl": 43948,  "pnl_pct": 26.52,  "type": "stock","strategy": "long" },
+    { "code": "3293",  "name": "鈦象",            "shares": 940,   "value": 684193,  "cost": 627157,  "pnl": 57036,  "pnl_pct": 9.09,   "type": "stock","strategy": "both" },
+    { "code": "3703",  "name": "欣陸",            "shares": 12000, "value": 245520,  "cost": 303286,  "pnl": -57766, "pnl_pct": -19.05, "type": "stock","strategy": "long", "watch": "stop_loss_review" },
+    { "code": "4588",  "name": "玖鼎電力",        "shares": 1388,  "value": 83192,   "cost": 125129,  "pnl": -41937, "pnl_pct": -33.52, "type": "stock","strategy": "long", "watch": "stop_loss_review" },
+    { "code": "4707",  "name": "磐亞",            "shares": 30000, "value": 452521,  "cost": 360616,  "pnl": 91905,  "pnl_pct": 25.49,  "type": "stock","strategy": "both" }
+  ],
+
+  "tw_summary": {
+    "total_value": 3344205,
+    "total_cost": 2862086,
+    "total_pnl": 482119,
+    "total_pnl_pct": 16.85,
+    "broker": "永豐金"
+  },
+
+  "us_stocks": [
+    { "ticker": "AMZN",  "name": "Amazon",        "shares": 2,        "strategy": "long" },
+    { "ticker": "CELH",  "name": "Celsius",        "shares": 4,        "strategy": "long" },
+    { "ticker": "GOOGL", "name": "Alphabet",       "shares": 6.0049,   "strategy": "long" },
+    { "ticker": "MELI",  "name": "MercadoLibre",   "shares": 1,        "strategy": "long" },
+    { "ticker": "MSFT",  "name": "Microsoft",      "shares": 4,        "strategy": "long" },
+    { "ticker": "NVDA",  "name": "Nvidia",         "shares": 4.00006,  "strategy": "long" },
+    { "ticker": "ONDS",  "name": "Ondas Holdings", "shares": 7,        "strategy": "long" },
+    { "ticker": "RBRK",  "name": "Rubrik",         "shares": 1,        "strategy": "long" },
+    { "ticker": "S",     "name": "SentinelOne",    "shares": 1,        "strategy": "long" },
+    { "ticker": "SMR",   "name": "NuScale Power",  "shares": 1,        "strategy": "long" },
+    { "ticker": "SOUN",  "name": "SoundHound AI",  "shares": 11,       "strategy": "long" },
+    { "ticker": "TSLA",  "name": "Tesla",          "shares": 11,       "strategy": "long" },
+    { "ticker": "TTD",   "name": "The Trade Desk", "shares": 3,        "strategy": "long" },
+    { "ticker": "ZS",    "name": "Zscaler",        "shares": 11,       "strategy": "long" }
+  ],
+
+  "funds": [
+    {
+      "name": "瀚亞日本動力股票基金AJ（日圓）",
+      "currency": "JPY",
+      "current_value_jpy": 331319,
+      "return_pct": 16.25,
+      "monthly_dca_jpy": 60000
+    },
+    {
+      "name": "野村（愛爾蘭）日本策略價值基金（T日圓類股）",
+      "currency": "JPY",
+      "current_value_jpy": 301747,
+      "return_pct": 5.88,
+      "monthly_dca_jpy": 15000
+    }
+  ],
+
+  "funds_summary": {
+    "total_value_twd": 128233,
+    "total_cost_twd": 115754,
+    "total_return_pct": 10.78,
+    "total_monthly_dca_jpy": 75000
+  },
+
+  "real_estate": {
+    "name": "久泰宸品 B2-13F",
+    "location": "新北市板橋區",
+    "status": "pre_sale",
+    "total_price": 22000000,
+    "down_payment_total": 6600000,
+    "down_payment_paid": 5060000,
+    "loan_amount": 15400000,
+    "delivery_date": "2026-12-01",
+    "next_payment": { "name": "外牆裝修完工款", "date": "2026-07-01", "amount": 660000 },
+    "renovation_budget": 1200000,
+    "furniture_budget": 920000
+  }
+}

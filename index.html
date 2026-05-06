@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>又瑄投資 AI 系統</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+:root{
+  --bg:#070C18;
+  --bg2:#0D1528;
+  --bg3:#141D35;
+  --border:#1E2D50;
+  --border2:#2A3F6A;
+  --text:#E8EDF8;
+  --text2:#8A9BC0;
+  --text3:#4A5A80;
+  --green:#00C896;
+  --green-dim:#0D2E22;
+  --red:#FF4560;
+  --red-dim:#2E0D14;
+  --yellow:#FFB800;
+  --yellow-dim:#2E2200;
+  --blue:#3D8EFF;
+  --blue-dim:#0D1E3A;
+  --orange:#FF7A00;
+  --orange-dim:#2E1A00;
+  --purple:#A259FF;
+  --purple-dim:#1A0D2E;
+  --accent:#3D8EFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"Inter","SF Pro Display","Noto Sans TC",sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+a{color:var(--blue);text-decoration:none}
+
+/* ── Layout ── */
+.wrap{max-width:1400px;margin:0 auto;padding:24px 20px 80px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:900px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+@media(max-width:1100px){.grid3{grid-template-columns:1fr 1fr}.grid4{grid-template-columns:1fr 1fr}}
+
+/* ── Header ── */
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo{width:38px;height:38px}
+.header h1{font-size:20px;font-weight:700;letter-spacing:.5px}
+.header h1 span{color:var(--blue)}
+.header-meta{font-size:12px;color:var(--text3);margin-top:2px}
+.loading-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);padding:6px 14px;border-radius:20px;font-size:12px;color:var(--text2)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Master Banner ── */
+.master-banner{
+  background:linear-gradient(135deg,#0D1A35 0%,#0D2238 50%,#0A1A2E 100%);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  padding:28px 32px;
+  margin-bottom:20px;
+  position:relative;
+  overflow:hidden;
+}
+.master-banner::before{
+  content:"";position:absolute;top:-60px;right:-60px;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(61,142,255,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.master-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.master-verdict-wrap{display:flex;align-items:center;gap:16px}
+.master-label{font-size:11px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:6px}
+.master-verdict{font-size:32px;font-weight:800;letter-spacing:1px}
+.master-confidence{display:flex;align-items:center;gap:8px;margin-top:8px}
+.conf-bar{height:4px;width:120px;background:var(--border);border-radius:2px;overflow:hidden}
+.conf-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--green))}
+.conf-label{font-size:11px;color:var(--text2)}
+.master-summary{font-size:14px;color:var(--text2);max-width:600px;line-height:1.7}
+
+.master-actions{margin-top:22px}
+.master-actions-title{font-size:11px;letter-spacing:2px;color:var(--text3);margin-bottom:10px}
+.action-list{display:flex;flex-direction:column;gap:8px}
+.action-item{display:flex;align-items:center;gap:10px;background:rgba(61,142,255,.05);border:1px solid rgba(61,142,255,.15);border-radius:8px;padding:10px 14px}
+.action-num{font-size:12px;font-weight:700;color:var(--blue);min-width:20px}
+.action-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;letter-spacing:.5px}
+.badge-HIGH{background:rgba(255,69,96,.15);color:var(--red);border:1px solid rgba(255,69,96,.3)}
+.badge-MED{background:rgba(255,184,0,.1);color:var(--yellow);border:1px solid rgba(255,184,0,.25)}
+.badge-LOW{background:rgba(0,200,150,.08);color:var(--green);border:1px solid rgba(0,200,150,.2)}
+.action-text{font-size:13px;color:var(--text);flex:1}
+.action-text strong{color:var(--blue)}
+
+.risk-banner{margin-top:16px;display:flex;align-items:flex-start;gap:10px;background:rgba(255,69,96,.06);border:1px solid rgba(255,69,96,.2);border-radius:8px;padding:12px 16px}
+.risk-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.risk-text{font-size:13px;color:#FF8096}
+
+/* ── Section header ── */
+.section-head{display:flex;align-items:center;gap:10px;margin:28px 0 14px}
+.section-head h2{font-size:13px;font-weight:600;letter-spacing:3px;color:var(--text2);text-transform:uppercase}
+.section-divider{flex:1;height:1px;background:var(--border)}
+
+/* ── Market cards ── */
+.market-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.market-card .mc-label{font-size:11px;color:var(--text3);letter-spacing:2px;margin-bottom:4px}
+.market-card .mc-val{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.market-card .mc-change{font-size:13px;margin-top:4px;font-weight:500}
+.up{color:var(--green)}.down{color:var(--red)}.neutral{color:var(--text2)}
+
+/* ── Portfolio value bar ── */
+.portfolio-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 24px}
+.pf-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.pf-title{font-size:11px;letter-spacing:2px;color:var(--text3)}
+.pf-val{font-size:28px;font-weight:700;color:var(--text)}
+.pf-note{font-size:12px;color:var(--text3);margin-top:3px}
+.alloc-bar{height:10px;border-radius:5px;overflow:hidden;display:flex;gap:2px;margin-bottom:10px}
+.alloc-seg{height:100%;border-radius:3px;transition:width .8s ease}
+.alloc-legend{display:flex;flex-wrap:wrap;gap:12px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.legend-dot{width:9px;height:9px;border-radius:50%}
+
+/* ── Agent cards ── */
+.agents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:1200px){.agents-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.agents-grid{grid-template-columns:1fr}}
+
+.agent-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s}
+.agent-card:hover{border-color:var(--border2)}
+.agent-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.agent-name{font-size:12px;font-weight:600;letter-spacing:1px;color:var(--text2)}
+.agent-bias{font-size:10px;color:var(--text3);margin-top:1px}
+.verdict-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;white-space:nowrap}
+
+.agent-body{padding:14px 16px}
+.agent-summary{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:12px}
+.agent-insights{margin-bottom:12px}
+.insight-item{font-size:12px;color:var(--text3);padding:3px 0;border-bottom:1px solid var(--border);display:flex;gap:6px}
+.insight-item:last-child{border-bottom:none}
+.insight-item::before{content:"▸";color:var(--text3);flex-shrink:0}
+.agent-recs{display:flex;flex-direction:column;gap:6px}
+.rec-item{font-size:12px;border:1px solid var(--border);border-radius:6px;padding:7px 10px}
+.rec-action{font-weight:700;margin-right:6px}
+.rec-target{color:var(--blue);font-weight:600;margin-right:4px}
+.rec-detail{color:var(--text2)}
+.conf-mini{display:flex;align-items:center;gap:6px;margin-top:10px}
+.conf-bar-mini{height:3px;width:100%;background:var(--border);border-radius:2px;overflow:hidden}
+.conf-fill-mini{height:100%;border-radius:2px}
+
+/* ── Devil's Advocate ── */
+.da-card{background:linear-gradient(135deg,var(--orange-dim),var(--bg2));border:1px solid rgba(255,122,0,.3);border-radius:10px;padding:20px 22px;grid-column:1/-1}
+.da-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.da-title{font-size:13px;font-weight:700;color:var(--orange)}
+.da-badge{font-size:10px;background:rgba(255,122,0,.15);color:var(--orange);border:1px solid rgba(255,122,0,.3);padding:2px 8px;border-radius:10px;letter-spacing:1px}
+.da-summary{font-size:13px;color:#FFB878;line-height:1.65;margin-bottom:12px}
+.da-risks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:700px){.da-risks{grid-template-columns:1fr}}
+.da-risk-item{background:rgba(255,122,0,.06);border:1px solid rgba(255,122,0,.15);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--text2)}
+.da-risk-item::before{content:"⚠ ";color:var(--orange)}
+
+/* ── TW Holdings table ── */
+.holdings-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.holdings-table{width:100%;border-collapse:collapse;font-size:13px}
+.holdings-table th{padding:10px 14px;text-align:left;font-size:11px;letter-spacing:2px;color:var(--text3);background:var(--bg3);border-bottom:1px solid var(--border);white-space:nowrap}
+.holdings-table td{padding:10px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+.holdings-table tr:last-child td{border-bottom:none}
+.holdings-table tr:hover td{background:rgba(255,255,255,.02)}
+.pnl-pos{color:var(--green);font-weight:600}
+.pnl-neg{color:var(--red);font-weight:600}
+.watch-dot{display:inline-block;width:7px;height:7px;background:var(--red);border-radius:50%;margin-left:4px;animation:pulse 1.5s infinite}
+
+/* ── Footer ── */
+.footer{text-align:center;padding:40px 0 20px;color:var(--text3);font-size:12px}
+
+/* ── Verdict color themes ── */
+.v-attack{color:var(--green)} .v-attack-bg{background:rgba(0,200,150,.1);color:var(--green);border:1px solid rgba(0,200,150,.2)}
+.v-watch{color:var(--yellow)} .v-watch-bg{background:rgba(255,184,0,.08);color:var(--yellow);border:1px solid rgba(255,184,0,.2)}
+.v-defend{color:var(--red)} .v-defend-bg{background:rgba(255,69,96,.08);color:var(--red);border:1px solid rgba(255,69,96,.2)}
+.v-neutral{color:var(--blue)} .v-neutral-bg{background:rgba(61,142,255,.08);color:var(--blue);border:1px solid rgba(61,142,255,.2)}
+.v-da{color:var(--orange)} .v-da-bg{background:rgba(255,122,0,.08);color:var(--orange);border:1px solid rgba(255,122,0,.2)}
+
+/* ── Loading skeleton ── */
+.skeleton{background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-line{height:14px;margin-bottom:8px}
+.skel-h1{height:32px;width:40%;margin-bottom:12px}
+
+/* ── Error state ── */
+.error-card{background:var(--red-dim);border:1px solid rgba(255,69,96,.3);border-radius:10px;padding:24px;text-align:center;color:var(--red)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <img src="favicon.svg" class="logo" alt="Yuzu">
+      <div>
+        <h1>又瑄 <span>投資 AI</span> 系統</h1>
+        <div class="header-meta" id="updateTime">載入中…</div>
+      </div>
+    </div>
+    <div class="loading-badge" id="statusBadge">
+      <span class="dot"></span>
+      <span id="statusText">連線中</span>
+    </div>
+  </div>
+
+  <!-- Master Banner -->
+  <div class="master-banner" id="masterBanner">
+    <div class="master-top">
+      <div>
+        <div class="master-label">Master Agent — 今日策略</div>
+        <div class="master-verdict" id="masterVerdict"><div class="skeleton skel-h1"></div></div>
+        <div class="master-confidence">
+          <div class="conf-bar"><div class="conf-fill" id="masterConfFill" style="width:0%"></div></div>
+          <span class="conf-label" id="masterConfLabel"></span>
+        </div>
+      </div>
+      <div class="master-summary" id="masterSummary"><div class="skeleton skel-line"></div><div class="skeleton skel-line" style="width:80%"></div></div>
+    </div>
+    <div class="master-actions">
+      <div class="master-actions-title">今日操作優先序</div>
+      <div class="action-list" id="masterActions"></div>
+    </div>
+    <div class="risk-banner" id="masterRisk" style="display:none">
+      <span class="risk-icon">⚠</span>
+      <span class="risk-text" id="masterRiskText"></span>
+    </div>
+  </div>
+
+  <!-- Market Snapshot -->
+  <div class="section-head"><h2>市場快照</h2><div class="section-divider"></div></div>
+  <div class="grid4" id="marketGrid">
+    <div class="market-card"><div class="mc-label">加權指數</div><div class="skeleton skel-h1"></div></div>
+    <div class="market-card"><div class="mc-label">S&amp;P 500</div><div class="skeleton skel-h1"></div></div>
+    <div class="market-card"><div class="mc-label">VIX 恐慌</div><div class="skeleton skel-h1"></div></div>
+    <div class="market-card"><div class="mc-label">USD/TWD</div><div class="skeleton skel-h1"></div></div>
+  </div>
+
+  <!-- Portfolio Value -->
+  <div class="section-head"><h2>資產概覽</h2><div class="section-divider"></div></div>
+  <div class="portfolio-card" id="portfolioCard">
+    <div class="pf-top">
+      <div>
+        <div class="pf-title">總資產（毛額）</div>
+        <div class="pf-val" id="totalAssets">—</div>
+        <div class="pf-note" id="netAssets"></div>
+      </div>
+      <div style="text-align:right">
+        <div class="pf-title">台股損益</div>
+        <div class="pf-val pnl-pos" id="twPnl">—</div>
+      </div>
+    </div>
+    <div class="alloc-bar" id="allocBar"></div>
+    <div class="alloc-legend" id="allocLegend"></div>
+  </div>
+
+  <!-- Analysis Agents -->
+  <div class="section-head"><h2>分析 Agents</h2><div class="section-divider"></div></div>
+  <div class="agents-grid" id="agentsGrid">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- TW Holdings -->
+  <div class="section-head"><h2>台股持倉明細</h2><div class="section-divider"></div></div>
+  <div class="holdings-card">
+    <table class="holdings-table" id="holdingsTable">
+      <thead><tr>
+        <th>代號</th><th>名稱</th><th>股數</th><th>現值</th><th>成本</th><th>損益</th><th>報酬率</th>
+      </tr></thead>
+      <tbody id="holdingsBody"></tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <div>又瑄投資 AI 系統 · 每日自動更新 3 次</div>
+    <div style="margin-top:4px">資料僅供參考，不構成投資建議</div>
+  </div>
+</div>
+
+<script>
+const AGENT_META = {
+  market_overview:  { name:"市場總覽",   bias:"中立謹慎",   icon:"🌐" },
+  tw_short_term:    { name:"台股短線",   bias:"激進偏見",   icon:"⚡" },
+  tw_long_term:     { name:"台股長線",   bias:"保守偏見",   icon:"🏛" },
+  us_portfolio:     { name:"美股配置",   bias:"長線樂觀",   icon:"🇺🇸" },
+  fx_fund:          { name:"匯率/基金",  bias:"保守謹慎",   icon:"💴" },
+  asset_allocation: { name:"資產配置",   bias:"超悲觀",     icon:"⚖" },
+};
+
+const ALLOC_COLORS = {
+  tw_stocks:    "#3D8EFF",
+  us_stocks:    "#00C896",
+  funds:        "#A259FF",
+  real_estate:  "#FFB800",
+};
+const ALLOC_LABELS = {
+  tw_stocks:"台股", us_stocks:"美股", funds:"基金", real_estate:"房產"
+};
+
+function verdictClass(v="") {
+  const u = v.toLowerCase();
+  if(u.includes("攻") || u.includes("加碼") || u.includes("增加")) return "attack";
+  if(u.includes("防") || u.includes("停損") || u.includes("減碼")) return "defend";
+  if(u.includes("觀望") || u.includes("維持") || u.includes("暫停") || u.includes("續抱") || u.includes("持倉")) return "watch";
+  if(u.includes("反對") || u.includes("質疑")) return "da";
+  return "neutral";
+}
+
+function fmt(n) {
+  if(!n && n!==0) return "—";
+  return "NT$" + Math.round(n).toLocaleString();
+}
+function fmtChg(n) {
+  if(!n && n!==0) return "—";
+  const s = n >= 0 ? "+" : "";
+  return s + n.toFixed(2) + "%";
+}
+
+function renderMarket(snap) {
+  const items = [
+    { label:"加權指數", key:"taiex", prefix:"", decimals:0 },
+    { label:"S&P 500",  key:"sp500", prefix:"$", decimals:0 },
+    { label:"VIX 恐慌", key:"vix",   prefix:"", decimals:2 },
+    { label:"USD/TWD",  key:null, val: snap.usd_twd, prefix:"", decimals:3 },
+  ];
+  const grid = document.getElementById("marketGrid");
+  grid.innerHTML = items.map(item => {
+    const d = item.key ? (snap[item.key] || {}) : {};
+    const close = item.key ? d.close : item.val;
+    const chg   = item.key ? d.change_pct : null;
+    const cls   = chg == null ? "neutral" : chg >= 0 ? "up" : "down";
+    return `<div class="market-card">
+      <div class="mc-label">${item.label}</div>
+      <div class="mc-val ${cls}">${item.prefix}${close != null ? Number(close).toLocaleString(undefined,{minimumFractionDigits:item.decimals}) : "—"}</div>
+      ${chg != null ? `<div class="mc-change ${cls}">${fmtChg(chg)}</div>` : ""}
+    </div>`;
+  }).join("");
+}
+
+function renderPortfolio(pv, twSummary) {
+  document.getElementById("totalAssets").textContent = fmt(pv.total_gross_twd);
+  document.getElementById("netAssets").textContent = "淨資產（扣房貸）：" + fmt(pv.net_assets_twd);
+  const pnl = twSummary?.total_pnl;
+  const pnlPct = twSummary?.total_pnl_pct;
+  const pnlEl = document.getElementById("twPnl");
+  if(pnl != null) {
+    pnlEl.textContent = (pnl >= 0 ? "+" : "") + "NT$" + Math.round(pnl).toLocaleString() + " (" + (pnl >= 0 ? "+" : "") + pnlPct + "%)";
+    pnlEl.className = "pf-val " + (pnl >= 0 ? "pnl-pos" : "pnl-neg");
+  }
+
+  const alloc = pv.allocation_pct || {};
+  const bar = document.getElementById("allocBar");
+  const legend = document.getElementById("allocLegend");
+  bar.innerHTML = Object.keys(ALLOC_COLORS).map(k => {
+    const w = alloc[k] || 0;
+    return `<div class="alloc-seg" style="width:${w}%;background:${ALLOC_COLORS[k]}" title="${ALLOC_LABELS[k]} ${w}%"></div>`;
+  }).join("");
+  legend.innerHTML = Object.keys(ALLOC_COLORS).map(k => {
+    const w = alloc[k] || 0;
+    return `<div class="legend-item"><div class="legend-dot" style="background:${ALLOC_COLORS[k]}"></div>${ALLOC_LABELS[k]} ${w}%</div>`;
+  }).join("");
+}
+
+function renderMaster(master) {
+  const vc = verdictClass(master.verdict || "");
+  const verdictEl = document.getElementById("masterVerdict");
+  verdictEl.className = "master-verdict v-" + vc;
+  verdictEl.textContent = master.verdict || "—";
+
+  const conf = Math.round((master.confidence || 0) * 100);
+  document.getElementById("masterConfFill").style.width = conf + "%";
+  document.getElementById("masterConfLabel").textContent = "信心 " + conf + "%";
+  document.getElementById("masterSummary").textContent = master.summary || "";
+
+  const actionsEl = document.getElementById("masterActions");
+  const recs = master.recommendations || [];
+  actionsEl.innerHTML = recs.slice(0,3).map((r,i) => `
+    <div class="action-item">
+      <span class="action-num">${i+1}</span>
+      <span class="action-badge badge-${r.urgency || 'MED'}">${r.urgency || "MED"}</span>
+      <span class="action-text"><strong>${r.action} ${r.target}</strong> — ${r.detail || ""}</span>
+    </div>`).join("");
+
+  const risks = master.risk_flags || [];
+  if(risks.length > 0) {
+    document.getElementById("masterRisk").style.display = "flex";
+    document.getElementById("masterRiskText").textContent = risks[0];
+  }
+}
+
+function renderAgents(agents) {
+  const grid = document.getElementById("agentsGrid");
+  const daOutput = agents.devils_advocate;
+  const agentOrder = ["market_overview","tw_short_term","tw_long_term","us_portfolio","fx_fund","asset_allocation"];
+
+  let html = "";
+  for(const key of agentOrder) {
+    const a = agents[key] || {};
+    const meta = AGENT_META[key] || { name: key, bias: "", icon: "🤖" };
+    const vc = verdictClass(a.verdict || "");
+    const conf = Math.round((a.confidence || 0) * 100);
+
+    const insights = (a.key_insights || []).slice(0,3).map(i =>
+      `<div class="insight-item">${i}</div>`).join("");
+
+    const recs = (a.recommendations || []).slice(0,2).map(r => {
+      const ac = r.action || "";
+      const acColor = ac.includes("BUY") || ac.includes("ADD") ? "var(--green)"
+                    : ac.includes("SELL") || ac.includes("CUT") ? "var(--red)"
+                    : "var(--text2)";
+      return `<div class="rec-item">
+        <span class="rec-action" style="color:${acColor}">${ac}</span>
+        <span class="rec-target">${r.target || ""}</span>
+        <span class="rec-detail">${r.detail || ""}</span>
+      </div>`;
+    }).join("");
+
+    html += `<div class="agent-card">
+      <div class="agent-header">
+        <div>
+          <div class="agent-name">${meta.icon} ${meta.name}</div>
+          <div class="agent-bias">${meta.bias}</div>
+        </div>
+        <div class="verdict-badge v-${vc}-bg">${a.verdict || "—"}</div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-summary">${a.summary || "—"}</div>
+        ${insights ? `<div class="agent-insights">${insights}</div>` : ""}
+        ${recs ? `<div class="agent-recs">${recs}</div>` : ""}
+        <div class="conf-mini">
+          <div class="conf-bar-mini">
+            <div class="conf-fill-mini" style="width:${conf}%;background:${vc==='attack'?'var(--green)':vc==='defend'?'var(--red)':'var(--blue)'}"></div>
+          </div>
+          <span style="font-size:11px;color:var(--text3);white-space:nowrap">${conf}%</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Devil's Advocate — full width
+  if(daOutput) {
+    const daRisks = (daOutput.key_insights || []).slice(0,4).map(r =>
+      `<div class="da-risk-item">${r}</div>`).join("");
+    html += `<div class="da-card">
+      <div class="da-header">
+        <span class="da-title">😈 反對派 Agent</span>
+        <span class="da-badge">${daOutput.verdict || "有所保留"}</span>
+      </div>
+      <div class="da-summary">${daOutput.summary || ""}</div>
+      <div class="da-risks">${daRisks}</div>
+    </div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function renderHoldings(twStocks) {
+  const tbody = document.getElementById("holdingsBody");
+  tbody.innerHTML = twStocks.map(s => {
+    const pc = s.pnl_pct;
+    const cls = pc >= 0 ? "pnl-pos" : "pnl-neg";
+    const watchDot = s.watch ? `<span class="watch-dot" title="需審查"></span>` : "";
+    return `<tr>
+      <td>${s.code}</td>
+      <td>${s.name}${watchDot}</td>
+      <td>${s.shares.toLocaleString()}</td>
+      <td>NT$${s.value.toLocaleString()}</td>
+      <td>NT$${s.cost.toLocaleString()}</td>
+      <td class="${cls}">${s.pnl >= 0 ? "+" : ""}NT$${s.pnl.toLocaleString()}</td>
+      <td class="${cls}">${pc >= 0 ? "+" : ""}${pc.toFixed(2)}%</td>
+    </tr>`;
+  }).join("");
+}
+
+async function loadData() {
+  try {
+    const res = await fetch("data/analysis.json?t=" + Date.now());
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const d = await res.json();
+
+    const ts = new Date(d.generated_at);
+    document.getElementById("updateTime").textContent =
+      "最後更新：" + ts.toLocaleString("zh-TW", {timeZone:"Asia/Taipei",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+    document.getElementById("statusText").textContent = "資料已更新";
+    document.querySelector(".dot").style.background = "var(--green)";
+
+    renderMarket(d.market_snapshot || {});
+
+    fetch("data/portfolio.json").then(r => r.json()).then(p => {
+      renderPortfolio(d.portfolio_value || {}, p.tw_summary);
+      renderHoldings(p.tw_stocks || []);
+    });
+
+    renderMaster(d.agents?.master || {});
+    renderAgents(d.agents || {});
+
+  } catch(err) {
+    document.getElementById("statusText").textContent = "資料載入失敗";
+    document.querySelector(".dot").style.background = "var(--red)";
+    document.getElementById("masterBanner").innerHTML =
+      `<div class="error-card">⚠ 無法載入分析資料：${err.message}<br><small>請確認 GitHub Actions 已執行，或直接在本機執行 python run_agents.py</small></div>`;
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>
