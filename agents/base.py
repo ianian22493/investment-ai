@@ -1,11 +1,11 @@
 """Base class for all investment agents."""
 
-import anthropic
+import google.generativeai as genai
 import json
 import os
 
-client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-MODEL = "claude-sonnet-4-6"
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+MODEL = "gemini-2.0-flash"
 
 RESPONSE_SCHEMA = """
 Your response MUST be valid JSON only. No markdown, no explanation outside JSON.
@@ -30,20 +30,22 @@ Structure:
 
 
 def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
-    """Call Claude API and parse JSON response."""
+    """Call Gemini API and parse JSON response."""
     try:
-        resp = client.messages.create(
-            model=MODEL,
-            max_tokens=2000,
-            system=system_prompt + "\n\n" + RESPONSE_SCHEMA,
-            messages=[{"role": "user", "content": user_content}],
+        model = genai.GenerativeModel(
+            model_name=MODEL,
+            system_instruction=system_prompt + "\n\n" + RESPONSE_SCHEMA,
         )
-        raw = resp.content[0].text.strip()
+        resp = model.generate_content(user_content)
+        raw = resp.text.strip()
         # strip markdown code fences if present
         if raw.startswith("```"):
             raw = raw.split("```")[1]
             if raw.startswith("json"):
                 raw = raw[4:]
+        # strip [1][2] citation markers that Gemini sometimes adds
+        import re
+        raw = re.sub(r'\[\d+\]', '', raw)
         return json.loads(raw)
     except json.JSONDecodeError as e:
         return {
