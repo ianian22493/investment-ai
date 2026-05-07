@@ -1,81 +1,113 @@
 """
-Master Agent — 整合所有 Agent，給出最終每日策略
-Bias: 理性均衡，但在衝突時優先風控
+Master Agent — CIO 層，整合三個 Desk + Capital Flow，給出最終每日策略
 """
 
 from .base import call_claude
-import json
 
-SYSTEM = """你是投資委員會的 CIO（首席投資官），你整合所有分析師的意見，給出最終決策。
+SYSTEM = """你是投資委員會的 CIO（首席投資官）。你是系統中唯一有權做最終決策的角色。
 
-【角色定位】
-- 你是最後決策者，你的話就是今日操作方向
-- 當分析師之間衝突時，你要有立場，不能說「兩邊都有道理」
-- 你要特別重視反對派的意見，但不能讓它癱瘓所有行動
+【你收到的輸入是什麼】
+- 三個 Desk Risk Committee 的「信號和風險觀點」（不是決策）
+- Capital Flow Engine 的「資金預算分配」（已由規則引擎決定，你不能更改數字）
+- 反對派的質疑
 
-【決策原則】
-1. 風控優先：如果資產配置 Agent 或反對派提出嚴重警告，優先處理
-2. 短線長線分開：短線 Agent 和長線 Agent 的建議不能混用
-3. 衝突解決：明確說明你選哪一方，並給理由
-4. 可執行性：你的建議必須是今天/本週可以執行的
+【HARD RULE — 你的決策邊界】
+✅ 你的工作：在 Capital Flow 設定的預算內，做最優的跨 Desk 決策
+❌ 你不能：重新分配資金比例（那是 Capital Flow Engine 的工作）
+❌ 你不能：被某個 Desk 的「建議」直接帶走，Desk 提供觀點，你做決定
 
-【輸出格式（特別要求）】
-除了標準 JSON 以外，你的 summary 必須包含：
-- 今日大方向：進攻 / 防守 / 觀望
-- 最重要的 3 個行動
-- 1 個最大風險提醒
+【Capital Flow 預算是硬約束，不是建議】
+例如：Capital Flow 說 trading_budget=0.05
+→ 即使 Trading Desk 信號強烈，你的交易建議也只能在 5% 預算內
+→ 不能說「但信號很好所以應該多做一點」
 
-verdict 只能是：全面進攻 / 局部進攻 / 維持現狀 / 局部防守 / 全面防守"""
+【衝突解決規則】
+1. Desk 之間的觀點衝突 → 你仲裁
+2. Desk 觀點 vs Capital Flow 預算衝突 → Capital Flow 優先
+3. 短線 vs 長線 → 分開處理，不互相影響
+
+【輸出格式】
+- summary 分三段：短線 / 持倉 / 財富，各一句話
+- 整體 verdict：全面進攻 / 局部進攻 / 維持現狀 / 局部防守 / 全面防守
+"""
 
 
 def run(all_outputs: dict) -> dict:
+    capital_flow = all_outputs.get("capital_flow", {})
+    trading_desk = all_outputs.get("trading_master", {})
+    portfolio_desk = all_outputs.get("portfolio_master", {})
+    wealth_desk = all_outputs.get("wealth_master", {})
+    devils = all_outputs.get("devils_advocate", {})
+    reflection = all_outputs.get("reflection", {})
+
     sections = []
 
-    agent_display_names = {
-        "news_sentiment":  "新聞情緒",
-        "market_overview": "市場總覽",
-        "tw_short_term":   "台股短線",
-        "tw_long_term":    "台股長線",
-        "us_portfolio":    "美股配置",
-        "fx_fund":         "匯率/基金",
-        "asset_allocation":"資產配置",
-        "devils_advocate": "反對派",
-    }
-
-    for key, display in agent_display_names.items():
-        output = all_outputs.get(key, {})
-        recs = output.get("recommendations", [])
-        rec_str = "; ".join(
-            f"{r.get('action')} {r.get('target')} [{r.get('urgency','?')}]"
-            for r in recs[:3]
-        )
+    # Capital Flow (最高優先，硬約束)
+    if capital_flow:
+        budget = capital_flow.get("budget", {})
+        flags = capital_flow.get("override_flags", [])
         sections.append(
-            f"【{display}】\n"
-            f"  判決: {output.get('verdict','?')} (信心: {output.get('confidence','?')})\n"
-            f"  摘要: {output.get('summary','?')[:120]}\n"
-            f"  建議: {rec_str or '無'}\n"
-            f"  風險: {'; '.join(output.get('risk_flags',[])[:2])}"
+            f"【⚡ Capital Flow Engine — 硬性資金預算（不可更改）】\n"
+            f"  交易預算：{budget.get('trading', 0)*100:.0f}%  "
+            f"配置預算：{budget.get('portfolio', 0)*100:.0f}%  "
+            f"現金：{budget.get('cash', 0)*100:.0f}%\n"
+            f"  流向：{capital_flow.get('flow_direction','?')}\n"
+            f"  觸發規則：\n"
+            + ("\n".join(f"    ⚡ {f}" for f in flags) if flags else "    （無）")
+        )
+
+    # Trading Desk（信號觀點，非決策）
+    budget = capital_flow.get("budget", {}) if capital_flow else {}
+    sections.append(
+        f"【📈 Trading Desk 信號（可用預算 {budget.get('trading',0)*100:.0f}%）】\n"
+        f"  信號：{trading_desk.get('verdict','?')} | confidence={trading_desk.get('confidence','?')}\n"
+        f"  {trading_desk.get('summary','')[:180]}\n"
+        f"  具體機會：{'; '.join(r.get('action','?')+' '+r.get('target','?') for r in trading_desk.get('recommendations',[])[:2])}"
+    )
+
+    # Portfolio Desk（信號觀點，非決策）
+    sections.append(
+        f"【📊 Portfolio Desk 信號（可用預算 {budget.get('portfolio',0)*100:.0f}%）】\n"
+        f"  觀點：{portfolio_desk.get('verdict','?')} | confidence={portfolio_desk.get('confidence','?')}\n"
+        f"  {portfolio_desk.get('summary','')[:180]}\n"
+        f"  關注點：{'; '.join(r.get('action','?')+' '+r.get('target','?') for r in portfolio_desk.get('recommendations',[])[:2])}"
+    )
+
+    # Wealth Desk（風險事實，非決策）
+    wealth_risk = wealth_desk.get("risk_level", "?")
+    sections.append(
+        f"【🏦 Wealth Desk 風險事實（觸發 Capital Flow: {'是' if capital_flow and capital_flow.get('wealth_risk_triggered') else '否'}）】\n"
+        f"  財務狀態：{wealth_desk.get('verdict','?')} | risk_level={wealth_risk}\n"
+        f"  {wealth_desk.get('summary','')[:180]}\n"
+        f"  現金壓力：{'⚠️ 是' if wealth_desk.get('cash_crunch_risk') else '無'} | "
+        f"槓桿：{wealth_desk.get('leverage_health','?')}"
+    )
+
+    # Devil's Advocate
+    sections.append(
+        f"【🔴 反對派】\n"
+        f"  verdict={devils.get('verdict','?')}\n"
+        f"  {devils.get('summary','')[:150]}"
+    )
+
+    # Recent reflection if available
+    if reflection and reflection.get("verdict") not in (None, "ERROR"):
+        sections.append(
+            f"【🔄 系統反思】\n"
+            f"  {reflection.get('verdict','?')} — {reflection.get('summary','')[:100]}"
         )
 
     user_content = "\n\n".join(sections) + """
 
-作為 CIO，請整合以上所有分析：
+作為 CIO，給出今日最終決策：
 
-1. **今日整體市場策略**：進攻 / 防守 / 觀望？理由是什麼？
+1. 三個 Desk 各自結論（短線 / 持倉 / 財富）
+2. Capital Flow 指令是否影響了今日操作重點？
+3. 今日最優先的 3 個可執行行動
+4. 本週最大單一風險
+5. 一句話給又瑄：今天的心態
 
-2. **衝突解決**：
-   - 台股短線 vs 長線 是否有衝突？如何取捨？
-   - 反對派提出的主要反對意見，你接受哪些？
-
-3. **今日最重要 3 個操作建議**（按優先順序）：
-   - 最應該做的事（HIGH urgency）
-   - 次優先
-   - 第三優先
-
-4. **本週最大單一風險**是什麼？
-
-5. **給又瑄的一句話**：今天的操作心態應該是什麼？
-
-你的決策要清晰、果斷、可執行。不要模糊，不要「視情況而定」。"""
+要求：清晰、果斷、按時間軸分開。不要把短線建議和長線建議混在一起說。
+"""
 
     return call_claude(SYSTEM, user_content, "master_agent")

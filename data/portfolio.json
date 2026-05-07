@@ -72,8 +72,13 @@
     "down_payment_paid": 5060000,
     "loan_amount": 15400000,
     "delivery_date": "2026-12-01",
-    "next_payment": { "name": "外牆裝修完工款", "date": "2026-07-01", "amount": 660000 },
     "renovation_budget": 1200000,
-    "furniture_budget": 920000
+    "furniture_budget": 920000,
+    "payment_schedule": [
+      { "name": "外牆裝修完工款", "date": "2026-07-01", "amount": 660000,  "category": "mortgage" },
+      { "name": "竣工款",         "date": "2026-10-01", "amount": 880000,  "category": "mortgage" },
+      { "name": "裝潢費用",       "date": "2027-01-01", "amount": 1200000, "category": "renovation" },
+      { "name": "家具費用",       "date": "2027-03-01", "amount": 920000,  "category": "furniture" }
+    ]
   }
 }

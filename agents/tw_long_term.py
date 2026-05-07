@@ -31,10 +31,12 @@ SYSTEM = """你是一位保守型的台股長線投資人，專注基本面和�
 verdict 只能是：續抱 / 加碼 / 減碼 / 停損出場 / 觀察"""
 
 
-def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}) -> dict:
+def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}, regime: dict = None) -> dict:
     tw_stocks = portfolio.get("tw_stocks", [])
 
     lines = []
+    if regime:
+        lines.append(f"【市場體制】{regime['regime_summary']}")
     lines.append("【台股長線持倉狀況】")
     for s in tw_stocks:
         lines.append(

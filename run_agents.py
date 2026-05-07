@@ -1,22 +1,30 @@
 """
-Investment AI Orchestrator
-Runs all agents in sequence and writes analysis.json for the frontend.
+Investment AI Orchestrator — 三層 Desk + Capital Flow 架構
 """
 
 import json, os, sys, time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-RATE_LIMIT_SLEEP = 15  # Gemini 2.5 Flash free tier: 5 RPM → 1 call per 12s, use 15s for safety
+RATE_LIMIT_SLEEP = 15
 
 TZ = ZoneInfo("Asia/Taipei")
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 from agents import (
-    market_overview, news_sentiment, tw_short_term, tw_long_term,
-    us_portfolio, fx_fund, asset_allocation,
-    devils_advocate, master_agent, tw_daily_pick,
+    market_overview, news_sentiment,
+    tw_short_term, tw_long_term, us_portfolio, fx_fund, asset_allocation,
+    devils_advocate,
+    trading_master, portfolio_master, wealth_master,
+    master_agent, tw_daily_pick,
 )
+from agents import reflection as reflection_agent
+from agents.regime_engine import determine_regime
+from agents.capital_flow import compute as compute_capital_flow
+from agents.constraint_validator import validate as validate_constraints
+import alpha_db
+import outcome_tracker
+import agent_cache
 
 
 def load_json(path: str) -> dict:
@@ -29,24 +37,33 @@ def save_json(data: dict, path: str):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
+def load_candidates() -> list:
+    path = os.path.join(DATA_DIR, "candidate_stocks.json")
+    if not os.path.exists(path):
+        return []
+    try:
+        return load_json(path).get("candidates", [])
+    except Exception:
+        return []
+
+
 def run_all():
     t0 = datetime.now(TZ)
     print(f"\n{'='*60}")
     print(f"Investment AI — {t0.strftime('%Y-%m-%d %H:%M %Z')}")
     print(f"{'='*60}\n")
 
-    # Load data
+    # ── Load data ─────────────────────────────────────────────────────────────
     market_data_path = os.path.join(DATA_DIR, "market_data.json")
-    portfolio_path = os.path.join(DATA_DIR, "portfolio.json")
+    portfolio_path   = os.path.join(DATA_DIR, "portfolio.json")
 
     if not os.path.exists(market_data_path):
         print("ERROR: market_data.json not found. Run fetch_market_data.py first.")
         sys.exit(1)
 
     market_data = load_json(market_data_path)
-    portfolio = load_json(portfolio_path)
+    portfolio   = load_json(portfolio_path)
 
-    # Build live portfolio: replace static TW values with today's computed prices
     pv = market_data.get("portfolio_value", {})
     portfolio_live = {**portfolio}
     if pv.get("tw_stocks_live"):
@@ -54,74 +71,238 @@ def run_all():
     if pv.get("tw_summary_live"):
         portfolio_live["tw_summary"] = pv["tw_summary_live"]
 
+    # ── Learning Layer ────────────────────────────────────────────────────────
+    print("  [learning] 結算昨日推薦...")
+    outcome_tracker.resolve_pending(market_data)
+
+    perf_stats   = alpha_db.get_performance_stats(30)
+    perf_context = alpha_db.format_stats_for_prompt(perf_stats)
+    if perf_context:
+        market_data["performance_context"] = perf_context
+        print(f"  [learning] 注入績效：近{perf_stats['total']}次 勝率{perf_stats['overall_rate']}%")
+
+    latest_reflection = alpha_db.get_latest_reflection()
+    if latest_reflection:
+        market_data["latest_reflection"] = latest_reflection
+
+    # ── Regime Engine (no LLM) ────────────────────────────────────────────────
+    regime = determine_regime(market_data)
+    market_data["regime"] = regime
+    print(f"  [regime] {regime['regime_summary']}")
+
+    candidates = load_candidates()
+    if candidates:
+        print(f"  [scanner] {len(candidates)} candidates loaded")
+
+    print(agent_cache.status_summary())
+
     outputs = {}
 
-    # Phase 1: Independent agents
-    phase1 = [
-        ("market_overview",  lambda: market_overview.run(market_data, portfolio_live)),
-        ("news_sentiment",   lambda: news_sentiment.run(market_data, portfolio_live)),
-    ]
-    for name, fn in phase1:
-        print(f"  Running: {name}...")
-        outputs[name] = fn()
-        print(f"    → {outputs[name].get('verdict')} (confidence: {outputs[name].get('confidence')})")
-        print(f"    ⏳ rate-limit sleep {RATE_LIMIT_SLEEP}s...")
+    def _sleep(name: str):
+        print(f"    ⏳ sleep {RATE_LIMIT_SLEEP}s...")
         time.sleep(RATE_LIMIT_SLEEP)
 
-    # Phase 2: Agents that depend on market_overview + news_sentiment
+    # ── Phase 1: Market context (shared by all desks) ─────────────────────────
+    print("\n── Phase 1: Market Context ──")
+    for name, fn in [
+        ("market_overview", lambda: market_overview.run(market_data, portfolio_live, regime=regime)),
+        ("news_sentiment",  lambda: news_sentiment.run(market_data, portfolio_live)),
+    ]:
+        print(f"  {name}...")
+        outputs[name] = fn()
+        print(f"    → {outputs[name].get('verdict')} ({outputs[name].get('confidence')})")
+        _sleep(name)
+
     news = outputs.get("news_sentiment", {})
-    phase2 = [
-        ("tw_short_term",   lambda: tw_short_term.run(market_data, portfolio_live, outputs["market_overview"], news)),
-        ("tw_long_term",    lambda: tw_long_term.run(market_data, portfolio_live, outputs["market_overview"], news)),
-        ("us_portfolio",    lambda: us_portfolio.run(market_data, portfolio_live, outputs["market_overview"], news)),
-        ("fx_fund",         lambda: fx_fund.run(market_data, portfolio_live, outputs["market_overview"], news)),
-        ("asset_allocation",lambda: asset_allocation.run(market_data, portfolio_live, outputs["market_overview"], news)),
-    ]
-    for name, fn in phase2:
-        print(f"  Running: {name}...")
-        outputs[name] = fn()
-        print(f"    → {outputs[name].get('verdict')} (confidence: {outputs[name].get('confidence')})")
-        print(f"    ⏳ rate-limit sleep {RATE_LIMIT_SLEEP}s...")
-        time.sleep(RATE_LIMIT_SLEEP)
 
-    # Phase 3: Devil's Advocate sees all Phase 1+2 outputs
-    print(f"  Running: devils_advocate...")
+    # ── Phase 2: Specialist agents ────────────────────────────────────────────
+    print("\n── Phase 2: Specialist Agents ──")
+
+    # Trading Desk — always fresh
+    print("  tw_short_term...")
+    outputs["tw_short_term"] = tw_short_term.run(
+        market_data, portfolio_live, outputs["market_overview"], news,
+        regime=regime, candidates=candidates,
+    )
+    print(f"    → {outputs['tw_short_term'].get('verdict')} ({outputs['tw_short_term'].get('confidence')})")
+    _sleep("tw_short_term")
+
+    # Portfolio Desk — cached up to 3-5 days
+    for name, fn in [
+        ("tw_long_term", lambda: tw_long_term.run(
+            market_data, portfolio_live, outputs["market_overview"], news, regime=regime,
+        )),
+        ("us_portfolio", lambda: us_portfolio.run(
+            market_data, portfolio_live, outputs["market_overview"], news, regime=regime,
+        )),
+    ]:
+        print(f"  {name}...")
+        outputs[name], was_cached = agent_cache.get_or_run(
+            name, fn, sleep_fn=lambda: _sleep(name)
+        )
+        if not was_cached:
+            print(f"    → {outputs[name].get('verdict')} ({outputs[name].get('confidence')})")
+
+    # Wealth Desk — cached up to 5-7 days
+    for name, fn in [
+        ("fx_fund", lambda: fx_fund.run(
+            market_data, portfolio_live, outputs["market_overview"], news,
+        )),
+        ("asset_allocation", lambda: asset_allocation.run(
+            market_data, portfolio_live, outputs["market_overview"], news, regime=regime,
+        )),
+    ]:
+        print(f"  {name}...")
+        outputs[name], was_cached = agent_cache.get_or_run(
+            name, fn, sleep_fn=lambda: _sleep(name)
+        )
+        if not was_cached:
+            print(f"    → {outputs[name].get('verdict')} ({outputs[name].get('confidence')})")
+
+    # ── Phase 3: Devil's Advocate ─────────────────────────────────────────────
+    print("\n── Phase 3: Devil's Advocate ──")
+    print("  devils_advocate...")
     outputs["devils_advocate"] = devils_advocate.run(outputs)
     print(f"    → {outputs['devils_advocate'].get('verdict')}")
-    print(f"    ⏳ rate-limit sleep {RATE_LIMIT_SLEEP}s...")
-    time.sleep(RATE_LIMIT_SLEEP)
+    _sleep("devils_advocate")
 
-    # Phase 4: 盤後精選（只在收盤後那次執行，台灣時間 13:00 後）
+    # ── Phase 4: 盤後專屬（tw_daily_pick + reflection）────────────────────────
     if t0.hour >= 13:
-        print(f"  Running: tw_daily_pick (盤後精選)...")
+        print("\n── Phase 4: Post-Market ──")
+
+        print("  tw_daily_pick...")
         outputs["tw_daily_pick"] = tw_daily_pick.run(
-            market_data, portfolio_live, outputs["market_overview"], outputs.get("news_sentiment", {})
+            market_data, portfolio_live, outputs["market_overview"], news,
+            regime=regime, candidates=candidates,
         )
         pick = outputs["tw_daily_pick"]
-        print(f"    → {pick.get('verdict')} | 推薦: {pick.get('pick',{}).get('name','?')} ({pick.get('pick',{}).get('code','?')})")
-        print(f"    ⏳ rate-limit sleep {RATE_LIMIT_SLEEP}s...")
-        time.sleep(RATE_LIMIT_SLEEP)
-    else:
-        print(f"  Skipping: tw_daily_pick (開盤前不執行，僅盤後使用)")
+        print(f"    → {pick.get('verdict')} | {pick.get('pick',{}).get('name','?')}({pick.get('pick',{}).get('code','?')})")
+        outcome_tracker.save_today_pick(pick, regime, market_data)
+        _sleep("tw_daily_pick")
 
-    # Phase 5: Master Agent integrates everything
-    print(f"  Running: master_agent...")
+        print("  reflection...")
+        recent_picks = alpha_db.get_recent_picks(30)
+        yesterday = next((p for p in recent_picks if p.get("resolved") == 1), None)
+        outputs["reflection"] = reflection_agent.run(
+            recent_picks=recent_picks,
+            performance_stats=perf_stats,
+            yesterday_result=yesterday,
+        )
+        refl = outputs["reflection"]
+        print(f"    → {refl.get('verdict')} | {refl.get('summary','')[:60]}...")
+        alpha_db.save_reflection(
+            date=t0.strftime("%Y-%m-%d"),
+            regime=regime.get("market_regime", ""),
+            reflection=refl,
+            stats=perf_stats,
+        )
+        _sleep("reflection")
+    else:
+        print("\n── Phase 4: Skipped (pre-market) ──")
+
+    # ── Phase 5: Desk Masters ─────────────────────────────────────────────────
+    print("\n── Phase 5: Desk Masters ──")
+
+    # trading_master always re-runs (depends on today's tw_short_term)
+    print("  trading_master...")
+    outputs["trading_master"] = trading_master.run(
+        tw_short_term=outputs.get("tw_short_term", {}),
+        tw_daily_pick=outputs.get("tw_daily_pick"),
+        regime=regime,
+        capital_flow=None,
+    )
+    print(f"    → {outputs['trading_master'].get('verdict')}")
+    _sleep("trading_master")
+
+    # portfolio_master: cache only if both inputs were cached
+    print("  portfolio_master...")
+    outputs["portfolio_master"], pm_cached = agent_cache.get_or_run(
+        "portfolio_master",
+        lambda: portfolio_master.run(
+            tw_long_term=outputs.get("tw_long_term", {}),
+            us_portfolio=outputs.get("us_portfolio", {}),
+            capital_flow=None,
+        ),
+        sleep_fn=lambda: _sleep("portfolio_master"),
+    )
+    if not pm_cached:
+        print(f"    → {outputs['portfolio_master'].get('verdict')}")
+
+    # wealth_master: cache only if both inputs were cached
+    print("  wealth_master...")
+    outputs["wealth_master"], wm_cached = agent_cache.get_or_run(
+        "wealth_master",
+        lambda: wealth_master.run(
+            fx_fund=outputs.get("fx_fund", {}),
+            asset_allocation=outputs.get("asset_allocation", {}),
+        ),
+        sleep_fn=lambda: _sleep("wealth_master"),
+    )
+    if not wm_cached:
+        print(f"    → {outputs['wealth_master'].get('verdict')} | risk_level={outputs['wealth_master'].get('risk_level','?')}")
+
+    # ── Phase 6: Capital Flow Engine (no LLM) ─────────────────────────────────
+    print("\n── Phase 6: Capital Flow Engine (rules) ──")
+    outputs["capital_flow"] = compute_capital_flow(
+        regime=regime,
+        trading_desk=outputs["trading_master"],
+        portfolio_desk=outputs["portfolio_master"],
+        wealth_desk=outputs["wealth_master"],
+    )
+    cf = outputs["capital_flow"]
+    b  = cf.get("budget", {})
+    print(f"  → 交易:{b.get('trading',0)*100:.0f}% / 配置:{b.get('portfolio',0)*100:.0f}% / 現金:{b.get('cash',0)*100:.0f}%")
+    print(f"     流向:{cf['flow_direction']}")
+    for flag in cf.get("override_flags", []):
+        print(f"    ⚡ {flag}")
+
+    # ── Phase 7: Master Agent (CIO) ───────────────────────────────────────────
+    print("\n── Phase 7: Master Agent (CIO) ──")
+    print("  master_agent...")
     outputs["master"] = master_agent.run(outputs)
     print(f"    → FINAL: {outputs['master'].get('verdict')}")
 
-    # Build final analysis.json
+    # ── Phase 8: Constraint Validator (pure Python, no LLM) ──────────────────
+    print("\n── Phase 8: Constraint Validator ──")
+    outputs["master"] = validate_constraints(
+        master_output=outputs["master"],
+        capital_flow=outputs["capital_flow"],
+        regime=regime,
+    )
+    v = outputs["master"]
+    if v.get("constraints_triggered"):
+        print(f"  ⚡ {len(v['constraint_violations'])} 個違規已修正：")
+        for viol in v["constraint_violations"]:
+            print(f"    → {viol}")
+    else:
+        print(f"  ✓ 無違規（verdict={v.get('verdict')}）")
+
+    # Log this run to system_decisions table for future policy review
+    alpha_db.log_system_decision(
+        date=t0.strftime("%Y-%m-%d"),
+        capital_flow=outputs["capital_flow"],
+        master_verdict_before=outputs["master"].get("_raw_verdict", v.get("verdict", "")),
+        master_verdict_after=v.get("verdict", ""),
+        constraint_violations=v.get("constraint_violations", []),
+        regime=regime.get("market_regime", ""),
+    )
+
+    # ── Save analysis.json ────────────────────────────────────────────────────
     analysis = {
         "generated_at": t0.isoformat(),
         "market_snapshot": {
-            "taiex": market_data["indices"].get("taiex", {}),
-            "sp500": market_data["indices"].get("sp500", {}),
-            "vix": market_data["indices"].get("vix", {}),
-            "usd_twd": market_data["fx"].get("usd_twd"),
+            "taiex":       market_data["indices"].get("taiex", {}),
+            "sp500":       market_data["indices"].get("sp500", {}),
+            "vix":         market_data["indices"].get("vix", {}),
+            "usd_twd":     market_data["fx"].get("usd_twd"),
             "jpy_per_usd": market_data["fx"].get("jpy_per_usd"),
             "twd_per_jpy": market_data["fx"].get("twd_per_jpy"),
         },
         "portfolio_value": market_data.get("portfolio_value", {}),
-        "agents": outputs,
+        "regime":          regime,
+        "capital_flow":    outputs["capital_flow"],
+        "performance":     perf_stats if perf_stats.get("available") else None,
+        "agents":          outputs,
     }
 
     out_path = os.path.join(DATA_DIR, "analysis.json")
@@ -131,9 +312,9 @@ def run_all():
     print(f"\n{'='*60}")
     print(f"Complete in {elapsed:.1f}s → data/analysis.json")
     print(f"Master verdict: {outputs['master'].get('verdict')}")
+    print(f"Capital Flow:   {cf['flow_direction']} | 交易{b.get('trading',0)*100:.0f}% / 配置{b.get('portfolio',0)*100:.0f}% / 現金{b.get('cash',0)*100:.0f}%")
     print(f"{'='*60}\n")
 
-    # Print master summary to stdout for GitHub Actions log
     master = outputs.get("master", {})
     print("MASTER SUMMARY:")
     print(master.get("summary", ""))

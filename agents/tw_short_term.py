@@ -35,11 +35,20 @@ recommendations 必須包含：
 verdict 只能是：強力進攻 / 進攻 / 小幅進場 / 觀望 / 輕倉"""
 
 
-def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}) -> dict:
+def run(
+    market_data: dict,
+    portfolio: dict,
+    market_overview: dict,
+    news_sentiment: dict = {},
+    regime: dict = None,
+    candidates: list = None,
+) -> dict:
     tw = market_data.get("tw_stocks", {})
     taiex = market_data.get("indices", {}).get("taiex", {})
 
     lines = []
+    if regime:
+        lines.append(f"【市場體制】{regime['regime_summary']}")
     lines.append(f"TAIEX今日: {taiex.get('close')} ({taiex.get('change_pct')}%)")
     lines.append("\n【持倉個股今日表現 + 籌碼 + 技術】")
 
@@ -62,6 +71,17 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
         lines.append(f"【今日新聞情緒】{news_sentiment.get('verdict')} — {news_sentiment.get('summary','')[:100]}")
         for insight in news_sentiment.get("key_insights", [])[:2]:
             lines.append(f"  · {insight}")
+
+    if candidates:
+        lines.append("\n【量化掃描器精選（今日市場強勢候選股）】")
+        for c in candidates[:8]:
+            sigs = []
+            if c.get("breakout_ma20"): sigs.append("MA20突破")
+            if c.get("vol_surge"):     sigs.append(f"量爆{c.get('vol_ratio',0)}x")
+            if c.get("rsi_zone"):      sigs.append(f"RSI{c.get('rsi',0)}")
+            if c.get("ma_aligned"):    sigs.append("均線多排")
+            if c.get("five_day_high"): sigs.append("5日高")
+            lines.append(f"  {c['name']}({c['code']}) score={c['score']} | {' / '.join(sigs)}")
 
     user_content = "\n".join(lines) + """
 

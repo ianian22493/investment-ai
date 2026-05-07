@@ -1,4 +1,4 @@
-"""Base class for all investment agents."""
+"""Base for all investment agents — uses Google Gemini API (free tier)."""
 
 import json
 import os
@@ -9,7 +9,7 @@ from google import genai
 from google.genai import types
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.5-flash"
 
 RESPONSE_SCHEMA = """
 Your response MUST be valid JSON only. No markdown, no explanation outside JSON.
@@ -46,9 +46,8 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
             )
             raw = resp.text.strip()
             if raw.startswith("```"):
-                raw = raw.split("```")[1]
-                if raw.startswith("json"):
-                    raw = raw[4:]
+                raw = re.sub(r"^```(?:json)?\s*", "", raw)
+                raw = re.sub(r"\s*```$", "", raw)
             raw = re.sub(r'\[\d+\]', '', raw)
             return json.loads(raw)
         except json.JSONDecodeError as e:

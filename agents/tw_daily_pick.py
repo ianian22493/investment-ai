@@ -78,12 +78,42 @@ PICK_SCHEMA = """
 """
 
 
-def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}) -> dict:
+def run(
+    market_data: dict,
+    portfolio: dict,
+    market_overview: dict,
+    news_sentiment: dict = {},
+    regime: dict = None,
+    candidates: list = None,
+) -> dict:
     indices = market_data.get("indices", {})
     fx = market_data.get("fx", {})
     news = market_data.get("news", {})
 
     lines = []
+    if regime:
+        lines.append(f"【市場體制引擎】{regime['regime_summary']}")
+        lines.append(f"  短線適合交易：{'是' if regime.get('short_term_trading_favorable') else '否'}｜風險等級：{regime.get('risk_level','?')}")
+
+    # Inject historical performance context
+    perf_context = market_data.get("performance_context", "")
+    if perf_context:
+        lines.append(f"\n{perf_context}")
+
+    # Inject latest reflection
+    latest_reflection = market_data.get("latest_reflection")
+    if latest_reflection:
+        findings = []
+        try:
+            import json as _json
+            findings = _json.loads(latest_reflection.get("key_findings", "[]"))
+        except Exception:
+            pass
+        if findings:
+            lines.append(f"\n【前次反思重點】")
+            for f in findings[:3]:
+                lines.append(f"  · {f}")
+
     lines.append("【今日市場數據】")
     lines.append(f"台股加權指數: {indices.get('taiex',{}).get('close','?')} ({indices.get('taiex',{}).get('change_pct','?')}%)")
     lines.append(f"NASDAQ: {indices.get('nasdaq',{}).get('close','?')} ({indices.get('nasdaq',{}).get('change_pct','?')}%)")
@@ -104,6 +134,20 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
         lines.append(f"【新聞情緒 Agent】{news_sentiment.get('verdict','?')} — {news_sentiment.get('summary','')[:100]}")
         for ins in news_sentiment.get("key_insights", [])[:3]:
             lines.append(f"  · {ins}")
+
+    if candidates:
+        lines.append("\n【量化掃描器精選（今日技術強勢股，供參考）】")
+        for c in candidates[:10]:
+            sigs = []
+            if c.get("breakout_ma20"): sigs.append("MA20突破")
+            if c.get("vol_surge"):     sigs.append(f"量爆{c.get('vol_ratio',0)}x")
+            if c.get("rsi_zone"):      sigs.append(f"RSI{c.get('rsi',0)}")
+            if c.get("ma_aligned"):    sigs.append("均線多排")
+            if c.get("five_day_high"): sigs.append("5日高")
+            lines.append(
+                f"  {c['name']}({c['code']}) 收{c.get('last_close','?')} "
+                f"score={c['score']} | {' / '.join(sigs)}"
+            )
 
     user_content = "\n".join(lines) + """
 

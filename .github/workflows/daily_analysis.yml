@@ -14,7 +14,7 @@ permissions:
 jobs:
   analyze:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
@@ -36,6 +36,11 @@ jobs:
           SHIOAJI_API_KEY: ${{ secrets.SHIOAJI_API_KEY }}
           SHIOAJI_SECRET_KEY: ${{ secrets.SHIOAJI_SECRET_KEY }}
 
+      - name: Run stock scanner
+        run: python scanner.py
+        env:
+          PYTHONUNBUFFERED: "1"
+
       - name: Run investment agents
         run: python run_agents.py
         env:
@@ -46,7 +51,7 @@ jobs:
         run: |
           git config user.name  "Investment AI Bot"
           git config user.email "bot@investment-ai.local"
-          git add data/analysis.json data/market_data.json
+          git add data/analysis.json data/market_data.json data/candidate_stocks.json data/alpha.db data/agent_cache.json
           git diff --staged --quiet || git commit -m "chore: update analysis $(TZ='Asia/Taipei' date '+%Y-%m-%d %H:%M')"
           git push
 

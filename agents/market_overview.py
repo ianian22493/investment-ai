@@ -25,11 +25,13 @@ SYSTEM = """你是一位資深的宏觀市場分析師，負責提供每日市�
 【你不評論個股，只看大盤和總體趨勢】"""
 
 
-def run(market_data: dict, portfolio: dict) -> dict:
+def run(market_data: dict, portfolio: dict, regime: dict = None) -> dict:
     indices = market_data.get("indices", {})
     fx = market_data.get("fx", {})
 
-    user_content = f"""今日市場資料：
+    regime_line = f"\n【市場體制引擎】{regime['regime_summary']}\n" if regime else ""
+
+    user_content = f"""{regime_line}今日市場資料：
 
 【大盤指數】
 - 加權指數 (TAIEX): {indices.get('taiex', {}).get('close', 'N/A')}

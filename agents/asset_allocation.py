@@ -4,6 +4,10 @@ Bias: 超悲觀，專找過度集中和槓桿風險
 """
 
 from .base import call_claude
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+TZ = ZoneInfo("Asia/Taipei")
 
 SYSTEM = """你是一位偏執的資產配置風控專家，你的工作就是找出資產組合的潛在危機。
 
@@ -18,72 +22,95 @@ SYSTEM = """你是一位偏執的資產配置風控專家，你的工作就是�
 2. 槓桿分析：房貸對比淨資產比例
 3. 壓力測試：若各類資產同時下跌，淨資產剩多少？
 4. 流動性：緊急時能快速變現的資產有多少？
-5. 集中度：有沒有單一標的過大？
-
-【已知持倉】
-- 房產：久泰宸品 2200萬（含貸款1540萬），2026-12 交屋
-  → 有外牆款 66萬（2026-07），竣工款 88萬（2026-10）
-- 台股：334萬（11檔，宏普/欣陸/玖鼎虧損中）
-- 美股：14檔
-- 基金：12.8萬（日幣）
+5. 現金時間軸：未來 24 個月每筆現金需求清單
 
 verdict 只能是：安全 / 稍微過度集中 / 明顯過度集中 / 高風險 / 危險"""
 
 
-def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}) -> dict:
-    pv = market_data.get("portfolio_value", {})
-    re = portfolio.get("real_estate", {})
-    fx = market_data.get("fx", {})
+def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}, regime: dict = None) -> dict:
+    pv  = market_data.get("portfolio_value", {})
+    re  = portfolio.get("real_estate", {})
+    fx  = market_data.get("fx", {})
+    now = datetime.now(TZ)
 
-    usd_twd = fx.get("usd_twd", 32)
-
-    tw_val = pv.get("tw_stocks_twd", 3344205)
-    us_val = pv.get("us_stocks_twd", 0)
+    tw_val   = pv.get("tw_stocks_twd", 3344205)
+    us_val   = pv.get("us_stocks_twd", 0)
     fund_val = pv.get("funds_twd", 128233)
-    re_val = re.get("total_price", 22000000)
-    loan = re.get("loan_amount", 15400000)
-    total = tw_val + us_val + fund_val + re_val
-    net = total - loan
+    re_val   = re.get("total_price", 22000000)
+    loan     = re.get("loan_amount", 15400000)
+    total    = tw_val + us_val + fund_val + re_val
+    net      = total - loan
+    alloc    = pv.get("allocation_pct", {})
 
-    alloc = pv.get("allocation_pct", {})
+    # ── Dynamic payment schedule (reads from portfolio.json) ─────────────────
+    payment_schedule = re.get("payment_schedule", [])
+    upcoming_total = sum(p["amount"] for p in payment_schedule)
+    next_12m_total = sum(
+        p["amount"] for p in payment_schedule
+        if p.get("date", "9999") <= (now.replace(year=now.year + 1)).strftime("%Y-%m-%d")
+    )
 
-    # 計算近期現金需求
-    next_payment = re.get("next_payment", {})
-    coming_payments = re.get("down_payment_total", 0) - re.get("down_payment_paid", 0)
+    lines = []
+    if regime:
+        lines.append(f"【市場體制】{regime['regime_summary']}")
 
-    lines = [
+    lines += [
         "【總資產快照（估算）】",
+        f"房產（市值）: NT${re_val:,} ({alloc.get('real_estate','?')}%)  ← 最大部位",
         f"台股: NT${tw_val:,} ({alloc.get('tw_stocks','?')}%)",
         f"美股: NT${us_val:,} ({alloc.get('us_stocks','?')}%)",
         f"日幣基金: NT${fund_val:,} ({alloc.get('funds','?')}%)",
-        f"房產（市值）: NT${re_val:,} ({alloc.get('real_estate','?')}%)",
         f"總資產（毛額）: NT${total:,}",
         f"房貸負債: NT${loan:,}",
         f"淨資產: NT${net:,}",
         f"\n【槓桿分析】",
         f"房貸/淨資產比: {loan/net*100:.1f}%",
         f"房貸/總資產比: {loan/total*100:.1f}%",
-        f"\n【即將現金需求】",
-        f"外牆款 2026-07: NT$660,000",
-        f"竣工款 2026-10: NT$880,000",
-        f"合計: NT$1,540,000",
+        f"\n【現金需求時間軸（從 portfolio.json 動態讀取）】",
+    ]
+
+    for p in payment_schedule:
+        months_away = ""
+        try:
+            pay_date = datetime.strptime(p["date"], "%Y-%m-%d").replace(tzinfo=TZ)
+            diff = (pay_date - now).days
+            months_away = f"（{diff//30}個月後）"
+        except Exception:
+            pass
+        lines.append(f"  {p['date']} {p['name']}: NT${p['amount']:,} {months_away} [{p.get('category','?')}]")
+
+    lines += [
+        f"  ──────────────────────────────",
+        f"  未來12個月合計: NT${next_12m_total:,}",
+        f"  全部現金需求合計: NT${upcoming_total:,}",
+        f"\n【流動性分析】",
+        f"可快速變現資產（台股+美股+基金）: NT${tw_val+us_val+fund_val:,}",
+        f"現金需求 vs 可變現資產比: {next_12m_total/(tw_val+us_val+fund_val)*100:.1f}%" if (tw_val+us_val+fund_val) > 0 else "",
         f"\n【壓力測試情境】",
-        f"台股-40%: {tw_val*0.6:,.0f}",
-        f"美股-30%: {us_val*0.7:,.0f}",
-        f"壓力測試後淨資產: {tw_val*0.6 + us_val*0.7 + fund_val*0.9 + re_val*0.8 - loan:,.0f}",
+        f"台股-40%後: NT${tw_val*0.6:,.0f}",
+        f"美股-30%後: NT${us_val*0.7:,.0f}",
+        f"房價-20%後: NT${re_val*0.8:,.0f}",
+        f"壓力測試後淨資產: NT${tw_val*0.6 + us_val*0.7 + fund_val*0.9 + re_val*0.8 - loan:,.0f}",
         f"\n市場總覽: {market_overview.get('verdict')}",
     ]
+
     if news_sentiment.get("verdict") not in (None, "ERROR", "無資料"):
         lines.append(f"今日新聞情緒: {news_sentiment.get('verdict')} — {news_sentiment.get('summary','')[:100]}")
 
-    user_content = "\n".join(lines) + """
+    tw_losers = [s for s in portfolio.get("tw_stocks", []) if s.get("pnl_pct", 0) < -10]
+    if tw_losers:
+        lines.append(f"\n【台股虧損部位】")
+        for s in tw_losers:
+            lines.append(f"  {s['name']}({s['code']}): {s['pnl_pct']:+.1f}% (NT${s['pnl']:+,})")
+
+    user_content = "\n".join(lines) + f"""
 
 請以偏執風控專家角色分析：
-1. 目前資產配置最大的風險是什麼？
-2. 房產槓桿（貸款 1540 萬）對整體財務的影響？
-3. 近期現金需求（146 萬）是否造成流動性壓力？
-4. 台股三檔虧損（-19%~-42%）是否影響整體風險？
-5. 整體而言，目前風險水位是否在可接受範圍？
+1. 房產是最大部位（{re_val/total*100:.0f}%），槓桿 {loan/net*100:.0f}%，這個風險水位如何？
+2. 未來 12 個月現金需求 NT${next_12m_total:,} vs 可變現資產，流動性是否充足？
+3. 裝潢與家具費用（NT${re.get('renovation_budget',0)+re.get('furniture_budget',0):,}）是否已納入計劃？
+4. 台股三檔持續虧損是否影響整體配置健康度？
+5. 壓力測試結果：最壞情況下淨資產還剩多少？能否承受？
 
 注意：你的工作是找問題，不是給安慰。"""
 

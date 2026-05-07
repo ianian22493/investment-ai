@@ -1,0 +1,45 @@
+{
+  "_comment": "這個檔案由人工審查後修改，系統不會自動更改任何數值。每次修改請記錄原因。",
+  "_last_reviewed": "2026-05-07",
+  "_review_note": "初始設定",
+
+  "constraint_validator": {
+    "single_stock_max_pct": 0.30,
+    "sector_max_pct": 0.50,
+    "blocked_actions_on_wealth_risk": ["BUY", "ADD"],
+    "high_risk_regimes_for_breakout": ["高檔震盪", "空頭賣壓", "恐慌盤"]
+  },
+
+  "capital_flow": {
+    "base_allocation": {
+      "trading": 0.30,
+      "portfolio": 0.50,
+      "cash": 0.20
+    },
+    "wealth_risk_overrides": {
+      "low":      {"trading": 0.35, "portfolio": 0.55, "cash": 0.10},
+      "moderate": {"trading": 0.30, "portfolio": 0.50, "cash": 0.20},
+      "elevated": {"trading": 0.15, "portfolio": 0.45, "cash": 0.40},
+      "high":     {"trading": 0.05, "portfolio": 0.35, "cash": 0.60},
+      "extreme":  {"trading": 0.00, "portfolio": 0.20, "cash": 0.80}
+    }
+  },
+
+  "agent_cache_ttl_days": {
+    "tw_long_term": 5,
+    "us_portfolio": 3,
+    "fx_fund": 5,
+    "asset_allocation": 7,
+    "portfolio_master": 5,
+    "wealth_master": 7
+  },
+
+  "review_schedule": {
+    "frequency": "monthly",
+    "trigger_review_if": {
+      "verdict_override_rate_gt": 50,
+      "avg_trading_budget_lt": 10,
+      "constraint_trigger_rate_gt": 30
+    }
+  }
+}
