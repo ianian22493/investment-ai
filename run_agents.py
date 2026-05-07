@@ -177,7 +177,7 @@ def run_all():
         )
         pick = outputs["tw_daily_pick"]
         print(f"    → {pick.get('verdict')} | {pick.get('pick',{}).get('name','?')}({pick.get('pick',{}).get('code','?')})")
-        outcome_tracker.save_today_pick(pick, regime, market_data)
+        outcome_tracker.save_today_pick(pick, regime, market_data, candidates=candidates)
         _sleep("tw_daily_pick")
 
         print("  reflection...")

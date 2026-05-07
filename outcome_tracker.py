@@ -43,10 +43,11 @@ def _fetch_close(code: str, date_str: str) -> float | None:
         return None
 
 
-def save_today_pick(pick_output: dict, regime: dict, market_data: dict):
+def save_today_pick(pick_output: dict, regime: dict, market_data: dict, candidates: list = None):
     """
     在 run_agents.py 盤後執行完 tw_daily_pick 後呼叫。
     pick_output: tw_daily_pick.run() 的完整輸出
+    candidates: scanner 候選股清單（用來還原該股觸發的精確信號）
     """
     today = datetime.now(TZ).strftime("%Y-%m-%d")
     pick = pick_output.get("pick", {})
@@ -57,6 +58,14 @@ def save_today_pick(pick_output: dict, regime: dict, market_data: dict):
     if not code or code in ("—", "NONE") or "觀望" in verdict:
         print(f"[outcome_tracker] 今日空手觀望，不記錄推薦")
         return
+
+    # 從 scanner candidates 找出該股的精確信號
+    SIGNAL_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high")
+    scanner_signals = None
+    if candidates:
+        matched = next((c for c in candidates if c.get("code") == code), None)
+        if matched:
+            scanner_signals = [k for k in SIGNAL_KEYS if matched.get(k)]
 
     # 嘗試從 market_data 取今日收盤作為參考基準
     tw_stocks = market_data.get("tw_stocks", {})
@@ -71,9 +80,11 @@ def save_today_pick(pick_output: dict, regime: dict, market_data: dict):
         pick=pick,
         regime=regime,
         ref_close=float(ref_close) if ref_close else None,
+        scanner_signals=scanner_signals,
     )
+    sig_str = ", ".join(scanner_signals) if scanner_signals else "無 scanner 信號"
     print(f"[outcome_tracker] 已記錄推薦：{pick.get('name')}({code}) "
-          f"參考收盤={ref_close} → DB id={row_id}")
+          f"信號=[{sig_str}] 參考收盤={ref_close} → DB id={row_id}")
 
 
 def resolve_pending(today_market_data: dict = None):

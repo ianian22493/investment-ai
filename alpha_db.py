@@ -75,6 +75,7 @@ def save_pick(
     pick: dict,
     regime: dict,
     ref_close: float = None,
+    scanner_signals: list = None,
 ) -> int:
     """Insert a new pick record. Returns row id."""
     init_db()
@@ -82,13 +83,17 @@ def save_pick(
     if not code or code == "—":
         code = "NONE"
 
-    # Extract signal names from pick's core_logic keys that are truthy
-    signals = []
-    core = pick.get("core_logic", {})
-    if core.get("capital_flow"):  signals.append("capital_flow")
-    if core.get("sector"):        signals.append("ai_sector")
-    if core.get("technical"):     signals.append("technical_breakout")
-    if core.get("chips"):         signals.append("institutional_buy")
+    # Prefer scanner signals (precise); fall back to core_logic (coarse)
+    SCANNER_SIGNAL_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high")
+    if scanner_signals:
+        signals = scanner_signals
+    else:
+        core = pick.get("core_logic", {})
+        signals = []
+        if core.get("capital_flow"):  signals.append("capital_flow")
+        if core.get("sector"):        signals.append("ai_sector")
+        if core.get("technical"):     signals.append("technical_breakout")
+        if core.get("chips"):         signals.append("institutional_buy")
 
     with get_conn() as conn:
         cur = conn.execute("""
