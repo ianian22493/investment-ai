@@ -3,9 +3,11 @@ Investment AI Orchestrator
 Runs all agents in sequence and writes analysis.json for the frontend.
 """
 
-import json, os, sys
+import json, os, sys, time
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
+RATE_LIMIT_SLEEP = 15  # Gemini 2.5 Flash free tier: 5 RPM → 1 call per 12s, use 15s for safety
 
 TZ = ZoneInfo("Asia/Taipei")
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -63,6 +65,8 @@ def run_all():
         print(f"  Running: {name}...")
         outputs[name] = fn()
         print(f"    → {outputs[name].get('verdict')} (confidence: {outputs[name].get('confidence')})")
+        print(f"    ⏳ rate-limit sleep {RATE_LIMIT_SLEEP}s...")
+        time.sleep(RATE_LIMIT_SLEEP)
 
     # Phase 2: Agents that depend on market_overview + news_sentiment
     news = outputs.get("news_sentiment", {})
@@ -77,11 +81,15 @@ def run_all():
         print(f"  Running: {name}...")
         outputs[name] = fn()
         print(f"    → {outputs[name].get('verdict')} (confidence: {outputs[name].get('confidence')})")
+        print(f"    ⏳ rate-limit sleep {RATE_LIMIT_SLEEP}s...")
+        time.sleep(RATE_LIMIT_SLEEP)
 
     # Phase 3: Devil's Advocate sees all Phase 1+2 outputs
     print(f"  Running: devils_advocate...")
     outputs["devils_advocate"] = devils_advocate.run(outputs)
     print(f"    → {outputs['devils_advocate'].get('verdict')}")
+    print(f"    ⏳ rate-limit sleep {RATE_LIMIT_SLEEP}s...")
+    time.sleep(RATE_LIMIT_SLEEP)
 
     # Phase 4: Master Agent integrates everything
     print(f"  Running: master_agent...")
