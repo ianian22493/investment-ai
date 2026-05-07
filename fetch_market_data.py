@@ -42,17 +42,21 @@ def fetch_twse_index() -> dict:
     return result
 
 
-def fetch_tw_stocks_shioaji() -> dict:
-    """台股即時報價 via 永豐 Shioaji（需 SHIOAJI_API_KEY + SHIOAJI_SECRET_KEY）."""
+def fetch_shioaji_data() -> tuple[dict, list]:
+    """台股即時報價 + 實際持倉 via 永豐 Shioaji（單次登入取兩種資料）.
+    Returns: (prices_dict, positions_list)
+    positions_list: [{"code", "shares", "avg_cost", "pnl"}, ...]
+    """
     api_key    = os.environ.get("SHIOAJI_API_KEY")
     secret_key = os.environ.get("SHIOAJI_SECRET_KEY")
     if not api_key or not secret_key:
-        return {}
+        return {}, []
     try:
         import shioaji as sj
         api = sj.Shioaji(simulation=False)
         api.login(api_key=api_key, secret_key=secret_key)
 
+        # 1. 即時報價
         contracts = []
         for code in TW_CODES:
             try:
@@ -61,26 +65,42 @@ def fetch_tw_stocks_shioaji() -> dict:
                 pass
 
         snapshots = api.snapshots(contracts)
-        result = {}
+        prices = {}
         for snap in snapshots:
             code = snap.code
-            result[code] = {
-                "close":       round(float(snap.close), 2),
-                "open":        round(float(snap.open), 2),
-                "high":        round(float(snap.high), 2),
-                "low":         round(float(snap.low), 2),
-                "change_pct":  round(float(snap.change_rate), 2),
-                "volume":      int(snap.volume),
-                "amount":      int(snap.amount),
-                "source":      "shioaji_realtime",
+            prices[code] = {
+                "close":      round(float(snap.close), 2),
+                "open":       round(float(snap.open), 2),
+                "high":       round(float(snap.high), 2),
+                "low":        round(float(snap.low), 2),
+                "change_pct": round(float(snap.change_rate), 2),
+                "volume":     int(snap.volume),
+                "amount":     int(snap.amount),
+                "source":     "shioaji_realtime",
             }
 
+        # 2. 實際持倉（quantity 單位：股）
+        positions = []
+        try:
+            raw = api.list_positions(api.stock_account)
+            for p in raw:
+                if int(p.quantity) > 0:
+                    positions.append({
+                        "code":     str(p.code),
+                        "shares":   int(p.quantity),
+                        "avg_cost": round(float(p.price), 2),
+                        "pnl":      round(float(p.pnl), 0),
+                    })
+            print(f"  [Shioaji] 持倉 {len(positions)} 檔: {[p['code'] for p in positions]}")
+        except Exception as e:
+            print(f"  [WARN] Shioaji list_positions: {e}")
+
         api.logout()
-        print(f"  [Shioaji] 即時報價取得 {len(result)} 檔")
-        return result
+        print(f"  [Shioaji] 即時報價取得 {len(prices)} 檔")
+        return prices, positions
     except Exception as e:
         print(f"  [WARN] Shioaji failed: {e} — falling back to yfinance")
-        return {}
+        return {}, []
 
 
 def fetch_tw_stocks_yfinance() -> dict:
@@ -109,12 +129,14 @@ def fetch_tw_stocks_yfinance() -> dict:
     return result
 
 
-def fetch_tw_stocks() -> dict:
-    """台股報價：優先用 Shioaji 即時，失敗則用 yfinance 收盤。"""
-    result = fetch_tw_stocks_shioaji()
-    if not result:
-        result = fetch_tw_stocks_yfinance()
-    return result
+def fetch_tw_stocks() -> tuple[dict, list]:
+    """台股報價 + 持倉：優先用 Shioaji 即時，失敗則用 yfinance（無持倉）。
+    Returns: (prices_dict, positions_list)
+    """
+    prices, positions = fetch_shioaji_data()
+    if not prices:
+        prices = fetch_tw_stocks_yfinance()
+    return prices, positions
 
 
 def fetch_us_stocks() -> dict:
@@ -251,21 +273,49 @@ def fetch_usd_twd() -> float | None:
         return None
 
 
-def compute_portfolio_value(portfolio: dict, tw_prices: dict, us_prices: dict, usd_twd: float) -> dict:
-    """Compute current total portfolio value in TWD with dynamic P&L."""
-    # Dynamic TW stock values using today's close prices
+def compute_portfolio_value(portfolio: dict, tw_prices: dict, us_prices: dict, usd_twd: float, tw_positions: list = None) -> dict:
+    """Compute current total portfolio value in TWD with dynamic P&L.
+    tw_positions: live positions from Shioaji; if provided, overrides portfolio["tw_stocks"] shares/cost.
+    """
+    # Build TW stocks live list
     tw_stocks_live = []
     tw_val = 0
-    for s in portfolio["tw_stocks"]:
-        close = tw_prices.get(s["code"], {}).get("close")
-        dyn_value = round(s["shares"] * close) if close else s["value"]
-        cost = s.get("cost", dyn_value)
-        dyn_pnl = dyn_value - cost
-        dyn_pnl_pct = round(dyn_pnl / cost * 100, 2) if cost else 0
-        tw_stocks_live.append({**s, "value": dyn_value, "pnl": dyn_pnl, "pnl_pct": dyn_pnl_pct})
-        tw_val += dyn_value
 
-    tw_cost_total = sum(s.get("cost", 0) for s in portfolio["tw_stocks"])
+    if tw_positions:
+        # Use live positions from brokerage (auto-sync)
+        portfolio_meta = {s["code"]: s for s in portfolio["tw_stocks"]}
+        for p in tw_positions:
+            code = p["code"]
+            meta = portfolio_meta.get(code, {})
+            close = tw_prices.get(code, {}).get("close")
+            cost = round(p["shares"] * p["avg_cost"])
+            dyn_value = round(p["shares"] * close) if close else cost
+            dyn_pnl = dyn_value - cost
+            dyn_pnl_pct = round(dyn_pnl / cost * 100, 2) if cost else 0
+            tw_stocks_live.append({
+                "code":     code,
+                "name":     meta.get("name", code),
+                "shares":   p["shares"],
+                "value":    dyn_value,
+                "cost":     cost,
+                "pnl":      dyn_pnl,
+                "pnl_pct":  dyn_pnl_pct,
+                "type":     meta.get("type", "stock"),
+                "strategy": meta.get("strategy", "long"),
+            })
+            tw_val += dyn_value
+    else:
+        # Fallback: use static portfolio.json data
+        for s in portfolio["tw_stocks"]:
+            close = tw_prices.get(s["code"], {}).get("close")
+            dyn_value = round(s["shares"] * close) if close else s["value"]
+            cost = s.get("cost", dyn_value)
+            dyn_pnl = dyn_value - cost
+            dyn_pnl_pct = round(dyn_pnl / cost * 100, 2) if cost else 0
+            tw_stocks_live.append({**s, "value": dyn_value, "pnl": dyn_pnl, "pnl_pct": dyn_pnl_pct})
+            tw_val += dyn_value
+
+    tw_cost_total = sum(s["cost"] for s in tw_stocks_live)
     tw_pnl_total = tw_val - tw_cost_total
     tw_pnl_pct = round(tw_pnl_total / tw_cost_total * 100, 2) if tw_cost_total else 0
 
@@ -325,8 +375,8 @@ def run():
     print("  indices...")
     indices = fetch_twse_index()
 
-    print("  TW stocks...")
-    tw_prices = fetch_tw_stocks()
+    print("  TW stocks + positions...")
+    tw_prices, tw_positions = fetch_tw_stocks()
 
     print("  US stocks...")
     us_prices = fetch_us_stocks()
@@ -350,7 +400,7 @@ def run():
     usd_twd = fetch_usd_twd() or 32.0
 
     print("  computing portfolio value...")
-    pf_value = compute_portfolio_value(portfolio, tw_prices, us_prices, usd_twd)
+    pf_value = compute_portfolio_value(portfolio, tw_prices, us_prices, usd_twd, tw_positions or None)
 
     market_data = {
         "fetched_at": datetime.now(TZ).isoformat(),
@@ -365,6 +415,7 @@ def run():
             **jpy
         },
         "portfolio_value": pf_value,
+        "tw_positions_live": tw_positions,
         "news": news,
     }
 
