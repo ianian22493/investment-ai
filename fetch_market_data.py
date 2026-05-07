@@ -251,25 +251,57 @@ def fetch_usd_twd() -> float | None:
         return None
 
 
-def compute_portfolio_value(portfolio: dict, us_prices: dict, usd_twd: float) -> dict:
-    """Compute current total portfolio value in TWD."""
-    tw_val = portfolio["tw_summary"]["total_value"]
+def compute_portfolio_value(portfolio: dict, tw_prices: dict, us_prices: dict, usd_twd: float) -> dict:
+    """Compute current total portfolio value in TWD with dynamic P&L."""
+    # Dynamic TW stock values using today's close prices
+    tw_stocks_live = []
+    tw_val = 0
+    for s in portfolio["tw_stocks"]:
+        close = tw_prices.get(s["code"], {}).get("close")
+        dyn_value = round(s["shares"] * close) if close else s["value"]
+        cost = s.get("cost", dyn_value)
+        dyn_pnl = dyn_value - cost
+        dyn_pnl_pct = round(dyn_pnl / cost * 100, 2) if cost else 0
+        tw_stocks_live.append({**s, "value": dyn_value, "pnl": dyn_pnl, "pnl_pct": dyn_pnl_pct})
+        tw_val += dyn_value
 
+    tw_cost_total = sum(s.get("cost", 0) for s in portfolio["tw_stocks"])
+    tw_pnl_total = tw_val - tw_cost_total
+    tw_pnl_pct = round(tw_pnl_total / tw_cost_total * 100, 2) if tw_cost_total else 0
+
+    # US stocks
     us_val_usd = sum(
         s["shares"] * us_prices.get(s["ticker"], {}).get("close", 0)
         for s in portfolio["us_stocks"]
     )
     us_val_twd = round(us_val_usd * (usd_twd or 32), 0)
 
+    us_cost_usd = sum(
+        s.get("avg_cost_usd", 0) * s["shares"]
+        for s in portfolio["us_stocks"]
+    )
+    us_pnl_usd = round(us_val_usd - us_cost_usd, 2) if us_cost_usd else None
+    us_pnl_pct = round(us_pnl_usd / us_cost_usd * 100, 2) if (us_cost_usd and us_pnl_usd is not None) else None
+
     fund_val_twd = portfolio["funds_summary"]["total_value_twd"]
     re_val = portfolio["real_estate"]["total_price"]
-
     total = tw_val + us_val_twd + fund_val_twd + re_val
 
     return {
         "tw_stocks_twd": tw_val,
+        "tw_stocks_live": tw_stocks_live,
+        "tw_summary_live": {
+            "total_value": tw_val,
+            "total_cost": tw_cost_total,
+            "total_pnl": tw_pnl_total,
+            "total_pnl_pct": tw_pnl_pct,
+            "broker": portfolio["tw_summary"].get("broker", ""),
+        },
         "us_stocks_twd": int(us_val_twd),
         "us_stocks_usd": round(us_val_usd, 2),
+        "us_cost_usd": round(us_cost_usd, 2) if us_cost_usd else None,
+        "us_pnl_usd": us_pnl_usd,
+        "us_pnl_pct": us_pnl_pct,
         "funds_twd": fund_val_twd,
         "real_estate_twd": re_val,
         "loan_twd": portfolio["real_estate"]["loan_amount"],
@@ -318,7 +350,7 @@ def run():
     usd_twd = fetch_usd_twd() or 32.0
 
     print("  computing portfolio value...")
-    pf_value = compute_portfolio_value(portfolio, us_prices, usd_twd)
+    pf_value = compute_portfolio_value(portfolio, tw_prices, us_prices, usd_twd)
 
     market_data = {
         "fetched_at": datetime.now(TZ).isoformat(),

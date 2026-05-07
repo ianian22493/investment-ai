@@ -185,6 +185,19 @@ a{color:var(--blue);text-decoration:none}
 
 /* ── Error state ── */
 .error-card{background:var(--red-dim);border:1px solid rgba(255,69,96,.3);border-radius:10px;padding:24px;text-align:center;color:var(--red)}
+
+/* ── Rec action badges (C) ── */
+.rec-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.5px;white-space:nowrap}
+.rb-buy{background:rgba(0,200,150,.15);color:var(--green);border:1px solid rgba(0,200,150,.3)}
+.rb-sell{background:rgba(255,69,96,.15);color:var(--red);border:1px solid rgba(255,69,96,.3)}
+.rb-hold{background:rgba(61,142,255,.08);color:var(--blue);border:1px solid rgba(61,142,255,.2)}
+.rb-watch{background:rgba(255,184,0,.08);color:var(--yellow);border:1px solid rgba(255,184,0,.2)}
+
+/* ── Agent error state ── */
+.agent-error{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:6px}
+.agent-error-icon{font-size:22px;opacity:.5}
+.agent-error-msg{font-size:12px;color:var(--text3)}
+.agent-error-hint{font-size:11px;color:var(--text3);opacity:.6}
 </style>
 </head>
 <body>
@@ -246,9 +259,15 @@ a{color:var(--blue);text-decoration:none}
         <div class="pf-val" id="totalAssets">—</div>
         <div class="pf-note" id="netAssets"></div>
       </div>
-      <div style="text-align:right">
-        <div class="pf-title">台股損益</div>
-        <div class="pf-val pnl-pos" id="twPnl">—</div>
+      <div style="text-align:right;display:flex;gap:24px;flex-wrap:wrap;justify-content:flex-end">
+        <div>
+          <div class="pf-title">台股損益</div>
+          <div class="pf-val pnl-pos" id="twPnl">—</div>
+        </div>
+        <div id="usPnlWrap" style="display:none">
+          <div class="pf-title">美股損益</div>
+          <div class="pf-val pnl-pos" id="usPnl">—</div>
+        </div>
       </div>
     </div>
     <div class="alloc-bar" id="allocBar"></div>
@@ -314,8 +333,12 @@ function fmt(n) {
 }
 function fmtChg(n) {
   if(!n && n!==0) return "—";
-  const s = n >= 0 ? "+" : "";
-  return s + n.toFixed(2) + "%";
+  const arrow = n >= 0 ? "▲" : "▼";
+  return arrow + " " + Math.abs(n).toFixed(2) + "%";
+}
+function fmtUsd(n) {
+  if(!n && n!==0) return "—";
+  return (n >= 0 ? "+" : "") + "$" + Math.abs(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
 function renderMarket(snap) {
@@ -342,12 +365,25 @@ function renderMarket(snap) {
 function renderPortfolio(pv, twSummary) {
   document.getElementById("totalAssets").textContent = fmt(pv.total_gross_twd);
   document.getElementById("netAssets").textContent = "淨資產（扣房貸）：" + fmt(pv.net_assets_twd);
+
   const pnl = twSummary?.total_pnl;
   const pnlPct = twSummary?.total_pnl_pct;
   const pnlEl = document.getElementById("twPnl");
   if(pnl != null) {
-    pnlEl.textContent = (pnl >= 0 ? "+" : "") + "NT$" + Math.round(pnl).toLocaleString() + " (" + (pnl >= 0 ? "+" : "") + pnlPct + "%)";
+    const arrow = pnl >= 0 ? "▲" : "▼";
+    pnlEl.textContent = (pnl >= 0 ? "+" : "") + "NT$" + Math.round(pnl).toLocaleString() + " (" + arrow + " " + Math.abs(pnlPct) + "%)";
     pnlEl.className = "pf-val " + (pnl >= 0 ? "pnl-pos" : "pnl-neg");
+  }
+
+  const usPnl = pv.us_pnl_usd;
+  const usPnlPct = pv.us_pnl_pct;
+  if(usPnl != null) {
+    const wrap = document.getElementById("usPnlWrap");
+    const el = document.getElementById("usPnl");
+    wrap.style.display = "";
+    const arrow = usPnl >= 0 ? "▲" : "▼";
+    el.textContent = fmtUsd(usPnl) + " (" + arrow + " " + Math.abs(usPnlPct).toFixed(2) + "%)";
+    el.className = "pf-val " + (usPnl >= 0 ? "pnl-pos" : "pnl-neg");
   }
 
   const alloc = pv.allocation_pct || {};
@@ -399,23 +435,46 @@ function renderAgents(agents) {
   for(const key of agentOrder) {
     const a = agents[key] || {};
     const meta = AGENT_META[key] || { name: key, bias: "", icon: "🤖" };
-    const vc = verdictClass(a.verdict || "");
+    const isError = a.verdict === "ERROR" || a.verdict === "無資料";
+    const vc = isError ? "neutral" : verdictClass(a.verdict || "");
     const conf = Math.round((a.confidence || 0) * 100);
 
-    const insights = (a.key_insights || []).slice(0,3).map(i =>
-      `<div class="insight-item">${i}</div>`).join("");
+    // A: friendly error state
+    const bodyHtml = isError
+      ? `<div class="agent-error">
+           <div class="agent-error-icon">⚠</div>
+           <div class="agent-error-msg">分析暫無法取得</div>
+           <div class="agent-error-hint">下次更新自動重試</div>
+         </div>`
+      : (() => {
+          const insights = (a.key_insights || []).slice(0,3).map(i =>
+            `<div class="insight-item">${i}</div>`).join("");
 
-    const recs = (a.recommendations || []).slice(0,2).map(r => {
-      const ac = r.action || "";
-      const acColor = ac.includes("BUY") || ac.includes("ADD") ? "var(--green)"
-                    : ac.includes("SELL") || ac.includes("CUT") ? "var(--red)"
-                    : "var(--text2)";
-      return `<div class="rec-item">
-        <span class="rec-action" style="color:${acColor}">${ac}</span>
-        <span class="rec-target">${r.target || ""}</span>
-        <span class="rec-detail">${r.detail || ""}</span>
-      </div>`;
-    }).join("");
+          // C: styled action badges
+          const recs = (a.recommendations || []).slice(0,2).map(r => {
+            const ac = r.action || "";
+            const acu = ac.toUpperCase();
+            let badgeCls = "rb-hold";
+            if(acu.includes("BUY") || acu.includes("ADD") || ac.includes("加碼") || ac.includes("買入")) badgeCls = "rb-buy";
+            else if(acu.includes("SELL") || acu.includes("CUT") || ac.includes("減碼") || ac.includes("停損")) badgeCls = "rb-sell";
+            else if(acu.includes("WATCH") || ac.includes("觀察") || ac.includes("觀望") || ac.includes("暫停")) badgeCls = "rb-watch";
+            return `<div class="rec-item">
+              <span class="rec-badge ${badgeCls}">${ac}</span>
+              <span class="rec-target">${r.target || ""}</span>
+              <span class="rec-detail">${r.detail || ""}</span>
+            </div>`;
+          }).join("");
+
+          return `<div class="agent-summary">${a.summary || "—"}</div>
+            ${insights ? `<div class="agent-insights">${insights}</div>` : ""}
+            ${recs ? `<div class="agent-recs">${recs}</div>` : ""}
+            <div class="conf-mini">
+              <div class="conf-bar-mini">
+                <div class="conf-fill-mini" style="width:${conf}%;background:${vc==='attack'?'var(--green)':vc==='defend'?'var(--red)':'var(--blue)'}"></div>
+              </div>
+              <span style="font-size:11px;color:var(--text3);white-space:nowrap">${conf}%</span>
+            </div>`;
+        })();
 
     html += `<div class="agent-card">
       <div class="agent-header">
@@ -425,17 +484,7 @@ function renderAgents(agents) {
         </div>
         <div class="verdict-badge v-${vc}-bg">${a.verdict || "—"}</div>
       </div>
-      <div class="agent-body">
-        <div class="agent-summary">${a.summary || "—"}</div>
-        ${insights ? `<div class="agent-insights">${insights}</div>` : ""}
-        ${recs ? `<div class="agent-recs">${recs}</div>` : ""}
-        <div class="conf-mini">
-          <div class="conf-bar-mini">
-            <div class="conf-fill-mini" style="width:${conf}%;background:${vc==='attack'?'var(--green)':vc==='defend'?'var(--red)':'var(--blue)'}"></div>
-          </div>
-          <span style="font-size:11px;color:var(--text3);white-space:nowrap">${conf}%</span>
-        </div>
-      </div>
+      <div class="agent-body">${bodyHtml}</div>
     </div>`;
   }
 
@@ -488,10 +537,20 @@ async function loadData() {
 
     renderMarket(d.market_snapshot || {});
 
-    fetch("data/portfolio.json").then(r => r.json()).then(p => {
-      renderPortfolio(d.portfolio_value || {}, p.tw_summary);
-      renderHoldings(p.tw_stocks || []);
-    });
+    const pv = d.portfolio_value || {};
+    const twSummary = pv.tw_summary_live;
+    const twLive = pv.tw_stocks_live;
+
+    if(twLive && twLive.length > 0) {
+      renderPortfolio(pv, twSummary);
+      renderHoldings(twLive);
+    } else {
+      // fallback: load static portfolio.json
+      fetch("data/portfolio.json").then(r => r.json()).then(p => {
+        renderPortfolio(pv, p.tw_summary);
+        renderHoldings(p.tw_stocks || []);
+      });
+    }
 
     renderMaster(d.agents?.master || {});
     renderAgents(d.agents || {});

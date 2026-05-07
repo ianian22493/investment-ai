@@ -44,12 +44,20 @@ def run_all():
     market_data = load_json(market_data_path)
     portfolio = load_json(portfolio_path)
 
+    # Build live portfolio: replace static TW values with today's computed prices
+    pv = market_data.get("portfolio_value", {})
+    portfolio_live = {**portfolio}
+    if pv.get("tw_stocks_live"):
+        portfolio_live["tw_stocks"] = pv["tw_stocks_live"]
+    if pv.get("tw_summary_live"):
+        portfolio_live["tw_summary"] = pv["tw_summary_live"]
+
     outputs = {}
 
     # Phase 1: Independent agents
     phase1 = [
-        ("market_overview",  lambda: market_overview.run(market_data, portfolio)),
-        ("news_sentiment",   lambda: news_sentiment.run(market_data, portfolio)),
+        ("market_overview",  lambda: market_overview.run(market_data, portfolio_live)),
+        ("news_sentiment",   lambda: news_sentiment.run(market_data, portfolio_live)),
     ]
     for name, fn in phase1:
         print(f"  Running: {name}...")
@@ -59,11 +67,11 @@ def run_all():
     # Phase 2: Agents that depend on market_overview + news_sentiment
     news = outputs.get("news_sentiment", {})
     phase2 = [
-        ("tw_short_term",   lambda: tw_short_term.run(market_data, portfolio, outputs["market_overview"], news)),
-        ("tw_long_term",    lambda: tw_long_term.run(market_data, portfolio, outputs["market_overview"], news)),
-        ("us_portfolio",    lambda: us_portfolio.run(market_data, portfolio, outputs["market_overview"], news)),
-        ("fx_fund",         lambda: fx_fund.run(market_data, portfolio, outputs["market_overview"], news)),
-        ("asset_allocation",lambda: asset_allocation.run(market_data, portfolio, outputs["market_overview"], news)),
+        ("tw_short_term",   lambda: tw_short_term.run(market_data, portfolio_live, outputs["market_overview"], news)),
+        ("tw_long_term",    lambda: tw_long_term.run(market_data, portfolio_live, outputs["market_overview"], news)),
+        ("us_portfolio",    lambda: us_portfolio.run(market_data, portfolio_live, outputs["market_overview"], news)),
+        ("fx_fund",         lambda: fx_fund.run(market_data, portfolio_live, outputs["market_overview"], news)),
+        ("asset_allocation",lambda: asset_allocation.run(market_data, portfolio_live, outputs["market_overview"], news)),
     ]
     for name, fn in phase2:
         print(f"  Running: {name}...")

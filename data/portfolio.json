@@ -25,20 +25,20 @@
   },
 
   "us_stocks": [
-    { "ticker": "AMZN",  "name": "Amazon",        "shares": 2,        "strategy": "long" },
-    { "ticker": "CELH",  "name": "Celsius",        "shares": 4,        "strategy": "long" },
-    { "ticker": "GOOGL", "name": "Alphabet",       "shares": 6.0049,   "strategy": "long" },
-    { "ticker": "MELI",  "name": "MercadoLibre",   "shares": 1,        "strategy": "long" },
-    { "ticker": "MSFT",  "name": "Microsoft",      "shares": 4,        "strategy": "long" },
-    { "ticker": "NVDA",  "name": "Nvidia",         "shares": 4.00006,  "strategy": "long" },
-    { "ticker": "ONDS",  "name": "Ondas Holdings", "shares": 7,        "strategy": "long" },
-    { "ticker": "RBRK",  "name": "Rubrik",         "shares": 1,        "strategy": "long" },
-    { "ticker": "S",     "name": "SentinelOne",    "shares": 1,        "strategy": "long" },
+    { "ticker": "AMZN",  "name": "Amazon",        "shares": 2,        "avg_cost_usd": 201.50,    "strategy": "long" },
+    { "ticker": "CELH",  "name": "Celsius",        "shares": 6,        "avg_cost_usd": 33.68333,  "strategy": "long" },
+    { "ticker": "GOOGL", "name": "Alphabet",       "shares": 6.00049,  "avg_cost_usd": 287.33487, "strategy": "long" },
+    { "ticker": "MELI",  "name": "MercadoLibre",   "shares": 1,        "avg_cost_usd": 1650.00,   "strategy": "long" },
+    { "ticker": "MSFT",  "name": "Microsoft",      "shares": 5,        "avg_cost_usd": 377.00,    "strategy": "long" },
+    { "ticker": "NVDA",  "name": "Nvidia",         "shares": 4.00006,  "avg_cost_usd": 172.49991, "strategy": "long" },
+    { "ticker": "ONDS",  "name": "Ondas Holdings", "shares": 10,       "avg_cost_usd": 8.89,      "strategy": "long" },
+    { "ticker": "RBRK",  "name": "Rubrik",         "shares": 9,        "avg_cost_usd": 47.05556,  "strategy": "long" },
+    { "ticker": "S",     "name": "SentinelOne",    "shares": 1,        "avg_cost_usd": 12.00,     "strategy": "long" },
     { "ticker": "SMR",   "name": "NuScale Power",  "shares": 1,        "strategy": "long" },
-    { "ticker": "SOUN",  "name": "SoundHound AI",  "shares": 11,       "strategy": "long" },
-    { "ticker": "TSLA",  "name": "Tesla",          "shares": 11,       "strategy": "long" },
+    { "ticker": "SOUN",  "name": "SoundHound AI",  "shares": 10,       "avg_cost_usd": 6.33,      "strategy": "long" },
+    { "ticker": "TSLA",  "name": "Tesla",          "shares": 11,       "avg_cost_usd": 370.54545, "strategy": "long" },
     { "ticker": "TTD",   "name": "The Trade Desk", "shares": 3,        "strategy": "long" },
-    { "ticker": "ZS",    "name": "Zscaler",        "shares": 11,       "strategy": "long" }
+    { "ticker": "ZS",    "name": "Zscaler",        "shares": 11,       "avg_cost_usd": 141.33273, "strategy": "long" }
   ],
 
   "funds": [
