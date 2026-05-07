@@ -15,7 +15,7 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 from agents import (
     market_overview, news_sentiment, tw_short_term, tw_long_term,
     us_portfolio, fx_fund, asset_allocation,
-    devils_advocate, master_agent,
+    devils_advocate, master_agent, tw_daily_pick,
 )
 
 
@@ -91,7 +91,20 @@ def run_all():
     print(f"    ⏳ rate-limit sleep {RATE_LIMIT_SLEEP}s...")
     time.sleep(RATE_LIMIT_SLEEP)
 
-    # Phase 4: Master Agent integrates everything
+    # Phase 4: 盤後精選（只在收盤後那次執行，台灣時間 13:00 後）
+    if t0.hour >= 13:
+        print(f"  Running: tw_daily_pick (盤後精選)...")
+        outputs["tw_daily_pick"] = tw_daily_pick.run(
+            market_data, portfolio_live, outputs["market_overview"], outputs.get("news_sentiment", {})
+        )
+        pick = outputs["tw_daily_pick"]
+        print(f"    → {pick.get('verdict')} | 推薦: {pick.get('pick',{}).get('name','?')} ({pick.get('pick',{}).get('code','?')})")
+        print(f"    ⏳ rate-limit sleep {RATE_LIMIT_SLEEP}s...")
+        time.sleep(RATE_LIMIT_SLEEP)
+    else:
+        print(f"  Skipping: tw_daily_pick (開盤前不執行，僅盤後使用)")
+
+    # Phase 5: Master Agent integrates everything
     print(f"  Running: master_agent...")
     outputs["master"] = master_agent.run(outputs)
     print(f"    → FINAL: {outputs['master'].get('verdict')}")

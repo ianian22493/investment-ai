@@ -94,6 +94,28 @@ a{color:var(--blue);text-decoration:none}
 .risk-icon{font-size:16px;flex-shrink:0;margin-top:1px}
 .risk-text{font-size:13px;color:#FF8096}
 
+/* ── Daily Pick Card ── */
+.pick-card{background:linear-gradient(135deg,#0D1F10 0%,#0A1A10 100%);border:1px solid rgba(0,200,100,.25);border-radius:12px;padding:24px 28px;margin-bottom:20px;position:relative;overflow:hidden}
+.pick-card::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(0,200,100,.1) 0%,transparent 70%);pointer-events:none}
+.pick-label{font-size:11px;letter-spacing:3px;color:rgba(0,200,100,.7);text-transform:uppercase;margin-bottom:14px}
+.pick-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.pick-stock{display:flex;align-items:center;gap:14px}
+.pick-name{font-size:26px;font-weight:800;color:var(--text)}
+.pick-code{font-size:14px;color:var(--text3);background:rgba(255,255,255,.07);padding:3px 10px;border-radius:20px;font-family:monospace}
+.pick-verdict{font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;white-space:nowrap}
+.pv-buy{background:rgba(0,200,100,.15);color:#00C864;border:1px solid rgba(0,200,100,.3)}
+.pv-watch{background:rgba(255,184,0,.1);color:var(--yellow);border:1px solid rgba(255,184,0,.25)}
+.pv-hold{background:rgba(100,120,140,.15);color:var(--text3);border:1px solid var(--border)}
+.pick-summary{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px;max-width:700px}
+.pick-strategy{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:700px){.pick-strategy{grid-template-columns:1fr 1fr}}
+.ps-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.ps-label{font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px}
+.ps-val{font-size:13px;color:var(--text);font-weight:600}
+.pick-counter{margin-top:12px;background:rgba(255,69,96,.05);border:1px solid rgba(255,69,96,.15);border-radius:8px;padding:10px 14px;font-size:12px;color:#FF8096}
+.pick-counter-label{font-size:10px;letter-spacing:1px;color:rgba(255,100,100,.6);margin-bottom:4px}
+.pick-hidden{display:none}
+
 /* ── Section header ── */
 .section-head{display:flex;align-items:center;gap:10px;margin:28px 0 14px}
 .section-head h2{font-size:13px;font-weight:600;letter-spacing:3px;color:var(--text2);text-transform:uppercase}
@@ -238,6 +260,30 @@ a{color:var(--blue);text-decoration:none}
     <div class="risk-banner" id="masterRisk" style="display:none">
       <span class="risk-icon">⚠</span>
       <span class="risk-text" id="masterRiskText"></span>
+    </div>
+  </div>
+
+  <!-- Daily Pick -->
+  <div id="dailyPickWrap" class="pick-hidden">
+    <div class="pick-card" id="dailyPickCard">
+      <div class="pick-label">⚡ 今日盤後精選 — 隔日短線候選</div>
+      <div class="pick-header">
+        <div class="pick-stock">
+          <span class="pick-name" id="pickName">—</span>
+          <span class="pick-code" id="pickCode">—</span>
+        </div>
+        <span class="pick-verdict" id="pickVerdict"></span>
+      </div>
+      <div class="pick-summary" id="pickSummary"></div>
+      <div class="pick-strategy">
+        <div class="ps-item"><div class="ps-label">進場觀察區</div><div class="ps-val" id="pickEntry">—</div></div>
+        <div class="ps-item"><div class="ps-label">停損條件</div><div class="ps-val" id="pickStop">—</div></div>
+        <div class="ps-item"><div class="ps-label">目標報酬</div><div class="ps-val" id="pickTarget">—</div></div>
+      </div>
+      <div class="pick-counter" id="pickCounter">
+        <div class="pick-counter-label">⚠ 反方觀點</div>
+        <div id="pickCounterText"></div>
+      </div>
     </div>
   </div>
 
@@ -436,6 +482,43 @@ function renderMaster(master) {
   }
 }
 
+function renderDailyPick(pick) {
+  const wrap = document.getElementById("dailyPickWrap");
+  if(!pick || pick.verdict === "ERROR" || !pick.pick) {
+    wrap.classList.add("pick-hidden");
+    return;
+  }
+  wrap.classList.remove("pick-hidden");
+
+  const p = pick.pick;
+  document.getElementById("pickName").textContent = p.name || "—";
+  document.getElementById("pickCode").textContent = p.code || "—";
+  document.getElementById("pickSummary").textContent = pick.summary || "";
+  document.getElementById("pickEntry").textContent = p.entry_zone || "—";
+  document.getElementById("pickStop").textContent = p.stop_loss || "—";
+  document.getElementById("pickTarget").textContent = p.target || "—";
+
+  const vEl = document.getElementById("pickVerdict");
+  const v = pick.verdict || "";
+  if(v === "空手觀望") {
+    vEl.textContent = "空手觀望"; vEl.className = "pick-verdict pv-hold";
+    document.getElementById("pickName").textContent = "今日不建議出手";
+    document.getElementById("pickCode").textContent = "";
+  } else if(v === "謹慎試單") {
+    vEl.textContent = "謹慎試單"; vEl.className = "pick-verdict pv-watch";
+  } else {
+    vEl.textContent = "推薦出手"; vEl.className = "pick-verdict pv-buy";
+  }
+
+  const counter = pick.counter_argument || "";
+  if(counter && counter !== "—") {
+    document.getElementById("pickCounterText").textContent = counter;
+    document.getElementById("pickCounter").style.display = "block";
+  } else {
+    document.getElementById("pickCounter").style.display = "none";
+  }
+}
+
 function renderAgents(agents) {
   const grid = document.getElementById("agentsGrid");
   const daOutput = agents.devils_advocate;
@@ -570,6 +653,7 @@ async function loadData() {
     }
 
     renderMaster(d.agents?.master || {});
+    renderDailyPick(d.agents?.tw_daily_pick || null);
     renderAgents(d.agents || {});
 
   } catch(err) {
