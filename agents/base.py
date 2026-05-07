@@ -6,7 +6,7 @@ import os
 import time
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.0-flash-001"
 
 RESPONSE_SCHEMA = """
 Your response MUST be valid JSON only. No markdown, no explanation outside JSON.
