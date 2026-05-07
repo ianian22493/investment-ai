@@ -2,10 +2,9 @@ name: 每日投資 AI 分析
 
 on:
   schedule:
-    # 台灣時間：09:10 (01:10 UTC)、13:00 (05:00 UTC)、16:30 (08:30 UTC)
+    # 台灣時間：09:10 開盤 (01:10 UTC)、13:35 收盤後 (05:35 UTC)，週一至週五
     - cron: "10 1 * * 1-5"
-    - cron: "0 5 * * 1-5"
-    - cron: "30 8 * * 1-5"
+    - cron: "35 5 * * 1-5"
   workflow_dispatch:   # 允許手動觸發
 
 permissions:

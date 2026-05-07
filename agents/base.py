@@ -1,12 +1,15 @@
 """Base class for all investment agents."""
 
-import google.generativeai as genai
 import json
 import os
+import re
 import time
 
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-MODEL = "gemini-2.0-flash-001"
+from google import genai
+from google.genai import types
+
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+MODEL = "gemini-2.0-flash"
 
 RESPONSE_SCHEMA = """
 Your response MUST be valid JSON only. No markdown, no explanation outside JSON.
@@ -32,21 +35,20 @@ Structure:
 
 def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
     """Call Gemini API and parse JSON response. Retries on 429 quota errors."""
-    model = genai.GenerativeModel(
-        model_name=MODEL,
-        system_instruction=system_prompt + "\n\n" + RESPONSE_SCHEMA,
-    )
     for attempt in range(4):
         try:
-            resp = model.generate_content(user_content)
+            resp = client.models.generate_content(
+                model=MODEL,
+                contents=user_content,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_prompt + "\n\n" + RESPONSE_SCHEMA,
+                ),
+            )
             raw = resp.text.strip()
-            # strip markdown code fences if present
             if raw.startswith("```"):
                 raw = raw.split("```")[1]
                 if raw.startswith("json"):
                     raw = raw[4:]
-            # strip [1][2] citation markers that Gemini sometimes adds
-            import re
             raw = re.sub(r'\[\d+\]', '', raw)
             return json.loads(raw)
         except json.JSONDecodeError as e:
