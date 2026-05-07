@@ -39,7 +39,7 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
     for attempt in range(4):
         try:
             resp = model.generate_content(user_content)
-                raw = resp.text.strip()
+            raw = resp.text.strip()
             # strip markdown code fences if present
             if raw.startswith("```"):
                 raw = raw.split("```")[1]
