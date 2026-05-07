@@ -400,6 +400,16 @@ function renderPortfolio(pv, twSummary) {
 }
 
 function renderMaster(master) {
+  if(master.verdict === "ERROR" || !master.verdict) {
+    document.getElementById("masterVerdict").className = "master-verdict v-neutral";
+    document.getElementById("masterVerdict").textContent = "分析暫無法取得";
+    document.getElementById("masterConfFill").style.width = "0%";
+    document.getElementById("masterConfLabel").textContent = "";
+    document.getElementById("masterSummary").textContent = "等待下次更新自動重試";
+    document.getElementById("masterActions").innerHTML = "";
+    return;
+  }
+
   const vc = verdictClass(master.verdict || "");
   const verdictEl = document.getElementById("masterVerdict");
   verdictEl.className = "master-verdict v-" + vc;
@@ -532,8 +542,15 @@ async function loadData() {
     const ts = new Date(d.generated_at);
     document.getElementById("updateTime").textContent =
       "最後更新：" + ts.toLocaleString("zh-TW", {timeZone:"Asia/Taipei",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
-    document.getElementById("statusText").textContent = "資料已更新";
-    document.querySelector(".dot").style.background = "var(--green)";
+    const agents = d.agents || {};
+    const allError = Object.values(agents).every(a => !a || a.verdict === "ERROR");
+    if(allError) {
+      document.getElementById("statusText").textContent = "分析待更新";
+      document.querySelector(".dot").style.background = "var(--yellow, #f59e0b)";
+    } else {
+      document.getElementById("statusText").textContent = "資料已更新";
+      document.querySelector(".dot").style.background = "var(--green)";
+    }
 
     renderMarket(d.market_snapshot || {});
 
