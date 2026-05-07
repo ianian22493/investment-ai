@@ -15,7 +15,7 @@ PORTFOLIO_FILE = os.path.join(DATA_DIR, "portfolio.json")
 MARKET_FILE = os.path.join(DATA_DIR, "market_data.json")
 
 TW_CODES = ["00692", "00915", "1104", "2211", "2330", "2536", "2834", "3293", "3703", "4588", "4707"]
-US_TICKERS = ["AMZN", "CELH", "GOOGL", "MELI", "MSFT", "NVDA", "ONDS", "RBRK", "S", "SMR", "SOUN", "TSLA", "TTD", "ZS"]
+US_TICKERS = ["AMZN", "CELH", "GOOGL", "MELI", "MSFT", "NVDA", "ONDS", "RBRK", "S", "SOUN", "TSLA", "ZS"]
 INDEX_TICKERS = {"taiex": "^TWII", "sp500": "^GSPC", "nasdaq": "^IXIC", "vix": "^VIX"}
 
 
