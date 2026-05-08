@@ -43,31 +43,39 @@ def compute(
     portfolio_pct = 0.50
     cash_pct      = 0.20
 
-    # ── Step 2: Wealth Desk risk_level 決定安全上限 ───────────────────────────
-    wealth_risk    = wealth_desk.get("risk_level", "moderate")
+    # ── Step 2: Wealth Desk 流動性風險（liquidity_risk）決定安全上限 ──────────
+    # 重要：只用 liquidity_risk（現金流），不用 structural_risk（房產占比）
+    # structural_risk 高是長期結構性事實，不能阻止短線交易
+    liquidity_risk = wealth_desk.get("liquidity_risk", wealth_desk.get("risk_level", "moderate"))
+    cashflow_stability = wealth_desk.get("cashflow_stability", "adequate")
     wealth_verdict = wealth_desk.get("verdict", "")
 
-    if wealth_risk == "extreme" or "危險" in wealth_verdict:
-        # 系統性財務危機：大幅降低可動用資金
+    # 結構性風險：只記錄，不調整預算
+    structural_risk = wealth_desk.get("structural_risk", "")
+    if structural_risk == "high":
+        override_flags.append("STRUCTURAL_NOTE: 房產占比高（長期結構，不影響短線預算）")
+
+    if liquidity_risk == "extreme" or cashflow_stability == "critical":
+        # 真實現金流危機：薪資+存款完全無法覆蓋近期義務
         trading_pct   = 0.00
         portfolio_pct = 0.20
         cash_pct      = 0.80
-        override_flags.append("WEALTH_EXTREME: 財務危機 → 全面轉現金")
+        override_flags.append("LIQUIDITY_EXTREME: 現金流危機 → 全面轉現金")
 
-    elif wealth_risk == "high" or "警戒" in wealth_verdict:
+    elif liquidity_risk == "high":
         trading_pct   = 0.05
         portfolio_pct = 0.35
         cash_pct      = 0.60
-        override_flags.append("WEALTH_HIGH: 高財務風險 → 大幅增持現金")
+        override_flags.append("LIQUIDITY_HIGH: 流動性偏緊 → 大幅增持現金")
 
-    elif wealth_risk == "elevated" or "留意" in wealth_verdict:
+    elif liquidity_risk == "elevated" or cashflow_stability == "tight":
         trading_pct   = 0.15
         portfolio_pct = 0.45
         cash_pct      = 0.40
-        override_flags.append("WEALTH_ELEVATED: 財務偏緊 → 適度增持現金")
+        override_flags.append("LIQUIDITY_ELEVATED: 流動性稍緊 → 適度增持現金")
 
-    elif wealth_risk == "low" or "穩健" in wealth_verdict:
-        # 財務健康，可以積極一些
+    elif liquidity_risk == "low" or "穩健" in wealth_verdict:
+        # 現金流健康，可以積極一些
         trading_pct   = 0.35
         portfolio_pct = 0.55
         cash_pct      = 0.10
@@ -158,7 +166,7 @@ def compute(
         "flow_direction":        flow_direction,
         "override_flags":        override_flags,
         "override_count":        len(override_flags),
-        "wealth_risk_triggered": wealth_risk in ("high", "extreme") or "危險" in wealth_verdict,
+        "wealth_risk_triggered": liquidity_risk in ("high", "extreme") or cashflow_stability == "critical",
         "regime_risk_triggered": regime_risk in ("high", "extreme"),
         "cash_crunch_active":    wealth_desk.get("cash_crunch_risk", False),
         "summary":               summary,

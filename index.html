@@ -3,668 +3,714 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>又瑄投資 AI 系統</title>
+<title>又瑄投資AI — Decision OS</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
-:root{
-  --bg:#070C18;
-  --bg2:#0D1528;
-  --bg3:#141D35;
-  --border:#1E2D50;
-  --border2:#2A3F6A;
-  --text:#E8EDF8;
-  --text2:#8A9BC0;
-  --text3:#4A5A80;
-  --green:#00C896;
-  --green-dim:#0D2E22;
-  --red:#FF4560;
-  --red-dim:#2E0D14;
-  --yellow:#FFB800;
-  --yellow-dim:#2E2200;
-  --blue:#3D8EFF;
-  --blue-dim:#0D1E3A;
-  --orange:#FF7A00;
-  --orange-dim:#2E1A00;
-  --purple:#A259FF;
-  --purple-dim:#1A0D2E;
+:root {
+  --bg:#060B17; --bg2:#0C1526; --bg3:#121D33; --bg4:#18263E;
+  --border:#1A2B48; --border2:#243D68;
+  --text:#DDE5F5; --text2:#7A8EBD; --text3:#3A4D7A;
+  --green:#00C896; --green-dim:#091F18;
+  --red:#FF4560; --red-dim:#200B11;
+  --yellow:#FFB800; --yellow-dim:#201800;
+  --blue:#3D8EFF; --blue-dim:#0A1930;
+  --orange:#FF7A00; --purple:#A259FF;
   --accent:#3D8EFF;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:"Inter","SF Pro Display","Noto Sans TC",sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
-a{color:var(--blue);text-decoration:none}
+body{background:var(--bg);color:var(--text);font-family:"SF Mono","JetBrains Mono","Fira Code","Consolas","Noto Sans TC",monospace;font-size:13px;line-height:1.6;min-height:100vh;overflow-x:hidden}
 
-/* ── Layout ── */
-.wrap{max-width:1400px;margin:0 auto;padding:24px 20px 80px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-@media(max-width:900px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
-@media(max-width:1100px){.grid3{grid-template-columns:1fr 1fr}.grid4{grid-template-columns:1fr 1fr}}
-
-/* ── Header ── */
-.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
-.header-left{display:flex;align-items:center;gap:14px}
-.logo{width:38px;height:38px}
-.header h1{font-size:20px;font-weight:700;letter-spacing:.5px}
-.header h1 span{color:var(--blue)}
-.header-meta{font-size:12px;color:var(--text3);margin-top:2px}
-.loading-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);padding:6px 14px;border-radius:20px;font-size:12px;color:var(--text2)}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* ── Master Banner ── */
-.master-banner{
-  background:linear-gradient(135deg,#0D1A35 0%,#0D2238 50%,#0A1A2E 100%);
-  border:1px solid var(--border2);
-  border-radius:12px;
-  padding:28px 32px;
-  margin-bottom:20px;
-  position:relative;
-  overflow:hidden;
+/* ═══ COMMAND BAR (sticky) ═══════════════════════════════════════════ */
+.cmd-bar {
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,11,23,.95);
+  border-bottom:1px solid var(--border2);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;height:56px;gap:12px;
 }
-.master-banner::before{
-  content:"";position:absolute;top:-60px;right:-60px;
-  width:220px;height:220px;border-radius:50%;
-  background:radial-gradient(circle,rgba(61,142,255,.12) 0%,transparent 70%);
-  pointer-events:none;
+.cmd-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.cmd-logo{width:28px;height:28px}
+.cmd-title{font-size:13px;font-weight:700;color:var(--text2);letter-spacing:.5px}
+
+.cmd-verdict-wrap{display:flex;flex-direction:column;align-items:center;gap:1px}
+.cmd-verdict{font-size:18px;font-weight:800;letter-spacing:.5px;line-height:1}
+.cmd-verdict-label{font-size:10px;color:var(--text3);letter-spacing:1px}
+
+.cmd-right{display:flex;align-items:center;gap:16px;flex-shrink:0}
+.cmd-budget{display:flex;gap:6px;align-items:center}
+.budget-pill{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px}
+.budget-dot{width:6px;height:6px;border-radius:50%}
+.cmd-regime{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--text2)}
+.cmd-time{font-size:11px;color:var(--text3);white-space:nowrap}
+
+/* ═══ TAB NAV ════════════════════════════════════════════════════════ */
+.tab-nav{
+  display:flex;gap:0;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;
+  position:sticky;top:56px;z-index:99;
 }
-.master-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.master-verdict-wrap{display:flex;align-items:center;gap:16px}
-.master-label{font-size:11px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:6px}
-.master-verdict{font-size:32px;font-weight:800;letter-spacing:1px}
-.master-confidence{display:flex;align-items:center;gap:8px;margin-top:8px}
-.conf-bar{height:4px;width:120px;background:var(--border);border-radius:2px;overflow:hidden}
-.conf-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--green))}
-.conf-label{font-size:11px;color:var(--text2)}
-.master-summary{font-size:14px;color:var(--text2);max-width:600px;line-height:1.7}
+.tab-btn{
+  background:none;border:none;color:var(--text3);
+  font-family:inherit;font-size:11px;font-weight:700;
+  letter-spacing:1px;padding:12px 18px;cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:color .15s,border-color .15s;
+}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
 
-.master-actions{margin-top:22px}
-.master-actions-title{font-size:11px;letter-spacing:2px;color:var(--text3);margin-bottom:10px}
-.action-list{display:flex;flex-direction:column;gap:8px}
-.action-item{display:flex;align-items:center;gap:10px;background:rgba(61,142,255,.05);border:1px solid rgba(61,142,255,.15);border-radius:8px;padding:10px 14px}
-.action-num{font-size:12px;font-weight:700;color:var(--blue);min-width:20px}
-.action-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;letter-spacing:.5px}
-.badge-HIGH{background:rgba(255,69,96,.15);color:var(--red);border:1px solid rgba(255,69,96,.3)}
-.badge-MED{background:rgba(255,184,0,.1);color:var(--yellow);border:1px solid rgba(255,184,0,.25)}
-.badge-LOW{background:rgba(0,200,150,.08);color:var(--green);border:1px solid rgba(0,200,150,.2)}
-.action-text{font-size:13px;color:var(--text);flex:1}
-.action-text strong{color:var(--blue)}
+/* ═══ PANELS ════════════════════════════════════════════════════════ */
+.panel{display:none;padding:20px;max-width:1400px;margin:0 auto}
+.panel.active{display:block}
 
-.risk-banner{margin-top:16px;display:flex;align-items:flex-start;gap:10px;background:rgba(255,69,96,.06);border:1px solid rgba(255,69,96,.2);border-radius:8px;padding:12px 16px}
-.risk-icon{font-size:16px;flex-shrink:0;margin-top:1px}
-.risk-text{font-size:13px;color:#FF8096}
+/* ═══ SIGNAL PANEL ══════════════════════════════════════════════════ */
+.signal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.signal-title{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--text3)}
+.data-gap-badge{font-size:10px;color:var(--orange);border:1px solid var(--orange);border-radius:3px;padding:2px 7px;letter-spacing:.5px}
 
-/* ── Daily Pick Card ── */
-.pick-card{background:linear-gradient(135deg,#0D1F10 0%,#0A1A10 100%);border:1px solid rgba(0,200,100,.25);border-radius:12px;padding:24px 28px;margin-bottom:20px;position:relative;overflow:hidden}
-.pick-card::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(0,200,100,.1) 0%,transparent 70%);pointer-events:none}
-.pick-label{font-size:11px;letter-spacing:3px;color:rgba(0,200,100,.7);text-transform:uppercase;margin-bottom:14px}
-.pick-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
-.pick-stock{display:flex;align-items:center;gap:14px}
-.pick-name{font-size:26px;font-weight:800;color:var(--text)}
-.pick-code{font-size:14px;color:var(--text3);background:rgba(255,255,255,.07);padding:3px 10px;border-radius:20px;font-family:monospace}
-.pick-verdict{font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;white-space:nowrap}
-.pv-buy{background:rgba(0,200,100,.15);color:#00C864;border:1px solid rgba(0,200,100,.3)}
-.pv-watch{background:rgba(255,184,0,.1);color:var(--yellow);border:1px solid rgba(255,184,0,.25)}
-.pv-hold{background:rgba(100,120,140,.15);color:var(--text3);border:1px solid var(--border)}
-.pick-summary{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px;max-width:700px}
-.pick-strategy{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-@media(max-width:700px){.pick-strategy{grid-template-columns:1fr 1fr}}
-.ps-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
-.ps-label{font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px}
-.ps-val{font-size:13px;color:var(--text);font-weight:600}
-.pick-counter{margin-top:12px;background:rgba(255,69,96,.05);border:1px solid rgba(255,69,96,.15);border-radius:8px;padding:10px 14px;font-size:12px;color:#FF8096}
-.pick-counter-label{font-size:10px;letter-spacing:1px;color:rgba(255,100,100,.6);margin-bottom:4px}
-.pick-hidden{display:none}
+.gauge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.gauge-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.gauge-grid{grid-template-columns:1fr}}
 
-/* ── Section header ── */
-.section-head{display:flex;align-items:center;gap:10px;margin:28px 0 14px}
-.section-head h2{font-size:13px;font-weight:600;letter-spacing:3px;color:var(--text2);text-transform:uppercase}
-.section-divider{flex:1;height:1px;background:var(--border)}
+.gauge-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:8px;
+  padding:14px 14px 10px;
+}
+.gauge-card.na{opacity:.45}
+.gauge-card-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);margin-bottom:6px}
 
-/* ── Market cards ── */
-.market-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
-.market-card .mc-label{font-size:11px;color:var(--text3);letter-spacing:2px;margin-bottom:4px}
-.market-card .mc-val{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
-.market-card .mc-change{font-size:13px;margin-top:4px;font-weight:500}
-.up{color:var(--green)}.down{color:var(--red)}.neutral{color:var(--text2)}
+/* Arc gauge (for -1 to 1) */
+.arc-gauge{width:100%;max-height:80px;display:block}
 
-/* ── Portfolio value bar ── */
-.portfolio-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 24px}
-.pf-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:18px}
-.pf-title{font-size:11px;letter-spacing:2px;color:var(--text3)}
-.pf-val{font-size:28px;font-weight:700;color:var(--text)}
-.pf-note{font-size:12px;color:var(--text3);margin-top:3px}
-.alloc-bar{height:10px;border-radius:5px;overflow:hidden;display:flex;gap:2px;margin-bottom:10px}
-.alloc-seg{height:100%;border-radius:3px;transition:width .8s ease}
-.alloc-legend{display:flex;flex-wrap:wrap;gap:12px}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
-.legend-dot{width:9px;height:9px;border-radius:50%}
+/* Bar gauge (for 0 to 1) */
+.bar-track{background:var(--bg4);border-radius:3px;height:8px;margin:10px 0 6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.bar-value{font-size:18px;font-weight:800;font-family:inherit;line-height:1}
+.gauge-source{font-size:9px;color:var(--text3);margin-top:4px;line-height:1.4;word-break:break-word}
+.na-label{font-size:14px;font-weight:700;color:var(--text3);padding:12px 0 6px}
+.na-sub{font-size:9px;color:var(--text3)}
 
-/* ── Agent cards ── */
-.agents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-@media(max-width:1200px){.agents-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:700px){.agents-grid{grid-template-columns:1fr}}
+/* ═══ TODAY PANEL ════════════════════════════════════════════════════ */
+.today-grid{display:grid;grid-template-columns:300px 1fr;gap:16px}
+@media(max-width:800px){.today-grid{grid-template-columns:1fr}}
 
-.agent-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s}
-.agent-card:hover{border-color:var(--border2)}
-.agent-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-.agent-name{font-size:12px;font-weight:600;letter-spacing:1px;color:var(--text2)}
-.agent-bias{font-size:10px;color:var(--text3);margin-top:1px}
-.verdict-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;white-space:nowrap}
+.pick-card{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:10px;
+  padding:20px;display:flex;flex-direction:column;gap:10px;
+}
+.pick-none{background:var(--bg2);border:1px dashed var(--border);border-radius:10px;padding:24px;color:var(--text3);font-size:12px;text-align:center}
+.pick-header{display:flex;align-items:center;justify-content:space-between}
+.pick-badge{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--yellow);background:var(--yellow-dim);border:1px solid var(--yellow);border-radius:3px;padding:2px 7px}
+.pick-code{font-size:28px;font-weight:900;color:var(--text);line-height:1}
+.pick-name{font-size:13px;color:var(--text2);margin-top:2px}
+.pick-verdict{font-size:12px;color:var(--text2);padding:8px;background:var(--bg3);border-radius:6px;border-left:3px solid var(--accent)}
+.pick-signals{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.sig-pill{font-size:9px;font-weight:700;background:var(--green-dim);color:var(--green);border-radius:3px;padding:2px 6px}
 
-.agent-body{padding:14px 16px}
-.agent-summary{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:12px}
-.agent-insights{margin-bottom:12px}
-.insight-item{font-size:12px;color:var(--text3);padding:3px 0;border-bottom:1px solid var(--border);display:flex;gap:6px}
-.insight-item:last-child{border-bottom:none}
-.insight-item::before{content:"▸";color:var(--text3);flex-shrink:0}
-.agent-recs{display:flex;flex-direction:column;gap:6px}
-.rec-item{font-size:12px;border:1px solid var(--border);border-radius:6px;padding:7px 10px}
-.rec-action{font-weight:700;margin-right:6px}
-.rec-target{color:var(--blue);font-weight:600;margin-right:4px}
-.rec-detail{color:var(--text2)}
-.conf-mini{display:flex;align-items:center;gap:6px;margin-top:10px}
-.conf-bar-mini{height:3px;width:100%;background:var(--border);border-radius:2px;overflow:hidden}
-.conf-fill-mini{height:100%;border-radius:2px}
+.actions-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px}
+.actions-title{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);margin-bottom:12px}
+.action-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.action-row:last-child{border-bottom:none}
+.action-urgency{font-size:9px;font-weight:700;border-radius:3px;padding:2px 7px;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.u-high{background:var(--red-dim);color:var(--red);border:1px solid var(--red)}
+.u-med{background:var(--yellow-dim);color:var(--yellow);border:1px solid var(--yellow)}
+.u-low{background:var(--bg4);color:var(--text2);border:1px solid var(--border2)}
+.action-target{font-size:12px;font-weight:700;color:var(--text);min-width:60px;flex-shrink:0}
+.action-detail{font-size:11px;color:var(--text2);line-height:1.5}
 
-/* ── Devil's Advocate ── */
-.da-card{background:linear-gradient(135deg,var(--orange-dim),var(--bg2));border:1px solid rgba(255,122,0,.3);border-radius:10px;padding:20px 22px;grid-column:1/-1}
-.da-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.da-title{font-size:13px;font-weight:700;color:var(--orange)}
-.da-badge{font-size:10px;background:rgba(255,122,0,.15);color:var(--orange);border:1px solid rgba(255,122,0,.3);padding:2px 8px;border-radius:10px;letter-spacing:1px}
-.da-summary{font-size:13px;color:#FFB878;line-height:1.65;margin-bottom:12px}
-.da-risks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-@media(max-width:700px){.da-risks{grid-template-columns:1fr}}
-.da-risk-item{background:rgba(255,122,0,.06);border:1px solid rgba(255,122,0,.15);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--text2)}
-.da-risk-item::before{content:"⚠ ";color:var(--orange)}
+.flow-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:12px}
+.flow-dir{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.flag-list{display:flex;flex-direction:column;gap:4px}
+.flag-item{font-size:10px;color:var(--yellow);padding:3px 8px;background:var(--yellow-dim);border-radius:3px}
 
-/* ── TW Holdings table ── */
-.holdings-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.holdings-table{width:100%;border-collapse:collapse;font-size:13px}
-.holdings-table th{padding:10px 14px;text-align:left;font-size:11px;letter-spacing:2px;color:var(--text3);background:var(--bg3);border-bottom:1px solid var(--border);white-space:nowrap}
-.holdings-table td{padding:10px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
-.holdings-table tr:last-child td{border-bottom:none}
-.holdings-table tr:hover td{background:rgba(255,255,255,.02)}
-.pnl-pos{color:var(--green);font-weight:600}
-.pnl-neg{color:var(--red);font-weight:600}
-.watch-dot{display:inline-block;width:7px;height:7px;background:var(--red);border-radius:50%;margin-left:4px;animation:pulse 1.5s infinite}
+.master-summary{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:14px;margin-top:12px;font-size:12px;color:var(--text2);line-height:1.7;border-left:3px solid var(--accent)}
 
-/* ── Footer ── */
-.footer{text-align:center;padding:40px 0 20px;color:var(--text3);font-size:12px}
+/* ═══ DESKS PANEL ════════════════════════════════════════════════════ */
+.desk-section{background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.desk-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;cursor:pointer;user-select:none;
+  transition:background .15s;
+}
+.desk-header:hover{background:var(--bg3)}
+.desk-header-left{display:flex;align-items:center;gap:10px}
+.desk-icon{font-size:14px}
+.desk-name{font-size:12px;font-weight:700;color:var(--text)}
+.desk-verdict-badge{font-size:10px;font-weight:700;border-radius:3px;padding:2px 8px}
+.desk-conf-wrap{display:flex;align-items:center;gap:6px}
+.desk-conf-bar{width:60px;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.desk-conf-fill{height:100%;border-radius:2px;background:var(--blue)}
+.desk-conf-val{font-size:10px;color:var(--text3)}
+.desk-chevron{color:var(--text3);font-size:10px;transition:transform .2s}
+.desk-chevron.open{transform:rotate(90deg)}
 
-/* ── Verdict color themes ── */
-.v-attack{color:var(--green)} .v-attack-bg{background:rgba(0,200,150,.1);color:var(--green);border:1px solid rgba(0,200,150,.2)}
-.v-watch{color:var(--yellow)} .v-watch-bg{background:rgba(255,184,0,.08);color:var(--yellow);border:1px solid rgba(255,184,0,.2)}
-.v-defend{color:var(--red)} .v-defend-bg{background:rgba(255,69,96,.08);color:var(--red);border:1px solid rgba(255,69,96,.2)}
-.v-neutral{color:var(--blue)} .v-neutral-bg{background:rgba(61,142,255,.08);color:var(--blue);border:1px solid rgba(61,142,255,.2)}
-.v-da{color:var(--orange)} .v-da-bg{background:rgba(255,122,0,.08);color:var(--orange);border:1px solid rgba(255,122,0,.2)}
+.desk-body{display:none;padding:0 16px 16px;border-top:1px solid var(--border)}
+.desk-body.open{display:block}
+.desk-summary{font-size:12px;color:var(--text2);padding:10px 0;line-height:1.7}
+.desk-recs{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.desk-rec{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--bg3);border-radius:5px;border-left:2px solid var(--border2)}
+.desk-rec-action{font-size:10px;font-weight:700;color:var(--blue);min-width:36px}
+.desk-rec-target{font-size:11px;font-weight:700;color:var(--text);min-width:50px}
+.desk-rec-detail{font-size:11px;color:var(--text2)}
+.desk-insights{margin-top:10px}
+.desk-insight-item{font-size:11px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border)}
+.desk-insight-item:last-child{border-bottom:none}
+.desk-insight-item::before{content:"→ ";color:var(--accent)}
 
-/* ── Loading skeleton ── */
-.skeleton{background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.skel-line{height:14px;margin-bottom:8px}
-.skel-h1{height:32px;width:40%;margin-bottom:12px}
+/* Wealth special fields */
+.wealth-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+@media(max-width:600px){.wealth-metrics{grid-template-columns:1fr}}
+.wealth-metric{background:var(--bg3);border-radius:5px;padding:8px 10px;border:1px solid var(--border)}
+.wealth-metric-label{font-size:9px;color:var(--text3);letter-spacing:.8px;margin-bottom:3px}
+.wealth-metric-val{font-size:12px;font-weight:700}
 
-/* ── Error state ── */
-.error-card{background:var(--red-dim);border:1px solid rgba(255,69,96,.3);border-radius:10px;padding:24px;text-align:center;color:var(--red)}
+/* ═══ RESEARCH PANEL ═════════════════════════════════════════════════ */
+.perf-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:800px){.perf-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.perf-row{grid-template-columns:1fr 1fr}}
 
-/* ── Rec action badges (C) ── */
-.rec-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.5px;white-space:nowrap}
-.rb-buy{background:rgba(0,200,150,.15);color:var(--green);border:1px solid rgba(0,200,150,.3)}
-.rb-sell{background:rgba(255,69,96,.15);color:var(--red);border:1px solid rgba(255,69,96,.3)}
-.rb-hold{background:rgba(61,142,255,.08);color:var(--blue);border:1px solid rgba(61,142,255,.2)}
-.rb-watch{background:rgba(255,184,0,.08);color:var(--yellow);border:1px solid rgba(255,184,0,.2)}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.stat-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);margin-bottom:6px}
+.stat-value{font-size:26px;font-weight:900;line-height:1}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:4px}
 
-/* ── Agent error state ── */
-.agent-error{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:6px}
-.agent-error-icon{font-size:22px;opacity:.5}
-.agent-error-msg{font-size:12px;color:var(--text3)}
-.agent-error-hint{font-size:11px;color:var(--text3);opacity:.6}
+.signal-leaderboard{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px}
+.lb-title{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);margin-bottom:12px}
+.lb-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{font-size:10px;color:var(--text3);width:16px;text-align:right;flex-shrink:0}
+.lb-sig{font-size:11px;font-weight:700;color:var(--text);flex:1}
+.lb-bar-wrap{width:100px;flex-shrink:0}
+.lb-bar-bg{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.lb-bar-fill{height:100%;background:var(--green);border-radius:3px}
+.lb-pct{font-size:11px;font-weight:700;color:var(--green);width:36px;text-align:right;flex-shrink:0}
+.lb-n{font-size:10px;color:var(--text3);width:28px;text-align:right;flex-shrink:0}
+
+.research-note{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;color:var(--text3);font-size:12px;line-height:1.7}
+.research-note strong{color:var(--yellow)}
+
+/* ═══ SHARED ═════════════════════════════════════════════════════════ */
+.section-label{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--text3);margin-bottom:12px}
+.mkt-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.mkt-chip{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:6px 12px;font-size:11px}
+.mkt-chip-name{color:var(--text3);font-size:9px;letter-spacing:.5px;margin-bottom:1px}
+.mkt-chip-val{font-weight:700;font-size:13px}
+
+.err-msg{background:var(--red-dim);border:1px solid var(--red);border-radius:6px;padding:12px 16px;color:var(--red);font-size:12px;margin:20px}
+
+/* Loading skeleton */
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:10px;color:var(--text3)}
+.spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.6s infinite;display:inline-block;margin-right:5px}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="header-left">
-      <img src="favicon.svg" class="logo" alt="Yuzu">
-      <div>
-        <h1>又瑄 <span>投資 AI</span> 系統</h1>
-        <div class="header-meta" id="updateTime">載入中…</div>
-      </div>
-    </div>
-    <div class="loading-badge" id="statusBadge">
-      <span class="dot"></span>
-      <span id="statusText">連線中</span>
-    </div>
+<!-- ═══ COMMAND BAR ═══════════════════════════════════════════════════ -->
+<div class="cmd-bar">
+  <div class="cmd-left">
+    <img src="favicon.svg" class="cmd-logo" alt="">
+    <span class="cmd-title">又瑄投資AI</span>
   </div>
-
-  <!-- Master Banner -->
-  <div class="master-banner" id="masterBanner">
-    <div class="master-top">
-      <div>
-        <div class="master-label">Master Agent — 今日策略</div>
-        <div class="master-verdict" id="masterVerdict"><div class="skeleton skel-h1"></div></div>
-        <div class="master-confidence">
-          <div class="conf-bar"><div class="conf-fill" id="masterConfFill" style="width:0%"></div></div>
-          <span class="conf-label" id="masterConfLabel"></span>
-        </div>
-      </div>
-      <div class="master-summary" id="masterSummary"><div class="skeleton skel-line"></div><div class="skeleton skel-line" style="width:80%"></div></div>
-    </div>
-    <div class="master-actions">
-      <div class="master-actions-title">今日操作優先序</div>
-      <div class="action-list" id="masterActions"></div>
-    </div>
-    <div class="risk-banner" id="masterRisk" style="display:none">
-      <span class="risk-icon">⚠</span>
-      <span class="risk-text" id="masterRiskText"></span>
-    </div>
+  <div class="cmd-verdict-wrap">
+    <div class="cmd-verdict" id="cmd-verdict">—</div>
+    <div class="cmd-verdict-label">TODAY'S VERDICT</div>
   </div>
-
-  <!-- Daily Pick -->
-  <div id="dailyPickWrap" class="pick-hidden">
-    <div class="pick-card" id="dailyPickCard">
-      <div class="pick-label">⚡ 今日盤後精選 — 隔日短線候選</div>
-      <div class="pick-header">
-        <div class="pick-stock">
-          <span class="pick-name" id="pickName">—</span>
-          <span class="pick-code" id="pickCode">—</span>
-        </div>
-        <span class="pick-verdict" id="pickVerdict"></span>
-      </div>
-      <div class="pick-summary" id="pickSummary"></div>
-      <div class="pick-strategy">
-        <div class="ps-item"><div class="ps-label">進場觀察區</div><div class="ps-val" id="pickEntry">—</div></div>
-        <div class="ps-item"><div class="ps-label">停損條件</div><div class="ps-val" id="pickStop">—</div></div>
-        <div class="ps-item"><div class="ps-label">目標報酬</div><div class="ps-val" id="pickTarget">—</div></div>
-      </div>
-      <div class="pick-counter" id="pickCounter">
-        <div class="pick-counter-label">⚠ 反方觀點</div>
-        <div id="pickCounterText"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Market Snapshot -->
-  <div class="section-head"><h2>市場快照</h2><div class="section-divider"></div></div>
-  <div class="grid4" id="marketGrid">
-    <div class="market-card"><div class="mc-label">加權指數</div><div class="skeleton skel-h1"></div></div>
-    <div class="market-card"><div class="mc-label">S&amp;P 500</div><div class="skeleton skel-h1"></div></div>
-    <div class="market-card"><div class="mc-label">VIX 恐慌</div><div class="skeleton skel-h1"></div></div>
-    <div class="market-card"><div class="mc-label">USD/TWD</div><div class="skeleton skel-h1"></div></div>
-  </div>
-
-  <!-- Portfolio Value -->
-  <div class="section-head"><h2>資產概覽</h2><div class="section-divider"></div></div>
-  <div class="portfolio-card" id="portfolioCard">
-    <div class="pf-top">
-      <div>
-        <div class="pf-title">總資產（毛額）</div>
-        <div class="pf-val" id="totalAssets">—</div>
-        <div class="pf-note" id="netAssets"></div>
-      </div>
-      <div style="text-align:right;display:flex;gap:24px;flex-wrap:wrap;justify-content:flex-end">
-        <div>
-          <div class="pf-title">台股損益</div>
-          <div class="pf-val pnl-pos" id="twPnl">—</div>
-        </div>
-        <div id="usPnlWrap" style="display:none">
-          <div class="pf-title">美股損益</div>
-          <div class="pf-val pnl-pos" id="usPnl">—</div>
-        </div>
-      </div>
-    </div>
-    <div class="alloc-bar" id="allocBar"></div>
-    <div class="alloc-legend" id="allocLegend"></div>
-  </div>
-
-  <!-- Analysis Agents -->
-  <div class="section-head"><h2>分析 Agents</h2><div class="section-divider"></div></div>
-  <div class="agents-grid" id="agentsGrid">
-    <!-- filled by JS -->
-  </div>
-
-  <!-- TW Holdings -->
-  <div class="section-head"><h2>台股持倉明細</h2><div class="section-divider"></div></div>
-  <div class="holdings-card">
-    <table class="holdings-table" id="holdingsTable">
-      <thead><tr>
-        <th>代號</th><th>名稱</th><th>股數</th><th>現值</th><th>成本</th><th>損益</th><th>報酬率</th>
-      </tr></thead>
-      <tbody id="holdingsBody"></tbody>
-    </table>
-  </div>
-
-  <div class="footer">
-    <div>又瑄投資 AI 系統 · 每日自動更新 2 次</div>
-    <div style="margin-top:4px">資料僅供參考，不構成投資建議</div>
+  <div class="cmd-right">
+    <div class="cmd-budget" id="cmd-budget"></div>
+    <div class="cmd-regime" id="cmd-regime">—</div>
+    <div class="cmd-time" id="cmd-time">—</div>
   </div>
 </div>
 
+<!-- ═══ TAB NAV ═══════════════════════════════════════════════════════ -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('signal')">SIGNAL</button>
+  <button class="tab-btn" onclick="showTab('today')">TODAY</button>
+  <button class="tab-btn" onclick="showTab('desks')">DESKS</button>
+  <button class="tab-btn" onclick="showTab('research')">RESEARCH</button>
+</div>
+
+<!-- ═══ PANEL: SIGNAL ════════════════════════════════════════════════ -->
+<div class="panel active" id="panel-signal">
+  <div class="signal-header">
+    <div class="signal-title">SIGNAL VECTOR</div>
+    <div id="signal-meta" class="data-gap-badge"></div>
+  </div>
+  <!-- Market chips -->
+  <div class="mkt-bar" id="mkt-bar"></div>
+  <div class="gauge-grid" id="gauge-grid">
+    <div class="loading-wrap"><div class="spinner"></div><span>載入信號...</span></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: TODAY ════════════════════════════════════════════════ -->
+<div class="panel" id="panel-today">
+  <div class="today-grid">
+    <div id="pick-area"></div>
+    <div>
+      <div class="actions-card">
+        <div class="actions-title">TOP 3 ACTIONS</div>
+        <div id="actions-list"></div>
+      </div>
+      <div id="flow-area"></div>
+      <div id="master-summary-area"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: DESKS ════════════════════════════════════════════════ -->
+<div class="panel" id="panel-desks">
+  <div id="desks-area"></div>
+</div>
+
+<!-- ═══ PANEL: RESEARCH ════════════════════════════════════════════= -->
+<div class="panel" id="panel-research">
+  <div class="perf-row" id="perf-stats"></div>
+  <div id="signal-lb"></div>
+  <div id="research-note"></div>
+</div>
+
 <script>
-const AGENT_META = {
-  news_sentiment:   { name:"新聞情緒",   bias:"消息面分析",  icon:"📰" },
-  market_overview:  { name:"市場總覽",   bias:"中立謹慎",   icon:"🌐" },
-  tw_short_term:    { name:"台股短線",   bias:"激進偏見",   icon:"⚡" },
-  tw_long_term:     { name:"台股長線",   bias:"保守偏見",   icon:"🏛" },
-  us_portfolio:     { name:"美股配置",   bias:"長線樂觀",   icon:"🇺🇸" },
-  fx_fund:          { name:"匯率/基金",  bias:"保守謹慎",   icon:"💴" },
-  asset_allocation: { name:"資產配置",   bias:"超悲觀",     icon:"⚖" },
-};
+// ════════════════════════════════════════════════════════════════════
+// Utilities
+// ════════════════════════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
 
-const ALLOC_COLORS = {
-  tw_stocks:    "#3D8EFF",
-  us_stocks:    "#00C896",
-  funds:        "#A259FF",
-  real_estate:  "#FFB800",
-};
-const ALLOC_LABELS = {
-  tw_stocks:"台股", us_stocks:"美股", funds:"基金", real_estate:"房產"
-};
-
-function verdictClass(v="") {
-  const u = v.toLowerCase();
-  if(u.includes("攻") || u.includes("加碼") || u.includes("增加")) return "attack";
-  if(u.includes("防") || u.includes("停損") || u.includes("減碼")) return "defend";
-  if(u.includes("觀望") || u.includes("維持") || u.includes("暫停") || u.includes("續抱") || u.includes("持倉")) return "watch";
-  if(u.includes("反對") || u.includes("質疑")) return "da";
-  return "neutral";
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  $('panel-' + name).classList.add('active');
+  event.target.classList.add('active');
 }
 
-function fmt(n) {
-  if(!n && n!==0) return "—";
-  return "NT$" + Math.round(n).toLocaleString();
-}
-function fmtChg(n) {
-  if(!n && n!==0) return "—";
-  const arrow = n >= 0 ? "▲" : "▼";
-  return arrow + " " + Math.abs(n).toFixed(2) + "%";
-}
-function fmtUsd(n) {
-  if(!n && n!==0) return "—";
-  return (n >= 0 ? "+" : "") + "$" + Math.abs(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+function verdictColor(v) {
+  if (!v) return 'var(--text2)';
+  if (/進攻|買進|加碼/.test(v)) return 'var(--green)';
+  if (/防守|賣出|減碼/.test(v)) return 'var(--red)';
+  if (/警戒|危險/.test(v)) return 'var(--red)';
+  if (/留意/.test(v)) return 'var(--yellow)';
+  return 'var(--text2)';
 }
 
-function renderMarket(snap) {
-  const items = [
-    { label:"加權指數", key:"taiex", prefix:"", decimals:0 },
-    { label:"S&P 500",  key:"sp500", prefix:"$", decimals:0 },
-    { label:"VIX 恐慌", key:"vix",   prefix:"", decimals:2 },
-    { label:"USD/TWD",  key:null, val: snap.usd_twd, prefix:"", decimals:3 },
+function riskColor(level) {
+  const map = { low:'var(--green)', moderate:'var(--text2)', elevated:'var(--yellow)', high:'var(--orange)', extreme:'var(--red)' };
+  return map[level] || 'var(--text2)';
+}
+
+function urgencyClass(u) {
+  if (!u) return 'u-low';
+  return u === 'HIGH' ? 'u-high' : u === 'MED' ? 'u-med' : 'u-low';
+}
+
+function fmtChg(v) {
+  if (v == null) return '—';
+  const sign = v > 0 ? '+' : '';
+  return `${sign}${parseFloat(v).toFixed(2)}%`;
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  const pad = n => String(n).padStart(2,'0');
+  return `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Command Bar
+// ════════════════════════════════════════════════════════════════════
+function renderCmdBar(master, cf, regime, generatedAt) {
+  const verdict = master.verdict || '—';
+  const col = verdictColor(verdict);
+  $('cmd-verdict').textContent = verdict;
+  $('cmd-verdict').style.color = col;
+
+  const budget = cf.budget || {};
+  const tp = Math.round((budget.trading || 0) * 100);
+  const pp = Math.round((budget.portfolio || 0) * 100);
+  const cp = Math.round((budget.cash || 0) * 100);
+  $('cmd-budget').innerHTML =
+    `<div class="budget-pill"><div class="budget-dot" style="background:var(--accent)"></div><span style="color:var(--accent)">${tp}%</span><span style="color:var(--text3)"> TRD</span></div>` +
+    `<div class="budget-pill"><div class="budget-dot" style="background:var(--purple)"></div><span style="color:var(--purple)">${pp}%</span><span style="color:var(--text3)"> PRT</span></div>` +
+    `<div class="budget-pill"><div class="budget-dot" style="background:var(--text2)"></div><span style="color:var(--text2)">${cp}%</span><span style="color:var(--text3)"> CSH</span></div>`;
+
+  const rn = regime.market_regime || '—';
+  const rl = regime.risk_level || 'moderate';
+  $('cmd-regime').textContent = rn;
+  $('cmd-regime').style.color = riskColor(rl);
+
+  $('cmd-time').innerHTML = `<span class="live-dot"></span>${fmtDate(generatedAt)}`;
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Market chips
+// ════════════════════════════════════════════════════════════════════
+function renderMktBar(snap) {
+  if (!snap) return;
+  const chips = [
+    { n:'TAIEX', v:snap.taiex?.close, chg:snap.taiex?.change_pct },
+    { n:'S&P500', v:snap.sp500?.close, chg:snap.sp500?.change_pct },
+    { n:'VIX',   v:snap.vix?.value || snap.vix?.close, chg:null },
+    { n:'USD/TWD',v:snap.usd_twd, chg:null },
+  ].filter(c => c.v != null);
+
+  $('mkt-bar').innerHTML = chips.map(c => {
+    const chgColor = c.chg > 0 ? 'var(--green)' : c.chg < 0 ? 'var(--red)' : 'var(--text2)';
+    const chgStr = c.chg != null ? `<span style="color:${chgColor}"> ${fmtChg(c.chg)}</span>` : '';
+    return `<div class="mkt-chip">
+      <div class="mkt-chip-name">${c.n}</div>
+      <div class="mkt-chip-val">${typeof c.v === 'number' ? c.v.toLocaleString('en-US',{maximumFractionDigits:2}) : c.v}${chgStr}</div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Signal Gauges
+// ════════════════════════════════════════════════════════════════════
+function arcGaugeSVG(value, color) {
+  // -1 to 1, semicircle: left(-1)→top(0)→right(1)
+  const angle = Math.PI * (1 - (value + 1) / 2);
+  const cx = 50, cy = 54, r = 36;
+  const nx = (cx + r * Math.cos(angle)).toFixed(2);
+  const ny = (cy - r * Math.sin(angle)).toFixed(2);
+  const sign = value >= 0 ? '+' : '';
+  return `<svg class="arc-gauge" viewBox="0 0 100 70">
+    <path d="M14,54 A36,36 0 0,1 50,18" fill="none" stroke="rgba(255,69,96,.25)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M50,18 A36,36 0 0,1 86,54" fill="none" stroke="rgba(0,200,150,.25)" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="14" cy="54" r="2" fill="var(--red)" opacity=".4"/>
+    <circle cx="86" cy="54" r="2" fill="var(--green)" opacity=".4"/>
+    <circle cx="50" cy="18" r="2" fill="var(--text3)" opacity=".4"/>
+    <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="4" fill="${color}"/>
+    <text x="50" y="45" text-anchor="middle" fill="${color}" font-size="14" font-weight="800" font-family="monospace">${sign}${value.toFixed(2)}</text>
+  </svg>`;
+}
+
+function barGaugeHTML(value, color) {
+  const pct = Math.round(Math.max(0, Math.min(1, value)) * 100);
+  return `<div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+          <div class="bar-value" style="color:${color}">${value.toFixed(2)}</div>`;
+}
+
+function sigColor(value, inverted) {
+  if (inverted) {
+    return value > 0.65 ? 'var(--red)' : value > 0.35 ? 'var(--yellow)' : 'var(--green)';
+  }
+  return value > 0.6 ? 'var(--green)' : value > 0.35 ? 'var(--yellow)' : 'var(--red)';
+}
+
+function renderSignalPanel(sv, dataGaps) {
+  if (!sv || Object.keys(sv).length === 0) {
+    $('gauge-grid').innerHTML = '<div style="color:var(--text3);padding:20px;font-size:12px">Signal vector not available — run the pipeline first.</div>';
+    return;
+  }
+
+  // Meta badge
+  const gaps = dataGaps || sv._data_gaps || [];
+  $('signal-meta').textContent = gaps.length ? `${gaps.length} signals N/A (batch 2)` : '全部信號可用';
+
+  const GAUGES = [
+    {
+      key:'market_regime_score', label:'MARKET REGIME', type:'arc',
+      desc:'體制分數：-1=恐慌 → 0=中性 → +1=AI主升段',
+      colorFn: v => v > 0.2 ? 'var(--green)' : v < -0.2 ? 'var(--red)' : 'var(--yellow)',
+    },
+    {
+      key:'trend_strength', label:'TREND STRENGTH', type:'bar', inverted:false,
+      desc:'趨勢強度：TAIEX 日漲跌 + market_overview',
+    },
+    {
+      key:'risk_pressure', label:'RISK PRESSURE', type:'bar', inverted:true,
+      desc:'市場壓力：VIX + tw_short_term + devils_advocate',
+    },
+    {
+      key:'volatility_risk', label:'VOLATILITY RISK', type:'bar', inverted:true,
+      desc:'波動風險：VIX(70%) + TAIEX日內波動(30%)',
+    },
+    {
+      key:'ai_sector_strength', label:'AI SECTOR', type:'bar', inverted:false,
+      desc:'AI類股：由新聞AI關鍵字推算（非直接資料）',
+    },
+    {
+      key:'scanner_momentum', label:'SCANNER MOMENTUM', type:'bar', inverted:false,
+      desc:'掃描動能：候選股平均技術分數 / 最高分',
+    },
+    {
+      key:'confidence_score', label:'CONFIDENCE', type:'bar', inverted:false,
+      desc:'系統信心：主要Agent平均confidence，ERROR扣分',
+    },
+    {
+      key:'foreign_flow_strength', label:'FOREIGN FLOW', type:'bar', inverted:false,
+      desc:'外資流向：待 batch2（外資買賣超資料）',
+      isNA: true,
+    },
+    {
+      key:'breadth_score', label:'MKT BREADTH', type:'bar', inverted:false,
+      desc:'市場廣度：待 batch2（漲跌家數資料）',
+      isNA: true,
+    },
   ];
-  const grid = document.getElementById("marketGrid");
-  grid.innerHTML = items.map(item => {
-    const d = item.key ? (snap[item.key] || {}) : {};
-    const close = item.key ? d.close : item.val;
-    const chg   = item.key ? d.change_pct : null;
-    const cls   = chg == null ? "neutral" : chg >= 0 ? "up" : "down";
-    return `<div class="market-card">
-      <div class="mc-label">${item.label}</div>
-      <div class="mc-val ${cls}">${item.prefix}${close != null ? Number(close).toLocaleString(undefined,{minimumFractionDigits:item.decimals}) : "—"}</div>
-      ${chg != null ? `<div class="mc-change ${cls}">${fmtChg(chg)}</div>` : ""}
+
+  const sources = sv._sources || {};
+
+  $('gauge-grid').innerHTML = GAUGES.map(g => {
+    const v = sv[g.key];
+    const isNA = g.isNA || gaps.includes(g.key);
+    const naClass = isNA ? ' na' : '';
+
+    let visual = '';
+    if (isNA) {
+      visual = `<div class="na-label">N/A</div><div class="na-sub">待 batch2 資料</div>`;
+    } else if (g.type === 'arc') {
+      const col = g.colorFn(v);
+      visual = arcGaugeSVG(v, col);
+    } else {
+      const col = g.colorFn ? g.colorFn(v) : sigColor(v, g.inverted);
+      visual = barGaugeHTML(v, col);
+    }
+
+    const src = sources[g.key] || g.desc;
+    return `<div class="gauge-card${naClass}">
+      <div class="gauge-card-label">${g.label}</div>
+      ${visual}
+      <div class="gauge-source">${src}</div>
     </div>`;
-  }).join("");
+  }).join('');
 }
 
-function renderPortfolio(pv, twSummary) {
-  document.getElementById("totalAssets").textContent = fmt(pv.total_gross_twd);
-  document.getElementById("netAssets").textContent = "淨資產（扣房貸）：" + fmt(pv.net_assets_twd);
+// ════════════════════════════════════════════════════════════════════
+// Today Panel
+// ════════════════════════════════════════════════════════════════════
+function renderTodayPanel(agents, cf, master) {
+  const pick = agents.tw_daily_pick;
 
-  const pnl = twSummary?.total_pnl;
-  const pnlPct = twSummary?.total_pnl_pct;
-  const pnlEl = document.getElementById("twPnl");
-  if(pnl != null) {
-    const arrow = pnl >= 0 ? "▲" : "▼";
-    pnlEl.textContent = (pnl >= 0 ? "+" : "") + "NT$" + Math.round(pnl).toLocaleString() + " (" + arrow + " " + Math.abs(pnlPct) + "%)";
-    pnlEl.className = "pf-val " + (pnl >= 0 ? "pnl-pos" : "pnl-neg");
+  // Pick card
+  if (pick && pick.verdict !== 'ERROR' && pick.pick) {
+    const p = pick.pick;
+    const sigs = (pick.core_logic ? Object.entries(pick.core_logic).filter(([,v])=>v).map(([k])=>k) : []).slice(0,4);
+    const pickColor = verdictColor(pick.verdict);
+    $('pick-area').innerHTML = `<div class="pick-card">
+      <div class="pick-header">
+        <div class="pick-badge">TODAY'S PICK</div>
+        <div style="font-size:10px;color:${pickColor};font-weight:700">${pick.verdict || ''}</div>
+      </div>
+      <div>
+        <div class="pick-code">${p.code || '—'}</div>
+        <div class="pick-name">${p.name || '—'}</div>
+      </div>
+      ${p.rationale ? `<div class="pick-verdict">${p.rationale.slice(0,120)}</div>` : ''}
+      ${sigs.length ? `<div class="pick-signals">${sigs.map(s=>`<div class="sig-pill">${s}</div>`).join('')}</div>` : ''}
+    </div>`;
+  } else {
+    $('pick-area').innerHTML = `<div class="pick-none">盤後分析完成後顯示<br>(13:00+ 執行)</div>`;
   }
 
-  const usPnl = pv.us_pnl_usd;
-  const usPnlPct = pv.us_pnl_pct;
-  if(usPnl != null) {
-    const wrap = document.getElementById("usPnlWrap");
-    const el = document.getElementById("usPnl");
-    wrap.style.display = "";
-    const arrow = usPnl >= 0 ? "▲" : "▼";
-    el.textContent = fmtUsd(usPnl) + " (" + arrow + " " + Math.abs(usPnlPct).toFixed(2) + "%)";
-    el.className = "pf-val " + (usPnl >= 0 ? "pnl-pos" : "pnl-neg");
-  }
-
-  const alloc = pv.allocation_pct || {};
-  const bar = document.getElementById("allocBar");
-  const legend = document.getElementById("allocLegend");
-  bar.innerHTML = Object.keys(ALLOC_COLORS).map(k => {
-    const w = alloc[k] || 0;
-    return `<div class="alloc-seg" style="width:${w}%;background:${ALLOC_COLORS[k]}" title="${ALLOC_LABELS[k]} ${w}%"></div>`;
-  }).join("");
-  legend.innerHTML = Object.keys(ALLOC_COLORS).map(k => {
-    const w = alloc[k] || 0;
-    return `<div class="legend-item"><div class="legend-dot" style="background:${ALLOC_COLORS[k]}"></div>${ALLOC_LABELS[k]} ${w}%</div>`;
-  }).join("");
-}
-
-function renderMaster(master) {
-  if(master.verdict === "ERROR" || !master.verdict) {
-    document.getElementById("masterVerdict").className = "master-verdict v-neutral";
-    document.getElementById("masterVerdict").textContent = "分析暫無法取得";
-    document.getElementById("masterConfFill").style.width = "0%";
-    document.getElementById("masterConfLabel").textContent = "";
-    document.getElementById("masterSummary").textContent = "等待下次更新自動重試";
-    document.getElementById("masterActions").innerHTML = "";
-    return;
-  }
-
-  const vc = verdictClass(master.verdict || "");
-  const verdictEl = document.getElementById("masterVerdict");
-  verdictEl.className = "master-verdict v-" + vc;
-  verdictEl.textContent = master.verdict || "—";
-
-  const conf = Math.round((master.confidence || 0) * 100);
-  document.getElementById("masterConfFill").style.width = conf + "%";
-  document.getElementById("masterConfLabel").textContent = "信心 " + conf + "%";
-  document.getElementById("masterSummary").textContent = master.summary || "";
-
-  const actionsEl = document.getElementById("masterActions");
+  // Actions
   const recs = master.recommendations || [];
-  actionsEl.innerHTML = recs.slice(0,3).map((r,i) => `
-    <div class="action-item">
-      <span class="action-num">${i+1}</span>
-      <span class="action-badge badge-${r.urgency || 'MED'}">${r.urgency || "MED"}</span>
-      <span class="action-text"><strong>${r.action} ${r.target}</strong> — ${r.detail || ""}</span>
-    </div>`).join("");
+  if (recs.length === 0) {
+    $('actions-list').innerHTML = '<div style="color:var(--text3);font-size:12px;padding:10px 0">無建議</div>';
+  } else {
+    $('actions-list').innerHTML = recs.slice(0,3).map(r => `
+      <div class="action-row">
+        <div class="action-urgency ${urgencyClass(r.urgency)}">${r.urgency || 'LOW'}</div>
+        <div class="action-target">${r.action || ''} ${r.target || ''}</div>
+        <div class="action-detail">${(r.detail || '').slice(0,80)}</div>
+      </div>`).join('');
+  }
 
-  const risks = master.risk_flags || [];
-  if(risks.length > 0) {
-    document.getElementById("masterRisk").style.display = "flex";
-    document.getElementById("masterRiskText").textContent = risks[0];
+  // Capital Flow detail
+  const flags = (cf.override_flags || []).filter(f => !f.includes('STRUCTURAL_NOTE'));
+  $('flow-area').innerHTML = `<div class="flow-card">
+    <div class="flow-dir">${cf.flow_direction || '—'}</div>
+    ${flags.length ? `<div class="flag-list">${flags.map(f=>`<div class="flag-item">⚡ ${f}</div>`).join('')}</div>` : '<div style="color:var(--green);font-size:11px">無強制規則觸發</div>'}
+  </div>`;
+
+  // Master summary
+  const s = master.summary || '';
+  if (s) {
+    $('master-summary-area').innerHTML = `<div class="master-summary">${s.slice(0,200)}</div>`;
   }
 }
 
-function renderDailyPick(pick) {
-  const wrap = document.getElementById("dailyPickWrap");
-  if(!pick || pick.verdict === "ERROR" || !pick.pick) {
-    wrap.classList.add("pick-hidden");
+// ════════════════════════════════════════════════════════════════════
+// Desks Panel
+// ════════════════════════════════════════════════════════════════════
+function deskVerdictStyle(verdict) {
+  const col = verdictColor(verdict);
+  return `background:${col}18;color:${col};border:1px solid ${col}40`;
+}
+
+function toggleDesk(id) {
+  const body = document.getElementById(id + '-body');
+  const chev = document.getElementById(id + '-chev');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
+function renderDeskSection(id, icon, name, desk, openByDefault) {
+  if (!desk || desk.verdict === 'ERROR') {
+    return `<div class="desk-section">
+      <div class="desk-header">
+        <div class="desk-header-left">
+          <span class="desk-icon">${icon}</span>
+          <span class="desk-name">${name}</span>
+          <span class="desk-verdict-badge" style="background:var(--red-dim);color:var(--red);border:1px solid var(--red)">ERROR</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const conf = parseFloat(desk.confidence || 0.5);
+  const recs = (desk.recommendations || []).slice(0, 4);
+  const insights = (desk.key_insights || []).slice(0, 3);
+
+  // Wealth-specific extra fields
+  let wealthExtra = '';
+  if (id === 'wealth') {
+    const metrics = [
+      { label:'STRUCTURAL RISK', val: desk.structural_risk || '—', col: desk.structural_risk==='high'?'var(--orange)':desk.structural_risk==='moderate'?'var(--yellow)':'var(--green)' },
+      { label:'LIQUIDITY RISK', val: desk.liquidity_risk || desk.risk_level || '—', col: riskColor(desk.liquidity_risk || desk.risk_level) },
+      { label:'CASHFLOW', val: desk.cashflow_stability || '—', col: desk.cashflow_stability==='critical'?'var(--red)':desk.cashflow_stability==='tight'?'var(--orange)':desk.cashflow_stability==='adequate'?'var(--yellow)':'var(--green)' },
+    ];
+    wealthExtra = `<div class="wealth-metrics">${metrics.map(m=>`
+      <div class="wealth-metric">
+        <div class="wealth-metric-label">${m.label}</div>
+        <div class="wealth-metric-val" style="color:${m.col}">${m.val}</div>
+      </div>`).join('')}</div>`;
+  }
+
+  const openClass = openByDefault ? ' open' : '';
+
+  return `<div class="desk-section">
+    <div class="desk-header" onclick="toggleDesk('${id}')">
+      <div class="desk-header-left">
+        <span class="desk-icon">${icon}</span>
+        <span class="desk-name">${name}</span>
+        <span class="desk-verdict-badge" style="${deskVerdictStyle(desk.verdict)}">${desk.verdict}</span>
+      </div>
+      <div class="desk-conf-wrap">
+        <div class="desk-conf-bar"><div class="desk-conf-fill" style="width:${Math.round(conf*100)}%"></div></div>
+        <div class="desk-conf-val">${conf.toFixed(2)}</div>
+        <div class="desk-chevron ${openByDefault?'open':''}" id="${id}-chev">▶</div>
+      </div>
+    </div>
+    <div class="desk-body${openClass}" id="${id}-body">
+      ${wealthExtra}
+      <div class="desk-summary">${(desk.summary || '').slice(0, 200)}</div>
+      ${insights.length ? `<div class="desk-insights">${insights.map(i=>`<div class="desk-insight-item">${i}</div>`).join('')}</div>` : ''}
+      ${recs.length ? `<div class="desk-recs">${recs.map(r=>`
+        <div class="desk-rec">
+          <div class="desk-rec-action">${r.action||''}</div>
+          <div class="desk-rec-target">${r.target||''}</div>
+          <div class="desk-rec-detail">${(r.detail||'').slice(0,80)}</div>
+        </div>`).join('')}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderDesksPanel(agents) {
+  const desks = [
+    { id:'trading',   icon:'📈', name:'Trading Desk',   key:'trading_master',   open:true },
+    { id:'portfolio', icon:'📊', name:'Portfolio Desk', key:'portfolio_master', open:false },
+    { id:'wealth',    icon:'🏦', name:'Wealth Desk',    key:'wealth_master',    open:false },
+    { id:'da',        icon:'🔴', name:"Devil's Advocate", key:'devils_advocate', open:false },
+  ];
+  $('desks-area').innerHTML = desks.map(d =>
+    renderDeskSection(d.id, d.icon, d.name, agents[d.key], d.open)
+  ).join('');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Research Panel
+// ════════════════════════════════════════════════════════════════════
+function renderResearchPanel(perf) {
+  if (!perf || !perf.available) {
+    $('perf-stats').innerHTML = `<div class="stat-card" style="grid-column:1/-1"><div class="stat-label">PERFORMANCE</div><div class="stat-value" style="font-size:16px;color:var(--text3)">暫無績效資料</div><div class="stat-sub">系統累積至少5筆已結算推薦後顯示</div></div>`;
+    $('research-note').innerHTML = `<div class="research-note"><strong>Signal Attribution</strong> 分析需要 50 筆已結算推薦（目前：${perf?.total || 0}筆）。<br>每週四系統會自動檢查並通知。</div>`;
     return;
   }
-  wrap.classList.remove("pick-hidden");
 
-  const p = pick.pick;
-  document.getElementById("pickName").textContent = p.name || "—";
-  document.getElementById("pickCode").textContent = p.code || "—";
-  document.getElementById("pickSummary").textContent = pick.summary || "";
-  document.getElementById("pickEntry").textContent = p.entry_zone || "—";
-  document.getElementById("pickStop").textContent = p.stop_loss || "—";
-  document.getElementById("pickTarget").textContent = p.target || "—";
+  const byRegime = perf.by_regime || {};
+  const stats = [
+    { label:'勝率 (30日)', val: `${perf.overall_rate || 0}%`, sub:`${perf.win||0}W / ${perf.loss||0}L`, col: perf.overall_rate>=55?'var(--green)':perf.overall_rate>=45?'var(--yellow)':'var(--red)' },
+    { label:'總推薦數', val: perf.total || 0, sub:'已結算', col:'var(--text)' },
+    { label:'最佳 Regime', val: (() => { const top = Object.entries(byRegime).sort((a,b)=>b[1].rate-a[1].rate)[0]; return top ? top[0] : '—'; })(), sub:'勝率最高', col:'var(--blue)' },
+    { label:'連勝/連敗', val: `${perf.streak || '—'}`, sub:'當前連續', col:'var(--text2)' },
+  ];
 
-  const vEl = document.getElementById("pickVerdict");
-  const v = pick.verdict || "";
-  if(v === "空手觀望") {
-    vEl.textContent = "空手觀望"; vEl.className = "pick-verdict pv-hold";
-    document.getElementById("pickName").textContent = "今日不建議出手";
-    document.getElementById("pickCode").textContent = "";
-  } else if(v === "謹慎試單") {
-    vEl.textContent = "謹慎試單"; vEl.className = "pick-verdict pv-watch";
-  } else {
-    vEl.textContent = "推薦出手"; vEl.className = "pick-verdict pv-buy";
+  $('perf-stats').innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-label">${s.label}</div>
+      <div class="stat-value" style="color:${s.col}">${s.val}</div>
+      <div class="stat-sub">${s.sub}</div>
+    </div>`).join('');
+
+  // Regime breakdown
+  if (Object.keys(byRegime).length) {
+    const rows = Object.entries(byRegime)
+      .filter(([,v]) => v.total >= 2)
+      .sort((a,b) => b[1].rate - a[1].rate);
+    if (rows.length) {
+      $('signal-lb').innerHTML = `<div class="signal-leaderboard">
+        <div class="lb-title">REGIME PERFORMANCE</div>
+        ${rows.map(([regime, s], i) => `
+          <div class="lb-row">
+            <div class="lb-rank">${i+1}</div>
+            <div class="lb-sig">${regime}</div>
+            <div class="lb-bar-wrap"><div class="lb-bar-bg"><div class="lb-bar-fill" style="width:${s.rate}%;background:${s.rate>=55?'var(--green)':s.rate>=45?'var(--yellow)':'var(--red)'}"></div></div></div>
+            <div class="lb-pct" style="color:${s.rate>=55?'var(--green)':s.rate>=45?'var(--yellow)':'var(--red)'}">${s.rate}%</div>
+            <div class="lb-n">n=${s.total}</div>
+          </div>`).join('')}
+      </div>`;
+    }
   }
 
-  const counter = pick.counter_argument || "";
-  if(counter && counter !== "—") {
-    document.getElementById("pickCounterText").textContent = counter;
-    document.getElementById("pickCounter").style.display = "block";
-  } else {
-    document.getElementById("pickCounter").style.display = "none";
-  }
-}
-
-function renderAgents(agents) {
-  const grid = document.getElementById("agentsGrid");
-  const daOutput = agents.devils_advocate;
-  const agentOrder = ["news_sentiment","market_overview","tw_short_term","tw_long_term","us_portfolio","fx_fund","asset_allocation"];
-
-  let html = "";
-  for(const key of agentOrder) {
-    const a = agents[key] || {};
-    const meta = AGENT_META[key] || { name: key, bias: "", icon: "🤖" };
-    const isError = a.verdict === "ERROR" || a.verdict === "無資料";
-    const vc = isError ? "neutral" : verdictClass(a.verdict || "");
-    const conf = Math.round((a.confidence || 0) * 100);
-
-    // A: friendly error state
-    const bodyHtml = isError
-      ? `<div class="agent-error">
-           <div class="agent-error-icon">⚠</div>
-           <div class="agent-error-msg">分析暫無法取得</div>
-           <div class="agent-error-hint">下次更新自動重試</div>
-         </div>`
-      : (() => {
-          const insights = (a.key_insights || []).slice(0,3).map(i =>
-            `<div class="insight-item">${i}</div>`).join("");
-
-          // C: styled action badges
-          const recs = (a.recommendations || []).slice(0,2).map(r => {
-            const ac = r.action || "";
-            const acu = ac.toUpperCase();
-            let badgeCls = "rb-hold";
-            if(acu.includes("BUY") || acu.includes("ADD") || ac.includes("加碼") || ac.includes("買入")) badgeCls = "rb-buy";
-            else if(acu.includes("SELL") || acu.includes("CUT") || ac.includes("減碼") || ac.includes("停損")) badgeCls = "rb-sell";
-            else if(acu.includes("WATCH") || ac.includes("觀察") || ac.includes("觀望") || ac.includes("暫停")) badgeCls = "rb-watch";
-            return `<div class="rec-item">
-              <span class="rec-badge ${badgeCls}">${ac}</span>
-              <span class="rec-target">${r.target || ""}</span>
-              <span class="rec-detail">${r.detail || ""}</span>
-            </div>`;
-          }).join("");
-
-          return `<div class="agent-summary">${a.summary || "—"}</div>
-            ${insights ? `<div class="agent-insights">${insights}</div>` : ""}
-            ${recs ? `<div class="agent-recs">${recs}</div>` : ""}
-            <div class="conf-mini">
-              <div class="conf-bar-mini">
-                <div class="conf-fill-mini" style="width:${conf}%;background:${vc==='attack'?'var(--green)':vc==='defend'?'var(--red)':'var(--blue)'}"></div>
-              </div>
-              <span style="font-size:11px;color:var(--text3);white-space:nowrap">${conf}%</span>
-            </div>`;
-        })();
-
-    html += `<div class="agent-card">
-      <div class="agent-header">
-        <div>
-          <div class="agent-name">${meta.icon} ${meta.name}</div>
-          <div class="agent-bias">${meta.bias}</div>
-        </div>
-        <div class="verdict-badge v-${vc}-bg">${a.verdict || "—"}</div>
-      </div>
-      <div class="agent-body">${bodyHtml}</div>
+  if (perf.total < 50) {
+    $('research-note').innerHTML = `<div class="research-note">
+      <strong>Signal Attribution 分析</strong> 需要 50 筆已結算推薦。<br>
+      目前：<strong style="color:var(--yellow)">${perf.total}</strong>/50 筆。還需 ${50 - perf.total} 筆。<br>
+      每週四系統會自動檢查，達到 50 筆後觸發完整信號歸因報告。
     </div>`;
   }
-
-  // Devil's Advocate — full width
-  if(daOutput) {
-    const daRisks = (daOutput.key_insights || []).slice(0,4).map(r =>
-      `<div class="da-risk-item">${r}</div>`).join("");
-    html += `<div class="da-card">
-      <div class="da-header">
-        <span class="da-title">😈 反對派 Agent</span>
-        <span class="da-badge">${daOutput.verdict || "有所保留"}</span>
-      </div>
-      <div class="da-summary">${daOutput.summary || ""}</div>
-      <div class="da-risks">${daRisks}</div>
-    </div>`;
-  }
-
-  grid.innerHTML = html;
 }
 
-function renderHoldings(twStocks) {
-  const tbody = document.getElementById("holdingsBody");
-  tbody.innerHTML = twStocks.map(s => {
-    const pc = s.pnl_pct;
-    const cls = pc >= 0 ? "pnl-pos" : "pnl-neg";
-    const watchDot = s.watch ? `<span class="watch-dot" title="需審查"></span>` : "";
-    return `<tr>
-      <td>${s.code}</td>
-      <td>${s.name}${watchDot}</td>
-      <td>${s.shares.toLocaleString()}</td>
-      <td>NT$${s.value.toLocaleString()}</td>
-      <td>NT$${s.cost.toLocaleString()}</td>
-      <td class="${cls}">${s.pnl >= 0 ? "+" : ""}NT$${s.pnl.toLocaleString()}</td>
-      <td class="${cls}">${pc >= 0 ? "+" : ""}${pc.toFixed(2)}%</td>
-    </tr>`;
-  }).join("");
-}
-
-async function loadData() {
+// ════════════════════════════════════════════════════════════════════
+// Main Load
+// ════════════════════════════════════════════════════════════════════
+async function load() {
   try {
-    const res = await fetch("data/analysis.json?t=" + Date.now());
-    if(!res.ok) throw new Error("HTTP " + res.status);
-    const d = await res.json();
+    const r = await fetch('data/analysis.json?t=' + Date.now());
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
 
-    const ts = new Date(d.generated_at);
-    document.getElementById("updateTime").textContent =
-      "最後更新：" + ts.toLocaleString("zh-TW", {timeZone:"Asia/Taipei",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
-    const agents = d.agents || {};
-    const allError = Object.values(agents).every(a => !a || a.verdict === "ERROR");
-    if(allError) {
-      document.getElementById("statusText").textContent = "分析待更新";
-      document.querySelector(".dot").style.background = "var(--yellow, #f59e0b)";
-    } else {
-      document.getElementById("statusText").textContent = "資料已更新";
-      document.querySelector(".dot").style.background = "var(--green)";
-    }
+    const agents = data.agents || {};
+    const master = agents.master || {};
+    const cf = data.capital_flow || {};
+    const regime = data.regime || {};
+    const sv = agents.signal_fusion || {};
+    const perf = data.performance;
+    const snap = data.market_snapshot || {};
 
-    renderMarket(d.market_snapshot || {});
+    renderCmdBar(master, cf, regime, data.generated_at);
+    renderMktBar(snap);
+    renderSignalPanel(sv, sv._data_gaps);
+    renderTodayPanel(agents, cf, master);
+    renderDesksPanel(agents);
+    renderResearchPanel(perf);
 
-    const pv = d.portfolio_value || {};
-    const twSummary = pv.tw_summary_live;
-    const twLive = pv.tw_stocks_live;
-
-    if(twLive && twLive.length > 0) {
-      renderPortfolio(pv, twSummary);
-      renderHoldings(twLive);
-    } else {
-      // fallback: load static portfolio.json
-      fetch("data/portfolio.json").then(r => r.json()).then(p => {
-        renderPortfolio(pv, p.tw_summary);
-        renderHoldings(p.tw_stocks || []);
-      });
-    }
-
-    renderMaster(d.agents?.master || {});
-    renderDailyPick(d.agents?.tw_daily_pick || null);
-    renderAgents(d.agents || {});
-
-  } catch(err) {
-    document.getElementById("statusText").textContent = "資料載入失敗";
-    document.querySelector(".dot").style.background = "var(--red)";
-    document.getElementById("masterBanner").innerHTML =
-      `<div class="error-card">⚠ 無法載入分析資料：${err.message}<br><small>請確認 GitHub Actions 已執行，或直接在本機執行 python run_agents.py</small></div>`;
+  } catch (e) {
+    document.body.insertAdjacentHTML('afterbegin',
+      `<div class="err-msg">資料載入失敗：${e.message} — 請確認 data/analysis.json 存在</div>`);
   }
 }
 
-loadData();
+load();
 </script>
 </body>
 </html>

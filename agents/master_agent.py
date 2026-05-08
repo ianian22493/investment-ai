@@ -33,81 +33,83 @@ SYSTEM = """你是投資委員會的 CIO（首席投資官）。你是系統中�
 
 
 def run(all_outputs: dict) -> dict:
+    """
+    CIO 降噪版本：只接受 signal_vector + desk master 摘要 + capital flow + scanner top3。
+    禁止輸入：原始新聞、完整 agent summary、scanner reasoning 文字。
+    """
+    signal_vec   = all_outputs.get("signal_fusion", {})
     capital_flow = all_outputs.get("capital_flow", {})
     trading_desk = all_outputs.get("trading_master", {})
     portfolio_desk = all_outputs.get("portfolio_master", {})
-    wealth_desk = all_outputs.get("wealth_master", {})
-    devils = all_outputs.get("devils_advocate", {})
-    reflection = all_outputs.get("reflection", {})
+    wealth_desk  = all_outputs.get("wealth_master", {})
+    candidates   = all_outputs.get("_candidates", [])   # scanner top 3
 
+    budget = capital_flow.get("budget", {})
     sections = []
 
-    # Capital Flow (最高優先，硬約束)
-    if capital_flow:
-        budget = capital_flow.get("budget", {})
-        flags = capital_flow.get("override_flags", [])
+    # ── Signal Vector（主要決策輸入）─────────────────────────────────────────
+    if signal_vec and signal_vec.get("market_regime_score") is not None:
+        sv = signal_vec
         sections.append(
-            f"【⚡ Capital Flow Engine — 硬性資金預算（不可更改）】\n"
-            f"  交易預算：{budget.get('trading', 0)*100:.0f}%  "
-            f"配置預算：{budget.get('portfolio', 0)*100:.0f}%  "
-            f"現金：{budget.get('cash', 0)*100:.0f}%\n"
-            f"  流向：{capital_flow.get('flow_direction','?')}\n"
-            f"  觸發規則：\n"
-            + ("\n".join(f"    ⚡ {f}" for f in flags) if flags else "    （無）")
+            "【Signal Vector — 量化市場信號】\n"
+            f"  market_regime_score : {sv.get('market_regime_score', 0):+.2f}  "
+            f"trend_strength : {sv.get('trend_strength', 0.5):.2f}  "
+            f"risk_pressure : {sv.get('risk_pressure', 0.5):.2f}\n"
+            f"  volatility_risk     : {sv.get('volatility_risk', 0.5):.2f}  "
+            f"confidence_score : {sv.get('confidence_score', 0.5):.2f}  "
+            f"scanner_momentum : {sv.get('scanner_momentum', 0.5):.2f}\n"
+            f"  ai_sector_strength  : {sv.get('ai_sector_strength', 0.5):.2f}  "
+            f"（foreign_flow/breadth/liquidity: 待 batch2 資料）"
         )
 
-    # Trading Desk（信號觀點，非決策）
-    budget = capital_flow.get("budget", {}) if capital_flow else {}
+    # ── Capital Flow — 硬性約束（不可更改）──────────────────────────────────
+    flags_str = ", ".join(capital_flow.get("override_flags", [])[:3]) or "無"
     sections.append(
-        f"【📈 Trading Desk 信號（可用預算 {budget.get('trading',0)*100:.0f}%）】\n"
-        f"  信號：{trading_desk.get('verdict','?')} | confidence={trading_desk.get('confidence','?')}\n"
-        f"  {trading_desk.get('summary','')[:180]}\n"
-        f"  具體機會：{'; '.join(r.get('action','?')+' '+r.get('target','?') for r in trading_desk.get('recommendations',[])[:2])}"
+        "【Capital Flow Engine — 硬性資金預算】\n"
+        f"  交易:{budget.get('trading',0)*100:.0f}%  "
+        f"配置:{budget.get('portfolio',0)*100:.0f}%  "
+        f"現金:{budget.get('cash',0)*100:.0f}%\n"
+        f"  流向:{capital_flow.get('flow_direction','?')} | 觸發規則:{flags_str}"
     )
 
-    # Portfolio Desk（信號觀點，非決策）
-    sections.append(
-        f"【📊 Portfolio Desk 信號（可用預算 {budget.get('portfolio',0)*100:.0f}%）】\n"
-        f"  觀點：{portfolio_desk.get('verdict','?')} | confidence={portfolio_desk.get('confidence','?')}\n"
-        f"  {portfolio_desk.get('summary','')[:180]}\n"
-        f"  關注點：{'; '.join(r.get('action','?')+' '+r.get('target','?') for r in portfolio_desk.get('recommendations',[])[:2])}"
-    )
-
-    # Wealth Desk（風險事實，非決策）
-    wealth_risk = wealth_desk.get("risk_level", "?")
-    sections.append(
-        f"【🏦 Wealth Desk 風險事實（觸發 Capital Flow: {'是' if capital_flow and capital_flow.get('wealth_risk_triggered') else '否'}）】\n"
-        f"  財務狀態：{wealth_desk.get('verdict','?')} | risk_level={wealth_risk}\n"
-        f"  {wealth_desk.get('summary','')[:180]}\n"
-        f"  現金壓力：{'⚠️ 是' if wealth_desk.get('cash_crunch_risk') else '無'} | "
-        f"槓桿：{wealth_desk.get('leverage_health','?')}"
-    )
-
-    # Devil's Advocate
-    sections.append(
-        f"【🔴 反對派】\n"
-        f"  verdict={devils.get('verdict','?')}\n"
-        f"  {devils.get('summary','')[:150]}"
-    )
-
-    # Recent reflection if available
-    if reflection and reflection.get("verdict") not in (None, "ERROR"):
-        sections.append(
-            f"【🔄 系統反思】\n"
-            f"  {reflection.get('verdict','?')} — {reflection.get('summary','')[:100]}"
+    # ── 三個 Desk Master 摘要（只取 verdict + confidence + summary[:80] + top2 recs）
+    for icon, label, desk in [
+        ("📈", "Trading Desk", trading_desk),
+        ("📊", "Portfolio Desk", portfolio_desk),
+        ("🏦", "Wealth Desk", wealth_desk),
+    ]:
+        recs = "; ".join(
+            f"{r.get('action','')} {r.get('target','')}"
+            for r in desk.get("recommendations", [])[:2]
         )
+        liq = f" | liquidity={desk.get('liquidity_risk','?')}" if label == "Wealth Desk" else ""
+        sections.append(
+            f"【{icon} {label}】"
+            f"verdict={desk.get('verdict','?')} conf={desk.get('confidence','?')}{liq}\n"
+            f"  摘要: {desk.get('summary','')[:80]}\n"
+            f"  建議: {recs or '無'}"
+        )
+
+    # ── Scanner Top 3（只顯示代碼 + score + 觸發信號，無文字 reasoning）────
+    if candidates:
+        cand_lines = []
+        for c in candidates[:3]:
+            sigs = [k for k in ("breakout_ma20", "vol_surge", "rsi_zone", "ma_aligned") if c.get(k)]
+            cand_lines.append(
+                f"  {c.get('name','?')}({c.get('code','?')}) "
+                f"score={c.get('score',0)} signals={sigs}"
+            )
+        sections.append("【Scanner Top 3】\n" + "\n".join(cand_lines))
 
     user_content = "\n\n".join(sections) + """
 
-作為 CIO，給出今日最終決策：
+作為 CIO，根據 Signal Vector 和 Desk 摘要做最終決策：
 
-1. 三個 Desk 各自結論（短線 / 持倉 / 財富）
-2. Capital Flow 指令是否影響了今日操作重點？
-3. 今日最優先的 3 個可執行行動
-4. 本週最大單一風險
-5. 一句話給又瑄：今天的心態
+1. 在 Capital Flow 預算內，今日 3 個最優先可執行行動（具體股票/動作/urgency）
+2. 今日最大單一風險
+3. 一句話心態：今天怎麼面對市場
 
-要求：清晰、果斷、按時間軸分開。不要把短線建議和長線建議混在一起說。
+要求：果斷具體，按時間軸分開，短線與長線不混談。
 """
 
     return call_claude(SYSTEM, user_content, "master_agent")

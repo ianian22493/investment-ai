@@ -22,6 +22,7 @@ from agents import reflection as reflection_agent
 from agents.regime_engine import determine_regime
 from agents.capital_flow import compute as compute_capital_flow
 from agents.constraint_validator import validate as validate_constraints
+from agents.signal_fusion import compute as compute_signal_fusion
 import alpha_db
 import outcome_tracker
 import agent_cache
@@ -166,6 +167,23 @@ def run_all():
     print(f"    → {outputs['devils_advocate'].get('verdict')}")
     _sleep("devils_advocate")
 
+    # ── Phase 3.5: Signal Fusion (pure Python, no LLM) ───────────────────────
+    print("\n── Phase 3.5: Signal Fusion ──")
+    outputs["signal_fusion"] = compute_signal_fusion(
+        market_data=market_data,
+        outputs=outputs,
+        regime=regime,
+        candidates=candidates,
+    )
+    sv = outputs["signal_fusion"]
+    print(
+        f"  → regime={sv['market_regime_score']:+.2f} "
+        f"trend={sv['trend_strength']:.2f} "
+        f"risk={sv['risk_pressure']:.2f} "
+        f"vol={sv['volatility_risk']:.2f} "
+        f"conf={sv['confidence_score']:.2f}"
+    )
+
     # ── Phase 4: 盤後專屬（tw_daily_pick + reflection）────────────────────────
     if t0.hour >= 13:
         print("\n── Phase 4: Post-Market ──")
@@ -260,6 +278,7 @@ def run_all():
     # ── Phase 7: Master Agent (CIO) ───────────────────────────────────────────
     print("\n── Phase 7: Master Agent (CIO) ──")
     print("  master_agent...")
+    outputs["_candidates"] = candidates[:3]   # scanner top3 for CIO context
     outputs["master"] = master_agent.run(outputs)
     print(f"    → FINAL: {outputs['master'].get('verdict')}")
 
@@ -308,6 +327,10 @@ def run_all():
 
     out_path = os.path.join(DATA_DIR, "analysis.json")
     save_json(analysis, out_path)
+
+    # Also save signal vector as standalone file for dashboard / research
+    sv_path = os.path.join(DATA_DIR, "signal_vector.json")
+    save_json(outputs.get("signal_fusion", {}), sv_path)
 
     elapsed = (datetime.now(TZ) - t0).total_seconds()
     print(f"\n{'='*60}")
