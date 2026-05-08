@@ -51,6 +51,10 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
             raw = re.sub(r'\[\d+\]', '', raw)
             return json.loads(raw)
         except json.JSONDecodeError as e:
+            if attempt < 3:
+                print(f"  [{agent_name}] JSON parse error, retry {attempt+1}/4...")
+                time.sleep(15)
+                continue
             return {
                 "verdict": "ERROR",
                 "confidence": 0,
@@ -62,9 +66,9 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
             }
         except Exception as e:
             err = str(e)
-            if "429" in err and attempt < 3:
+            if attempt < 3:
                 wait = 15 * (attempt + 1)
-                print(f"  [{agent_name}] 429 quota hit, waiting {wait}s (attempt {attempt+1}/4)...")
+                print(f"  [{agent_name}] error: {err[:80]}, waiting {wait}s (attempt {attempt+1}/4)...")
                 time.sleep(wait)
                 continue
             return {
