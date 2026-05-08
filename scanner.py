@@ -181,14 +181,14 @@ def calc_signals(df: pd.DataFrame, code: str) -> dict | None:
         "breakout_ma20": bool(breakout_ma20),
         "above_ma20": bool(above_ma20),
         "vol_surge": bool(vol_surge),
-        "vol_ratio": round(vol_ratio, 2),
-        "rsi": round(rsi, 1),
+        "vol_ratio": float(round(vol_ratio, 2)),
+        "rsi": float(round(rsi, 1)),
         "rsi_zone": bool(rsi_zone),
         "ma_aligned": bool(ma_aligned),
         "five_day_high": bool(five_day_high),
-        "score": score,
-        "last_close": round(last_close, 2),
-        "ma20": round(ma20_val, 2),
+        "score": int(score),
+        "last_close": float(round(last_close, 2)),
+        "ma20": float(round(ma20_val, 2)),
     }
 
 
