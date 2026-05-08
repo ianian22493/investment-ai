@@ -188,6 +188,141 @@ def fetch_tw_institutional(date_str: str = None) -> dict:
         return {}
 
 
+def fetch_market_breadth() -> dict:
+    """台股漲跌家數 via TWSE MI_INDEX（全市場廣度指標）.
+    Returns: advance, decline, unchanged, limit_up, limit_down, advance_ratio
+    """
+    url = "https://www.twse.com.tw/exchangeReport/MI_INDEX"
+    params = {"response": "json", "type": "ALLBUT0999"}
+    try:
+        r = requests.get(url, params=params, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+        raw = r.json()
+        if raw.get("stat") != "OK":
+            return {}
+
+        advance = decline = unchanged = limit_up = limit_down = 0
+
+        # MI_INDEX returns multiple tables; find the one with 漲跌家數
+        tables = raw.get("tables", [])
+        for table in tables:
+            fields = table.get("fields", [])
+            data = table.get("data", [])
+            # Look for table with "漲跌情形" or "漲停" in fields/data
+            field_str = " ".join(str(f) for f in fields)
+            if "漲跌" not in field_str and not any("漲停" in str(r[0]) for r in data[:3] if r):
+                continue
+            for row in data:
+                if not row:
+                    continue
+                try:
+                    label = str(row[0])
+                    # Count column: last numeric column
+                    cnt_str = next(
+                        (str(row[i]).replace(",", "").strip() for i in range(len(row)-1, -1, -1)
+                         if str(row[i]).replace(",", "").strip().lstrip("-").isdigit()), "0"
+                    )
+                    cnt = int(cnt_str)
+                    if "漲停" in label:
+                        limit_up += cnt
+                    elif "上漲" in label:
+                        advance += cnt
+                    elif "未漲跌" in label or "平盤" in label:
+                        unchanged += cnt
+                    elif "下跌" in label and "跌停" not in label:
+                        decline += cnt
+                    elif "跌停" in label:
+                        limit_down += cnt
+                except (ValueError, IndexError):
+                    continue
+
+        total_directional = advance + limit_up + decline + limit_down
+        if total_directional == 0:
+            return {}
+
+        # Include limit-up/down in advance/decline for ratio
+        adv_total = advance + limit_up
+        dec_total = decline + limit_down
+        advance_ratio = round(adv_total / max(adv_total + dec_total, 1), 3)
+
+        print(f"  [Breadth] 上漲:{adv_total} 下跌:{dec_total} 漲停:{limit_up} 跌停:{limit_down} 廣度:{advance_ratio:.2%}")
+        return {
+            "advance":       adv_total,
+            "decline":       dec_total,
+            "limit_up":      limit_up,
+            "limit_down":    limit_down,
+            "unchanged":     unchanged,
+            "advance_ratio": advance_ratio,
+            "total_stocks":  adv_total + dec_total + unchanged,
+        }
+    except Exception as e:
+        print(f"  [WARN] MI_INDEX breadth: {e}")
+        return {}
+
+
+def fetch_market_institutional(date_str: str = None) -> dict:
+    """全市場三大法人買賣超 via TWSE T86（市場級，非個股）.
+    Returns: foreign_net_shares, trust_net_shares, dealer_net_shares, total_institutional_net
+    單位：股
+    """
+    if not date_str:
+        date_str = date.today().strftime("%Y%m%d")
+    url = "https://www.twse.com.tw/rwd/zh/fund/T86"
+    params = {"date": date_str, "selectType": "ALLBUT0999", "response": "json"}
+    try:
+        r = requests.get(url, params=params, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+        raw = r.json()
+        if raw.get("stat") != "OK":
+            return {}
+
+        fields = raw.get("fields", [])
+        data   = raw.get("data", [])
+        if not data or not fields:
+            return {}
+
+        # Last data row = 合計（全市場匯總）
+        total_row = data[-1]
+
+        def parse_int(s):
+            try:
+                return int(str(s).replace(",", "").strip())
+            except (ValueError, TypeError):
+                return 0
+
+        foreign_net = trust_net = dealer_net = total_net = 0
+        for i, field in enumerate(fields):
+            if i >= len(total_row):
+                break
+            val = parse_int(total_row[i])
+            # 外資及陸資（不含外資自營商）買賣超
+            if "外資" in field and "自營商" not in field and "買賣超" in field:
+                foreign_net = val
+            # 投信買賣超
+            elif "投信" in field and "買賣超" in field:
+                trust_net = val
+            # 自營商（自行買賣）買賣超（取合計）
+            elif "自營商" in field and "買賣超" in field and "避險" not in field:
+                dealer_net += val
+            # 三大法人合計
+            elif "三大法人" in field and "合計" in field:
+                total_net = val
+
+        print(
+            f"  [T86] 外資:{foreign_net:+,} 投信:{trust_net:+,} "
+            f"自營:{dealer_net:+,} 合計:{total_net:+,}"
+        )
+        return {
+            "foreign_net_shares":       foreign_net,
+            "trust_net_shares":         trust_net,
+            "dealer_net_shares":        dealer_net,
+            "total_institutional_net":  total_net,
+            "foreign_net_positive":     foreign_net > 0,
+            "date":                     date_str,
+        }
+    except Exception as e:
+        print(f"  [WARN] T86 institutional: {e}")
+        return {}
+
+
 def fetch_finmind_technical(code: str) -> dict:
     """Technical indicators from FinMind (free tier)."""
     try:
@@ -381,8 +516,14 @@ def run():
     print("  US stocks...")
     us_prices = fetch_us_stocks()
 
-    print("  TW institutional...")
+    print("  TW institutional (per-stock)...")
     institutional = fetch_tw_institutional()
+
+    print("  market breadth (MI_INDEX)...")
+    breadth = fetch_market_breadth()
+
+    print("  market institutional total (T86)...")
+    institutional_market = fetch_market_institutional()
 
     print("  technical indicators (FinMind)...")
     technicals = {}
@@ -416,6 +557,8 @@ def run():
         },
         "portfolio_value": pf_value,
         "tw_positions_live": tw_positions,
+        "breadth": breadth,
+        "institutional_market": institutional_market,
         "news": news,
     }
 

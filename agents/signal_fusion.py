@@ -180,15 +180,54 @@ def compute(
     )
 
     # ──────────────────────────────────────────────────────────────────────────
-    # 8-10. Data-unavailable placeholders (batch 2 targets)
+    # 8. foreign_flow_strength  (0.0 ~ 1.0)
+    #    Source: TWSE T86 外資及陸資買賣超股數（全市場合計）
+    #    Normalize: +1B shares → 1.0 | 0 → 0.5 | -1B shares → 0.0
     # ──────────────────────────────────────────────────────────────────────────
-    foreign_flow_strength = 0.5   # needs: 外資買賣超 data
-    breadth_score = 0.5           # needs: 漲跌家數 data
-    liquidity_score = 0.5         # needs: 融資/融券/法人籌碼 data
-    sources["foreign_flow_strength"] = "data_unavailable → 0.50 neutral (batch 2)"
-    sources["breadth_score"] = "data_unavailable → 0.50 neutral (batch 2)"
-    sources["liquidity_score"] = "data_unavailable → 0.50 neutral (batch 2)"
-    data_gaps.extend(["foreign_flow_strength", "breadth_score", "liquidity_score"])
+    inst = market_data.get("institutional_market", {})
+    if inst.get("foreign_net_shares") is not None:
+        f_net = _safe(inst["foreign_net_shares"], 0.0)
+        # Clamp to ±1B shares range
+        foreign_flow_strength = _clamp(0.5 + f_net / 2e9)
+        sources["foreign_flow_strength"] = (
+            f"T86_foreign_net={int(f_net):+,}股 → "
+            f"normalized={foreign_flow_strength:.3f} (÷2B clamp±0.5)"
+        )
+    else:
+        foreign_flow_strength = 0.5
+        sources["foreign_flow_strength"] = "T86 data unavailable → 0.50 neutral"
+        data_gaps.append("foreign_flow_strength")
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # 9. breadth_score  (0.0 ~ 1.0)
+    #    Source: TWSE MI_INDEX 漲跌家數
+    #    advance_ratio = 上漲家數 / (上漲+下跌) — already includes 漲停/跌停
+    #    limit_up/limit_down skew: extreme limit-up days → bonus; limit-down → penalty
+    # ──────────────────────────────────────────────────────────────────────────
+    breadth = market_data.get("breadth", {})
+    if breadth.get("advance_ratio") is not None:
+        # advance_ratio already includes limit_up in numerator — use directly
+        adv_ratio = _safe(breadth["advance_ratio"], 0.5)
+        lu = int(_safe(breadth.get("limit_up", 0), 0.0))
+        ld = int(_safe(breadth.get("limit_down", 0), 0.0))
+        adv = int(_safe(breadth.get("advance", 0), 0.0))
+        dec = int(_safe(breadth.get("decline", 0), 0.0))
+        breadth_score = _clamp(adv_ratio)
+        sources["breadth_score"] = (
+            f"MI_INDEX advance={adv}(+{lu}漲停) decline={dec}(+{ld}跌停) "
+            f"advance_ratio={adv_ratio:.3f}"
+        )
+    else:
+        breadth_score = 0.5
+        sources["breadth_score"] = "MI_INDEX data unavailable → 0.50 neutral"
+        data_gaps.append("breadth_score")
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # 10. liquidity_score — still placeholder (needs 融資/融券 data, batch 3)
+    # ──────────────────────────────────────────────────────────────────────────
+    liquidity_score = 0.5
+    sources["liquidity_score"] = "data_unavailable → 0.50 neutral (融資/融券, batch 3)"
+    data_gaps.append("liquidity_score")
 
     return {
         "market_regime_score": round(market_regime_score, 3),
