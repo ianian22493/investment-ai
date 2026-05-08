@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-05-08T15:08:13.678702+08:00",
+  "fetched_at": "2026-05-08T18:53:40.825161+08:00",
   "indices": {
     "taiex": {
       "close": 41603.94,
@@ -20,8 +20,10 @@
       "change_pct": -0.13
     },
     "vix": {
-      "close": 17.08,
-      "change_pct": 0
+      "close": 17.11,
+      "prev_close": 17.08,
+      "change": 0.03,
+      "change_pct": 0.18
     }
   },
   "tw_stocks": {
@@ -122,7 +124,7 @@
         "ma60": 1954.58,
         "above_ma20": true,
         "above_ma60": true,
-        "vol_5d_avg": 36108163.0
+        "vol_5d_avg": 36565463.0
       }
     },
     "2536": {
@@ -162,7 +164,7 @@
         "ma60": 15.62,
         "above_ma20": true,
         "above_ma60": true,
-        "vol_5d_avg": 36127302.0
+        "vol_5d_avg": 36151102.0
       }
     },
     "3293": {
@@ -454,32 +456,41 @@
     }
   },
   "tw_positions_live": [],
+  "breadth": {},
+  "institutional_market": {
+    "foreign_net_shares": 0,
+    "trust_net_shares": 0,
+    "dealer_net_shares": -184832646,
+    "total_institutional_net": 0,
+    "foreign_net_positive": false,
+    "date": "20260508"
+  },
   "news": {
     "tw": [
-      "美媒示警 台股逼近玩火 - Yahoo股市",
-      "「大散戶時代」來了！4個面向看懂台股新勢力 - Yahoo股市",
-      "台股列車愈開愈快　謝金河示警「沒獲利飆千元公司未來考驗大」 - ETtoday財經雲",
-      "台股開盤跌47.75點 - 聯合新聞網",
-      "TWA00 加權指數- 5/8 幸福感下滑， 群龍無首-股市爆料同學會 - CMoney",
+      "居高思危？台股狂噴 4月卻爆逾54萬人提前下車 - Yahoo股市",
       "台股「玩火」？巴菲特指標飆500% 彭金隆：股市終將回歸基本面 - news.cnyes.com",
+      "2330 台積電 - 今日大盤籌碼-股市爆料同學會 - CMoney",
+      "台股四萬點後的狂歡與沉默絕望？ 股市成為年輕世代最後的求生舟？ - 蕃新聞",
+      "AI股領軍 台股衝破4萬高點 股市獲利轉買市中心「實質資產」避險 | 房市情報 | 商情 - 經濟日報",
       "瘋無本賭博！台股當沖客超過一半 金管會證實：與散戶比例53%相當 - Yahoo股市",
-      "漲多拉回！台股收跌329點 台積電收2290元 - PChome Online 新聞",
-      "台積電恐淪壁紙？謝金河嗆「這1群人」看衰台灣 - Yahoo股市",
-      "連建商都不買地去炒股了？這波「股轉房」是真的！億級豪宅回籠客現蹤：解析豪客棄守蛋白區的背後算計｜房市觀點 - Yahoo股市",
-      "股市迎來漲多拉回壓力！台股開盤跌47點　台積電跌10元 - NOWnews今日新聞",
-      "台股衝破4萬2...進場0050有懼高症？專家「兩關鍵原則」勸進：今天的高點就是未來的低點 - Yahoo股市"
+      "台積電、聯發科、鴻海…股市操作也要套用「寧為雞首不為牛後」思維？一切要從推升股價的「主因」說起！ - 今周刊",
+      "美媒示警 台股逼近玩火 - Yahoo股市",
+      "【Hot台股】台股重殺800點又V轉...網傻眼「母親節變盤有沒有搞錯」 分析師看法曝 - Yahoo股市",
+      "【Follow法人】外資狂掃18萬張群創！反手砍3萬張旺宏 聯電也遭甩2萬張 - Yahoo股市",
+      "台股突跳水逾800點！專家喊「免驚」：做多即可 - Yahoo股市",
+      "台股四萬點後的狂歡與沉默絕望？ 股市成為年輕世代最後的求生舟？ - 焦點時報"
     ],
     "us": [
+      "A new Wall Street target for the S&P 500 is very nearly the top. Here are the trades to make. - MarketWatch",
       "Wall Street rebound driven by smallest number of stocks on record - Financial Times",
       "S&P 500 pulls back from record as investors eye oil prices and Iran deal developments: Live updates - CNBC",
       "Stock Market News, May 6, 2026: AI Rally Propels Nasdaq to Another Record High - WSJ",
-      "U.S Stock Market on Friday: S&P 500, Dow Jones, Nasdaq to end week in high at Wall Street? Check share mar - The Economic Times",
-      "Bank of America issues blunt warning to Wall Street on stock market - MSN",
-      "Dow surges 600 points, S&P 500 posts first close above 7,300 as traders hope for Iran deal: Live updates - CNBC",
-      "U.S. Stock Market on Thursday: S&P 500, Nasdaq, Dow Jones, Russell 2000 investors eye five factors that wi - The Economic Times",
-      "U.S. Stock Market on Wednesday: Will S&P 500, Dow Jones, Nasdaq, Russell 2000 slip? Factors that will deci - The Economic Times",
-      "Wall Street is bracing for stocks to swing as the April jobs report looms - Business Insider",
-      "Wall Street stocks touch records on upbeat earnings, dip in oil - Reuters"
+      "A new trading motto guides investors through midterm volatility: 'Sell in July for a Big October Buy' - Business Insider",
+      "Wall Street stocks touch records on upbeat earnings, dip in oil - Reuters",
+      "Opinion | Why the Stock Market Makes No Sense Right Now - nytimes.com",
+      "Stock Market Today: Dow Jones Roars As Industrials Rescue Wall Street From Meta-Led Tech Slide - Benzinga",
+      "How Wall Street is setting records even with the Iran war still going on - AP News",
+      "Stock Market News, May 4, 2026: Oil Rises, Dow Falls on Fears of Escalation in Hormuz - WSJ"
     ]
   }
 }
