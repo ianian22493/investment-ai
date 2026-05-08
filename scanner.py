@@ -118,8 +118,10 @@ def fetch_top_stocks() -> list[dict]:
 
 # ── Technical analysis ────────────────────────────────────────────────────────
 
-def calc_signals(df: pd.DataFrame, code: str) -> dict | None:
-    """Calculate technical signals. Returns None if insufficient data."""
+def calc_signals(df: pd.DataFrame, code: str, taiex_close: pd.Series = None) -> dict | None:
+    """Calculate technical signals. Returns None if insufficient data.
+    taiex_close: TAIEX (^TWII) close series for relative strength calculation.
+    """
     if df is None or df.empty:
         return None
 
@@ -175,20 +177,48 @@ def calc_signals(df: pd.DataFrame, code: str) -> dict | None:
     # 5-day high: today is highest close in last 5 sessions
     five_day_high = last_close >= float(close.tail(5).max())
 
-    score = sum([breakout_ma20, above_ma20, vol_surge, rsi_zone, ma_aligned, five_day_high])
+    # ── Relative Strength vs TAIEX ────────────────────────────────────────────
+    # rs_1d: stock 1-day change% minus TAIEX 1-day change%
+    # rs_5d: stock 5-day return% minus TAIEX 5-day return%
+    # rs_signal: True if outperforming on BOTH timeframes (quality filter)
+    rs_1d = 0.0
+    rs_5d = 0.0
+    rs_signal = False
+
+    stock_1d_chg = (last_close - prev_close) / prev_close * 100 if prev_close > 0 else 0.0
+    stock_5d_ret = 0.0
+    if len(close) >= 6:
+        prev5 = float(close.iloc[-6])
+        stock_5d_ret = (last_close - prev5) / prev5 * 100 if prev5 > 0 else 0.0
+
+    if taiex_close is not None and len(taiex_close) >= 6:
+        t_last  = float(taiex_close.iloc[-1])
+        t_prev1 = float(taiex_close.iloc[-2])
+        t_prev5 = float(taiex_close.iloc[-6])
+        taiex_1d = (t_last - t_prev1) / t_prev1 * 100 if t_prev1 > 0 else 0.0
+        taiex_5d = (t_last - t_prev5) / t_prev5 * 100 if t_prev5 > 0 else 0.0
+        rs_1d = round(stock_1d_chg - taiex_1d, 2)
+        rs_5d = round(stock_5d_ret - taiex_5d, 2)
+        # Signal: outperform by ≥0.5% today AND ≥1.0% over 5 days
+        rs_signal = (rs_1d >= 0.5) and (rs_5d >= 1.0)
+
+    score = sum([breakout_ma20, above_ma20, vol_surge, rsi_zone, ma_aligned, five_day_high, rs_signal])
 
     return {
         "breakout_ma20": bool(breakout_ma20),
-        "above_ma20": bool(above_ma20),
-        "vol_surge": bool(vol_surge),
-        "vol_ratio": float(round(vol_ratio, 2)),
-        "rsi": float(round(rsi, 1)),
-        "rsi_zone": bool(rsi_zone),
-        "ma_aligned": bool(ma_aligned),
+        "above_ma20":    bool(above_ma20),
+        "vol_surge":     bool(vol_surge),
+        "vol_ratio":     float(round(vol_ratio, 2)),
+        "rsi":           float(round(rsi, 1)),
+        "rsi_zone":      bool(rsi_zone),
+        "ma_aligned":    bool(ma_aligned),
         "five_day_high": bool(five_day_high),
-        "score": int(score),
-        "last_close": float(round(last_close, 2)),
-        "ma20": float(round(ma20_val, 2)),
+        "rs_1d":         float(rs_1d),
+        "rs_5d":         float(rs_5d),
+        "rs_signal":     bool(rs_signal),
+        "score":         int(score),
+        "last_close":    float(round(last_close, 2)),
+        "ma20":          float(round(ma20_val, 2)),
     }
 
 
@@ -205,10 +235,12 @@ def run_scanner() -> list[dict]:
 
     tickers = [f"{s['code']}.TW" for s in top_stocks]
 
-    print(f"[scanner] Downloading 60-day history for {len(tickers)} tickers...")
+    # Include TAIEX index for relative strength; downloaded together to save API calls
+    tickers_dl = tickers + ["^TWII"]
+    print(f"[scanner] Downloading 60-day history for {len(tickers)} stocks + TAIEX...")
     try:
         raw = yf.download(
-            tickers,
+            tickers_dl,
             period="60d",
             group_by="ticker",
             auto_adjust=True,
@@ -219,19 +251,32 @@ def run_scanner() -> list[dict]:
         print(f"[scanner] yfinance batch download failed: {e}")
         return []
 
+    # Extract TAIEX close for relative strength calculation
+    taiex_close = None
+    try:
+        if isinstance(raw.columns, pd.MultiIndex) and "^TWII" in raw.columns.get_level_values(0):
+            taiex_df = raw["^TWII"]
+            taiex_close = taiex_df["Close"].dropna() if "Close" in taiex_df.columns else None
+            if taiex_close is not None and len(taiex_close) > 0:
+                print(f"[scanner] TAIEX RS base: {float(taiex_close.iloc[-1]):.0f} "
+                      f"({(float(taiex_close.iloc[-1])-float(taiex_close.iloc[-2]))/float(taiex_close.iloc[-2])*100:+.2f}%)")
+    except Exception as e:
+        print(f"[scanner] TAIEX extraction failed: {e}")
+
     candidates = []
     for s in top_stocks:
         code = s["code"]
         ticker = f"{code}.TW"
         try:
-            if len(tickers) == 1:
-                df = raw
-            elif ticker in raw.columns.get_level_values(0):
+            # Always use MultiIndex access (tickers_dl always has ≥2 elements)
+            if isinstance(raw.columns, pd.MultiIndex):
+                if ticker not in raw.columns.get_level_values(0):
+                    continue
                 df = raw[ticker]
             else:
-                continue
+                df = raw  # fallback for edge case
 
-            signals = calc_signals(df, code)
+            signals = calc_signals(df, code, taiex_close=taiex_close)
             if signals is None or signals["score"] < MIN_SCORE:
                 continue
 
@@ -277,6 +322,7 @@ if __name__ == "__main__":
             if c.get("rsi_zone"):      signals.append(f"RSI{c['rsi']}")
             if c.get("ma_aligned"):    signals.append("均線多排")
             if c.get("five_day_high"): signals.append("5日高")
+            if c.get("rs_signal"):     signals.append(f"強於大盤({c.get('rs_1d',0):+.1f}%/1d {c.get('rs_5d',0):+.1f}%/5d)")
             print(f"  {i}. {c['name']}({c['code']}) "
                   f"score={c['score']} | {' / '.join(signals)}")
     else:

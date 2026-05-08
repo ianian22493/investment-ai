@@ -492,7 +492,14 @@ function renderTodayPanel(agents, cf, master) {
   // Pick card
   if (pick && pick.verdict !== 'ERROR' && pick.pick) {
     const p = pick.pick;
-    const sigs = (pick.core_logic ? Object.entries(pick.core_logic).filter(([,v])=>v).map(([k])=>k) : []).slice(0,4);
+    // Gather scanner signals from pick output
+    const sigKeys = ['breakout_ma20','vol_surge','rsi_zone','ma_aligned','five_day_high','rs_signal'];
+    const sigLabels = {
+      breakout_ma20:'MA20突破', vol_surge:'量爆', rsi_zone:'RSI強', ma_aligned:'均線多排',
+      five_day_high:'5日高', rs_signal:'強於大盤'
+    };
+    const rawSigs = pick.scanner_signals || pick.core_logic || {};
+    const sigs = sigKeys.filter(k => rawSigs[k] || (Array.isArray(pick.scanner_signals) && pick.scanner_signals.includes(k)));
     const pickColor = verdictColor(pick.verdict);
     $('pick-area').innerHTML = `<div class="pick-card">
       <div class="pick-header">
@@ -504,7 +511,7 @@ function renderTodayPanel(agents, cf, master) {
         <div class="pick-name">${p.name || '—'}</div>
       </div>
       ${p.rationale ? `<div class="pick-verdict">${p.rationale.slice(0,120)}</div>` : ''}
-      ${sigs.length ? `<div class="pick-signals">${sigs.map(s=>`<div class="sig-pill">${s}</div>`).join('')}</div>` : ''}
+      ${sigs.length ? `<div class="pick-signals">${sigs.map(s=>`<div class="sig-pill">${sigLabels[s]||s}</div>`).join('')}</div>` : ''}
     </div>`;
   } else {
     $('pick-area').innerHTML = `<div class="pick-none">盤後分析完成後顯示<br>(13:00+ 執行)</div>`;

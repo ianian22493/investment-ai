@@ -84,7 +84,7 @@ def save_pick(
         code = "NONE"
 
     # Prefer scanner signals (precise); fall back to core_logic (coarse)
-    SCANNER_SIGNAL_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high")
+    SCANNER_SIGNAL_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high", "rs_signal")
     if scanner_signals:
         signals = scanner_signals
     else:

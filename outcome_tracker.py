@@ -60,7 +60,7 @@ def save_today_pick(pick_output: dict, regime: dict, market_data: dict, candidat
         return
 
     # 從 scanner candidates 找出該股的精確信號
-    SIGNAL_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high")
+    SIGNAL_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high", "rs_signal")
     scanner_signals = None
     if candidates:
         matched = next((c for c in candidates if c.get("code") == code), None)
