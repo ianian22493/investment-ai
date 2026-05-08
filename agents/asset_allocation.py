@@ -42,6 +42,14 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
     net      = total - loan
     alloc    = pv.get("allocation_pct", {})
 
+    # ── Personal finance (cash savings + income) ─────────────────────────────
+    pf       = portfolio.get("personal_finance", {})
+    cash_savings    = pf.get("cash_savings_twd", 0)
+    monthly_income  = pf.get("monthly_income_twd", 0)
+    liquid_assets   = tw_val + us_val + fund_val  # 不含房產
+    income_12m      = monthly_income * 12
+    total_available_12m = cash_savings + income_12m  # 未來12個月可動用資金（不含股票）
+
     # ── Dynamic payment schedule (reads from portfolio.json) ─────────────────
     payment_schedule = re.get("payment_schedule", [])
     upcoming_total = sum(p["amount"] for p in payment_schedule)
@@ -83,9 +91,16 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
         f"  ──────────────────────────────",
         f"  未來12個月合計: NT${next_12m_total:,}",
         f"  全部現金需求合計: NT${upcoming_total:,}",
+        f"\n【個人財務】",
+        f"銀行現金存款: NT${cash_savings:,}",
+        f"月收入（薪資）: NT${monthly_income:,}",
+        f"未來12個月薪資合計: NT${income_12m:,}",
+        f"12個月可用資金（存款+薪資）: NT${total_available_12m:,}",
         f"\n【流動性分析】",
-        f"可快速變現資產（台股+美股+基金）: NT${tw_val+us_val+fund_val:,}",
-        f"現金需求 vs 可變現資產比: {next_12m_total/(tw_val+us_val+fund_val)*100:.1f}%" if (tw_val+us_val+fund_val) > 0 else "",
+        f"可快速變現投資資產（台股+美股+基金）: NT${liquid_assets:,}",
+        f"12個月現金需求: NT${next_12m_total:,}",
+        f"12個月資金缺口（需求 - 可用）: NT${next_12m_total - total_available_12m:,}"
+        + (" ⚠️ 缺口！" if next_12m_total > total_available_12m else " ✅ 無缺口"),
         f"\n【壓力測試情境】",
         f"台股-40%後: NT${tw_val*0.6:,.0f}",
         f"美股-30%後: NT${us_val*0.7:,.0f}",

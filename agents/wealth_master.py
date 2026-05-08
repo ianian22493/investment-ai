@@ -41,32 +41,63 @@ WEALTH_SCHEMA = """
 def run(
     fx_fund: dict,
     asset_allocation: dict,
+    portfolio: dict = None,
 ) -> dict:
     lines = []
 
-    lines.append("【日幣基金 Agent】")
+    # ── 直接注入現金和薪資數字（不依賴 LLM agent 的詮釋）────────────────────
+    pf = (portfolio or {}).get("personal_finance", {})
+    cash_savings   = pf.get("cash_savings_twd", 0)
+    monthly_income = pf.get("monthly_income_twd", 0)
+    income_12m     = monthly_income * 12
+
+    re = (portfolio or {}).get("real_estate", {})
+    payment_schedule = re.get("payment_schedule", [])
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    now = datetime.now(ZoneInfo("Asia/Taipei"))
+    next_12m_obligations = sum(
+        p["amount"] for p in payment_schedule
+        if p.get("date", "9999") <= (now.replace(year=now.year + 1)).strftime("%Y-%m-%d")
+    )
+    cash_available_12m = cash_savings + income_12m
+    cash_gap = next_12m_obligations - cash_available_12m
+
+    lines += [
+        "【個人財務（原始數字）】",
+        f"銀行存款: NT${cash_savings:,}",
+        f"月薪: NT${monthly_income:,} → 年薪資合計: NT${income_12m:,}",
+        f"未來12個月現金需求（裝修/購屋款）: NT${next_12m_obligations:,}",
+        f"12個月可用資金（存款+薪資）: NT${cash_available_12m:,}",
+        f"資金缺口: NT${cash_gap:,} " + ("⚠️ 需動用投資資產" if cash_gap > 0 else "✅ 薪資可覆蓋"),
+        "",
+        "【重要背景】",
+        "房地產為預售屋（自住用途），2026-12 交屋。",
+        "房產占總資產比例高是結構性因素，不代表立即的流動性危機。",
+        "評估 risk_level 時，請以「可投資流動資產」和「現金流壓力」為主要依據，",
+        "不要因為房產占比高就自動給 high/extreme。",
+    ]
+
+    lines.append("\n【日幣基金 Agent】")
     lines.append(f"verdict={fx_fund.get('verdict')} confidence={fx_fund.get('confidence')}")
     lines.append(f"摘要：{fx_fund.get('summary','')[:150]}")
-    for rec in fx_fund.get("recommendations", [])[:2]:
-        lines.append(f"  [{rec.get('urgency')}] {rec.get('action')} {rec.get('target')}: {rec.get('detail','')[:60]}")
 
-    lines.append(f"\n【資產配置 Agent（風控）】")
+    lines.append(f"\n【資產配置 Agent（風控參考）】")
     lines.append(f"verdict={asset_allocation.get('verdict')} confidence={asset_allocation.get('confidence')}")
     lines.append(f"摘要：{asset_allocation.get('summary','')[:200]}")
     for flag in asset_allocation.get("risk_flags", [])[:3]:
         lines.append(f"  ⚠️ {flag}")
-    for rec in asset_allocation.get("recommendations", [])[:3]:
-        lines.append(f"  [{rec.get('urgency')}] {rec.get('action')} {rec.get('target')}: {rec.get('detail','')[:60]}")
 
-    user_content = "\n".join(lines) + """
+    user_content = "\n".join(lines) + f"""
 
-作為 Wealth Desk 主管，整合以上分析：
-1. 目前整體財務的最大風險是什麼？
-2. 未來 12 個月的現金流是否有壓力點？
-3. 日幣資產對整體配置的影響？
-4. 給出 risk_level（這個值會被用來調整 Trading Desk 的操作額度）
+作為 Wealth Desk 主管，根據以上原始數字評估：
+1. 未來12個月現金流：薪資+存款 NT${cash_available_12m:,} vs 需求 NT${next_12m_obligations:,}，實際壓力如何？
+2. 可投資流動資產（台股+美股+基金）的健康度如何？
+3. 日幣資產的匯率風險？
+4. 給出 risk_level（基於流動性和現金流，而非房產占比）
 
-注意：你的 risk_level 判斷必須謹慎但不過度保守。只有真正的系統性風險才應觸發 high/extreme。
+注意：房產占比高是預售屋購置的結構性現象，不是系統性財務危機。
+只有當現金流真正無法覆蓋義務、或投資資產有系統性問題時，才給 high/extreme。
 """
 
     # Merge schema into system

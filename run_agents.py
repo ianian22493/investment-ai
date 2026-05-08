@@ -235,6 +235,7 @@ def run_all():
         lambda: wealth_master.run(
             fx_fund=outputs.get("fx_fund", {}),
             asset_allocation=outputs.get("asset_allocation", {}),
+            portfolio=portfolio,
         ),
         sleep_fn=lambda: _sleep("wealth_master"),
     )
