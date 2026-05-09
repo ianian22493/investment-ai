@@ -262,11 +262,13 @@ def run_all():
 
     # ── Phase 6: Capital Flow Engine (no LLM) ─────────────────────────────────
     print("\n── Phase 6: Capital Flow Engine (rules) ──")
+    investment_style = portfolio.get("personal_finance", {}).get("investment_style", "moderate")
     outputs["capital_flow"] = compute_capital_flow(
         regime=regime,
         trading_desk=outputs["trading_master"],
         portfolio_desk=outputs["portfolio_master"],
         wealth_desk=outputs["wealth_master"],
+        investment_style=investment_style,
     )
     cf = outputs["capital_flow"]
     b  = cf.get("budget", {})

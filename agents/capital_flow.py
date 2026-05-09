@@ -30,6 +30,7 @@ def compute(
     trading_desk: dict,
     portfolio_desk: dict,
     wealth_desk: dict,
+    investment_style: str = "moderate",
 ) -> dict:
     """
     唯一負責資金預算分配的函式。
@@ -37,11 +38,19 @@ def compute(
     """
     override_flags = []
 
-    # ── Step 1: Base allocation（中性狀態的預設值）──────────────────────────
-    # trading 30% / portfolio 50% / cash 20%（個人投資組合的保守基準）
-    trading_pct   = 0.30
-    portfolio_pct = 0.50
-    cash_pct      = 0.20
+    # ── Step 1: Base allocation（依投資風格設定基準）────────────────────────
+    if investment_style == "aggressive":
+        trading_pct   = 0.45
+        portfolio_pct = 0.45
+        cash_pct      = 0.10
+    elif investment_style == "conservative":
+        trading_pct   = 0.15
+        portfolio_pct = 0.50
+        cash_pct      = 0.35
+    else:  # moderate
+        trading_pct   = 0.30
+        portfolio_pct = 0.50
+        cash_pct      = 0.20
 
     # ── Step 2: Wealth Desk 流動性風險（liquidity_risk）決定安全上限 ──────────
     # 重要：只用 liquidity_risk（現金流），不用 structural_risk（房產占比）
