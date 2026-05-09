@@ -412,7 +412,7 @@ function renderSignalPanel(sv, dataGaps) {
 
   // Meta badge
   const gaps = dataGaps || sv._data_gaps || [];
-  $('signal-meta').textContent = gaps.length ? `${gaps.length} signals N/A (batch 2)` : '全部信號可用';
+  $('signal-meta').textContent = gaps.length ? `${gaps.length} signal N/A` : '全部信號可用';
 
   const GAUGES = [
     {
@@ -446,13 +446,11 @@ function renderSignalPanel(sv, dataGaps) {
     },
     {
       key:'foreign_flow_strength', label:'FOREIGN FLOW', type:'bar', inverted:false,
-      desc:'外資流向：待 batch2（外資買賣超資料）',
-      isNA: true,
+      desc:'外資流向：TWSE T86 外資買賣超（千股）',
     },
     {
       key:'breadth_score', label:'MKT BREADTH', type:'bar', inverted:false,
-      desc:'市場廣度：待 batch2（漲跌家數資料）',
-      isNA: true,
+      desc:'市場廣度：TWSE MI_INDEX 漲跌家數',
     },
   ];
 
@@ -465,7 +463,7 @@ function renderSignalPanel(sv, dataGaps) {
 
     let visual = '';
     if (isNA) {
-      visual = `<div class="na-label">N/A</div><div class="na-sub">待 batch2 資料</div>`;
+      visual = `<div class="na-label">N/A</div><div class="na-sub">待 batch3 資料</div>`;
     } else if (g.type === 'arc') {
       const col = g.colorFn(v);
       visual = arcGaugeSVG(v, col);

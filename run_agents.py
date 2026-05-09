@@ -308,6 +308,7 @@ def run_all():
     )
 
     # ── Save analysis.json ────────────────────────────────────────────────────
+    outputs.pop("_candidates", None)   # internal key, not for serialization
     analysis = {
         "generated_at": t0.isoformat(),
         "market_snapshot": {

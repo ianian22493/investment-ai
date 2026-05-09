@@ -1,11 +1,7 @@
 name: 每日投資 AI 分析
 
 on:
-  schedule:
-    # 台灣時間：09:10 開盤 (01:10 UTC)、13:35 收盤後 (05:35 UTC)，週一至週五
-    - cron: "10 1 * * 1-5"
-    - cron: "35 5 * * 1-5"
-  workflow_dispatch:   # 允許手動觸發
+  workflow_dispatch:   # 由 cron-job.org 觸發，不使用 GitHub 內建 cron
 
 permissions:
   contents: write
@@ -51,7 +47,7 @@ jobs:
         run: |
           git config user.name  "Investment AI Bot"
           git config user.email "bot@investment-ai.local"
-          git add data/analysis.json data/market_data.json data/candidate_stocks.json data/alpha.db data/agent_cache.json
+          git add data/analysis.json data/market_data.json data/candidate_stocks.json data/alpha.db data/agent_cache.json data/signal_vector.json
           git diff --staged --quiet || git commit -m "chore: update analysis $(TZ='Asia/Taipei' date '+%Y-%m-%d %H:%M')"
           git push
 

@@ -52,9 +52,10 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
 
     # ── Dynamic payment schedule (reads from portfolio.json) ─────────────────
     payment_schedule = re.get("payment_schedule", [])
-    upcoming_total = sum(p["amount"] for p in payment_schedule)
+    personal_share = re.get("personal_share_pct", 1.0)  # 夫妻各付一半時 = 0.5
+    upcoming_total = sum(p["amount"] * personal_share for p in payment_schedule)
     next_12m_total = sum(
-        p["amount"] for p in payment_schedule
+        p["amount"] * personal_share for p in payment_schedule
         if p.get("date", "9999") <= (now.replace(year=now.year + 1)).strftime("%Y-%m-%d")
     )
 
@@ -85,7 +86,8 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
             months_away = f"（{diff//30}個月後）"
         except Exception:
             pass
-        lines.append(f"  {p['date']} {p['name']}: NT${p['amount']:,} {months_away} [{p.get('category','?')}]")
+        my_share = p["amount"] * personal_share
+        lines.append(f"  {p['date']} {p['name']}: NT${my_share:,.0f} {months_away} [{p.get('category','?')}]（個人份額{personal_share*100:.0f}%）")
 
     lines += [
         f"  ──────────────────────────────",

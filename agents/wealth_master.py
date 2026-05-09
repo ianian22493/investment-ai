@@ -68,11 +68,12 @@ def run(
 
     re = (portfolio or {}).get("real_estate", {})
     payment_schedule = re.get("payment_schedule", [])
+    personal_share = re.get("personal_share_pct", 1.0)  # 夫妻共同負擔時 = 0.5
     from datetime import datetime
     from zoneinfo import ZoneInfo
     now = datetime.now(ZoneInfo("Asia/Taipei"))
     next_12m_obligations = sum(
-        p["amount"] for p in payment_schedule
+        p["amount"] * personal_share for p in payment_schedule
         if p.get("date", "9999") <= (now.replace(year=now.year + 1)).strftime("%Y-%m-%d")
     )
     cash_available_12m = cash_savings + income_12m
