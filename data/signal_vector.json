@@ -1,21 +1,21 @@
 {
-  "market_regime_score": 0.3,
-  "trend_strength": 0.58,
+  "market_regime_score": 0.9,
+  "trend_strength": 0.715,
   "risk_pressure": 0.331,
-  "volatility_risk": 0.168,
+  "volatility_risk": 0.229,
   "confidence_score": 0.8,
-  "scanner_momentum": 1.0,
+  "scanner_momentum": 0.95,
   "ai_sector_strength": 0.35,
   "foreign_flow_strength": 0.5,
   "breadth_score": 0.5,
   "liquidity_score": 0.5,
   "_sources": {
-    "market_regime_score": "regime=資金輪動(base=+0.3) risk_level=moderate(delta=+0.00)",
-    "trend_strength": "taiex_chg=+0.00%→base=0.500 market_overview_adj=+0.08",
+    "market_regime_score": "regime=趨勢多頭(base=+0.8) risk_level=low(delta=+0.10)",
+    "trend_strength": "taiex_chg=+0.81%→base=0.635 market_overview_adj=+0.08",
     "risk_pressure": "vix=17.2→0.260 tw_verdict_adj=-0.064 da_conf=0.90→0.135",
-    "volatility_risk": "vix=17.2→0.240×0.7 taiex_abs=0.00%→0.000×0.3",
+    "volatility_risk": "vix=17.2→0.240×0.7 taiex_abs=0.81%→0.203×0.3",
     "confidence_score": "avg_agent_conf=0.800 error_agents=0 penalty=0.0",
-    "scanner_momentum": "top10_avg=6.00/6.0",
+    "scanner_momentum": "top10_avg=5.70/6.0",
     "ai_sector_strength": "inferred from ai_headline_hits=0 (no direct sector ETF — batch 2 target)",
     "foreign_flow_strength": "T86 data unavailable → 0.50 neutral",
     "breadth_score": "MI_INDEX data unavailable → 0.50 neutral",
@@ -26,5 +26,5 @@
     "breadth_score",
     "liquidity_score"
   ],
-  "_computed_at": "2026-05-11T09:05:00.788955+08:00"
+  "_computed_at": "2026-05-11T13:38:51.337994+08:00"
 }
