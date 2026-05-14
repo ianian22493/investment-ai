@@ -42,7 +42,23 @@ PHASE 7 — 風險引擎（最高優先）：若風險過高則降低信心或�
 你的輸出必須是 JSON。分析風格採 Professional Trading Desk / Hedge Fund Memo，
 不要像新聞稿、投顧老師或散戶論壇。
 
-pick 欄位：若空手觀望，name/code 填 "—"，entry_zone/stop_loss/target 填 "不適合進場"。
+## 價格欄位規範（極嚴格 — 必須是可執行的具體數字）
+
+當 verdict 為「推薦出手」或「謹慎試單」時，下列三個欄位必須是**明確、可執行的價格數字**，
+不能是文字敘述。使用者會直接拿去下單。
+
+- entry_zone：必須給**具體價格區間**（例：「138.5-142.0」或「破144 突破追進」），
+              不能寫「逢低買進」「適度試單」這種模糊話術。
+- stop_loss：必須給**具體停損價**（例：「135.0」或「跌破134.5」），
+             不能寫「嚴設停損」「適度停損」。
+- target：必須給**具體目標價**（例：「152」或「+8% (~150)」），
+          不能寫「逢高停利」「擇機獲利」。
+- risk_reward：用 entry / stop_loss / target 算出風報比（例：「1:2.5」「1:3」），
+               若無法計算填 "—"。
+
+當 verdict 為「空手觀望」：entry_zone/stop_loss/target/risk_reward 全填 "—"。
+
+pick 欄位：若空手觀望，name/code 填 "—"。
 verdict 只能是：推薦出手 / 謹慎試單 / 空手觀望
 """
 
@@ -54,9 +70,11 @@ PICK_SCHEMA = """
   "pick": {
     "name": "股票名稱",
     "code": "股票代號（4-5碼）",
-    "entry_zone": "建議觀察進場區間",
-    "stop_loss": "停損條件",
-    "target": "目標報酬空間",
+    "entry_zone": "具體進場價格區間，例如：138.5-142.0",
+    "stop_loss": "具體停損價，例如：135.0",
+    "target": "具體目標價，例如：152.0",
+    "risk_reward": "風報比，例如：1:2.5",
+    "ref_close": "今日收盤參考價，例如：140.5",
     "hold_days": "預計持有1-3天"
   },
   "market_regime": "一句話描述目前市場狀態",
@@ -156,7 +174,10 @@ def run(
 提醒：
 - 從全部上市櫃股票中選，不限於特定持股
 - 若今日市場環境不適合短線交易，請直接輸出「空手觀望」
-- 交易策略要具體：進場區、停損位、目標
+- 交易策略要具體：**entry_zone / stop_loss / target 必須是具體可下單的價格**（例：138.5-142、135、152）
+  · 不接受模糊敘述（「逢低買進」「適度停損」「逢高停利」一律不行）
+  · 必須給今日 ref_close（收盤價）作為參考錨點
+  · 必須算出 risk_reward（用 entry/stop/target 反推）
 - 反方觀點必須提供
 """
 
@@ -188,7 +209,7 @@ def run(
             return {
                 "verdict": "ERROR", "confidence": 0,
                 "summary": f"tw_daily_pick JSON parse error: {e}",
-                "pick": {"name": "—", "code": "—", "entry_zone": "—", "stop_loss": "—", "target": "—", "hold_days": "—"},
+                "pick": {"name": "—", "code": "—", "entry_zone": "—", "stop_loss": "—", "target": "—", "risk_reward": "—", "ref_close": "—", "hold_days": "—"},
                 "risk_flags": ["解析失敗"], "agent_note": "parse error",
             }
         except Exception as e:
@@ -202,6 +223,6 @@ def run(
             return {
                 "verdict": "ERROR", "confidence": 0,
                 "summary": f"tw_daily_pick error: {e}",
-                "pick": {"name": "—", "code": "—", "entry_zone": "—", "stop_loss": "—", "target": "—", "hold_days": "—"},
+                "pick": {"name": "—", "code": "—", "entry_zone": "—", "stop_loss": "—", "target": "—", "risk_reward": "—", "ref_close": "—", "hold_days": "—"},
                 "risk_flags": [err], "agent_note": "API call failed",
             }

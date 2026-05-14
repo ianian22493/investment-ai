@@ -3,716 +3,3131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>又瑄投資AI — Decision OS</title>
+<title>Yuzu Capital OS</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
-:root {
-  --bg:#060B17; --bg2:#0C1526; --bg3:#121D33; --bg4:#18263E;
-  --border:#1A2B48; --border2:#243D68;
+:root{
+  --bg:#060B17; --bg2:#0D1521; --bg3:#141E30; --bg4:#1A2640; --bg5:#202E4A;
+  --border:#1E2D45; --border2:#263D5E; --border3:#34507D;
   --text:#DDE5F5; --text2:#7A8EBD; --text3:#3A4D7A;
+  --gold:#C9A84C; --gold-dim:#1A1505;
+  --cyan:#00E5FF;
   --green:#00C896; --green-dim:#091F18;
-  --red:#FF4560; --red-dim:#200B11;
+  --red:#FF4560;   --red-dim:#200B11;
   --yellow:#FFB800; --yellow-dim:#201800;
-  --blue:#3D8EFF; --blue-dim:#0A1930;
-  --orange:#FF7A00; --purple:#A259FF;
-  --accent:#3D8EFF;
+  --blue:#3D8EFF;  --blue-dim:#0A1930;
+  --purple:#A259FF; --orange:#FF7A00;
+
+  /* Agent palette */
+  --a-cio:#C9A84C;
+  --a-tm:#00E5FF;
+  --a-tw:#00C896;
+  --a-da:#FF4560;
+  --a-pm:#3D8EFF;
+  --a-wm:#A259FF;
+
+  /* Iso wall tints (subtle, room signature) */
+  --w-exec:#1E1A0E;
+  --w-trading:#0A1F26;
+  --w-research:#0E1A2E;
+  --w-risk:#22090E;
+  --w-wealth:#1A0E26;
+  --w-archive:#161A24;
+  --w-lobby:#1F1A0F;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:"SF Mono","JetBrains Mono","Fira Code","Consolas","Noto Sans TC",monospace;font-size:13px;line-height:1.6;min-height:100vh;overflow-x:hidden}
-
-/* ═══ COMMAND BAR (sticky) ═══════════════════════════════════════════ */
-.cmd-bar {
-  position:sticky;top:0;z-index:100;
-  background:rgba(6,11,23,.95);
-  border-bottom:1px solid var(--border2);
-  backdrop-filter:blur(12px);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;height:56px;gap:12px;
+html,body{
+  background:var(--bg); color:var(--text);
+  font-family:"JetBrains Mono","Fira Code","Consolas","Noto Sans TC",monospace;
+  font-size:13px; line-height:1.55; min-height:100vh;
 }
-.cmd-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.cmd-logo{width:28px;height:28px}
-.cmd-title{font-size:13px;font-weight:700;color:var(--text2);letter-spacing:.5px}
+body{
+  background:
+    radial-gradient(ellipse 70% 40% at 50% -10%, rgba(201,168,76,.08), transparent 60%),
+    radial-gradient(ellipse 50% 30% at 100% 100%, rgba(61,142,255,.04), transparent 60%),
+    var(--bg);
+  overflow-x:hidden;
+}
+button{font-family:inherit; cursor:pointer}
 
-.cmd-verdict-wrap{display:flex;flex-direction:column;align-items:center;gap:1px}
-.cmd-verdict{font-size:18px;font-weight:800;letter-spacing:.5px;line-height:1}
-.cmd-verdict-label{font-size:10px;color:var(--text3);letter-spacing:1px}
+/* ═══ APP GRID ═══════════════════════════════════════════════════════ */
+.app{
+  display:grid;
+  grid-template-columns:240px 1fr 320px;
+  grid-template-rows:100vh;
+  min-height:100vh;
+}
 
-.cmd-right{display:flex;align-items:center;gap:16px;flex-shrink:0}
-.cmd-budget{display:flex;gap:6px;align-items:center}
-.budget-pill{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px}
-.budget-dot{width:6px;height:6px;border-radius:50%}
-.cmd-regime{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--text2)}
-.cmd-time{font-size:11px;color:var(--text3);white-space:nowrap}
-
-/* ═══ TAB NAV ════════════════════════════════════════════════════════ */
-.tab-nav{
-  display:flex;gap:0;
-  background:var(--bg2);
+/* ═══ LEFT SIDEBAR ═══════════════════════════════════════════════════ */
+.sidebar-left{
+  display:flex; flex-direction:column;
+  background:linear-gradient(180deg, var(--bg2), var(--bg));
+  border-right:1px solid var(--border);
+  overflow-y:auto;
+}
+.brand{
+  display:flex; align-items:center; gap:10px;
+  padding:18px 20px 16px;
   border-bottom:1px solid var(--border);
-  padding:0 20px;
-  position:sticky;top:56px;z-index:99;
 }
-.tab-btn{
-  background:none;border:none;color:var(--text3);
-  font-family:inherit;font-size:11px;font-weight:700;
-  letter-spacing:1px;padding:12px 18px;cursor:pointer;
-  border-bottom:2px solid transparent;margin-bottom:-1px;
-  transition:color .15s,border-color .15s;
+.brand img{width:26px; height:26px}
+.brand-stack{line-height:1.2}
+.brand-name{font-size:11px; font-weight:800; letter-spacing:2.5px; color:var(--gold)}
+.brand-sub{font-size:9px; color:var(--text3); letter-spacing:.8px; margin-top:2px}
+
+.nav{padding:14px 12px; flex:1}
+.nav-section{margin-bottom:18px}
+.nav-section-label{
+  font-size:9px; font-weight:700; letter-spacing:2px; color:var(--text3);
+  padding:0 10px; margin-bottom:6px;
 }
-.tab-btn:hover{color:var(--text2)}
-.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
-
-/* ═══ PANELS ════════════════════════════════════════════════════════ */
-.panel{display:none;padding:20px;max-width:1400px;margin:0 auto}
-.panel.active{display:block}
-
-/* ═══ SIGNAL PANEL ══════════════════════════════════════════════════ */
-.signal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.signal-title{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--text3)}
-.data-gap-badge{font-size:10px;color:var(--orange);border:1px solid var(--orange);border-radius:3px;padding:2px 7px;letter-spacing:.5px}
-
-.gauge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media(max-width:900px){.gauge-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.gauge-grid{grid-template-columns:1fr}}
-
-.gauge-card{
-  background:var(--bg2);border:1px solid var(--border);border-radius:8px;
-  padding:14px 14px 10px;
+.nav-item{
+  display:flex; align-items:center; gap:10px;
+  width:100%; padding:8px 10px; margin:1px 0;
+  background:none; border:none; border-radius:6px;
+  color:var(--text2); font-size:11px; font-weight:700;
+  letter-spacing:.6px; text-align:left;
+  transition:background .15s, color .15s;
+  position:relative;
 }
-.gauge-card.na{opacity:.45}
-.gauge-card-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);margin-bottom:6px}
-
-/* Arc gauge (for -1 to 1) */
-.arc-gauge{width:100%;max-height:80px;display:block}
-
-/* Bar gauge (for 0 to 1) */
-.bar-track{background:var(--bg4);border-radius:3px;height:8px;margin:10px 0 6px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
-.bar-value{font-size:18px;font-weight:800;font-family:inherit;line-height:1}
-.gauge-source{font-size:9px;color:var(--text3);margin-top:4px;line-height:1.4;word-break:break-word}
-.na-label{font-size:14px;font-weight:700;color:var(--text3);padding:12px 0 6px}
-.na-sub{font-size:9px;color:var(--text3)}
-
-/* ═══ TODAY PANEL ════════════════════════════════════════════════════ */
-.today-grid{display:grid;grid-template-columns:300px 1fr;gap:16px}
-@media(max-width:800px){.today-grid{grid-template-columns:1fr}}
-
-.pick-card{
-  background:var(--bg2);border:1px solid var(--border2);border-radius:10px;
-  padding:20px;display:flex;flex-direction:column;gap:10px;
+.nav-item:hover{background:rgba(201,168,76,.06); color:var(--text)}
+.nav-item.active{background:rgba(201,168,76,.1); color:var(--gold)}
+.nav-item.active::before{
+  content:""; position:absolute; left:0; top:6px; bottom:6px; width:2px;
+  background:var(--gold); border-radius:0 2px 2px 0;
 }
-.pick-none{background:var(--bg2);border:1px dashed var(--border);border-radius:10px;padding:24px;color:var(--text3);font-size:12px;text-align:center}
-.pick-header{display:flex;align-items:center;justify-content:space-between}
-.pick-badge{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--yellow);background:var(--yellow-dim);border:1px solid var(--yellow);border-radius:3px;padding:2px 7px}
-.pick-code{font-size:28px;font-weight:900;color:var(--text);line-height:1}
-.pick-name{font-size:13px;color:var(--text2);margin-top:2px}
-.pick-verdict{font-size:12px;color:var(--text2);padding:8px;background:var(--bg3);border-radius:6px;border-left:3px solid var(--accent)}
-.pick-signals{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.sig-pill{font-size:9px;font-weight:700;background:var(--green-dim);color:var(--green);border-radius:3px;padding:2px 6px}
+.nav-item .nav-dot{
+  width:7px; height:7px; border-radius:50%; flex-shrink:0;
+  box-shadow:0 0 6px currentColor;
+}
+.nav-item .nav-label{flex:1}
+.nav-item .nav-meta{font-size:9px; color:var(--text3); font-weight:400}
 
-.actions-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px}
-.actions-title{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);margin-bottom:12px}
-.action-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.left-foot{
+  padding:14px 20px;
+  border-top:1px solid var(--border);
+  font-size:9px; color:var(--text3); letter-spacing:1px;
+}
+
+/* ═══ CANVAS (CENTER) ════════════════════════════════════════════════ */
+.canvas{
+  display:flex; flex-direction:column;
+  overflow-y:auto; overflow-x:hidden;
+  position:relative;
+}
+
+.topbar{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px; height:48px;
+  background:rgba(6,11,23,.85);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.crumb{font-size:10px; color:var(--text3); letter-spacing:1.5px}
+.crumb-room{color:var(--text); font-weight:700}
+.crumb-back{cursor:pointer; color:var(--gold); transition:opacity .15s}
+.crumb-back:hover{opacity:.7}
+.topbar-meta{display:flex; align-items:center; gap:14px; font-size:10px; color:var(--text2); letter-spacing:1px}
+.live-dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--cyan); box-shadow:0 0 6px var(--cyan);
+  animation:pulse 1.6s infinite; display:inline-block; margin-right:6px;
+}
+/* Slow, contemplative pulse — anti-rushing, low-frequency feeling */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.live-dot{animation:pulse 4.5s ease-in-out infinite}
+
+/* ═══ ATMOSPHERE LAYER (slightly more) ═══════════════════════════ */
+.app{filter:saturate(.9) contrast(1.025)}
+
+/* Film grain — slightly more present */
+body::after{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:300;
+  opacity:.06;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch' seed='5'/><feColorMatrix type='matrix' values='1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .8 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:overlay;
+}
+
+/* Vignette — tighter, deeper */
+.canvas{position:relative}
+.canvas::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:90;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 45%, transparent 45%, rgba(2,4,10,.6) 100%),
+    radial-gradient(ellipse 100% 30% at 50% 0%, rgba(2,4,10,.4), transparent 70%),
+    radial-gradient(ellipse 100% 30% at 50% 100%, rgba(2,4,10,.4), transparent 70%);
+}
+
+/* Soft fog at iso-grid edges */
+.stage::before{
+  content:""; position:absolute; inset:30px; pointer-events:none; z-index:1;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(122,142,189,.06), transparent 60%),
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(122,142,189,.06), transparent 60%);
+}
+
+/* Subtle bloom intensifier on important glowing elements */
+.verdict-huge, .iso-status, .exec-verdict-mini{
+  filter:drop-shadow(0 0 12px currentColor);
+}
+
+/* Scanlines on monitors (very faint) */
+.iso-screen{
+  /* SVG fill can't take CSS pattern, so we add another rect overlay class instead */
+}
+
+.floor{padding:24px 28px 80px; flex:1}
+.floor-title{
+  font-size:9px; font-weight:800; letter-spacing:4px; color:var(--gold);
+  margin-bottom:4px;
+}
+.floor-subtitle{
+  font-size:11px; color:var(--text2); margin-bottom:24px;
+}
+
+/* ═══ ISO STAGE ══════════════════════════════════════════════════════ */
+.stage{
+  position:relative;
+  padding:40px 12px 60px;
+}
+.stage-floor-grid{
+  position:absolute; inset:0 -4% 0 -4%;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(122,142,189,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(122,142,189,.018) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 60% 45% at 50% 50%, black 0%, transparent 90%);
+  -webkit-mask-image:radial-gradient(ellipse 60% 45% at 50% 50%, black 0%, transparent 90%);
+}
+
+/* The building shell — frames the whole iso office */
+.iso-grid{
+  display:grid;
+  grid-template-columns:1.1fr 1fr 1.45fr;
+  grid-template-rows:1fr 1fr 1.1fr;
+  gap:0;
+  padding:30px;  /* ← the outer corridor (走廊) */
+  border:1px solid var(--border2);
+  border-radius:14px;
+  background:
+    /* Corridor floor — slightly lighter than rooms, with subtle cross hatch */
+    repeating-linear-gradient(45deg, transparent 0, transparent 14px, rgba(122,142,189,.025) 14px, rgba(122,142,189,.025) 15px),
+    repeating-linear-gradient(-45deg, transparent 0, transparent 14px, rgba(122,142,189,.02) 14px, rgba(122,142,189,.02) 15px),
+    radial-gradient(ellipse at 50% 50%, #0B1525 0%, #060E1A 100%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.04) inset,
+    0 -2px 0 rgba(0,0,0,.5) inset,
+    0 24px 60px rgba(0,0,0,.6),
+    0 50px 100px rgba(0,0,0,.35);
+  overflow:hidden;
+  transition:opacity .8s ease, filter .8s ease, transform .6s ease;
+  position:relative;
+}
+.iso-grid::before{
+  /* Subtle gold seam — like the building's edge in the spotlight */
+  content:""; position:absolute; inset:0; border-radius:14px; pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(201,168,76,.08);
+}
+.iso-grid::after{
+  /* Corridor footprint — guides where the walkway is */
+  content:""; position:absolute; inset:30px; pointer-events:none;
+  border:1px solid rgba(201,168,76,.06); border-radius:6px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.4);
+}
+.iso-grid.zoomed{
+  transform:scale(.95);
+  opacity:.2; filter:blur(2px) grayscale(.4);
+  pointer-events:none;
+}
+
+/* C-layout: LOBBY 移到右上角，房間繞著它流動排列（asymmetric） */
+.r-exec     {grid-area:1 / 1 / 2 / 2}
+.r-research {grid-area:1 / 2 / 2 / 3}
+.r-lobby    {grid-area:1 / 3 / 3 / 4}  /* 右上角，跨 2 列 */
+.r-risk     {grid-area:2 / 1 / 3 / 2}
+.r-wealth   {grid-area:2 / 2 / 3 / 3}
+.r-trading  {grid-area:3 / 1 / 4 / 3}  /* 寬 2 欄，左下 */
+.r-archive  {grid-area:3 / 3 / 4 / 4}  /* 右下小櫃 */
+
+/* ═══ ROOM (operational space) ═══════════════════════════════════════ */
+.room{
+  position:relative; cursor:pointer;
+  overflow:hidden;
+  background:transparent;
+  /* Wall dividers between rooms — interior walls of the building */
+  border-right:1px solid rgba(122,142,189,.12);
+  border-bottom:1px solid rgba(122,142,189,.12);
+  transition:background .2s, box-shadow .2s;
+  min-height:200px;
+}
+/* Outer edges should not show dividers (already framed by building shell) */
+.r-research, .r-wealth, .r-trading{border-right:none}
+.r-trading, .r-archive{border-bottom:none}
+.r-trading{border-right:1px solid rgba(122,142,189,.12)}
+.room.r-trading{min-height:260px}
+.room.r-lobby{min-height:auto; border-right:none; border-left:none}
+
+.room svg{
+  width:100%; height:100%; display:block;
+  transition:filter .25s;
+}
+.room:hover{
+  background:rgba(201,168,76,.04);
+  box-shadow:inset 0 0 0 1px rgba(201,168,76,.25);
+}
+.room:hover svg{filter:brightness(1.08)}
+
+/* SVG class palette (used across all room SVGs) */
+.iso-floor{fill:#0D1626}
+.iso-floor-line{stroke:rgba(122,142,189,.06); stroke-width:.5; fill:none}
+.iso-wall-back{fill:#101A2C}
+.iso-wall-side{fill:#0A1422}
+.iso-wall-trim{stroke:var(--border2); stroke-width:1; fill:none}
+.iso-desk{fill:#15233A; stroke:rgba(201,168,76,.18); stroke-width:1}
+.iso-desk-top{fill:#1B2C49}
+.iso-monitor-frame{fill:#050B17; stroke:rgba(122,142,189,.4); stroke-width:.7}
+.iso-screen{fill:#021830}
+.iso-glow-cyan {fill:rgba(0,229,255,.45); filter:blur(2px)}
+.iso-glow-green{fill:rgba(0,200,150,.45); filter:blur(2px)}
+.iso-glow-red  {fill:rgba(255,69,96,.5); filter:blur(2px)}
+.iso-glow-blue {fill:rgba(61,142,255,.45); filter:blur(2px)}
+.iso-glow-gold {fill:rgba(201,168,76,.45); filter:blur(2px)}
+.iso-glow-purple{fill:rgba(162,89,255,.45); filter:blur(2px)}
+
+.iso-label-bg{fill:#0A1422; stroke:rgba(201,168,76,.25); stroke-width:.7}
+.iso-label{
+  font-family:"JetBrains Mono","Fira Code",monospace;
+  font-size:9px; font-weight:800; letter-spacing:2px;
+  fill:var(--gold);
+}
+.iso-sublabel{
+  font-family:"JetBrains Mono","Fira Code",monospace;
+  font-size:7px; letter-spacing:1.2px;
+  fill:var(--text3);
+}
+.iso-status{
+  font-family:"JetBrains Mono","Fira Code",monospace;
+  font-size:11px; font-weight:800;
+}
+
+/* Agent silhouette */
+.ag-shadow{fill:rgba(0,0,0,.55); filter:blur(.6px)}
+.ag-body  {opacity:.92}
+.ag-head  {opacity:.95}
+.ag-glow  {opacity:.65; filter:blur(3px)}
+
+/* Status light per room (top-right of SVG, pulse) */
+.room-light{
+  position:absolute; top:14px; right:14px; z-index:2;
+  width:8px; height:8px; border-radius:50%;
+  box-shadow:0 0 10px currentColor;
+  pointer-events:none;
+}
+
+/* Persona hover tooltip */
+.char-tip{
+  position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
+  background:var(--bg); border:1px solid var(--gold); border-radius:6px;
+  padding:9px 11px; width:210px;
+  opacity:0; pointer-events:none; transition:opacity .15s;
+  font-size:10px; color:var(--text2); line-height:1.55;
+  z-index:30; box-shadow:0 8px 28px rgba(0,0,0,.7);
+}
+.char-tip.show{opacity:1}
+.char-tip-title{font-size:10px; font-weight:800; letter-spacing:1.2px; margin-bottom:1px}
+.char-tip-role{font-size:9px; color:var(--text3); margin-bottom:6px; padding-bottom:5px; border-bottom:1px dashed var(--border2)}
+.char-tip-row{display:flex; gap:6px; margin:1px 0}
+.char-tip-key{color:var(--text3); min-width:46px}
+.char-tip-val{color:var(--text)}
+
+/* ═══ RIGHT SIDEBAR ══════════════════════════════════════════════════ */
+.sidebar-right{
+  display:flex; flex-direction:column;
+  background:linear-gradient(180deg, var(--bg2), var(--bg));
+  border-left:1px solid var(--border);
+  overflow-y:auto; padding:20px 18px;
+  gap:18px;
+}
+.module{display:flex; flex-direction:column; gap:8px}
+.module-label{
+  font-size:9px; font-weight:700; letter-spacing:2px; color:var(--text3);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.module-label::after{
+  content:""; flex:1; height:1px; background:var(--border); margin-left:10px;
+}
+.module-label .label-meta{flex:none; margin:0; color:var(--text3); font-weight:700}
+
+/* DATA HEALTH (top of sidebar) */
+.health-rows{display:flex; flex-direction:column; gap:5px}
+.health-row{
+  display:flex; align-items:center; gap:8px;
+  padding:6px 8px; background:var(--bg3); border-radius:5px;
+  font-size:10px;
+}
+.health-dot{width:6px; height:6px; border-radius:50%; flex-shrink:0}
+.health-dot.ok  {background:var(--green); box-shadow:0 0 5px var(--green)}
+.health-dot.warn{background:var(--yellow); box-shadow:0 0 5px var(--yellow)}
+.health-dot.bad {background:var(--red); box-shadow:0 0 5px var(--red)}
+.health-name{color:var(--text2); flex:1; letter-spacing:.5px}
+.health-val {color:var(--text); font-weight:700}
+
+/* TODAY'S BRIEFING */
+.verdict-module{
+  background:linear-gradient(135deg, var(--bg3) 0%, var(--bg2) 100%);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  padding:18px 16px;
+  position:relative; overflow:hidden;
+}
+.verdict-module::before{
+  content:""; position:absolute; top:-30px; right:-30px;
+  width:140px; height:140px;
+  background:radial-gradient(circle, rgba(201,168,76,.18), transparent 70%);
+}
+.verdict-module .module-label{margin-bottom:10px}
+.verdict-huge{
+  font-size:30px; font-weight:900; letter-spacing:1.2px; line-height:1.05;
+  text-shadow:0 0 24px currentColor;
+  margin:6px 0 8px;
+}
+.verdict-tagline{
+  font-size:10px; color:var(--text2); letter-spacing:.8px;
+  text-transform:uppercase; margin-bottom:10px;
+}
+.confidence-row{
+  display:flex; align-items:center; gap:8px; font-size:10px; letter-spacing:1px;
+  padding-top:10px; border-top:1px solid var(--border);
+}
+.confidence-track{flex:1; height:5px; background:var(--bg4); border-radius:3px; overflow:hidden}
+.confidence-fill{height:100%; border-radius:3px}
+.confidence-val{font-size:11px; font-weight:800; min-width:34px; text-align:right}
+
+/* COCKPIT (Live triggers as rule state) */
+.cockpit{display:flex; flex-direction:column; gap:5px}
+.cockpit-row{
+  display:grid; grid-template-columns:1fr auto;
+  gap:10px; align-items:center;
+  padding:7px 10px; background:var(--bg3); border-radius:5px;
+  font-size:10px; letter-spacing:.5px;
+  position:relative;
+}
+.cockpit-row::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:currentColor; opacity:.6; border-radius:2px 0 0 2px;
+}
+.cockpit-name{color:var(--text2); font-weight:700; letter-spacing:1px}
+.cockpit-state{
+  font-size:10px; font-weight:800; letter-spacing:1.2px;
+  text-shadow:0 0 6px currentColor;
+}
+.state-normal {color:var(--green)}
+.state-warn   {color:var(--yellow)}
+.state-active {color:var(--orange)}
+.state-alert  {color:var(--red)}
+.state-defensive{color:var(--purple)}
+
+/* AGENT NARRATIVE */
+.agent-narrative{display:flex; flex-direction:column; gap:6px}
+.narr-row{
+  display:flex; align-items:center; gap:10px;
+  padding:7px 10px; background:var(--bg3); border-radius:5px;
+  font-size:10px; line-height:1.4;
+}
+.narr-name{
+  font-size:9px; font-weight:800; letter-spacing:1.5px;
+  width:36px; flex-shrink:0;
+}
+.narr-action{color:var(--text2); flex:1; letter-spacing:.3px}
+
+/* ═══ EXPANDED ROOM ══════════════════════════════════════════════════ */
+.backdrop{
+  position:fixed; inset:0; z-index:95;
+  background:rgba(2,5,12,.6);
+  backdrop-filter:blur(3px);
+  animation:fadeIn .2s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.expanded{
+  position:fixed; top:24px; left:24px; right:24px; bottom:24px;
+  z-index:100;
+  background:linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+  border:1px solid var(--gold);
+  box-shadow:0 0 0 1px rgba(201,168,76,.2), 0 24px 80px rgba(0,0,0,.7);
+  border-radius:14px; overflow:auto; padding:22px 26px;
+  animation:zoomIn .25s ease;
+}
+@keyframes zoomIn{from{opacity:0; transform:scale(.96)}to{opacity:1; transform:scale(1)}}
+
+.exp-header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:14px; margin-bottom:16px; border-bottom:1px solid var(--border);
+  position:sticky; top:-22px;
+  background:linear-gradient(180deg, var(--bg2) 90%, transparent);
+  padding-top:22px; margin-top:-22px; z-index:5;
+}
+.exp-title{font-size:18px; font-weight:800; color:var(--gold); letter-spacing:1.2px}
+.exp-sub{font-size:10px; color:var(--text3); letter-spacing:1.5px; margin-top:2px}
+.exp-close{
+  background:var(--bg3); border:1px solid var(--border2); color:var(--text2);
+  font-family:inherit; font-size:11px; letter-spacing:1px;
+  padding:7px 14px; border-radius:6px; transition:all .15s;
+}
+.exp-close:hover{color:var(--gold); border-color:var(--gold)}
+
+/* ═══ Reusable sections used in expanded panels ═════════════════════ */
+.section-label{font-size:9px; font-weight:700; letter-spacing:2px; color:var(--text3); margin:18px 0 10px}
+.section-label:first-child{margin-top:0}
+.card{background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:14px}
+.card-title{font-size:9px; font-weight:700; letter-spacing:1.5px; color:var(--text3); margin-bottom:8px}
+
+.mkt-row{display:flex; gap:10px; flex-wrap:wrap}
+.mkt-chip{background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:7px 12px; min-width:90px}
+.mkt-chip-name{font-size:9px; color:var(--text3); letter-spacing:.6px}
+.mkt-chip-val{font-size:13px; font-weight:700; margin-top:2px}
+
+.budget-block{display:flex; flex-direction:column; gap:8px}
+.budget-row{display:flex; align-items:center; gap:10px; font-size:11px}
+.budget-name{width:42px; color:var(--text3); font-weight:700; letter-spacing:1px; font-size:10px}
+.budget-track{flex:1; height:8px; background:var(--bg4); border-radius:4px; overflow:hidden}
+.budget-fill{height:100%; border-radius:4px; transition:width .5s ease}
+.budget-pct{width:42px; text-align:right; font-weight:800}
+
+.action-row{display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--border)}
 .action-row:last-child{border-bottom:none}
-.action-urgency{font-size:9px;font-weight:700;border-radius:3px;padding:2px 7px;white-space:nowrap;flex-shrink:0;margin-top:1px}
-.u-high{background:var(--red-dim);color:var(--red);border:1px solid var(--red)}
-.u-med{background:var(--yellow-dim);color:var(--yellow);border:1px solid var(--yellow)}
-.u-low{background:var(--bg4);color:var(--text2);border:1px solid var(--border2)}
-.action-target{font-size:12px;font-weight:700;color:var(--text);min-width:60px;flex-shrink:0}
-.action-detail{font-size:11px;color:var(--text2);line-height:1.5}
+.urgency{font-size:9px; font-weight:700; letter-spacing:.8px; border-radius:3px; padding:2px 7px; flex-shrink:0; margin-top:1px}
+.u-high{background:var(--red-dim); color:var(--red); border:1px solid var(--red)}
+.u-med{background:var(--yellow-dim); color:var(--yellow); border:1px solid var(--yellow)}
+.u-low{background:var(--bg4); color:var(--text2); border:1px solid var(--border2)}
+.action-target{font-size:11px; font-weight:700; color:var(--text); min-width:64px; flex-shrink:0; margin-top:1px}
+.action-detail{font-size:11px; color:var(--text2); line-height:1.55}
 
-.flow-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:12px}
-.flow-dir{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px}
-.flag-list{display:flex;flex-direction:column;gap:4px}
-.flag-item{font-size:10px;color:var(--yellow);padding:3px 8px;background:var(--yellow-dim);border-radius:3px}
-
-.master-summary{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:14px;margin-top:12px;font-size:12px;color:var(--text2);line-height:1.7;border-left:3px solid var(--accent)}
-
-/* ═══ DESKS PANEL ════════════════════════════════════════════════════ */
-.desk-section{background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden}
-.desk-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 16px;cursor:pointer;user-select:none;
-  transition:background .15s;
+.pick-summary{
+  background:linear-gradient(135deg, var(--bg3) 0%, var(--bg4) 100%);
+  border:1px solid var(--gold); border-radius:10px; padding:16px;
+  position:relative; overflow:hidden;
 }
-.desk-header:hover{background:var(--bg3)}
-.desk-header-left{display:flex;align-items:center;gap:10px}
-.desk-icon{font-size:14px}
-.desk-name{font-size:12px;font-weight:700;color:var(--text)}
-.desk-verdict-badge{font-size:10px;font-weight:700;border-radius:3px;padding:2px 8px}
-.desk-conf-wrap{display:flex;align-items:center;gap:6px}
-.desk-conf-bar{width:60px;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
-.desk-conf-fill{height:100%;border-radius:2px;background:var(--blue)}
-.desk-conf-val{font-size:10px;color:var(--text3)}
-.desk-chevron{color:var(--text3);font-size:10px;transition:transform .2s}
-.desk-chevron.open{transform:rotate(90deg)}
+.pick-summary::before{
+  content:""; position:absolute; top:-20px; right:-20px; width:140px; height:140px;
+  background:radial-gradient(circle, rgba(201,168,76,.14), transparent 70%);
+}
+.pick-grid{display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:center; position:relative}
+.pick-code{font-size:34px; font-weight:900; color:var(--gold); line-height:1; letter-spacing:1px}
+.pick-name{font-size:11px; color:var(--text2); margin-top:4px}
+.pick-fields{display:grid; grid-template-columns:repeat(2,1fr); gap:8px 16px}
+.pick-field-label{font-size:9px; color:var(--text3); letter-spacing:.8px; margin-bottom:1px}
+.pick-field-val{font-size:13px; font-weight:700; color:var(--text)}
+.pick-field-val.entry{color:var(--cyan)}
+.pick-field-val.stop{color:var(--red)}
+.pick-field-val.target{color:var(--green)}
+.constraint{background:var(--red-dim); border:1px solid var(--red); border-radius:6px; padding:10px 12px; font-size:11px; color:var(--red); margin:10px 0; display:flex; align-items:flex-start; gap:8px}
 
-.desk-body{display:none;padding:0 16px 16px;border-top:1px solid var(--border)}
-.desk-body.open{display:block}
-.desk-summary{font-size:12px;color:var(--text2);padding:10px 0;line-height:1.7}
-.desk-recs{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.desk-rec{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--bg3);border-radius:5px;border-left:2px solid var(--border2)}
-.desk-rec-action{font-size:10px;font-weight:700;color:var(--blue);min-width:36px}
-.desk-rec-target{font-size:11px;font-weight:700;color:var(--text);min-width:50px}
-.desk-rec-detail{font-size:11px;color:var(--text2)}
-.desk-insights{margin-top:10px}
-.desk-insight-item{font-size:11px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border)}
-.desk-insight-item:last-child{border-bottom:none}
-.desk-insight-item::before{content:"→ ";color:var(--accent)}
+.scanner{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.scan-card{background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:10px}
+.scan-card.top{border-color:rgba(201,168,76,.5)}
+.scan-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:5px}
+.scan-code{font-size:13px; font-weight:800}
+.scan-name{font-size:10px; color:var(--text3); margin-top:1px}
+.scan-score{font-size:11px; font-weight:800; color:var(--gold)}
+.scan-pills{display:flex; flex-wrap:wrap; gap:3px; margin-top:5px}
+.pill{font-size:8px; font-weight:700; padding:2px 5px; border-radius:3px; background:var(--green-dim); color:var(--green); border:1px solid rgba(0,200,150,.3)}
+.pill.rs{background:var(--blue-dim); color:var(--blue); border-color:rgba(61,142,255,.3)}
+.pill.vol{background:var(--yellow-dim); color:var(--yellow); border-color:rgba(255,184,0,.3)}
+.scan-vals{display:flex; gap:10px; margin-top:5px; font-size:10px; color:var(--text3)}
+.scan-vals b{color:var(--text2); font-weight:700}
 
-/* Wealth special fields */
-.wealth-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-@media(max-width:600px){.wealth-metrics{grid-template-columns:1fr}}
-.wealth-metric{background:var(--bg3);border-radius:5px;padding:8px 10px;border:1px solid var(--border)}
-.wealth-metric-label{font-size:9px;color:var(--text3);letter-spacing:.8px;margin-bottom:3px}
-.wealth-metric-val{font-size:12px;font-weight:700}
+.chat-list{display:flex; flex-direction:column; gap:10px}
+.chat-msg{
+  display:grid; grid-template-columns:130px 1fr; gap:14px;
+  padding:12px 14px; background:var(--bg3); border-radius:8px;
+  border-left:3px solid var(--border2);
+}
+.chat-msg.cio{border-left-color:var(--gold); background:linear-gradient(90deg, var(--gold-dim) 0%, var(--bg3) 35%)}
+.chat-msg.devil{border-left-color:var(--red)}
+.chat-msg.tw{border-left-color:var(--blue)}
+.chat-author{font-size:10px; font-weight:800; letter-spacing:1.2px}
+.chat-author.cio{color:var(--gold)}
+.chat-author.devil{color:var(--red)}
+.chat-author.tw{color:var(--blue)}
+.chat-author-role{font-size:9px; color:var(--text3); font-weight:400; margin-top:2px}
+.chat-text{font-size:11px; color:var(--text2); line-height:1.65}
 
-/* ═══ RESEARCH PANEL ═════════════════════════════════════════════════ */
-.perf-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-@media(max-width:800px){.perf-row{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.perf-row{grid-template-columns:1fr 1fr}}
+.gauge-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.gauge-card{background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:12px}
+.gauge-card.na{opacity:.45}
+.gauge-label{font-size:9px; font-weight:700; letter-spacing:1.5px; color:var(--text3); margin-bottom:6px}
+.arc-gauge{width:100%; max-height:80px; display:block}
+.bar-track{background:var(--bg4); border-radius:3px; height:7px; margin:8px 0 6px; overflow:hidden}
+.bar-fill{height:100%; border-radius:3px}
+.bar-value{font-size:16px; font-weight:800; line-height:1}
+.gauge-source{font-size:9px; color:var(--text3); margin-top:5px; line-height:1.4}
+.na-label{font-size:14px; font-weight:700; color:var(--text3); padding:8px 0 4px}
 
-.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
-.stat-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);margin-bottom:6px}
-.stat-value{font-size:26px;font-weight:900;line-height:1}
-.stat-sub{font-size:10px;color:var(--text3);margin-top:4px}
+.metrics-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px}
+.metric-card{background:var(--bg3); border:1px solid var(--border); border-radius:7px; padding:11px 13px}
+.metric-label{font-size:9px; color:var(--text3); letter-spacing:1px; margin-bottom:3px}
+.metric-val{font-size:14px; font-weight:800}
 
-.signal-leaderboard{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px}
-.lb-title{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);margin-bottom:12px}
-.lb-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
-.lb-row:last-child{border-bottom:none}
-.lb-rank{font-size:10px;color:var(--text3);width:16px;text-align:right;flex-shrink:0}
-.lb-sig{font-size:11px;font-weight:700;color:var(--text);flex:1}
-.lb-bar-wrap{width:100px;flex-shrink:0}
-.lb-bar-bg{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
-.lb-bar-fill{height:100%;background:var(--green);border-radius:3px}
-.lb-pct{font-size:11px;font-weight:700;color:var(--green);width:36px;text-align:right;flex-shrink:0}
-.lb-n{font-size:10px;color:var(--text3);width:28px;text-align:right;flex-shrink:0}
+.alloc-bars{display:flex; flex-direction:column; gap:8px}
+.alloc-row{display:grid; grid-template-columns:110px 1fr 70px; align-items:center; gap:10px; font-size:11px}
+.alloc-name{color:var(--text2)}
+.alloc-track{height:8px; background:var(--bg4); border-radius:4px; overflow:hidden}
+.alloc-fill{height:100%; border-radius:4px}
+.alloc-pct{text-align:right; font-weight:700}
 
-.research-note{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;color:var(--text3);font-size:12px;line-height:1.7}
-.research-note strong{color:var(--yellow)}
+.hold-table{width:100%; font-size:11px; border-collapse:collapse}
+.hold-table th{text-align:left; font-size:9px; font-weight:700; color:var(--text3); letter-spacing:1px; padding:8px 6px; border-bottom:1px solid var(--border)}
+.hold-table td{padding:8px 6px; border-bottom:1px solid var(--border)}
+.hold-code{font-weight:700; color:var(--text)}
+.hold-pnl.up{color:var(--green)}
+.hold-pnl.down{color:var(--red)}
+.hold-watch{font-size:9px; color:var(--orange); margin-left:4px}
 
-/* ═══ SHARED ═════════════════════════════════════════════════════════ */
-.section-label{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--text3);margin-bottom:12px}
-.mkt-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.mkt-chip{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:6px 12px;font-size:11px}
-.mkt-chip-name{color:var(--text3);font-size:9px;letter-spacing:.5px;margin-bottom:1px}
-.mkt-chip-val{font-weight:700;font-size:13px}
+.flag-list{display:flex; flex-direction:column; gap:6px}
+.flag-item{font-size:11px; color:var(--yellow); padding:7px 10px; background:var(--yellow-dim); border-radius:5px; border-left:2px solid var(--yellow)}
+.devil-quote{font-size:12px; color:var(--text); font-style:italic; line-height:1.7; padding:14px 16px; background:var(--red-dim); border-left:3px solid var(--red); border-radius:0 6px 6px 0}
 
-.err-msg{background:var(--red-dim);border:1px solid var(--red);border-radius:6px;padding:12px 16px;color:var(--red);font-size:12px;margin:20px}
+.stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.stat-card{background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:12px 14px}
+.stat-label{font-size:9px; font-weight:700; letter-spacing:1.5px; color:var(--text3); margin-bottom:6px}
+.stat-value{font-size:24px; font-weight:900; line-height:1}
+.stat-sub{font-size:10px; color:var(--text3); margin-top:3px}
 
-/* Loading skeleton */
-.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:10px;color:var(--text3)}
-.spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.6s infinite;display:inline-block;margin-right:5px}
+.empty{color:var(--text3); font-size:11px; padding:14px; text-align:center; font-style:italic}
+.err-msg{background:var(--red-dim); border:1px solid var(--red); border-radius:6px; padding:12px 16px; color:var(--red); font-size:12px; margin:20px 24px}
+
+.toast{
+  position:fixed; bottom:32px; left:50%; transform:translateX(-50%);
+  background:var(--bg3); border:1px solid var(--gold); color:var(--text);
+  padding:10px 18px; border-radius:6px; font-size:11px; letter-spacing:.5px;
+  z-index:200; box-shadow:0 8px 28px rgba(0,0,0,.6);
+  animation:toast-in .25s ease;
+}
+@keyframes toast-in{from{opacity:0; transform:translate(-50%,10px)}to{opacity:1; transform:translate(-50%,0)}}
+
+/* ═══ MOBILE ═════════════════════════════════════════════════════════ */
+@media(max-width:1100px){
+  .app{grid-template-columns:200px 1fr 280px}
+}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr; grid-template-rows:auto auto auto}
+  .sidebar-left, .sidebar-right{height:auto; max-height:none}
+  .sidebar-left{order:1; border-right:none; border-bottom:1px solid var(--border)}
+  .canvas{order:2}
+  .sidebar-right{order:3; border-left:none; border-top:1px solid var(--border)}
+  .iso-grid{grid-template-columns:1fr 1fr; grid-template-rows:auto}
+  .r-exec, .r-trading, .r-research, .r-risk, .r-wealth, .r-archive, .r-lobby{grid-area:auto}
+  .r-trading{grid-column:1 / -1}
+  .r-lobby{grid-column:1 / -1}
+  .floor{padding:18px 16px 60px}
+  .expanded{left:8px; right:8px; top:8px; bottom:8px; padding:18px 16px}
+}
 </style>
 </head>
 <body>
 
-<!-- ═══ COMMAND BAR ═══════════════════════════════════════════════════ -->
-<div class="cmd-bar">
-  <div class="cmd-left">
-    <img src="favicon.svg" class="cmd-logo" alt="">
-    <span class="cmd-title">又瑄投資AI</span>
-  </div>
-  <div class="cmd-verdict-wrap">
-    <div class="cmd-verdict" id="cmd-verdict">—</div>
-    <div class="cmd-verdict-label">TODAY'S VERDICT</div>
-  </div>
-  <div class="cmd-right">
-    <div class="cmd-budget" id="cmd-budget"></div>
-    <div class="cmd-regime" id="cmd-regime">—</div>
-    <div class="cmd-time" id="cmd-time">—</div>
-  </div>
-</div>
+<div class="app">
 
-<!-- ═══ TAB NAV ═══════════════════════════════════════════════════════ -->
-<div class="tab-nav">
-  <button class="tab-btn active" onclick="showTab('signal')">SIGNAL</button>
-  <button class="tab-btn" onclick="showTab('today')">TODAY</button>
-  <button class="tab-btn" onclick="showTab('desks')">DESKS</button>
-  <button class="tab-btn" onclick="showTab('research')">RESEARCH</button>
-</div>
-
-<!-- ═══ PANEL: SIGNAL ════════════════════════════════════════════════ -->
-<div class="panel active" id="panel-signal">
-  <div class="signal-header">
-    <div class="signal-title">SIGNAL VECTOR</div>
-    <div id="signal-meta" class="data-gap-badge"></div>
-  </div>
-  <!-- Market chips -->
-  <div class="mkt-bar" id="mkt-bar"></div>
-  <div class="gauge-grid" id="gauge-grid">
-    <div class="loading-wrap"><div class="spinner"></div><span>載入信號...</span></div>
-  </div>
-</div>
-
-<!-- ═══ PANEL: TODAY ════════════════════════════════════════════════ -->
-<div class="panel" id="panel-today">
-  <div class="today-grid">
-    <div id="pick-area"></div>
-    <div>
-      <div class="actions-card">
-        <div class="actions-title">TOP 3 ACTIONS</div>
-        <div id="actions-list"></div>
+  <!-- ═══ LEFT SIDEBAR ═══ -->
+  <aside class="sidebar-left">
+    <div class="brand">
+      <img src="favicon.svg" alt="">
+      <div class="brand-stack">
+        <div class="brand-name">YUZU CAPITAL</div>
+        <div class="brand-sub">Decision Operating System</div>
       </div>
-      <div id="flow-area"></div>
-      <div id="master-summary-area"></div>
     </div>
-  </div>
-</div>
 
-<!-- ═══ PANEL: DESKS ════════════════════════════════════════════════ -->
-<div class="panel" id="panel-desks">
-  <div id="desks-area"></div>
-</div>
+    <nav class="nav" id="nav">
+      <div class="nav-section">
+        <div class="nav-section-label">GLOBAL</div>
+        <button class="nav-item active" data-target="overview">
+          <span class="nav-dot" style="color:var(--gold);background:var(--gold)"></span>
+          <span class="nav-label">OVERVIEW</span>
+          <span class="nav-meta">主地圖</span>
+        </button>
+      </div>
 
-<!-- ═══ PANEL: RESEARCH ════════════════════════════════════════════= -->
-<div class="panel" id="panel-research">
-  <div class="perf-row" id="perf-stats"></div>
-  <div id="signal-lb"></div>
-  <div id="research-note"></div>
+      <div class="nav-section">
+        <div class="nav-section-label">DEPARTMENTS</div>
+        <button class="nav-item" data-target="exec">
+          <span class="nav-dot" id="nav-dot-exec" style="color:var(--gold);background:var(--gold)"></span>
+          <span class="nav-label">EXEC FLOOR</span>
+        </button>
+        <button class="nav-item" data-target="trading">
+          <span class="nav-dot" id="nav-dot-trading" style="color:var(--cyan);background:var(--cyan)"></span>
+          <span class="nav-label">TRADING FLOOR</span>
+        </button>
+        <button class="nav-item" data-target="research">
+          <span class="nav-dot" id="nav-dot-research" style="color:var(--blue);background:var(--blue)"></span>
+          <span class="nav-label">RESEARCH LAB</span>
+        </button>
+        <button class="nav-item" data-target="risk">
+          <span class="nav-dot" id="nav-dot-risk" style="color:var(--red);background:var(--red)"></span>
+          <span class="nav-label">RISK CONTROL</span>
+        </button>
+        <button class="nav-item" data-target="wealth">
+          <span class="nav-dot" id="nav-dot-wealth" style="color:var(--purple);background:var(--purple)"></span>
+          <span class="nav-label">WEALTH OFFICE</span>
+        </button>
+        <button class="nav-item" data-target="archive">
+          <span class="nav-dot" id="nav-dot-archive" style="color:var(--text3);background:var(--text3)"></span>
+          <span class="nav-label">ARCHIVE</span>
+        </button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">SYSTEMS</div>
+        <button class="nav-item" data-system="decision-log">
+          <span class="nav-dot" style="color:var(--text2);background:var(--text2)"></span>
+          <span class="nav-label">DECISION LOG</span>
+        </button>
+        <button class="nav-item" data-system="signal-matrix">
+          <span class="nav-dot" style="color:var(--text2);background:var(--text2)"></span>
+          <span class="nav-label">SIGNAL MATRIX</span>
+        </button>
+        <button class="nav-item" data-system="agent-flows">
+          <span class="nav-dot" style="color:var(--text2);background:var(--text2)"></span>
+          <span class="nav-label">AGENT FLOWS</span>
+        </button>
+        <button class="nav-item" data-system="settings">
+          <span class="nav-dot" style="color:var(--text2);background:var(--text2)"></span>
+          <span class="nav-label">SETTINGS</span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="left-foot">YUZU OS · v0.1 · P1</div>
+  </aside>
+
+  <!-- ═══ CANVAS ═══ -->
+  <main class="canvas">
+    <header class="topbar">
+      <div class="crumb" id="crumb">
+        <span class="crumb-room">YUZU CAPITAL · OVERVIEW</span>
+      </div>
+      <div class="topbar-meta">
+        <div><span class="live-dot"></span><span id="ts">—</span></div>
+      </div>
+    </header>
+
+    <div class="floor">
+      <div class="floor-title">VIRTUAL HEDGE FUND</div>
+      <div class="floor-subtitle" id="floor-sub">— loading —</div>
+
+      <div class="stage">
+        <div class="stage-floor-grid"></div>
+        <div class="iso-grid" id="iso-grid"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══ RIGHT SIDEBAR ═══ -->
+  <aside class="sidebar-right">
+
+    <!-- DATA HEALTH (top — system credibility) -->
+    <section class="module">
+      <div class="module-label">DATA HEALTH</div>
+      <div class="health-rows" id="health-rows"></div>
+    </section>
+
+    <!-- TODAY'S BRIEFING (huge verdict) -->
+    <section class="module verdict-module">
+      <div class="module-label">TODAY'S BRIEFING</div>
+      <div class="verdict-huge" id="briefing-verdict">—</div>
+      <div class="verdict-tagline" id="briefing-tagline">— · —</div>
+      <div class="confidence-row">
+        <span style="color:var(--text3)">CONFIDENCE</span>
+        <div class="confidence-track"><div class="confidence-fill" id="briefing-conf-fill"></div></div>
+        <span class="confidence-val" id="briefing-conf-val">—</span>
+      </div>
+    </section>
+
+    <!-- LIVE TRIGGERS (cockpit rule state) -->
+    <section class="module">
+      <div class="module-label">LIVE TRIGGERS</div>
+      <div class="cockpit" id="cockpit"></div>
+    </section>
+
+    <!-- AGENT ACTIVITY (narrative) -->
+    <section class="module">
+      <div class="module-label">AGENT ACTIVITY</div>
+      <div class="agent-narrative" id="agent-narrative"></div>
+    </section>
+
+  </aside>
 </div>
 
 <script>
-// ════════════════════════════════════════════════════════════════════
-// Utilities
-// ════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+// AGENT PERSONAS
+// ═══════════════════════════════════════════════════════════════════
+const AGENT_PERSONAS = {
+  trading_master: {key:'tm', title:"TRADING MASTER",  role:"Momentum Trader",         bias:"Aggressive",   specialty:"Breakout + Volume",       signal:"vol_surge + breakout_ma20", color:"#00E5FF"},
+  portfolio_master:{key:'pm', title:"PORTFOLIO MASTER",role:"Portfolio Strategist",   bias:"Balanced",     specialty:"Cross-asset Rotation",    signal:"regime_alignment",          color:"#3D8EFF"},
+  wealth_master:  {key:'wm', title:"WEALTH MASTER",    role:"Chief Risk Officer",     bias:"Conservative", specialty:"Liquidity Survival",      signal:"cashflow_stability",        color:"#A259FF"},
+  devils_advocate:{key:'da', title:"DEVIL'S ADVOCATE", role:"Risk Auditor",           bias:"Skeptical",    specialty:"Contradiction Detection", signal:"breadth divergence",        color:"#FF4560"},
+  tw_short_term:  {key:'tw', title:"TW ANALYST",       role:"Taiwan Specialist",      bias:"Tactical",     specialty:"Technical Momentum",      signal:"rs_signal + ma_aligned",    color:"#00C896"},
+  master:         {key:'cio',title:"CIO",              role:"Chief Investment Officer",bias:"Integrative", specialty:"Cross-desk synthesis",    signal:"signal_vector consensus",   color:"#C9A84C"}
+};
+
 const $ = id => document.getElementById(id);
+function clip(s,n){if(!s)return '';return s.length>n?s.slice(0,n)+'…':s}
+function fmtChg(v){if(v==null)return '—';const s=v>0?'+':'';return `${s}${parseFloat(v).toFixed(2)}%`}
+function fmtDate(iso){if(!iso)return'—';const d=new Date(iso);const p=n=>String(n).padStart(2,'0');return `${d.getMonth()+1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`}
+function minsAgo(iso){if(!iso) return null; const d=new Date(iso); return Math.floor((Date.now()-d.getTime())/60000)}
 
-function showTab(name) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  $('panel-' + name).classList.add('active');
-  event.target.classList.add('active');
-}
-
-function verdictColor(v) {
-  if (!v) return 'var(--text2)';
-  if (/進攻|買進|加碼/.test(v)) return 'var(--green)';
-  if (/防守|賣出|減碼/.test(v)) return 'var(--red)';
-  if (/警戒|危險/.test(v)) return 'var(--red)';
-  if (/留意/.test(v)) return 'var(--yellow)';
+function verdictColor(v){
+  if(!v) return 'var(--text2)';
+  if(/進攻|買進|加碼/.test(v)) return 'var(--green)';
+  if(/防守|賣出|減碼|空手|危險/.test(v)) return 'var(--red)';
+  if(/警戒/.test(v)) return 'var(--orange)';
+  if(/留意|觀望|混亂/.test(v)) return 'var(--yellow)';
   return 'var(--text2)';
 }
+function riskColor(level){
+  return ({low:'var(--green)',moderate:'var(--text2)',elevated:'var(--yellow)',high:'var(--orange)',extreme:'var(--red)'})[level] || 'var(--text2)';
+}
+function urgencyClass(u){return u==='HIGH'?'u-high':u==='MED'?'u-med':'u-low'}
 
-function riskColor(level) {
-  const map = { low:'var(--green)', moderate:'var(--text2)', elevated:'var(--yellow)', high:'var(--orange)', extreme:'var(--red)' };
-  return map[level] || 'var(--text2)';
+// ═══════════════════════════════════════════════════════════════════
+// ISO ROOM SVG TEMPLATES
+// ═══════════════════════════════════════════════════════════════════
+// Each room is an inline SVG iso scene. Coordinate system: 320x220.
+// Wall + floor + side wall + desks + monitors + agent silhouette.
+
+function isoFloorPattern(){
+  // Subtle grid lines on the floor
+  return `
+    <line class="iso-floor-line" x1="60" y1="170" x2="0"   y2="210"/>
+    <line class="iso-floor-line" x1="120" y1="170" x2="60"  y2="210"/>
+    <line class="iso-floor-line" x1="180" y1="170" x2="120" y2="210"/>
+    <line class="iso-floor-line" x1="240" y1="170" x2="180" y2="210"/>
+    <line class="iso-floor-line" x1="40"  y1="180" x2="280" y2="180"/>
+    <line class="iso-floor-line" x1="20"  y1="195" x2="263" y2="195"/>
+  `;
 }
 
-function urgencyClass(u) {
-  if (!u) return 'u-low';
-  return u === 'HIGH' ? 'u-high' : u === 'MED' ? 'u-med' : 'u-low';
+// Generic agent silhouette. Facing direction tilts the head circle.
+function agentSVG({x, y, color, glow, facing, scale}){
+  scale = scale || 1;
+  const headDx = facing === 'right' ? 1.5 : facing === 'left' ? -1.5 : 0;
+  const bodyW = 14*scale, bodyH = 22*scale, headR = 6*scale;
+  return `<g class="agent" transform="translate(${x},${y}) scale(${scale})">
+    <ellipse class="ag-shadow" cx="0" cy="14" rx="11" ry="2.5"/>
+    <circle  class="ag-glow" cx="0" cy="-2" r="14" fill="${color}"/>
+    <rect    class="ag-body" x="-7" y="-9" width="14" height="22" rx="3" fill="${color}"/>
+    <circle  class="ag-head" cx="${headDx}" cy="-14" r="6" fill="${color}"/>
+    <rect    x="-7" y="-9" width="14" height="3" fill="rgba(255,255,255,.08)"/>
+  </g>`;
 }
 
-function fmtChg(v) {
-  if (v == null) return '—';
-  const sign = v > 0 ? '+' : '';
-  return `${sign}${parseFloat(v).toFixed(2)}%`;
+function monitorWithGlow({x, y, w, h, glow, content}){
+  // Monitor frame + screen + glow halo (for the desk surface)
+  return `
+    <rect class="iso-monitor-frame" x="${x}" y="${y}" width="${w}" height="${h}" rx="1"/>
+    <rect class="iso-screen" x="${x+1.5}" y="${y+1.5}" width="${w-3}" height="${h-3}"/>
+    ${content||''}
+    <ellipse class="${glow}" cx="${x+w/2}" cy="${y+h+4}" rx="${w*.7}" ry="3"/>
+    <rect x="${x+w/2-2}" y="${y+h}" width="4" height="2.5" fill="#0A1422"/>
+    <rect x="${x+w/2-5}" y="${y+h+2}" width="10" height="1.5" fill="#0A1422"/>
+  `;
 }
 
-function fmtDate(iso) {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  const pad = n => String(n).padStart(2,'0');
-  return `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+// ──────────────────────────────────────────────────────────────────
+// V2 Character — "沉默意志" inspired silhouette
+// ──────────────────────────────────────────────────────────────────
+// Design rules (faceless, anime body proportions, layered clothing):
+//   anchor (x,y) = mid-body (matches old agentSVG so we can swap)
+//   total visible height ≈ 30 units (slightly shorter than old 36)
+//   hair: visible silhouette on head — defines role identity
+//   clothing: 2-tone (jacket + pants) with brand color
+//   skin tone: muted blue-grey mannequin (no face)
+//   floor shadow: thinner, longer (taller character)
+//   halo: brand color glow behind body for identification
+
+const SKIN = '#5A6A8A';        // muted mannequin tone
+const SKIN_DARK = '#3A4D7A';   // shadow side
+
+// Helper: draw the head + neck + hair (varies by hairstyle)
+function head_neck_hair(hairColor, hairstyle, back){
+  const baseHead = `
+    <rect x="-1.2" y="-9.5" width="2.4" height="1.5" fill="${SKIN_DARK}"/>
+    <circle cx="0" cy="-13" r="3.2" fill="${SKIN}"/>
+  `;
+  // Hairstyles: "short_swept" (CIO), "ponytail", "short_neat", "long_loose", etc.
+  let hair = '';
+  if(hairstyle === 'short_swept'){
+    // Executive short, swept-back
+    hair = `
+      <path d="M -3.2 -13 Q -3.5 -16 0 -16.5 Q 3.5 -16 3.2 -13 Q 2.5 -14.5 0 -14.5 Q -2.5 -14.5 -3.2 -13 Z" fill="${hairColor}"/>
+      <path d="M -3.4 -12.6 Q -3.6 -11.4 -2.6 -10.5 L -2.3 -11.6 Z" fill="${hairColor}"/>
+      <path d="M 3.4 -12.6 Q 3.6 -11.4 2.6 -10.5 L 2.3 -11.6 Z" fill="${hairColor}"/>
+      ${back ? '' : `<path d="M -3.2 -14 Q 0 -15.5 2 -13.5" fill="none" stroke="${hairColor}" stroke-width=".4" opacity=".6"/>`}
+    `;
+  }
+  return baseHead + hair;
 }
 
-// ════════════════════════════════════════════════════════════════════
-// Command Bar
-// ════════════════════════════════════════════════════════════════════
-function renderCmdBar(master, cf, regime, generatedAt) {
-  const verdict = master.verdict || '—';
-  const col = verdictColor(verdict);
-  $('cmd-verdict').textContent = verdict;
-  $('cmd-verdict').style.color = col;
+// ──────────────────────────────────────────────────────────────────
+// V3 Agent — parameterized, all 6 roles, polished SVG silhouette
+// ──────────────────────────────────────────────────────────────────
+const ROLE_CONFIG = {
+  cio: {
+    jacket:['#D4B45A','#9C813D','#5C4818'],
+    pants:['#231F2A','#0A0810'], shoes:'#040408',
+    tie:'#C9A84C', shirt:'#DDE5F5', accent:'#5C4818',
+    hairColor:'#0F0E14', hair:'short_swept', halo:'#C9A84C',
+    extras:{watch:true, pocket_square:true}
+  },
+  tm: {
+    jacket:['#1F6680','#0E3A48','#062028'],
+    pants:['#2E3A4F','#0F1F2E'], shoes:'#040408',
+    tie:null, shirt:'#0A0E14', accent:'#062028',
+    hairColor:'#1F1820', hair:'spiked', halo:'#00E5FF',
+    extras:{headphones:true, hoodie:true}
+  },
+  tw: {
+    jacket:['#2E7A5C','#0E5A40','#062E20'],
+    pants:['#1A1F2A','#0A0E14'], shoes:'#040408',
+    tie:'#00C896', shirt:'#DDE5F5', accent:'#062E20',
+    hairColor:'#1F1820', hair:'middle_part', halo:'#00C896',
+    extras:{}
+  },
+  da: {
+    jacket:['#3A0E20','#1A0510','#0A0008'],
+    pants:['#1A0510','#0A0008'], shoes:'#040408',
+    tie:null, shirt:'#0A0510', accent:'#7A1530',
+    hairColor:'#0A0810', hair:'long_bangs', halo:'#FF4560',
+    extras:{trench:true}
+  },
+  pm: {
+    jacket:['#5A7A9F','#2F4F7F','#0E1A2E'],
+    pants:['#2A334F','#15203A'], shoes:'#040408',
+    tie:null, shirt:'#3D8EFF', accent:'#0E1A2E',
+    hairColor:'#1F1820', hair:'short_neat', halo:'#3D8EFF',
+    extras:{glasses:true, sweater:true}
+  },
+  wm: {
+    jacket:['#7A4090','#3A1A4A','#1F0E2E'],
+    pants:['#2A1A3A','#1A0E26'], shoes:'#040408',
+    tie:'#A259FF', shirt:'#DDE5F5', accent:'#1F0E2E',
+    hairColor:'#1F1820', hair:'bun', halo:'#A259FF',
+    extras:{}
+  },
+  concierge: {
+    jacket:['#3A3A40','#1F1F24','#0A0A0E'],
+    pants:['#1A1A1F','#0A0A0E'], shoes:'#040408',
+    tie:'#C9A84C', shirt:'#DDE5F5', accent:'#1A1A1F',
+    hairColor:'#0F0E14', hair:'middle_part', halo:'#C9A84C',  // 中分長髮（女）
+    extras:{}
+  },
+};
 
-  const budget = cf.budget || {};
-  const tp = Math.round((budget.trading || 0) * 100);
-  const pp = Math.round((budget.portfolio || 0) * 100);
-  const cp = Math.round((budget.cash || 0) * 100);
-  $('cmd-budget').innerHTML =
-    `<div class="budget-pill"><div class="budget-dot" style="background:var(--accent)"></div><span style="color:var(--accent)">${tp}%</span><span style="color:var(--text3)"> TRD</span></div>` +
-    `<div class="budget-pill"><div class="budget-dot" style="background:var(--purple)"></div><span style="color:var(--purple)">${pp}%</span><span style="color:var(--text3)"> PRT</span></div>` +
-    `<div class="budget-pill"><div class="budget-dot" style="background:var(--text2)"></div><span style="color:var(--text2)">${cp}%</span><span style="color:var(--text3)"> CSH</span></div>`;
-
-  const rn = regime.market_regime || '—';
-  const rl = regime.risk_level || 'moderate';
-  $('cmd-regime').textContent = rn;
-  $('cmd-regime').style.color = riskColor(rl);
-
-  $('cmd-time').innerHTML = `<span class="live-dot"></span>${fmtDate(generatedAt)}`;
+function drawHair(color, style, back){
+  switch(style){
+    case 'short_swept': return `
+      <path d="M -3.5 -13 Q -3.8 -17 0 -17.2 Q 3.8 -17 3.5 -13 Q 3 -15.5 0 -15.7 Q -3 -15.5 -3.5 -13 Z" fill="${color}"/>
+      <path d="M -3 -15 Q -1 -17 1 -17 Q 3.5 -16.5 3.2 -13.8 Q 1.5 -16 0 -15.8 Q -1.5 -16 -3 -15 Z" fill="#15131A" opacity=".9"/>
+      <path d="M -3.4 -13 Q -3.4 -11.5 -2.4 -10.3 L -2.1 -11.6 Z" fill="${color}"/>
+      <path d="M 3.4 -13 Q 3.4 -11.5 2.4 -10.3 L 2.1 -11.6 Z" fill="${color}"/>`;
+    case 'spiked': return `
+      <path d="M -3.4 -13 Q -3.5 -16 0 -16.5 Q 3.5 -16 3.4 -13 Q 3 -14.8 0 -14.8 Q -3 -14.8 -3.4 -13 Z" fill="${color}"/>
+      <path d="M -2.5 -16 L -2 -17.4 L -1.4 -16.2 Z" fill="${color}"/>
+      <path d="M -.6 -16.4 L 0 -17.8 L .6 -16.4 Z" fill="${color}"/>
+      <path d="M 1.4 -16.2 L 2 -17.4 L 2.6 -16 Z" fill="${color}"/>
+      <path d="M -3.4 -13 Q -3.6 -11.5 -2.6 -10.3 L -2.3 -11.6 Z" fill="${color}"/>
+      <path d="M 3.4 -13 Q 3.6 -11.5 2.6 -10.3 L 2.3 -11.6 Z" fill="${color}"/>`;
+    case 'middle_part': return `
+      <path d="M -3.4 -13 Q -3.6 -16.5 0 -17 Q 3.6 -16.5 3.4 -13 Q 3 -15.5 0 -15.5 Q -3 -15.5 -3.4 -13 Z" fill="${color}"/>
+      <line x1="0" y1="-16.8" x2="0" y2="-13.5" stroke="#070510" stroke-width=".3"/>
+      <path d="M -3.4 -13.5 Q -3.7 -10 -3.2 -8.5" fill="${color}" opacity=".85"/>
+      <path d="M 3.4 -13.5 Q 3.7 -10 3.2 -8.5" fill="${color}" opacity=".85"/>`;
+    case 'long_bangs': return `
+      <path d="M -3.5 -13 Q -3.8 -16.5 0 -17 Q 3.8 -16.5 3.5 -13 L 3.4 -10 Q 0 -9.5 -3.4 -10 Z" fill="${color}"/>
+      ${!back ? `<path d="M -3.2 -12 Q 0 -10.5 3.2 -12 L 3.2 -10 Q 0 -9 -3.2 -10 Z" fill="#040408" opacity=".7"/>` : ''}
+      <path d="M -3.5 -10.5 Q -3.8 -8 -3.2 -7" fill="${color}"/>
+      <path d="M 3.5 -10.5 Q 3.8 -8 3.2 -7" fill="${color}"/>`;
+    case 'short_neat': return `
+      <path d="M -3.4 -13 Q -3.6 -16.5 0 -17 Q 3.6 -16.5 3.4 -13 Q 2.5 -15 0 -15 Q -2.5 -15 -3.4 -13 Z" fill="${color}"/>
+      <path d="M -3.4 -13 Q -3.5 -11.5 -2.5 -10.3 L -2.2 -11.5 Z" fill="${color}"/>
+      <path d="M 3.4 -13 Q 3.5 -11.5 2.5 -10.3 L 2.2 -11.5 Z" fill="${color}"/>`;
+    case 'bun': return `
+      <path d="M -3.3 -13 Q -3.5 -15.5 0 -15.8 Q 3.5 -15.5 3.3 -13 Q 3 -14.5 0 -14.5 Q -3 -14.5 -3.3 -13 Z" fill="${color}"/>
+      <ellipse cx="0" cy="-17.3" rx="2.2" ry="1.9" fill="${color}"/>
+      <ellipse cx="0" cy="-17.6" rx="1.4" ry="1.1" fill="rgba(0,0,0,.3)"/>
+      <path d="M -3.3 -13 Q -3.4 -11.5 -2.5 -10.3" fill="${color}"/>
+      <path d="M 3.3 -13 Q 3.4 -11.5 2.5 -10.3" fill="${color}"/>`;
+  }
+  return '';
 }
 
-// ════════════════════════════════════════════════════════════════════
-// Market chips
-// ════════════════════════════════════════════════════════════════════
-function renderMktBar(snap) {
-  if (!snap) return;
-  const chips = [
-    { n:'TAIEX', v:snap.taiex?.close, chg:snap.taiex?.change_pct },
-    { n:'S&P500', v:snap.sp500?.close, chg:snap.sp500?.change_pct },
-    { n:'VIX',   v:snap.vix?.value || snap.vix?.close, chg:null },
-    { n:'USD/TWD',v:snap.usd_twd, chg:null },
-  ].filter(c => c.v != null);
-
-  $('mkt-bar').innerHTML = chips.map(c => {
-    const chgColor = c.chg > 0 ? 'var(--green)' : c.chg < 0 ? 'var(--red)' : 'var(--text2)';
-    const chgStr = c.chg != null ? `<span style="color:${chgColor}"> ${fmtChg(c.chg)}</span>` : '';
-    return `<div class="mkt-chip">
-      <div class="mkt-chip-name">${c.n}</div>
-      <div class="mkt-chip-val">${typeof c.v === 'number' ? c.v.toLocaleString('en-US',{maximumFractionDigits:2}) : c.v}${chgStr}</div>
-    </div>`;
-  }).join('');
+function drawAccessory(extras, back){
+  let out = '';
+  if(extras.headphones){
+    out += `
+      <path d="M -3.5 -15 Q 0 -18.5 3.5 -15" fill="none" stroke="#1A1F2A" stroke-width=".7"/>
+      <ellipse cx="-3.7" cy="-13.5" rx=".9" ry="1.4" fill="#1A1F2A" stroke="#0A0E14" stroke-width=".2"/>
+      <ellipse cx="3.7" cy="-13.5" rx=".9" ry="1.4" fill="#1A1F2A" stroke="#0A0E14" stroke-width=".2"/>
+      <ellipse cx="-3.7" cy="-13.5" rx=".4" ry=".7" fill="#00E5FF" opacity=".5"/>
+      <ellipse cx="3.7" cy="-13.5" rx=".4" ry=".7" fill="#00E5FF" opacity=".5"/>`;
+  }
+  if(extras.glasses && !back){
+    out += `
+      <rect x="-2.8" y="-13.5" width="5.6" height=".3" fill="#5A7A9F" opacity=".6"/>
+      <ellipse cx="-1.8" cy="-12.8" rx="1.1" ry=".7" fill="rgba(122,142,189,.15)" stroke="#5A7A9F" stroke-width=".2"/>
+      <ellipse cx="1.8" cy="-12.8" rx="1.1" ry=".7" fill="rgba(122,142,189,.15)" stroke="#5A7A9F" stroke-width=".2"/>
+      <line x1="-.7" y1="-12.8" x2=".7" y2="-12.8" stroke="#5A7A9F" stroke-width=".2"/>`;
+  }
+  return out;
 }
 
-// ════════════════════════════════════════════════════════════════════
-// Signal Gauges
-// ════════════════════════════════════════════════════════════════════
-function arcGaugeSVG(value, color) {
-  // -1 to 1, semicircle: left(-1)→top(0)→right(1)
+// ──────────────────────────────────────────────────────────────────
+// AI Character Hybrid (SVG 70 / AI 20 / Lighting 10)
+// ──────────────────────────────────────────────────────────────────
+// When PNG exists at `agents/{role}-{facing}.png`, browser shows it on top
+// of the SVG silhouette. If file missing (404), PNG stays invisible (the
+// SVG below shows through). No JS file-check needed — pure load-or-fail.
+const AI_BASE = 'assets/characters/';   // ← Put PNG files here
+const AGENT_RASTER_SIZE = 40;  // viewBox units — base size before per-call scale
+
+function agentImg({x, y, scale, role, facing}){
+  scale = scale || 1;
+  const s = AGENT_RASTER_SIZE * scale;
+  const href = `${AI_BASE}${role}-${facing}.png`;
+  // Anchor (x, y) = body center (matches SVG agent anchor).
+  // Image extends from y-0.55s (top, head area) to y+0.45s (bottom, feet).
+  // Character occupies middle 90% of image; visible feet land at y+0.4s.
+  return `<image href="${href}"
+            x="${x - s/2}" y="${y - s*0.55}"
+            width="${s}" height="${s}"
+            visibility="hidden"
+            onload="this.setAttribute('visibility','visible')"
+            preserveAspectRatio="xMidYMax meet"/>`;
+}
+
+// Combined renderer: SVG below (always renders), PNG on top (only if loaded)
+function agentRender(opts){
+  const s = JSON.parse(localStorage.getItem('yuzu-settings') || '{}');
+  const mode = s.aiMode || 'hybrid';
+  if(mode === 'svg-only') return agentSVGv3(opts);
+  if(mode === 'png-only') return agentImg(opts);
+  return agentSVGv3(opts) + agentImg(opts);  // hybrid
+}
+
+function agentSVGv3({x, y, scale, role, facing}){
+  scale = scale || 1;
+  const back = facing === 'back';
+  const r = ROLE_CONFIG[role] || ROLE_CONFIG.cio;
+  const ext = r.extras || {};
+  const gid = role + '-' + Math.random().toString(36).slice(2,6);
+  const isTrench = ext.trench;
+  const jacketBottom = isTrench ? 6 : 2;  // trench is longer
+
+  return `<g class="agent-v3 ${role}" transform="translate(${x},${y}) scale(${scale})">
+    <defs>
+      <linearGradient id="${gid}-jk" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${r.jacket[0]}"/>
+        <stop offset=".4" stop-color="${r.jacket[1]}"/>
+        <stop offset="1" stop-color="${r.jacket[2]}"/>
+      </linearGradient>
+      <linearGradient id="${gid}-pt" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${r.pants[0]}"/>
+        <stop offset="1" stop-color="${r.pants[1]}"/>
+      </linearGradient>
+      <radialGradient id="${gid}-hr" cx=".5" cy=".25" r=".7">
+        <stop offset="0" stop-color="${r.hairColor}"/>
+        <stop offset="1" stop-color="#070510"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Floor shadow -->
+    <ellipse cx="0" cy="14.6" rx="7.5" ry="1.4" fill="rgba(0,0,0,.55)" filter="blur(1px)"/>
+    <ellipse cx="0" cy="14.2" rx="4.5" ry=".7" fill="rgba(0,0,0,.65)"/>
+
+    <!-- Identity halo (brand color) -->
+    <ellipse cx="0" cy="-3" rx="11" ry="16" fill="${r.halo}" opacity=".13" filter="blur(5px)"/>
+
+    <!-- Pants / legs -->
+    <rect x=".3" y="2" width="3.2" height="11.5" fill="url(#${gid}-pt)"/>
+    <rect x="-3.5" y="2" width="3.2" height="11.5" fill="url(#${gid}-pt)"/>
+    <line x1="-2" y1="2" x2="-2" y2="13" stroke="#050308" stroke-width=".3" opacity=".8"/>
+    <line x1="2" y1="2" x2="2" y2="13" stroke="#050308" stroke-width=".3" opacity=".8"/>
+    <rect x="-4" y="2" width="8" height="1.2" fill="rgba(0,0,0,.4)"/>
+
+    <!-- Shoes -->
+    <ellipse cx="-2" cy="14" rx="2.4" ry=".75" fill="${r.shoes}"/>
+    <ellipse cx="-2" cy="13.7" rx="2.1" ry=".35" fill="#1A1A24"/>
+    <ellipse cx="2" cy="14.1" rx="2.3" ry=".7" fill="${r.shoes}"/>
+    <ellipse cx="2" cy="13.85" rx="2" ry=".3" fill="#1A1A24"/>
+
+    <!-- Jacket shadow underlay -->
+    <path d="M -5.4 -8.3 L 5.4 -8.3 L ${4.3 + (isTrench?.5:0)} ${jacketBottom+.3} L ${-(4.3 + (isTrench?.5:0))} ${jacketBottom+.3} Z" fill="${r.accent}"/>
+
+    <!-- Jacket main -->
+    <path d="M -5 -8 L 5 -8 L ${4 + (isTrench?.5:0)} ${jacketBottom} L ${-(4 + (isTrench?.5:0))} ${jacketBottom} Z" fill="url(#${gid}-jk)"/>
+
+    ${ext.hoodie ? `
+      <!-- Hoodie raised hood (back of neck) -->
+      <path d="M -3.5 -8 Q 0 -11 3.5 -8 L 3.2 -7 Q 0 -9.5 -3.2 -7 Z" fill="${r.jacket[2]}"/>
+      <!-- Drawstrings -->
+      <line x1="-1.2" y1="-7.5" x2="-1.5" y2="-3" stroke="${r.jacket[2]}" stroke-width=".4"/>
+      <line x1="1.2" y1="-7.5" x2="1.5" y2="-3" stroke="${r.jacket[2]}" stroke-width=".4"/>
+    ` : ''}
+
+    ${back ? `
+      <!-- Back vent / center seam -->
+      <line x1="0" y1="-8" x2="0" y2="${jacketBottom-3}" stroke="${r.accent}" stroke-width=".4" opacity=".7"/>
+      <line x1="0" y1="${jacketBottom-3}" x2="0" y2="${jacketBottom}" stroke="#0A0810" stroke-width=".6"/>
+      <!-- Yoke / collar back -->
+      <path d="M -2.8 -8 Q 0 -9 2.8 -8 L 2.5 -7.2 Q 0 -8 -2.5 -7.2 Z" fill="${r.accent}" opacity=".8"/>
+      <!-- Shoulder rim light -->
+      <path d="M -5 -8 Q -4.7 -7 -4.5 -3" fill="none" stroke="${r.jacket[0]}" stroke-width=".35" opacity=".55"/>
+      <path d="M 5 -8 Q 4.7 -7 4.5 -3" fill="none" stroke="${r.jacket[0]}" stroke-width=".35" opacity=".55"/>
+      <!-- Subtle waist taper -->
+      <path d="M -4.2 -2 Q 0 -1.3 4.2 -2" fill="none" stroke="${r.accent}" stroke-width=".3" opacity=".5"/>
+    ` : `
+      <!-- Front lapels -->
+      <path d="M -3 -8 L -.8 -5 L -1.8 ${jacketBottom} L -4 ${jacketBottom} L -5 -8 Z" fill="${r.accent}"/>
+      <path d="M 3 -8 L .8 -5 L 1.8 ${jacketBottom} L 4 ${jacketBottom} L 5 -8 Z" fill="${r.accent}"/>
+      <path d="M -3 -8 L -.8 -5" fill="none" stroke="${r.jacket[0]}" stroke-width=".3" opacity=".7"/>
+      <path d="M 3 -8 L .8 -5" fill="none" stroke="${r.jacket[0]}" stroke-width=".3" opacity=".7"/>
+      <!-- Shirt V -->
+      <path d="M -.8 -8 L 0 -5 L .8 -8 Z" fill="${r.shirt}" opacity=".82"/>
+      ${r.tie ? `
+        <path d="M -.7 -5 L .7 -5 L .5 -.3 L -.5 -.3 Z" fill="${r.tie}"/>
+        <line x1="0" y1="-5" x2="0" y2="-.3" stroke="${r.accent}" stroke-width=".2" opacity=".7"/>
+      ` : ''}
+      <circle cx="-.7" cy="-1.5" r=".25" fill="${r.accent}"/>
+      <circle cx="-.7" cy=".3" r=".25" fill="${r.accent}"/>
+      ${ext.pocket_square ? `<path d="M 2.4 -6.2 L 3.4 -6.2 L 3.5 -5 L 2.3 -5 Z" fill="#DDE5F5" opacity=".7"/>` : ''}
+    `}
+
+    ${ext.trench ? `
+      <!-- Trench bottom flow -->
+      <path d="M -4.5 ${jacketBottom} L 4.5 ${jacketBottom} L 4 ${jacketBottom+1.5} L -4 ${jacketBottom+1.5} Z" fill="${r.jacket[2]}"/>
+      <line x1="-3" y1="0" x2="-3" y2="${jacketBottom+1}" stroke="#040408" stroke-width=".25" opacity=".7"/>
+      <line x1="3" y1="0" x2="3" y2="${jacketBottom+1}" stroke="#040408" stroke-width=".25" opacity=".7"/>
+    ` : ''}
+
+    <!-- Arms (hanging at sides) -->
+    ${ext.handsInPockets ? `
+      <!-- Hands in pockets — shorter arms ending at jacket waist -->
+      <rect x="-5.5" y="-6" width="1.4" height="6" fill="url(#${gid}-jk)"/>
+      <rect x="4.1" y="-6" width="1.4" height="6" fill="url(#${gid}-jk)"/>
+    ` : `
+      <rect x="-6" y="-7" width="1.6" height="9" fill="url(#${gid}-jk)"/>
+      <rect x="4.4" y="-7" width="1.6" height="9" fill="url(#${gid}-jk)"/>
+      <line x1="-4.4" y1="-7" x2="-4.4" y2="2" stroke="${r.accent}" stroke-width=".3" opacity=".7"/>
+      <line x1="4.4" y1="-7" x2="4.4" y2="2" stroke="${r.accent}" stroke-width=".3" opacity=".7"/>
+      <line x1="-6" y1="1" x2="-4.4" y2="1" stroke="#080610" stroke-width=".3"/>
+      <line x1="4.4" y1="1" x2="6" y2="1" stroke="#080610" stroke-width=".3"/>
+      <!-- Hands -->
+      <ellipse cx="-5.2" cy="2.4" rx=".95" ry=".75" fill="${SKIN}"/>
+      <ellipse cx="5.2" cy="2.4" rx=".95" ry=".75" fill="${SKIN}"/>
+      <ellipse cx="-5.2" cy="2.6" rx=".7" ry=".3" fill="${SKIN_DARK}"/>
+      <ellipse cx="5.2" cy="2.6" rx=".7" ry=".3" fill="${SKIN_DARK}"/>
+    `}
+
+    ${ext.watch ? `
+      <rect x="4.6" y="1.4" width="1.2" height=".55" fill="${r.tie || '#C9A84C'}"/>
+      <rect x="4.6" y="1.4" width="1.2" height=".2" fill="#E0C470"/>
+    ` : ''}
+
+    <!-- Neck -->
+    <rect x="-1.3" y="-9.7" width="2.6" height="1.7" fill="${SKIN_DARK}"/>
+    <rect x="-1.3" y="-9.7" width="2.6" height=".5" fill="rgba(0,0,0,.55)"/>
+    <path d="M -1.3 -8 L 0 -8.4 L 1.3 -8" fill="none" stroke="rgba(0,0,0,.4)" stroke-width=".3"/>
+
+    <!-- Head -->
+    <circle cx="0" cy="-13" r="3.2" fill="${SKIN}"/>
+    <ellipse cx="2.2" cy="-13" rx=".7" ry="2" fill="rgba(0,0,0,.18)"/>
+    <ellipse cx="0" cy="-10" rx="1.7" ry=".5" fill="rgba(0,0,0,.45)"/>
+
+    ${!back ? `
+      <ellipse cx="-3" cy="-13" rx=".5" ry="1" fill="${SKIN_DARK}"/>
+      <ellipse cx="3" cy="-13" rx=".5" ry="1" fill="${SKIN_DARK}"/>
+    ` : ''}
+
+    <!-- Hair -->
+    ${drawHair(r.hairColor, r.hair, back)}
+
+    <!-- Accessories -->
+    ${drawAccessory(ext, back)}
+  </g>`;
+}
+
+// (legacy bodies removed below)
+function _retired1(){return `<g>
+    <defs>
+      <linearGradient id="${gid}-jk" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#D4B45A"/>
+        <stop offset=".4" stop-color="#9C813D"/>
+        <stop offset="1" stop-color="#5C4818"/>
+      </linearGradient>
+      <linearGradient id="${gid}-pt" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#231F2A"/>
+        <stop offset="1" stop-color="#0A0810"/>
+      </linearGradient>
+      <radialGradient id="${gid}-hr" cx=".5" cy=".25" r=".7">
+        <stop offset="0" stop-color="#231F2A"/>
+        <stop offset="1" stop-color="#080610"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Floor shadow (diffused + contact) -->
+    <ellipse cx="0" cy="14.6" rx="7.5" ry="1.4" fill="rgba(0,0,0,.55)" filter="blur(1px)"/>
+    <ellipse cx="0" cy="14.2" rx="4.5" ry=".7" fill="rgba(0,0,0,.65)"/>
+
+    <!-- Identity halo (brand gold) -->
+    <ellipse cx="0" cy="-3" rx="11" ry="16" fill="#C9A84C" opacity=".14" filter="blur(5px)"/>
+
+    <!-- Back leg (recessed) -->
+    <rect x=".3" y="2" width="3.2" height="11.5" fill="url(#${gid}-pt)"/>
+    <!-- Front leg -->
+    <rect x="-3.5" y="2" width="3.2" height="11.5" fill="url(#${gid}-pt)"/>
+    <!-- Crease highlights -->
+    <line x1="-2" y1="2" x2="-2" y2="13" stroke="#070510" stroke-width=".3" opacity=".8"/>
+    <line x1="2" y1="2" x2="2" y2="13" stroke="#070510" stroke-width=".3" opacity=".8"/>
+    <!-- Pants seat shading -->
+    <rect x="-4" y="2" width="8" height="1.2" fill="rgba(0,0,0,.4)"/>
+
+    <!-- Shoes with subtle depth -->
+    <ellipse cx="-2" cy="14" rx="2.4" ry=".75" fill="#040408"/>
+    <ellipse cx="-2" cy="13.7" rx="2.1" ry=".35" fill="#1A1A24"/>
+    <ellipse cx="2" cy="14.1" rx="2.3" ry=".7" fill="#040408"/>
+    <ellipse cx="2" cy="13.85" rx="2" ry=".3" fill="#1A1A24"/>
+
+    <!-- Jacket shadow underlay (darker outline for depth) -->
+    <path d="M -5.4 -8.3 L 5.4 -8.3 L 4.3 2.3 L -4.3 2.3 Z" fill="#3A2E10"/>
+
+    <!-- Jacket main with gradient -->
+    <path d="M -5 -8 L 5 -8 L 4 2 L -4 2 Z" fill="url(#${gid}-jk)"/>
+
+    ${back ? `
+      <!-- Back vent (center seam) -->
+      <line x1="0" y1="-8" x2="0" y2="-1" stroke="#5C4818" stroke-width=".4" opacity=".7"/>
+      <line x1="0" y1="-1" x2="0" y2="2" stroke="#1F1505" stroke-width=".6"/>
+      <!-- Collar back yoke -->
+      <path d="M -2.8 -8 Q 0 -9 2.8 -8 L 2.5 -7.2 Q 0 -8 -2.5 -7.2 Z" fill="#5C4818" opacity=".8"/>
+      <!-- Shoulder rim light -->
+      <path d="M -5 -8 Q -4.7 -7 -4.5 -3" fill="none" stroke="#E0C470" stroke-width=".35" opacity=".5"/>
+      <path d="M 5 -8 Q 4.7 -7 4.5 -3" fill="none" stroke="#E0C470" stroke-width=".35" opacity=".5"/>
+      <!-- Subtle waist taper -->
+      <path d="M -4.2 -2 Q 0 -1.3 4.2 -2" fill="none" stroke="#3A2E10" stroke-width=".3" opacity=".5"/>
+      <!-- Fabric drape lines -->
+      <line x1="-2.5" y1="-3" x2="-2.2" y2="2" stroke="#5C4818" stroke-width=".2" opacity=".5"/>
+      <line x1="2.5" y1="-3" x2="2.2" y2="2" stroke="#5C4818" stroke-width=".2" opacity=".5"/>
+    ` : `
+      <!-- Front lapels -->
+      <path d="M -3 -8 L -.8 -5 L -1.8 2 L -4 2 L -5 -8 Z" fill="#5C4818"/>
+      <path d="M 3 -8 L .8 -5 L 1.8 2 L 4 2 L 5 -8 Z" fill="#5C4818"/>
+      <!-- Lapel highlight -->
+      <path d="M -3 -8 L -.8 -5" fill="none" stroke="#E0C470" stroke-width=".3" opacity=".7"/>
+      <path d="M 3 -8 L .8 -5" fill="none" stroke="#E0C470" stroke-width=".3" opacity=".7"/>
+      <!-- Shirt V -->
+      <path d="M -.8 -8 L 0 -5 L .8 -8 Z" fill="#DDE5F5" opacity=".82"/>
+      <!-- Tie -->
+      <path d="M -.7 -5 L .7 -5 L .5 -.3 L -.5 -.3 Z" fill="#C9A84C"/>
+      <line x1="0" y1="-5" x2="0" y2="-.3" stroke="#5C4818" stroke-width=".2" opacity=".7"/>
+      <!-- Buttons -->
+      <circle cx="-.7" cy="-1.5" r=".25" fill="#1F1505"/>
+      <circle cx="-.7" cy=".3" r=".25" fill="#1F1505"/>
+      <!-- Pocket square -->
+      <path d="M 2.4 -6.2 L 3.4 -6.2 L 3.5 -5 L 2.3 -5 Z" fill="#DDE5F5" opacity=".7"/>
+    `}
+
+    <!-- Arms (hanging naturally at sides) -->
+    <rect x="-6" y="-7" width="1.6" height="9" fill="url(#${gid}-jk)"/>
+    <rect x="4.4" y="-7" width="1.6" height="9" fill="url(#${gid}-jk)"/>
+    <!-- Arm inner shadow -->
+    <line x1="-4.4" y1="-7" x2="-4.4" y2="2" stroke="#3A2E10" stroke-width=".3" opacity=".7"/>
+    <line x1="4.4" y1="-7" x2="4.4" y2="2" stroke="#3A2E10" stroke-width=".3" opacity=".7"/>
+    <!-- Cuff (subtle) -->
+    <line x1="-6" y1="1" x2="-4.4" y2="1" stroke="#1F1505" stroke-width=".3"/>
+    <line x1="4.4" y1="1" x2="6" y2="1" stroke="#1F1505" stroke-width=".3"/>
+
+    <!-- Hands (small mannequin tone) -->
+    <ellipse cx="-5.2" cy="2.4" rx=".95" ry=".75" fill="${SKIN}"/>
+    <ellipse cx="5.2" cy="2.4" rx=".95" ry=".75" fill="${SKIN}"/>
+    <ellipse cx="-5.2" cy="2.6" rx=".7" ry=".3" fill="${SKIN_DARK}"/>
+    <ellipse cx="5.2" cy="2.6" rx=".7" ry=".3" fill="${SKIN_DARK}"/>
+
+    <!-- Watch (gold) on right wrist -->
+    <rect x="4.6" y="1.4" width="1.2" height=".55" fill="#C9A84C"/>
+    <rect x="4.6" y="1.4" width="1.2" height=".2" fill="#E0C470"/>
+
+    <!-- Neck (with subtle shadow under jaw) -->
+    <rect x="-1.3" y="-9.7" width="2.6" height="1.7" fill="${SKIN_DARK}"/>
+    <rect x="-1.3" y="-9.7" width="2.6" height=".5" fill="rgba(0,0,0,.55)"/>
+    <!-- Collar opening shadow -->
+    <path d="M -1.3 -8 L 0 -8.4 L 1.3 -8" fill="none" stroke="rgba(0,0,0,.4)" stroke-width=".3"/>
+
+    <!-- Head -->
+    <circle cx="0" cy="-13" r="3.2" fill="${SKIN}"/>
+    <!-- Side cheek shadow (subtle modeling) -->
+    <ellipse cx="2.2" cy="-13" rx=".7" ry="2" fill="rgba(0,0,0,.18)"/>
+    <!-- Chin shadow on neck -->
+    <ellipse cx="0" cy="-10" rx="1.7" ry=".5" fill="rgba(0,0,0,.45)"/>
+
+    ${!back ? `
+      <!-- Ear hints (3/4 view) -->
+      <ellipse cx="-3" cy="-13" rx=".5" ry="1" fill="${SKIN_DARK}"/>
+      <ellipse cx="3" cy="-13" rx=".5" ry="1" fill="${SKIN_DARK}"/>
+    ` : ''}
+
+    <!-- Hair (multi-layer for depth) -->
+    <!-- Base layer (back skull cap) -->
+    <path d="M -3.5 -13 Q -3.8 -17 0 -17.2 Q 3.8 -17 3.5 -13 Q 3 -15.5 0 -15.7 Q -3 -15.5 -3.5 -13 Z" fill="url(#${gid}-hr)"/>
+    <!-- Top swept layer -->
+    <path d="M -3 -15 Q -1 -17 1 -17 Q 3.5 -16.5 3.2 -13.8 Q 1.5 -16 0 -15.8 Q -1.5 -16 -3 -15 Z" fill="#15131A" opacity=".95"/>
+    <!-- Side temple sweep -->
+    <path d="M -3.4 -13 Q -3.4 -11.5 -2.4 -10.3 L -2.1 -11.6 Q -2.8 -12.3 -3.1 -13 Z" fill="#0A0810"/>
+    <path d="M 3.4 -13 Q 3.4 -11.5 2.4 -10.3 L 2.1 -11.6 Q 2.8 -12.3 3.1 -13 Z" fill="#0A0810"/>
+    <!-- Hair part highlight (subtle gold rim from gold lighting) -->
+    <path d="M -1.5 -16.5 Q 0 -17.1 1.5 -16.5" fill="none" stroke="#5C4818" stroke-width=".3" opacity=".6"/>
+    <!-- Front strand wisp -->
+    ${!back ? `<path d="M -1 -15 Q 0 -14 1 -15" fill="none" stroke="#15131A" stroke-width=".4"/>` : ''}
+  </g>`;
+}
+
+function chairSVG(x, y, scale){
+  scale = scale || 1;
+  return `<g transform="translate(${x},${y}) scale(${scale})">
+    <ellipse cx="0" cy="6" rx="9" ry="2" fill="rgba(0,0,0,.4)"/>
+    <rect x="-7" y="-12" width="14" height="14" rx="2" fill="#1B2C49" stroke="rgba(122,142,189,.3)" stroke-width="0.5"/>
+    <rect x="-7" y="-12" width="14" height="3" fill="rgba(122,142,189,.15)"/>
+  </g>`;
+}
+
+// Reusable: plant in corner
+function plantSVG(x, y){
+  return `<g transform="translate(${x},${y})">
+    <ellipse cx="0" cy="2" rx="6" ry="1.5" fill="rgba(0,0,0,.4)"/>
+    <path d="M-4,2 L-5,-3 L-3,2 Z" fill="#15233A" stroke="rgba(122,142,189,.4)" stroke-width="0.4"/>
+    <path d="M-3,-3 Q-6,-9 -2,-12 Q-1,-7 -3,-3 Z" fill="rgba(0,200,150,.5)"/>
+    <path d="M0,-2 Q-3,-12 0,-16 Q3,-12 0,-2 Z" fill="rgba(0,200,150,.6)"/>
+    <path d="M3,-3 Q6,-9 2,-12 Q1,-7 3,-3 Z" fill="rgba(0,200,150,.45)"/>
+  </g>`;
+}
+
+// Reusable: pendant lamp from ceiling (the cone-shaped overhead light)
+function lampSVG(x, y, color){
+  return `<g transform="translate(${x},${y})">
+    <line x1="0" y1="0" x2="0" y2="14" stroke="rgba(122,142,189,.3)" stroke-width="0.4"/>
+    <polygon points="-6,14 6,14 4,20 -4,20" fill="#15233A" stroke="rgba(122,142,189,.4)" stroke-width="0.4"/>
+    <ellipse cx="0" cy="20" rx="4" ry="1" fill="${color}" opacity=".6"/>
+    <ellipse cx="0" cy="34" rx="22" ry="3" fill="${color}" opacity=".15"/>
+  </g>`;
+}
+
+// Reusable: framed picture on back wall
+function framedSVG(x, y, w, h, accent){
+  return `<g>
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#0A1422" stroke="rgba(201,168,76,.25)" stroke-width="0.5"/>
+    <rect x="${x+2}" y="${y+2}" width="${w-4}" height="${h-4}" fill="${accent}" fill-opacity="0.08"/>
+  </g>`;
+}
+
+// Reusable: coffee mug on desk
+function mugSVG(x, y, color){
+  return `<g transform="translate(${x},${y})">
+    <ellipse cx="0" cy="0" rx="2.5" ry="1" fill="rgba(0,0,0,.5)"/>
+    <rect x="-2" y="-3.5" width="4" height="3" fill="${color||'#7A8EBD'}" stroke="rgba(0,0,0,.3)" stroke-width="0.2"/>
+    <ellipse cx="0" cy="-3.5" rx="2" ry=".7" fill="rgba(0,0,0,.5)"/>
+    <path d="M2,-3 Q4,-2.5 2,-1.5" fill="none" stroke="${color||'#7A8EBD'}" stroke-width="0.5"/>
+  </g>`;
+}
+
+// Standard "operational space" SVG. Each room overrides interior.
+function roomSVG({label, zh, accent, status, statusColor, interior}){
+  return `<svg viewBox="0 0 320 220" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <linearGradient id="floor-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#0F1928"/>
+        <stop offset="1" stop-color="#070C18"/>
+      </linearGradient>
+      <linearGradient id="wall-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${accent}" stop-opacity="0.18"/>
+        <stop offset="1" stop-color="#0A1422" stop-opacity="0.95"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Floor parallelogram -->
+    <polygon points="40,170 280,170 250,210 5,210" fill="url(#floor-grad)"/>
+    ${isoFloorPattern()}
+
+    <!-- Back wall -->
+    <polygon points="40,40 280,40 280,170 40,170" fill="url(#wall-grad)"/>
+    <line x1="40" y1="40" x2="280" y2="40" stroke="${accent}" stroke-width="0.7" stroke-opacity="0.4"/>
+    <line x1="40" y1="170" x2="280" y2="170" stroke="${accent}" stroke-width="0.5" stroke-opacity="0.25"/>
+
+    <!-- Side wall (right slim) -->
+    <polygon points="280,40 300,55 300,180 280,170" fill="#070C18"/>
+    <polygon points="280,40 300,55 300,180 280,170" fill="${accent}" fill-opacity="0.05"/>
+    <line x1="280" y1="40" x2="300" y2="55" stroke="${accent}" stroke-width="0.5" stroke-opacity="0.3"/>
+
+    <!-- Doorway — large arched opening with strong corridor light (visible at distance) -->
+    <defs>
+      <linearGradient id="door-${accent.slice(1)}" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="${accent}" stop-opacity="0.55"/>
+        <stop offset="0.4" stop-color="${accent}" stop-opacity="0.18"/>
+        <stop offset="1" stop-color="#020610" stop-opacity="1"/>
+      </linearGradient>
+    </defs>
+    <!-- Door cutout (deep dark rectangle) -->
+    <rect x="48" y="74" width="40" height="86" fill="#02060E"/>
+    <!-- Corridor light filling the doorway -->
+    <rect x="48" y="74" width="40" height="86" fill="url(#door-${accent.slice(1)})"/>
+    <!-- Door frame thick top -->
+    <rect x="44" y="70" width="48" height="6" fill="${accent}" fill-opacity="0.55" rx="1"/>
+    <!-- Door frame sides -->
+    <rect x="44" y="74" width="4" height="86" fill="${accent}" fill-opacity="0.4"/>
+    <rect x="88" y="74" width="4" height="86" fill="${accent}" fill-opacity="0.4"/>
+    <!-- Inner glow strips (top frame) -->
+    <rect x="48" y="74" width="40" height="2" fill="${accent}" fill-opacity="0.7"/>
+    <!-- "EXIT" arrow on top of frame -->
+    <text x="68" y="68" text-anchor="middle" fill="${accent}" opacity="0.65" font-family="monospace" font-size="4" font-weight="800">⇅ CORRIDOR</text>
+    <!-- Floor light spill (strong, into the room) -->
+    <polygon points="48,160 88,160 76,200 24,200" fill="${accent}" fill-opacity="0.13"/>
+    <polygon points="56,160 80,160 70,180 44,180" fill="${accent}" fill-opacity="0.08"/>
+
+    <!-- Room label plaque on back wall -->
+    <rect class="iso-label-bg" x="58" y="50" width="170" height="22" rx="2"/>
+    <text class="iso-label" x="68" y="63">${label}</text>
+    <text class="iso-sublabel" x="68" y="69" style="font-size:5.5px">${zh||''}</text>
+
+    <!-- Status indicator on back wall (e.g. verdict / regime score / count) -->
+    ${status ? `<text class="iso-status" x="240" y="63" text-anchor="end" fill="${statusColor||accent}" style="text-shadow:0 0 8px ${statusColor||accent}">${status}</text>` : ''}
+
+    <!-- Interior (desks, monitors, agents) -->
+    ${interior}
+  </svg>`;
+}
+
+// ─── EXEC FLOOR ───────────────────────────────────────────────────────
+function buildExecRoom(verdict, vCol, regime){
+  // Long executive table + CIO at head facing back wall (reading the verdict)
+  const interior = `
+    <!-- Pendant lamp above table -->
+    ${lampSVG(160, 36, '#C9A84C')}
+
+    <!-- Framed art on back wall (left + right of central screen) -->
+    ${framedSVG(70, 86, 50, 28, '#C9A84C')}
+    <text x="95" y="103" text-anchor="middle" fill="rgba(201,168,76,.5)" style="font:5px monospace">YUZU 2026 OUTLOOK</text>
+    ${framedSVG(200, 86, 50, 28, '#C9A84C')}
+    <text x="225" y="103" text-anchor="middle" fill="rgba(201,168,76,.5)" style="font:5px monospace">FOUNDER'S CREED</text>
+
+    <!-- Long table -->
+    <polygon class="iso-desk" points="80,140 240,140 220,165 60,165"/>
+    <polygon class="iso-desk-top" points="84,140 236,140 218,160 66,160"/>
+
+    <!-- Central screen on back wall (where CIO looks) -->
+    <rect class="iso-monitor-frame" x="130" y="118" width="60" height="22" rx="1"/>
+    <rect class="iso-screen" x="132" y="120" width="56" height="18"/>
+    <ellipse class="iso-glow-gold" cx="160" cy="142" rx="36" ry="2"/>
+
+    <!-- Verdict on the screen -->
+    <text x="160" y="131" text-anchor="middle" fill="${vCol}" style="font:800 8px monospace; text-shadow:0 0 6px ${vCol}">${verdict||''}</text>
+    <text x="160" y="138" text-anchor="middle" fill="rgba(122,142,189,.6)" style="font:5px monospace">${regime||''}</text>
+
+    <!-- Coffee mugs on table -->
+    ${mugSVG(110, 148, '#C9A84C')}
+    ${mugSVG(210, 148, '#7A8EBD')}
+
+    <!-- Empty chairs (other execs not present) -->
+    ${chairSVG(110, 168, .8)}
+    ${chairSVG(210, 168, .8)}
+
+    <!-- CIO chair at head of table -->
+    ${chairSVG(160, 168, .9)}
+
+    <!-- CIO at head of table, facing back wall (V3 prototype) -->
+    ${agentRender({x:160, y:148, scale:1.5, role:'cio', facing:'back'})}
+
+    <!-- Plants in corners -->
+    ${plantSVG(50, 170)}
+    ${plantSVG(270, 170)}
+
+    <!-- Spotlight on table -->
+    <ellipse cx="160" cy="180" rx="50" ry="6" fill="rgba(201,168,76,.05)"/>
+  `;
+  return roomSVG({label:'EXEC FLOOR', zh:'CIO 決策中心', accent:'#C9A84C', status:verdict, statusColor:vCol, interior});
+}
+
+// ─── TRADING FLOOR ────────────────────────────────────────────────────
+function buildTradingRoom(pickCode, pickName, verdict, vCol){
+  // Two trader desks (TM + TW) facing forward (toward viewer)
+  const status = pickCode && pickCode !== '—' ? pickCode : '盤前';
+  // Faux K-line bars for the screen
+  const klineL = [10,14,11,17,15,19,16,21].map((h,i)=>`<rect x="${78+i*3}" y="${122-h}" width="2" height="${h}" fill="rgba(0,229,255,.7)"/>`).join('');
+  const klineR = [12,9,14,17,13,18,15,20].map((h,i)=>`<rect x="${188+i*3}" y="${122-h}" width="2" height="${h}" fill="rgba(0,200,150,.7)"/>`).join('');
+  const interior = `
+    <!-- Ticker tape on back wall (top) -->
+    <rect x="50" y="46" width="220" height="7" fill="#020A14" stroke="rgba(0,229,255,.4)" stroke-width="0.4"/>
+    <text x="55" y="51" fill="rgba(0,229,255,.85)" style="font:700 4.5px monospace; letter-spacing:1px">TAIEX  S&amp;P  VIX  USD/TWD  NIKKEI  HSI  GOLD  BTC  US10Y</text>
+
+    <!-- Wall of monitors behind desks (Bloomberg-style 3-screen wall) -->
+    <rect x="55" y="60" width="60" height="22" fill="#0A1422" stroke="rgba(0,229,255,.3)" stroke-width="0.4"/>
+    <rect x="125" y="60" width="70" height="22" fill="#0A1422" stroke="rgba(0,229,255,.4)" stroke-width="0.5"/>
+    <rect x="205" y="60" width="60" height="22" fill="#0A1422" stroke="rgba(0,229,255,.3)" stroke-width="0.4"/>
+    <!-- Wall pick highlight (center wall screen) -->
+    <text x="160" y="73" text-anchor="middle" fill="${vCol}" style="font:900 11px monospace; text-shadow:0 0 8px ${vCol}; letter-spacing:1.5px">${status}</text>
+    ${pickName && pickName!=='—' ? `<text x="160" y="79" text-anchor="middle" fill="rgba(122,142,189,.7)" style="font:5px monospace">${pickName}</text>` : ''}
+    <!-- Side wall screens — fake price bars -->
+    <line x1="60" y1="70" x2="110" y2="68" stroke="rgba(0,229,255,.6)" stroke-width="0.5"/>
+    <line x1="60" y1="74" x2="110" y2="76" stroke="rgba(255,69,96,.6)" stroke-width="0.5"/>
+    <line x1="210" y1="68" x2="260" y2="72" stroke="rgba(0,200,150,.6)" stroke-width="0.5"/>
+    <line x1="210" y1="74" x2="260" y2="73" stroke="rgba(255,184,0,.6)" stroke-width="0.5"/>
+
+    <!-- TM desk (left) -->
+    <polygon class="iso-desk" points="60,138 145,138 135,160 50,160"/>
+    <polygon class="iso-desk-top" points="62,138 143,138 134,158 53,158"/>
+    ${monitorWithGlow({x:75, y:108, w:24, h:18, glow:'iso-glow-cyan', content:klineL})}
+    ${monitorWithGlow({x:105, y:108, w:24, h:18, glow:'iso-glow-cyan'})}
+    ${mugSVG(140, 145, '#00E5FF')}
+
+    <!-- TW desk (right) -->
+    <polygon class="iso-desk" points="170,138 260,138 252,160 162,160"/>
+    <polygon class="iso-desk-top" points="173,138 257,138 250,158 165,158"/>
+    ${monitorWithGlow({x:185, y:108, w:24, h:18, glow:'iso-glow-green', content:klineR})}
+    ${monitorWithGlow({x:215, y:108, w:24, h:18, glow:'iso-glow-green'})}
+    ${mugSVG(170, 145, '#00C896')}
+
+    <!-- Chairs -->
+    ${chairSVG(100, 170, .85)}
+    ${chairSVG(215, 170, .85)}
+
+    <!-- TM agent (cyan, facing back wall — watching the markets) -->
+    ${agentRender({x:100, y:154, role:'tm', facing:'back', scale:1.45})}
+    <!-- TW agent (green, facing back) -->
+    ${agentRender({x:215, y:154, role:'tw', facing:'back', scale:1.45})}
+
+    <!-- Headphone hint on TM (small loop) -->
+    <ellipse cx="100" cy="148" rx="6" ry="1" fill="none" stroke="rgba(0,229,255,.6)" stroke-width="0.8"/>
+
+    <!-- Plants in corners -->
+    ${plantSVG(45, 175)}
+    ${plantSVG(275, 175)}
+  `;
+  return roomSVG({label:'TRADING FLOOR', zh:'交易室', accent:'#00E5FF', status:'', statusColor:'#00E5FF', interior});
+}
+
+// ─── RESEARCH LAB ─────────────────────────────────────────────────────
+function buildResearchRoom(score){
+  const sign = score>=0 ? '+' : '';
+  const sCol = score==null ? '#3D8EFF' : score>0.2 ? '#00C896' : score<-0.2 ? '#FF4560' : '#FFB800';
+  const sStr = score==null ? '—' : `${sign}${score.toFixed(2)}`;
+  const interior = `
+    <!-- Bookshelf on back wall (left side) -->
+    <rect x="55" y="80" width="44" height="50" fill="#0F1A2C" stroke="rgba(61,142,255,.3)" stroke-width="0.4"/>
+    ${[88, 98, 108, 118].map(y => `
+      <line x1="55" y1="${y}" x2="99" y2="${y}" stroke="rgba(61,142,255,.25)" stroke-width="0.3"/>
+      <rect x="${58+Math.random()*2|0}" y="${y-7}" width="3" height="6" fill="rgba(0,200,150,.4)"/>
+      <rect x="${63}" y="${y-7}" width="3" height="6" fill="rgba(201,168,76,.4)"/>
+      <rect x="${68}" y="${y-7}" width="3" height="6" fill="rgba(61,142,255,.5)"/>
+      <rect x="${73}" y="${y-7}" width="2" height="6" fill="rgba(255,69,96,.4)"/>
+      <rect x="${77}" y="${y-7}" width="3" height="6" fill="rgba(122,142,189,.5)"/>
+      <rect x="${82}" y="${y-7}" width="2" height="6" fill="rgba(0,229,255,.4)"/>
+      <rect x="${86}" y="${y-7}" width="3" height="6" fill="rgba(162,89,255,.4)"/>
+      <rect x="${91}" y="${y-7}" width="2" height="6" fill="rgba(0,200,150,.4)"/>
+    `).join('')}
+
+    <!-- Whiteboard on back wall (right side, larger) -->
+    <rect x="108" y="78" width="160" height="50" fill="#0A1422" stroke="rgba(61,142,255,.4)" stroke-width="0.5"/>
+    <line x1="118"  y1="92" x2="220" y2="92"  stroke="rgba(61,142,255,.4)" stroke-width="0.4"/>
+    <line x1="118"  y1="100" x2="200" y2="100" stroke="rgba(61,142,255,.3)" stroke-width="0.4"/>
+    <line x1="118"  y1="108" x2="240" y2="108" stroke="rgba(61,142,255,.4)" stroke-width="0.4"/>
+    <line x1="118"  y1="116" x2="180" y2="116" stroke="rgba(61,142,255,.3)" stroke-width="0.4"/>
+    <text x="118" y="124" fill="rgba(61,142,255,.6)" style="font:700 5px monospace">σ = √(VIX·0.7 + ΔTAIEX·0.3)</text>
+    <!-- Score badge in top right -->
+    <text x="258" y="92" text-anchor="end" fill="${sCol}" style="font:900 14px monospace; text-shadow:0 0 8px ${sCol}">${sStr}</text>
+
+    <!-- Lab desk -->
+    <polygon class="iso-desk" points="100,142 220,142 205,165 90,165"/>
+    <polygon class="iso-desk-top" points="103,142 217,142 203,162 95,162"/>
+    ${monitorWithGlow({x:135, y:115, w:30, h:22, glow:'iso-glow-blue'})}
+
+    <!-- Papers on desk -->
+    <rect x="180" y="146" width="20" height="12" fill="#1B2C49" stroke="rgba(122,142,189,.3)" stroke-width="0.3" transform="rotate(-4 190 152)"/>
+    <line x1="184" y1="150" x2="196" y2="150" stroke="rgba(122,142,189,.5)" stroke-width="0.3" transform="rotate(-4 190 152)"/>
+    <line x1="184" y1="153" x2="194" y2="153" stroke="rgba(122,142,189,.5)" stroke-width="0.3" transform="rotate(-4 190 152)"/>
+    ${mugSVG(110, 150, '#3D8EFF')}
+
+    <!-- Chair behind desk -->
+    ${chairSVG(160, 175, .9)}
+
+    <!-- PM facing back (looking at whiteboard) -->
+    ${agentRender({x:160, y:158, role:'pm', facing:'back', scale:1.5})}
+
+    <!-- Plant -->
+    ${plantSVG(270, 175)}
+  `;
+  return roomSVG({label:'RESEARCH LAB', zh:'研究室', accent:'#3D8EFF', status:sStr, statusColor:sCol, interior});
+}
+
+// ─── RISK CONTROL ─────────────────────────────────────────────────────
+function buildRiskRoom(triggerCount, flowDir){
+  const isAlert = triggerCount > 0;
+  const col = isAlert ? '#FF4560' : '#00C896';
+  const interior = `
+    <!-- Wall of warning panels (back wall) -->
+    <rect x="55" y="76" width="36" height="28" fill="#0A1422" stroke="${col}" stroke-width="0.5"/>
+    <ellipse class="iso-glow-red" cx="73" cy="106" rx="14" ry="2" opacity="${isAlert?'.85':'.2'}"/>
+    <rect x="55" y="76" width="36" height="28" fill="${col}" fill-opacity="${isAlert?'.22':'.05'}"/>
+    <circle cx="73" cy="84" r="2.5" fill="${col}" opacity="${isAlert?'1':'.4'}"/>
+    <text x="73" y="94" text-anchor="middle" fill="${col}" style="font:800 7px monospace">RULES</text>
+    <text x="73" y="103" text-anchor="middle" fill="${col}" style="font:900 11px monospace; text-shadow:0 0 6px ${col}">${triggerCount}</text>
+
+    <!-- Mini chart panel -->
+    <rect x="100" y="76" width="36" height="28" fill="#0A1422" stroke="rgba(122,142,189,.3)" stroke-width="0.4"/>
+    <text x="118" y="83" text-anchor="middle" fill="rgba(122,142,189,.6)" style="font:5px monospace">EXPOSURE</text>
+    <line x1="105" y1="92" x2="131" y2="92" stroke="rgba(255,69,96,.6)" stroke-width="0.6"/>
+    <line x1="105" y1="97" x2="123" y2="97" stroke="rgba(255,184,0,.6)" stroke-width="0.6"/>
+    <line x1="105" y1="102" x2="129" y2="102" stroke="rgba(0,200,150,.6)" stroke-width="0.6"/>
+
+    <!-- Flow panel -->
+    <rect x="145" y="76" width="36" height="28" fill="#0A1422" stroke="rgba(122,142,189,.3)" stroke-width="0.4"/>
+    <text x="163" y="84" text-anchor="middle" fill="rgba(122,142,189,.7)" style="font:700 5px monospace">FLOW</text>
+    <text x="163" y="98" text-anchor="middle" fill="${col}" style="font:800 8px monospace">${(flowDir||'—').toUpperCase()}</text>
+
+    <!-- Capital flow trace -->
+    <rect x="190" y="76" width="74" height="28" fill="#0A1422" stroke="rgba(122,142,189,.3)" stroke-width="0.4"/>
+    <text x="227" y="84" text-anchor="middle" fill="rgba(122,142,189,.7)" style="font:5px monospace">CAPITAL FLOW MAP</text>
+    <path d="M 195 100 Q 215 88 230 95 T 260 92" fill="none" stroke="${col}" stroke-width="0.6" opacity=".7"/>
+    <circle cx="195" cy="100" r="1" fill="${col}"/>
+    <circle cx="230" cy="95" r="1" fill="${col}"/>
+    <circle cx="260" cy="92" r="1" fill="${col}"/>
+
+    <!-- Alarm bell on side wall (right) -->
+    <g transform="translate(285,68)">
+      <path d="M-4,0 L4,0 L3,-6 Q3,-9 0,-9 Q-3,-9 -3,-6 Z" fill="${isAlert?col:'#1B2C49'}" stroke="${col}" stroke-width="0.4"/>
+      <line x1="0" y1="0" x2="0" y2="3" stroke="${col}" stroke-width="0.5"/>
+      <circle cx="0" cy="3" r="1" fill="${col}"/>
+    </g>
+
+    <!-- DA desk -->
+    <polygon class="iso-desk" points="100,142 220,142 205,165 90,165"/>
+    <polygon class="iso-desk-top" points="103,142 217,142 203,162 95,162"/>
+    ${monitorWithGlow({x:140, y:118, w:24, h:18, glow:'iso-glow-red'})}
+
+    <!-- Red emergency phone on desk -->
+    <g transform="translate(190,148)">
+      <ellipse cx="0" cy="2" rx="6" ry="1.2" fill="rgba(0,0,0,.5)"/>
+      <rect x="-5" y="-2" width="10" height="3" rx="1" fill="${col}"/>
+      <rect x="-4" y="-3.5" width="2" height="2" fill="${col}"/>
+      <rect x="2" y="-3.5" width="2" height="2" fill="${col}"/>
+    </g>
+
+    <!-- Notebook/log on desk -->
+    <rect x="115" y="146" width="14" height="10" fill="#1B2C49" stroke="${col}" stroke-width="0.3"/>
+    <line x1="118" y1="150" x2="126" y2="150" stroke="rgba(255,69,96,.5)" stroke-width="0.3"/>
+    <line x1="118" y1="153" x2="124" y2="153" stroke="rgba(255,69,96,.5)" stroke-width="0.3"/>
+
+    <!-- Chair -->
+    ${chairSVG(160, 175, .9)}
+
+    <!-- DA agent facing left (toward warning panels) -->
+    ${agentRender({x:160, y:158, role:'da', facing:'left', scale:1.5})}
+
+    <!-- Plant -->
+    ${plantSVG(50, 175)}
+  `;
+  return roomSVG({label:'RISK CONTROL', zh:'風控中心', accent:'#FF4560', status:`${triggerCount} 規則`, statusColor:col, interior});
+}
+
+// ─── WEALTH OFFICE ────────────────────────────────────────────────────
+function buildWealthRoom(liquidity, cashflow){
+  const col = ({low:'#00C896',moderate:'#7A8EBD',elevated:'#FFB800',high:'#FF7A00',extreme:'#FF4560'})[liquidity] || '#A259FF';
+  const interior = `
+    <!-- VAULT (left side, with door slightly ajar showing stacks) -->
+    <rect x="55" y="78" width="44" height="50" fill="#0A0810" stroke="${col}" stroke-width="0.8" rx="2"/>
+    <text x="77" y="74" text-anchor="middle" fill="rgba(162,89,255,.6)" style="font:6px monospace; letter-spacing:1px">VAULT</text>
+    <!-- Door (ajar) -->
+    <rect x="55" y="80" width="22" height="46" fill="#15131A" stroke="${col}" stroke-width="0.5"/>
+    <circle cx="66" cy="103" r="6" fill="none" stroke="${col}" stroke-width="0.5"/>
+    <circle cx="66" cy="103" r="2.5" fill="${col}" fill-opacity="0.5"/>
+    <line x1="66" y1="100" x2="66" y2="106" stroke="${col}" stroke-width="0.5"/>
+    <line x1="63" y1="103" x2="69" y2="103" stroke="${col}" stroke-width="0.5"/>
+    <!-- Stacks of money inside (visible through ajar door) -->
+    <rect x="80" y="92" width="14" height="3" fill="rgba(201,168,76,.7)"/>
+    <rect x="80" y="97" width="14" height="3" fill="rgba(201,168,76,.6)"/>
+    <rect x="80" y="102" width="14" height="3" fill="rgba(0,200,150,.5)"/>
+    <rect x="80" y="107" width="14" height="3" fill="rgba(0,200,150,.6)"/>
+    <rect x="80" y="112" width="14" height="3" fill="rgba(201,168,76,.5)"/>
+    <rect x="80" y="117" width="14" height="3" fill="rgba(0,200,150,.4)"/>
+
+    <!-- World map / allocation chart on back wall (right) -->
+    <rect x="115" y="78" width="155" height="50" fill="#0A1422" stroke="rgba(162,89,255,.4)" stroke-width="0.5"/>
+    <text x="120" y="86" fill="rgba(162,89,255,.8)" style="font:700 5px monospace; letter-spacing:.8px">GLOBAL ALLOCATION</text>
+    <!-- Allocation bars -->
+    <text x="120" y="96" fill="rgba(122,142,189,.6)" style="font:4.5px monospace">TW STOCKS</text>
+    <rect x="160" y="92" width="40" height="4" fill="rgba(0,229,255,.7)"/>
+    <text x="120" y="104" fill="rgba(122,142,189,.6)" style="font:4.5px monospace">US STOCKS</text>
+    <rect x="160" y="100" width="20" height="4" fill="rgba(61,142,255,.7)"/>
+    <text x="120" y="112" fill="rgba(122,142,189,.6)" style="font:4.5px monospace">FUNDS</text>
+    <rect x="160" y="108" width="8" height="4" fill="${col}" fill-opacity=".8"/>
+    <text x="120" y="120" fill="rgba(122,142,189,.6)" style="font:4.5px monospace">REAL EST.</text>
+    <rect x="160" y="116" width="100" height="4" fill="rgba(201,168,76,.7)"/>
+
+    <!-- Currency badges on side wall -->
+    <g transform="translate(282,80)">
+      <text fill="rgba(0,200,150,.6)" style="font:700 5px monospace">$</text>
+      <text y="8" fill="rgba(201,168,76,.6)" style="font:700 5px monospace">¥</text>
+      <text y="16" fill="rgba(162,89,255,.6)" style="font:700 5px monospace">€</text>
+    </g>
+
+    <!-- WM desk -->
+    <polygon class="iso-desk" points="100,142 220,142 205,165 90,165"/>
+    <polygon class="iso-desk-top" points="103,142 217,142 203,162 95,162"/>
+    ${monitorWithGlow({x:140, y:118, w:24, h:18, glow:'iso-glow-purple'})}
+
+    <!-- Ledger book on desk -->
+    <rect x="180" y="146" width="20" height="13" fill="#1B2C49" stroke="${col}" stroke-width="0.3"/>
+    <line x1="190" y1="146" x2="190" y2="159" stroke="rgba(162,89,255,.5)" stroke-width="0.3"/>
+    <line x1="183" y1="150" x2="197" y2="150" stroke="rgba(122,142,189,.4)" stroke-width="0.2"/>
+    <line x1="183" y1="153" x2="197" y2="153" stroke="rgba(122,142,189,.4)" stroke-width="0.2"/>
+    ${mugSVG(115, 150, '#A259FF')}
+
+    <!-- Chair -->
+    ${chairSVG(160, 175, .9)}
+
+    <!-- WM agent center, facing forward -->
+    ${agentRender({x:160, y:158, role:'wm', facing:'front', scale:1.5})}
+
+    <!-- Plant -->
+    ${plantSVG(105, 174)}
+  `;
+  return roomSVG({label:'WEALTH OFFICE', zh:'財富辦公室', accent:'#A259FF', status:liquidity||'—', statusColor:col, interior});
+}
+
+// ─── ARCHIVE ──────────────────────────────────────────────────────────
+function buildArchiveRoom(total, rate, available){
+  const col = !available ? '#3A4D7A' : rate>=55?'#00C896':rate>=45?'#FFB800':'#FF4560';
+  const status = available ? `${rate}%` : `n=${total}`;
+  const labels = ['Q1','Q2','Q3','Q4'];
+  const interior = `
+    <!-- Filing cabinets (4 in a row, with quarter labels) -->
+    ${[60,110,160,210].map((x, i) => `
+      <rect x="${x}" y="78" width="40" height="50" fill="#0F1A2C" stroke="rgba(122,142,189,.35)" stroke-width="0.4"/>
+      <!-- Label tag at top -->
+      <rect x="${x+12}" y="82" width="16" height="5" fill="rgba(201,168,76,.15)" stroke="rgba(201,168,76,.4)" stroke-width="0.3"/>
+      <text x="${x+20}" y="86" text-anchor="middle" fill="rgba(201,168,76,.7)" style="font:700 4px monospace">${labels[i]}</text>
+      <!-- Drawers -->
+      ${[91,101,111,121].map(y => `
+        <line x1="${x}" y1="${y}" x2="${x+40}" y2="${y}" stroke="rgba(122,142,189,.25)" stroke-width="0.3"/>
+        <rect x="${x+18}" y="${y-3}" width="4" height="2" fill="rgba(122,142,189,.4)"/>
+      `).join('')}
+      <!-- Side LED -->
+      <circle cx="${x+34}" cy="89" r="0.8" fill="${col}" opacity=".7"/>
+    `).join('')}
+
+    <!-- Archive scanner desk -->
+    <polygon class="iso-desk" points="120,148 200,148 188,165 110,165"/>
+    <polygon class="iso-desk-top" points="123,148 197,148 186,162 113,162"/>
+    ${monitorWithGlow({x:145, y:128, w:28, h:14, glow:'iso-glow-blue'})}
+
+    <!-- Automated scanner arm (above desk) -->
+    <line x1="160" y1="120" x2="160" y2="140" stroke="rgba(122,142,189,.5)" stroke-width="0.5"/>
+    <line x1="155" y1="120" x2="165" y2="120" stroke="rgba(122,142,189,.5)" stroke-width="0.5"/>
+    <rect x="158" y="138" width="4" height="3" fill="rgba(0,229,255,.7)"/>
+    <ellipse cx="160" cy="146" rx="4" ry="1" fill="rgba(0,229,255,.3)"/>
+
+    <!-- Output paper trays on desk -->
+    <rect x="125" y="151" width="14" height="8" fill="#1B2C49" stroke="rgba(122,142,189,.3)" stroke-width="0.3"/>
+    <line x1="127" y1="153" x2="137" y2="153" stroke="rgba(122,142,189,.5)" stroke-width="0.2"/>
+    <line x1="127" y1="155" x2="137" y2="155" stroke="rgba(122,142,189,.5)" stroke-width="0.2"/>
+    <line x1="127" y1="157" x2="135" y2="157" stroke="rgba(122,142,189,.5)" stroke-width="0.2"/>
+    <rect x="180" y="151" width="14" height="8" fill="#1B2C49" stroke="rgba(122,142,189,.3)" stroke-width="0.3"/>
+  `;
+  return roomSVG({label:'ARCHIVE', zh:'歷史資料庫', accent:'#7A8EBD', status, statusColor:col, interior});
+}
+
+// ─── LOBBY (central) ──────────────────────────────────────────────────
+function buildLobbyRoom(verdict, vCol, regime, conf){
+  // Lobby is wider/taller — uses 480x340 viewBox for more space
+  const interior = `
+    <!-- Big logo plinth on back wall -->
+    <rect x="160" y="60" width="160" height="80" fill="#0A1422" stroke="${vCol}" stroke-width="0.5" rx="3"/>
+    <text x="240" y="92" text-anchor="middle" fill="${'#C9A84C'}" style="font:900 14px monospace; letter-spacing:4px">YUZU CAPITAL</text>
+    <text x="240" y="106" text-anchor="middle" fill="rgba(122,142,189,.7)" style="font:5.5px monospace; letter-spacing:2px">DECISION OPERATING SYSTEM</text>
+    <line x1="180" y1="115" x2="300" y2="115" stroke="rgba(201,168,76,.3)" stroke-width="0.4"/>
+    <text x="240" y="128" text-anchor="middle" fill="${vCol}" style="font:900 12px monospace; text-shadow:0 0 10px ${vCol}; letter-spacing:1.5px">${verdict||'—'}</text>
+
+    <!-- Reception desk (semicircular look) -->
+    <ellipse cx="240" cy="240" rx="100" ry="26" fill="#15233A" stroke="rgba(201,168,76,.25)" stroke-width="0.6"/>
+    <ellipse cx="240" cy="234" rx="100" ry="20" fill="#1B2C49"/>
+    <text x="240" y="240" text-anchor="middle" fill="rgba(201,168,76,.6)" style="font:700 6px monospace; letter-spacing:2.5px">RECEPTION</text>
+
+    <!-- Concierge standing behind reception desk (V3) -->
+    ${agentRender({x:240, y:215, scale:1.7, role:'concierge', facing:'front'})}
+    <!-- Small monitor on the reception desk -->
+    <rect x="225" y="230" width="14" height="9" fill="#020A14" stroke="rgba(201,168,76,.3)" stroke-width=".4"/>
+    <rect x="226" y="231" width="12" height="7" fill="#0A2740"/>
+    <rect x="245" y="230" width="9" height="9" fill="#020A14" stroke="rgba(201,168,76,.3)" stroke-width=".3"/>
+    <ellipse cx="232" cy="244" rx="14" ry="1" fill="rgba(201,168,76,.2)" filter="blur(1px)"/>
+
+    <!-- Wayfinding sign with arrows pointing to rooms -->
+    <g transform="translate(110,210)">
+      <rect x="0" y="0" width="50" height="40" fill="#0A1422" stroke="rgba(201,168,76,.3)" stroke-width="0.4" rx="1"/>
+      <text x="3" y="8" fill="rgba(201,168,76,.5)" style="font:700 4px monospace">DIRECTORY</text>
+      <text x="3" y="16" fill="rgba(201,168,76,.7)" style="font:4.5px monospace">← EXEC</text>
+      <text x="3" y="22" fill="rgba(0,229,255,.7)" style="font:4.5px monospace">↓ TRADING</text>
+      <text x="3" y="28" fill="rgba(255,69,96,.7)" style="font:4.5px monospace">← RISK</text>
+      <text x="3" y="34" fill="rgba(61,142,255,.7)" style="font:4.5px monospace">→ RESEARCH</text>
+    </g>
+    <g transform="translate(320,210)">
+      <rect x="0" y="0" width="50" height="40" fill="#0A1422" stroke="rgba(201,168,76,.3)" stroke-width="0.4" rx="1"/>
+      <text x="3" y="8" fill="rgba(201,168,76,.5)" style="font:700 4px monospace">DIRECTORY</text>
+      <text x="3" y="16" fill="rgba(162,89,255,.7)" style="font:4.5px monospace">→ WEALTH</text>
+      <text x="3" y="22" fill="rgba(122,142,189,.7)" style="font:4.5px monospace">→ ARCHIVE</text>
+      <text x="3" y="28" fill="rgba(201,168,76,.5)" style="font:4px monospace">─────────</text>
+      <text x="3" y="34" fill="rgba(122,142,189,.5)" style="font:4px monospace">SYSTEMS ⚙</text>
+    </g>
+
+    <!-- Floor compass / center mark -->
+    <circle cx="240" cy="290" r="36" fill="none" stroke="rgba(201,168,76,.18)" stroke-width="0.5"/>
+    <circle cx="240" cy="290" r="22" fill="none" stroke="rgba(201,168,76,.22)" stroke-width="0.4"/>
+    <line x1="240" y1="268" x2="240" y2="312" stroke="rgba(201,168,76,.22)" stroke-width="0.4"/>
+    <line x1="218" y1="290" x2="262" y2="290" stroke="rgba(201,168,76,.22)" stroke-width="0.4"/>
+    <text x="240" y="294" text-anchor="middle" fill="rgba(201,168,76,.4)" style="font:700 5px monospace; letter-spacing:1px">YUZU</text>
+
+    <!-- Plants flanking the entrance -->
+    <g transform="translate(80,290) scale(1.5)">${plantSVG(0,0)}</g>
+    <g transform="translate(400,290) scale(1.5)">${plantSVG(0,0)}</g>
+
+    <!-- Confidence + regime mini -->
+    <text x="240" y="155" text-anchor="middle" fill="rgba(122,142,189,.7)" style="font:6px monospace; letter-spacing:1.5px">${(regime||'').toUpperCase()}  ·  CONFIDENCE ${(conf||0).toFixed(2)}</text>
+  `;
+  return `<svg viewBox="0 0 480 340" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <linearGradient id="lobby-floor" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#13182A"/>
+        <stop offset="1" stop-color="#080D1A"/>
+      </linearGradient>
+      <linearGradient id="lobby-wall" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#C9A84C" stop-opacity="0.18"/>
+        <stop offset="1" stop-color="#0A1422" stop-opacity="0.95"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Floor (large parallelogram) -->
+    <polygon points="60,260 420,260 380,330 20,330" fill="url(#lobby-floor)"/>
+    <line x1="100" y1="260" x2="60" y2="330" stroke="rgba(201,168,76,.05)"/>
+    <line x1="200" y1="260" x2="160" y2="330" stroke="rgba(201,168,76,.05)"/>
+    <line x1="300" y1="260" x2="260" y2="330" stroke="rgba(201,168,76,.05)"/>
+    <line x1="60" y1="280" x2="420" y2="280" stroke="rgba(201,168,76,.04)"/>
+    <line x1="40" y1="305" x2="400" y2="305" stroke="rgba(201,168,76,.04)"/>
+
+    <!-- Back wall -->
+    <polygon points="60,40 420,40 420,260 60,260" fill="url(#lobby-wall)"/>
+    <line x1="60" y1="40" x2="420" y2="40" stroke="#C9A84C" stroke-opacity="0.4"/>
+
+    <!-- Side wall -->
+    <polygon points="420,40 460,60 460,280 420,260" fill="#070C18"/>
+    <line x1="420" y1="40" x2="460" y2="60" stroke="rgba(201,168,76,.25)"/>
+
+    ${interior}
+  </svg>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// State
+// ═══════════════════════════════════════════════════════════════════
+let DATA = null, CANDS = null;
+let activeRoom = null, activeBackdrop = null;
+
+// ═══════════════════════════════════════════════════════════════════
+// Render iso office (the OVERVIEW)
+// ═══════════════════════════════════════════════════════════════════
+function renderOffice(){
+  const a = DATA.agents || {};
+  const master = a.master || {};
+  const cf = DATA.capital_flow || {};
+  const regime = DATA.regime || {};
+  const sv = a.signal_fusion || {};
+  const pick = a.tw_daily_pick || {};
+  const wm = a.wealth_master || {};
+  const perf = DATA.performance || {};
+
+  const v = master.verdict || '—';
+  const vCol = verdictColor(v);
+  const conf = master.confidence || 0;
+
+  const triggerCount = (cf.override_flags||[]).filter(f=>!f.includes('STRUCTURAL_NOTE')).length;
+  const liquidity = wm.liquidity_risk || wm.risk_level || 'moderate';
+  const cashflow = wm.cashflow_stability || '—';
+  const score = sv.market_regime_score;
+
+  const pickCode = pick.pick?.code && pick.pick.code !== '—' ? pick.pick.code : null;
+  const pickName = pick.pick?.name || null;
+
+  const grid = $('iso-grid');
+  grid.innerHTML = `
+    <div class="room r-exec" data-room="exec">${buildExecRoom(v, vCol, regime.market_regime)}</div>
+    <div class="room r-lobby">${buildLobbyRoom(v, vCol, regime.market_regime, conf)}</div>
+    <div class="room r-research" data-room="research">${buildResearchRoom(score)}</div>
+    <div class="room r-risk" data-room="risk">${buildRiskRoom(triggerCount, cf.flow_direction)}</div>
+    <div class="room r-wealth" data-room="wealth">${buildWealthRoom(liquidity, cashflow)}</div>
+    <div class="room r-trading" data-room="trading">${buildTradingRoom(pickCode||'—', pickName||'', pick.verdict, verdictColor(pick.verdict))}</div>
+    <div class="room r-archive" data-room="archive">${buildArchiveRoom(perf.total||0, perf.overall_rate||0, !!perf.available)}</div>
+  `;
+
+  // Wire room clicks (lobby has no data-room → ignored)
+  grid.querySelectorAll('.room[data-room]').forEach(r => {
+    r.addEventListener('click', () => expandRoom(r.dataset.room));
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Right sidebar: Briefing / Cockpit / Activity / Health
+// ═══════════════════════════════════════════════════════════════════
+function renderSidebar(){
+  const a = DATA.agents || {};
+  const master = a.master || {};
+  const cf = DATA.capital_flow || {};
+  const regime = DATA.regime || {};
+  const sv = a.signal_fusion || {};
+  const wm = a.wealth_master || {};
+
+  // ───── DATA HEALTH ─────
+  const ageMin = minsAgo(DATA.generated_at);
+  const gaps = (sv._data_gaps || []).length;
+  const totalGauges = 9;
+  const ageStatus = ageMin == null ? 'bad' : ageMin < 360 ? 'ok' : ageMin < 720 ? 'warn' : 'bad';
+  const gapStatus = gaps === 0 ? 'ok' : gaps <= 2 ? 'warn' : 'bad';
+  $('health-rows').innerHTML = `
+    <div class="health-row"><span class="health-dot ${ageStatus}"></span><span class="health-name">DATA AGE</span><span class="health-val">${ageMin==null?'—':ageMin<60?ageMin+'m':Math.floor(ageMin/60)+'h '+(ageMin%60)+'m'}</span></div>
+    <div class="health-row"><span class="health-dot ${gapStatus}"></span><span class="health-name">SIGNAL VECTOR</span><span class="health-val">${totalGauges-gaps}/${totalGauges} 可用</span></div>
+    <div class="health-row"><span class="health-dot ${CANDS?'ok':'warn'}"></span><span class="health-name">CANDIDATE FEED</span><span class="health-val">${CANDS?(CANDS.candidates||[]).length+' 檔':'未載入'}</span></div>
+  `;
+
+  // ───── TODAY'S BRIEFING ─────
+  const v = master.verdict || '—';
+  const vCol = verdictColor(v);
+  $('briefing-verdict').textContent = v;
+  $('briefing-verdict').style.color = vCol;
+  // Tagline: regime + key insight short
+  const tagline = (regime.market_regime || '—') + ' · ' + (regime.short_term_trading_favorable ? 'TRADING FAVORABLE' : 'NOT TRADING-FRIENDLY');
+  $('briefing-tagline').textContent = tagline;
+  const conf = master.confidence || 0;
+  $('briefing-conf-fill').style.width = `${conf*100}%`;
+  $('briefing-conf-fill').style.background = vCol;
+  $('briefing-conf-val').textContent = conf.toFixed(2);
+  $('briefing-conf-val').style.color = vCol;
+
+  // ───── COCKPIT (rule states, not log) ─────
+  const liquidity = wm.liquidity_risk || wm.risk_level || 'moderate';
+  const wealthState = ({low:['NORMAL','state-normal'], moderate:['NORMAL','state-normal'], elevated:['ELEVATED','state-warn'], high:['HIGH','state-active'], extreme:['EXTREME','state-alert']})[liquidity] || ['—','state-normal'];
+  const regimeState = ({offensive:['OFFENSIVE','state-normal'], neutral:['NEUTRAL','state-normal'], defensive:['DEFENSIVE','state-defensive'], crisis:['CRISIS','state-alert']})[cf.flow_direction] || [(cf.flow_direction||'—').toUpperCase(),'state-normal'];
+  const positionState = cf.cash_crunch_active ? ['LOCKED','state-alert'] : (cf.regime_risk_triggered ? ['CONSTRAINED','state-warn'] : ['ACTIVE','state-normal']);
+  const constraintState = (master.constraint_violations||master.constraints_triggered||[]).length>0 ? ['VIOLATED','state-alert'] : ['CLEAR','state-normal'];
+  const cashflowState = ({sufficient:['SUFFICIENT','state-normal'], adequate:['ADEQUATE','state-warn'], tight:['TIGHT','state-active'], critical:['CRITICAL','state-alert']})[wm.cashflow_stability] || ['—','state-normal'];
+
+  const rows = [
+    {name:'WEALTH RISK',     state:wealthState[0],     cls:wealthState[1]},
+    {name:'REGIME FILTER',   state:regimeState[0],     cls:regimeState[1]},
+    {name:'POSITION LIMIT',  state:positionState[0],   cls:positionState[1]},
+    {name:'CONSTRAINTS',     state:constraintState[0], cls:constraintState[1]},
+    {name:'CASHFLOW',        state:cashflowState[0],   cls:cashflowState[1]},
+  ];
+  $('cockpit').innerHTML = rows.map(r => `
+    <div class="cockpit-row ${r.cls}">
+      <span class="cockpit-name">${r.name}</span>
+      <span class="cockpit-state ${r.cls}">${r.state}</span>
+    </div>
+  `).join('');
+
+  // ───── AGENT NARRATIVE (no timestamps) ─────
+  const tw = a.tw_short_term || {};
+  const da = a.devils_advocate || {};
+  const tm = a.trading_master || {};
+  const pm = a.portfolio_master || {};
+  const wmAgent = a.wealth_master || {};
+
+  function narrativeFor(agentKey, agent){
+    if(!agent || !agent.verdict) return null;
+    const lower = (agent.verdict||'').toLowerCase();
+    // Heuristic mapping of verdict + summary into action narrative
+    if(/error/i.test(agent.verdict)) return 'paused · error';
+    if(/觀望|空手/.test(agent.verdict)) return 'standing by · no entry';
+    if(/防守|減碼|賣出/.test(agent.verdict)) return 'reducing exposure';
+    if(/進攻|加碼|買進/.test(agent.verdict)) return 'building position';
+    if(/警戒|危險/.test(agent.verdict)) return 'flagging risk';
+    if(/留意|混亂/.test(agent.verdict)) return 'monitoring divergence';
+    return 'analyzing · ' + clip(agent.verdict, 24);
+  }
+
+  const agents = [
+    {abbr:'CIO', col:'#C9A84C', narr:narrativeFor('cio', master) || 'integrating signals'},
+    {abbr:'TM',  col:'#00E5FF', narr:narrativeFor('tm', tm) || 'scanning momentum'},
+    {abbr:'TW',  col:'#00C896', narr:narrativeFor('tw', tw) || 'tracking breakouts'},
+    {abbr:'DA',  col:'#FF4560', narr:narrativeFor('da', da) || 'auditing exposure'},
+    {abbr:'PM',  col:'#3D8EFF', narr:narrativeFor('pm', pm) || 'reviewing allocation'},
+    {abbr:'WM',  col:'#A259FF', narr:narrativeFor('wm', wmAgent) || 'guarding liquidity'},
+  ];
+  $('agent-narrative').innerHTML = agents.map(g => `
+    <div class="narr-row">
+      <span class="narr-name" style="color:${g.col}">${g.abbr}</span>
+      <span class="narr-action">${g.narr}</span>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Topbar / floor subtitle
+// ═══════════════════════════════════════════════════════════════════
+function renderTopbar(){
+  $('ts').textContent = fmtDate(DATA.generated_at);
+  const regime = DATA.regime || {};
+  const master = (DATA.agents||{}).master || {};
+  $('floor-sub').textContent = `${regime.market_regime||'—'} · risk ${regime.risk_level||'—'} · CIO 信心 ${(master.confidence||0).toFixed(2)}`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Helpers shared by expanded room renderers
+// ═══════════════════════════════════════════════════════════════════
+function arcGaugeSVG(value, color){
   const angle = Math.PI * (1 - (value + 1) / 2);
-  const cx = 50, cy = 54, r = 36;
-  const nx = (cx + r * Math.cos(angle)).toFixed(2);
-  const ny = (cy - r * Math.sin(angle)).toFixed(2);
-  const sign = value >= 0 ? '+' : '';
+  const cx=50, cy=54, r=36;
+  const nx = (cx + r*Math.cos(angle)).toFixed(2);
+  const ny = (cy - r*Math.sin(angle)).toFixed(2);
+  const sign = value>=0?'+':'';
   return `<svg class="arc-gauge" viewBox="0 0 100 70">
     <path d="M14,54 A36,36 0 0,1 50,18" fill="none" stroke="rgba(255,69,96,.25)" stroke-width="7" stroke-linecap="round"/>
     <path d="M50,18 A36,36 0 0,1 86,54" fill="none" stroke="rgba(0,200,150,.25)" stroke-width="7" stroke-linecap="round"/>
-    <circle cx="14" cy="54" r="2" fill="var(--red)" opacity=".4"/>
-    <circle cx="86" cy="54" r="2" fill="var(--green)" opacity=".4"/>
-    <circle cx="50" cy="18" r="2" fill="var(--text3)" opacity=".4"/>
     <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
     <circle cx="${cx}" cy="${cy}" r="4" fill="${color}"/>
     <text x="50" y="45" text-anchor="middle" fill="${color}" font-size="14" font-weight="800" font-family="monospace">${sign}${value.toFixed(2)}</text>
   </svg>`;
 }
-
-function barGaugeHTML(value, color) {
-  const pct = Math.round(Math.max(0, Math.min(1, value)) * 100);
-  return `<div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
-          <div class="bar-value" style="color:${color}">${value.toFixed(2)}</div>`;
+function sigCol(v, inv){
+  if(inv) return v>0.65?'var(--red)':v>0.35?'var(--yellow)':'var(--green)';
+  return v>0.6?'var(--green)':v>0.35?'var(--yellow)':'var(--red)';
+}
+function barGaugeHTML(v, c){
+  const pct = Math.round(Math.max(0, Math.min(1, v)) * 100);
+  return `<div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${c}"></div></div>`+
+         `<div class="bar-value" style="color:${c}">${v.toFixed(2)}</div>`;
 }
 
-function sigColor(value, inverted) {
-  if (inverted) {
-    return value > 0.65 ? 'var(--red)' : value > 0.35 ? 'var(--yellow)' : 'var(--green)';
-  }
-  return value > 0.6 ? 'var(--green)' : value > 0.35 ? 'var(--yellow)' : 'var(--red)';
-}
+// ═══════════════════════════════════════════════════════════════════
+// EXPANDED ROOM RENDERERS (preserved from previous version)
+// ═══════════════════════════════════════════════════════════════════
+function renderExec(target){
+  const a = DATA.agents || {};
+  const master = a.master || {};
+  const regime = DATA.regime || {};
+  const cf = DATA.capital_flow || {};
+  const pick = a.tw_daily_pick || {};
+  const snap = DATA.market_snapshot || {};
 
-function renderSignalPanel(sv, dataGaps) {
-  if (!sv || Object.keys(sv).length === 0) {
-    $('gauge-grid').innerHTML = '<div style="color:var(--text3);padding:20px;font-size:12px">Signal vector not available — run the pipeline first.</div>';
-    return;
-  }
+  const recs = (master.recommendations || []).slice(0, 3);
+  const violations = master.constraint_violations || master.constraints_triggered || [];
+  const flags = (cf.override_flags || []).filter(f => !f.includes('STRUCTURAL_NOTE'));
+  const v = master.verdict || '—';
+  const vCol = verdictColor(v);
 
-  // Meta badge
-  const gaps = dataGaps || sv._data_gaps || [];
-  $('signal-meta').textContent = gaps.length ? `${gaps.length} signal N/A` : '全部信號可用';
+  const budget = cf.budget || {};
+  const tp = Math.round((budget.trading || 0) * 100);
+  const pp = Math.round((budget.portfolio || 0) * 100);
+  const cp = Math.round((budget.cash || 0) * 100);
 
-  const GAUGES = [
-    {
-      key:'market_regime_score', label:'MARKET REGIME', type:'arc',
-      desc:'體制分數：-1=恐慌 → 0=中性 → +1=AI主升段',
-      colorFn: v => v > 0.2 ? 'var(--green)' : v < -0.2 ? 'var(--red)' : 'var(--yellow)',
-    },
-    {
-      key:'trend_strength', label:'TREND STRENGTH', type:'bar', inverted:false,
-      desc:'趨勢強度：TAIEX 日漲跌 + market_overview',
-    },
-    {
-      key:'risk_pressure', label:'RISK PRESSURE', type:'bar', inverted:true,
-      desc:'市場壓力：VIX + tw_short_term + devils_advocate',
-    },
-    {
-      key:'volatility_risk', label:'VOLATILITY RISK', type:'bar', inverted:true,
-      desc:'波動風險：VIX(70%) + TAIEX日內波動(30%)',
-    },
-    {
-      key:'ai_sector_strength', label:'AI SECTOR', type:'bar', inverted:false,
-      desc:'AI類股：由新聞AI關鍵字推算（非直接資料）',
-    },
-    {
-      key:'scanner_momentum', label:'SCANNER MOMENTUM', type:'bar', inverted:false,
-      desc:'掃描動能：候選股平均技術分數 / 最高分',
-    },
-    {
-      key:'confidence_score', label:'CONFIDENCE', type:'bar', inverted:false,
-      desc:'系統信心：主要Agent平均confidence，ERROR扣分',
-    },
-    {
-      key:'foreign_flow_strength', label:'FOREIGN FLOW', type:'bar', inverted:false,
-      desc:'外資流向：TWSE T86 外資買賣超（千股）',
-    },
-    {
-      key:'breadth_score', label:'MKT BREADTH', type:'bar', inverted:false,
-      desc:'市場廣度：TWSE MI_INDEX 漲跌家數',
-    },
-  ];
+  const chips = [
+    {n:'TAIEX',   v:snap.taiex?.close,  chg:snap.taiex?.change_pct},
+    {n:'S&P500',  v:snap.sp500?.close,  chg:snap.sp500?.change_pct},
+    {n:'VIX',     v:snap.vix?.close,    chg:snap.vix?.change_pct},
+    {n:'USD/TWD', v:snap.usd_twd,       chg:null},
+  ].filter(c => c.v != null);
 
-  const sources = sv._sources || {};
+  const constraintHTML = violations.length
+    ? `<div class="constraint">⚠ <div>${violations.join(' · ')}</div></div>` : '';
 
-  $('gauge-grid').innerHTML = GAUGES.map(g => {
-    const v = sv[g.key];
-    const isNA = g.isNA || gaps.includes(g.key);
-    const naClass = isNA ? ' na' : '';
-
-    let visual = '';
-    if (isNA) {
-      visual = `<div class="na-label">N/A</div><div class="na-sub">待 batch3 資料</div>`;
-    } else if (g.type === 'arc') {
-      const col = g.colorFn(v);
-      visual = arcGaugeSVG(v, col);
-    } else {
-      const col = g.colorFn ? g.colorFn(v) : sigColor(v, g.inverted);
-      visual = barGaugeHTML(v, col);
-    }
-
-    const src = sources[g.key] || g.desc;
-    return `<div class="gauge-card${naClass}">
-      <div class="gauge-card-label">${g.label}</div>
-      ${visual}
-      <div class="gauge-source">${src}</div>
-    </div>`;
-  }).join('');
-}
-
-// ════════════════════════════════════════════════════════════════════
-// Today Panel
-// ════════════════════════════════════════════════════════════════════
-function renderTodayPanel(agents, cf, master) {
-  const pick = agents.tw_daily_pick;
-
-  // Pick card
-  if (pick && pick.verdict !== 'ERROR' && pick.pick) {
+  let pickHTML;
+  if(pick.pick && pick.pick.code && pick.pick.code !== '—'){
     const p = pick.pick;
-    // Gather scanner signals from pick output
-    const sigKeys = ['breakout_ma20','vol_surge','rsi_zone','ma_aligned','five_day_high','rs_signal'];
-    const sigLabels = {
-      breakout_ma20:'MA20突破', vol_surge:'量爆', rsi_zone:'RSI強', ma_aligned:'均線多排',
-      five_day_high:'5日高', rs_signal:'強於大盤'
-    };
-    const rawSigs = pick.scanner_signals || pick.core_logic || {};
-    const sigs = sigKeys.filter(k => rawSigs[k] || (Array.isArray(pick.scanner_signals) && pick.scanner_signals.includes(k)));
-    const pickColor = verdictColor(pick.verdict);
-    $('pick-area').innerHTML = `<div class="pick-card">
-      <div class="pick-header">
-        <div class="pick-badge">TODAY'S PICK</div>
-        <div style="font-size:10px;color:${pickColor};font-weight:700">${pick.verdict || ''}</div>
+    pickHTML = `<div class="pick-summary"><div class="pick-grid">
+      <div><div class="pick-code">${p.code}</div><div class="pick-name">${p.name||''}</div></div>
+      <div class="pick-fields">
+        <div><div class="pick-field-label">ENTRY</div><div class="pick-field-val entry">${p.entry_zone||'—'}</div></div>
+        <div><div class="pick-field-label">STOP</div><div class="pick-field-val stop">${p.stop_loss||'—'}</div></div>
+        <div><div class="pick-field-label">TARGET</div><div class="pick-field-val target">${p.target||'—'}</div></div>
+        <div><div class="pick-field-label">HOLD</div><div class="pick-field-val">${p.hold_days||'—'}</div></div>
+      </div>
+    </div></div>`;
+  } else {
+    pickHTML = `<div class="empty">今日無精選 · ${pick.verdict||'盤後分析尚未產出'}</div>`;
+  }
+
+  target.innerHTML = `
+    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start">
+      <div>
+        <div class="card-title">TODAY'S VERDICT</div>
+        <div style="font-size:36px;font-weight:900;color:${vCol};text-shadow:0 0 24px ${vCol};letter-spacing:1px;margin:6px 0;line-height:1">${v}</div>
+        <div style="font-size:11px;color:var(--text2);max-width:560px;line-height:1.7">${master.summary||''}</div>
+        ${constraintHTML}
       </div>
       <div>
-        <div class="pick-code">${p.code || '—'}</div>
-        <div class="pick-name">${p.name || '—'}</div>
+        <div class="card-title">REGIME</div>
+        <div style="font-size:14px;font-weight:700;color:${riskColor(regime.risk_level)};margin-bottom:4px">${regime.market_regime||'—'}</div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:12px">${regime.risk_level||''} · suitable_for_trading: ${regime.short_term_trading_favorable?'✓':'✗'}</div>
+        <div class="card-title">CAPITAL BUDGET</div>
+        <div class="budget-block">
+          <div class="budget-row"><span class="budget-name">TRD</span><div class="budget-track"><div class="budget-fill" style="width:${tp}%;background:var(--cyan)"></div></div><span class="budget-pct" style="color:var(--cyan)">${tp}%</span></div>
+          <div class="budget-row"><span class="budget-name">PRT</span><div class="budget-track"><div class="budget-fill" style="width:${pp}%;background:var(--purple)"></div></div><span class="budget-pct" style="color:var(--purple)">${pp}%</span></div>
+          <div class="budget-row"><span class="budget-name">CSH</span><div class="budget-track"><div class="budget-fill" style="width:${cp}%;background:var(--text2)"></div></div><span class="budget-pct" style="color:var(--text2)">${cp}%</span></div>
+        </div>
       </div>
-      ${p.rationale ? `<div class="pick-verdict">${p.rationale.slice(0,120)}</div>` : ''}
-      ${sigs.length ? `<div class="pick-signals">${sigs.map(s=>`<div class="sig-pill">${sigLabels[s]||s}</div>`).join('')}</div>` : ''}
+    </div>
+
+    <div class="section-label">MARKET CHIPS</div>
+    <div class="mkt-row">
+      ${chips.map(c=>{
+        const col = c.chg>0?'var(--green)':c.chg<0?'var(--red)':'var(--text2)';
+        return `<div class="mkt-chip"><div class="mkt-chip-name">${c.n}</div><div class="mkt-chip-val">${typeof c.v==='number'?c.v.toLocaleString('en-US',{maximumFractionDigits:2}):c.v}${c.chg!=null?` <span style="color:${col};font-size:11px">${fmtChg(c.chg)}</span>`:''}</div></div>`;
+      }).join('')}
+    </div>
+
+    <div class="section-label">TODAY'S PICK</div>
+    ${pickHTML}
+
+    <div class="section-label">TOP 3 ACTIONS</div>
+    ${recs.length
+      ? recs.map(r => `<div class="action-row">
+          <span class="urgency ${urgencyClass(r.urgency)}">${r.urgency||'LOW'}</span>
+          <span class="action-target">${r.action||''} ${r.target||''}</span>
+          <span class="action-detail">${clip(r.detail||'',150)}</span>
+        </div>`).join('')
+      : '<div class="empty">無建議</div>'}
+
+    ${flags.length ? `<div class="section-label">CAPITAL FLOW FLAGS</div><div class="flag-list">${flags.map(f=>`<div class="flag-item">⚡ ${f}</div>`).join('')}</div>` : ''}
+  `;
+}
+
+function renderTrading(target){
+  const a = DATA.agents || {};
+  const tm = a.trading_master || {};
+  const tw = a.tw_short_term || {};
+  const dev = a.devils_advocate || {};
+  const master = a.master || {};
+  const pick = a.tw_daily_pick || {};
+
+  const cands = (CANDS && CANDS.candidates) || [];
+  const top = cands.slice(0, 15);
+
+  let pickHTML;
+  if(pick.pick && pick.pick.code && pick.pick.code !== '—'){
+    const p = pick.pick;
+    const cl = pick.core_logic || {};
+    pickHTML = `<div class="pick-summary">
+      <div class="pick-grid">
+        <div>
+          <div class="pick-code">${p.code}</div>
+          <div class="pick-name">${p.name||''}</div>
+          ${p.ref_close && p.ref_close !== '—' ? `<div style="font-size:11px;color:var(--text);margin-top:6px"><b style="color:var(--text3);font-size:9px;letter-spacing:1px">REF</b> ${p.ref_close}</div>` : ''}
+          <div style="font-size:10px;color:var(--gold);margin-top:8px;letter-spacing:.8px">${pick.verdict||''} · 信心 ${(pick.confidence||0).toFixed(2)}</div>
+        </div>
+        <div class="pick-fields">
+          <div><div class="pick-field-label">ENTRY ZONE</div><div class="pick-field-val entry">${p.entry_zone||'—'}</div></div>
+          <div><div class="pick-field-label">STOP LOSS</div><div class="pick-field-val stop">${p.stop_loss||'—'}</div></div>
+          <div><div class="pick-field-label">TARGET</div><div class="pick-field-val target">${p.target||'—'}</div></div>
+          <div><div class="pick-field-label">HOLD</div><div class="pick-field-val">${p.hold_days||'—'}</div></div>
+        </div>
+      </div>
+      ${p.risk_reward && p.risk_reward !== '—' ? `<div style="margin-top:12px;padding:8px 12px;background:var(--bg4);border-radius:6px;display:flex;justify-content:space-between;align-items:center;border-left:2px solid var(--gold)">
+        <span style="font-size:9px;color:var(--text3);letter-spacing:1.5px">RISK / REWARD</span>
+        <span style="font-size:14px;font-weight:800;color:var(--gold);letter-spacing:1px">${p.risk_reward}</span>
+      </div>` : ''}
+      ${(cl.technical||cl.catalyst||cl.chips) ? `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--text2);line-height:1.7">
+        ${cl.technical?`<div><b style="color:var(--text3);font-size:9px;letter-spacing:1px">TECHNICAL · </b>${cl.technical}</div>`:''}
+        ${cl.catalyst?`<div style="margin-top:4px"><b style="color:var(--text3);font-size:9px;letter-spacing:1px">CATALYST · </b>${cl.catalyst}</div>`:''}
+        ${cl.chips?`<div style="margin-top:4px"><b style="color:var(--text3);font-size:9px;letter-spacing:1px">CHIPS · </b>${cl.chips}</div>`:''}
+      </div>`:''}
     </div>`;
   } else {
-    $('pick-area').innerHTML = `<div class="pick-none">盤後分析完成後顯示<br>(13:00+ 執行)</div>`;
+    pickHTML = `<div class="empty">今日無精選 · ${pick.verdict||''}<br><span style="font-size:10px">${clip(pick.summary||'',120)}</span></div>`;
   }
 
-  // Actions
-  const recs = master.recommendations || [];
-  if (recs.length === 0) {
-    $('actions-list').innerHTML = '<div style="color:var(--text3);font-size:12px;padding:10px 0">無建議</div>';
-  } else {
-    $('actions-list').innerHTML = recs.slice(0,3).map(r => `
-      <div class="action-row">
-        <div class="action-urgency ${urgencyClass(r.urgency)}">${r.urgency || 'LOW'}</div>
-        <div class="action-target">${r.action || ''} ${r.target || ''}</div>
-        <div class="action-detail">${(r.detail || '').slice(0,80)}</div>
-      </div>`).join('');
-  }
-
-  // Capital Flow detail
-  const flags = (cf.override_flags || []).filter(f => !f.includes('STRUCTURAL_NOTE'));
-  $('flow-area').innerHTML = `<div class="flow-card">
-    <div class="flow-dir">${cf.flow_direction || '—'}</div>
-    ${flags.length ? `<div class="flag-list">${flags.map(f=>`<div class="flag-item">⚡ ${f}</div>`).join('')}</div>` : '<div style="color:var(--green);font-size:11px">無強制規則觸發</div>'}
+  const tmCol = verdictColor(tm.verdict);
+  const tmCard = `<div class="card">
+    <div class="card-title">TRADING DESK VERDICT</div>
+    <div style="font-size:18px;font-weight:800;color:${tmCol};margin-bottom:6px">${tm.verdict||'—'}</div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.7">${clip(tm.summary,260)}</div>
+    <div style="margin-top:10px;display:flex;align-items:center;gap:8px;font-size:10px;color:var(--text3)">CONFIDENCE
+      <div style="flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;max-width:160px"><div style="height:100%;width:${(tm.confidence||0)*100}%;background:${tmCol}"></div></div>
+      <span>${(tm.confidence||0).toFixed(2)}</span>
+    </div>
   </div>`;
 
-  // Master summary
-  const s = master.summary || '';
-  if (s) {
-    $('master-summary-area').innerHTML = `<div class="master-summary">${s.slice(0,200)}</div>`;
+  let scannerHTML;
+  if(top.length){
+    scannerHTML = top.map((c, i) => {
+      const pills = [];
+      if(c.breakout_ma20) pills.push('<span class="pill">MA20突破</span>');
+      if(c.vol_surge)     pills.push(`<span class="pill vol">量爆${c.vol_ratio?c.vol_ratio.toFixed(1)+'x':''}</span>`);
+      if(c.rsi_zone)      pills.push(`<span class="pill">RSI ${c.rsi?c.rsi.toFixed(0):''}</span>`);
+      if(c.ma_aligned)    pills.push('<span class="pill">均線多排</span>');
+      if(c.five_day_high) pills.push('<span class="pill">5日高</span>');
+      if(c.rs_signal)     pills.push(`<span class="pill rs">RS+${c.rs_5d?c.rs_5d.toFixed(1):''}</span>`);
+      return `<div class="scan-card${i<3?' top':''}">
+        <div class="scan-head">
+          <div><div class="scan-code">${c.code}</div><div class="scan-name">${c.name||''}</div></div>
+          <div class="scan-score">${c.score||0}/6</div>
+        </div>
+        <div class="scan-pills">${pills.join('')}</div>
+        <div class="scan-vals">收盤 <b>${c.last_close??'—'}</b> · MA20 <b>${c.ma20?c.ma20.toFixed(1):'—'}</b></div>
+      </div>`;
+    }).join('');
+  } else {
+    scannerHTML = '<div class="empty">無候選清單</div>';
   }
+
+  const chatMsgs = [];
+  if(tw.summary){
+    chatMsgs.push(`<div class="chat-msg tw">
+      <div><div class="chat-author tw">TW ANALYST</div><div class="chat-author-role">${tw.verdict||''} · ${(tw.confidence||0).toFixed(2)}</div></div>
+      <div class="chat-text">${clip(tw.summary, 280)}</div>
+    </div>`);
+  }
+  if(dev.summary){
+    chatMsgs.push(`<div class="chat-msg devil">
+      <div><div class="chat-author devil">DEVIL'S ADVOCATE</div><div class="chat-author-role">${dev.verdict||''} · ${(dev.confidence||0).toFixed(2)}</div></div>
+      <div class="chat-text">${clip(dev.summary, 280)}</div>
+    </div>`);
+  }
+  if(master.summary){
+    chatMsgs.push(`<div class="chat-msg cio">
+      <div><div class="chat-author cio">CIO DECISION</div><div class="chat-author-role">${master.verdict||''} · ${(master.confidence||0).toFixed(2)}</div></div>
+      <div class="chat-text">${clip(master.summary, 280)}</div>
+    </div>`);
+  }
+
+  target.innerHTML = `
+    <div class="section-label">TODAY'S PICK</div>
+    ${pickHTML}
+    <div style="margin-top:14px">${tmCard}</div>
+    <div class="section-label">SCANNER RADAR · ${top.length} 候選</div>
+    <div class="scanner">${scannerHTML}</div>
+    <div class="section-label">AGENT INTERACTION</div>
+    <div class="chat-list">${chatMsgs.join('') || '<div class="empty">無對話紀錄</div>'}</div>
+  `;
 }
 
-// ════════════════════════════════════════════════════════════════════
-// Desks Panel
-// ════════════════════════════════════════════════════════════════════
-function deskVerdictStyle(verdict) {
-  const col = verdictColor(verdict);
-  return `background:${col}18;color:${col};border:1px solid ${col}40`;
+function renderResearch(target){
+  const a = DATA.agents || {};
+  const sv = a.signal_fusion || {};
+  const perf = DATA.performance || {};
+  const reflect = a.reflection || {};
+
+  const gaps = sv._data_gaps || [];
+  const sources = sv._sources || {};
+
+  const GAUGES = [
+    {key:'market_regime_score', label:'MARKET REGIME', type:'arc', desc:'-1 恐慌 → +1 AI主升段', colorFn:v=>v>0.2?'var(--green)':v<-0.2?'var(--red)':'var(--yellow)'},
+    {key:'trend_strength', label:'TREND STRENGTH', type:'bar', desc:'TAIEX + market_overview'},
+    {key:'risk_pressure', label:'RISK PRESSURE', type:'bar', inverted:true, desc:'VIX + tw_short_term + devils'},
+    {key:'volatility_risk', label:'VOLATILITY RISK', type:'bar', inverted:true, desc:'VIX(70) + TAIEX 日內(30)'},
+    {key:'ai_sector_strength', label:'AI SECTOR', type:'bar', desc:'新聞 AI 關鍵字'},
+    {key:'scanner_momentum', label:'SCANNER MOMENTUM', type:'bar', desc:'候選股技術分數'},
+    {key:'confidence_score', label:'CONFIDENCE', type:'bar', desc:'Agent 平均 confidence'},
+    {key:'foreign_flow_strength', label:'FOREIGN FLOW', type:'bar', desc:'TWSE T86'},
+    {key:'breadth_score', label:'MKT BREADTH', type:'bar', desc:'TWSE 漲跌家數'},
+  ];
+
+  const gaugesHTML = GAUGES.map(g=>{
+    const v = sv[g.key];
+    const isNA = gaps.includes(g.key) || v == null;
+    if(isNA){
+      return `<div class="gauge-card na"><div class="gauge-label">${g.label}</div><div class="na-label">N/A</div><div class="gauge-source">${sources[g.key]||g.desc}</div></div>`;
+    }
+    let visual;
+    if(g.type === 'arc'){
+      visual = arcGaugeSVG(v, g.colorFn(v));
+    } else {
+      const c = g.colorFn ? g.colorFn(v) : sigCol(v, g.inverted);
+      visual = barGaugeHTML(v, c);
+    }
+    return `<div class="gauge-card"><div class="gauge-label">${g.label}</div>${visual}<div class="gauge-source">${sources[g.key]||g.desc}</div></div>`;
+  }).join('');
+
+  let perfHTML;
+  if(perf && perf.available){
+    const r = perf.overall_rate || 0;
+    const c = r>=55?'var(--green)':r>=45?'var(--yellow)':'var(--red)';
+    const byRegime = perf.by_regime || {};
+    const top = Object.entries(byRegime).sort((a,b)=>b[1].rate - a[1].rate)[0];
+    perfHTML = `<div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">勝率</div><div class="stat-value" style="color:${c}">${r}%</div><div class="stat-sub">${perf.win||0}W / ${perf.loss||0}L</div></div>
+      <div class="stat-card"><div class="stat-label">總推薦</div><div class="stat-value">${perf.total||0}</div><div class="stat-sub">已結算</div></div>
+      <div class="stat-card"><div class="stat-label">最佳 REGIME</div><div class="stat-value" style="font-size:14px;color:var(--blue)">${top?top[0]:'—'}</div><div class="stat-sub">勝率最高</div></div>
+      <div class="stat-card"><div class="stat-label">連續</div><div class="stat-value" style="font-size:14px">${perf.streak||'—'}</div><div class="stat-sub">當前連續</div></div>
+    </div>`;
+  } else {
+    perfHTML = `<div class="empty">績效資料累積中（${perf?.total||0} 筆已結算 · 需 ≥5 筆顯示勝率）</div>`;
+  }
+
+  const refHTML = (reflect && reflect.summary)
+    ? `<div class="card"><div class="card-title">LATEST REFLECTION</div><div style="font-size:11px;color:var(--text2);line-height:1.7">${clip(reflect.summary, 360)}</div></div>`
+    : '';
+
+  // ─── SignalLeaderboard ─────────────────────────────────────────────
+  // Ranks signals by their current value (when no historical effectiveness yet)
+  const signalRanks = GAUGES.map(g => {
+    const v = sv[g.key];
+    const isNA = gaps.includes(g.key) || v == null;
+    if(isNA) return null;
+    // For inverted gauges (risk_pressure / volatility_risk), lower is better
+    const score = g.inverted ? (1 - v) : v;
+    return {label:g.label, key:g.key, raw:v, score, inverted:g.inverted};
+  }).filter(Boolean).sort((a,b) => b.score - a.score);
+
+  const lbHTML = signalRanks.length ? `<div class="card">
+    <div class="card-title">SIGNAL EFFECTIVENESS RANKING</div>
+    <div style="font-size:10px;color:var(--text3);margin-bottom:10px">當前信號強度排序（${perf?.total < 50 ? `歷史效力分析需 50 筆推薦，目前 ${perf?.total||0}` : '基於歷史勝率'}）</div>
+    ${signalRanks.map((s,i) => {
+      const pct = Math.round(s.score * 100);
+      const col = s.score>0.6?'var(--green)':s.score>0.35?'var(--yellow)':'var(--red)';
+      return `<div class="alloc-row" style="grid-template-columns:24px 130px 1fr 60px;padding:5px 0;border-bottom:1px solid var(--border)">
+        <span style="color:var(--text3);font-size:10px;text-align:right">${i+1}</span>
+        <span class="alloc-name" style="font-size:11px">${s.label}</span>
+        <div class="alloc-track"><div class="alloc-fill" style="width:${pct}%;background:${col}"></div></div>
+        <span class="alloc-pct" style="color:${col};font-size:10px">${s.raw.toFixed(2)}${s.inverted?' ↓':''}</span>
+      </div>`;
+    }).join('')}
+  </div>` : '';
+
+  target.innerHTML = `
+    <div class="section-label">SIGNAL VECTOR · 9 維度</div>
+    <div class="gauge-grid">${gaugesHTML}</div>
+
+    <div class="section-label">SIGNAL LEADERBOARD</div>
+    ${lbHTML}
+
+    <div class="section-label">PERFORMANCE</div>
+    ${perfHTML}
+    ${refHTML ? `<div class="section-label">REFLECTION</div>${refHTML}` : ''}
+  `;
 }
 
-function toggleDesk(id) {
-  const body = document.getElementById(id + '-body');
-  const chev = document.getElementById(id + '-chev');
-  const isOpen = body.classList.contains('open');
-  body.classList.toggle('open', !isOpen);
-  chev.classList.toggle('open', !isOpen);
+function renderWealth(target){
+  const a = DATA.agents || {};
+  const wm = a.wealth_master || {};
+  const pv = DATA.portfolio_value || {};
+  const snap = DATA.market_snapshot || {};
+
+  const struct = wm.structural_risk || '—';
+  const liq = wm.liquidity_risk || wm.risk_level || '—';
+  const cash = wm.cashflow_stability || '—';
+  const colS = struct==='high'?'var(--orange)':struct==='moderate'?'var(--yellow)':'var(--green)';
+  const colL = riskColor(liq);
+  const colC = cash==='critical'?'var(--red)':cash==='tight'?'var(--orange)':cash==='adequate'?'var(--yellow)':'var(--green)';
+
+  const ap = pv.allocation_pct || {};
+  const allocations = [
+    {n:'TW STOCKS', p:ap.tw_stocks, col:'var(--cyan)'},
+    {n:'US STOCKS', p:ap.us_stocks, col:'var(--blue)'},
+    {n:'FUNDS', p:ap.funds, col:'var(--purple)'},
+    {n:'REAL ESTATE', p:ap.real_estate, col:'var(--gold)'},
+  ].filter(x => x.p != null);
+
+  const fxHTML = `<div class="mkt-row">
+    ${snap.usd_twd?`<div class="mkt-chip"><div class="mkt-chip-name">USD/TWD</div><div class="mkt-chip-val">${snap.usd_twd}</div></div>`:''}
+    ${snap.jpy_per_usd?`<div class="mkt-chip"><div class="mkt-chip-name">JPY/USD</div><div class="mkt-chip-val">${snap.jpy_per_usd}</div></div>`:''}
+  </div>`;
+
+  const holdings = pv.tw_stocks_live || [];
+  let holdHTML = '<div class="empty">無持股資料</div>';
+  if(holdings.length){
+    holdHTML = `<table class="hold-table">
+      <thead><tr><th>CODE</th><th>NAME</th><th style="text-align:right">VALUE</th><th style="text-align:right">PNL</th></tr></thead>
+      <tbody>${holdings.map(h=>`<tr>
+        <td><span class="hold-code">${h.code}</span></td>
+        <td>${h.name||'—'}${h.watch?`<span class="hold-watch">⚠ ${String(h.watch).replace(/_/g,' ')}</span>`:''}</td>
+        <td style="text-align:right">${h.value!=null?h.value.toLocaleString():'—'}</td>
+        <td class="hold-pnl ${h.pnl>=0?'up':'down'}" style="text-align:right">${h.pnl>=0?'+':''}${h.pnl!=null?h.pnl.toLocaleString():''} <span style="font-size:9px;color:var(--text3)">(${h.pnl_pct>=0?'+':''}${h.pnl_pct!=null?h.pnl_pct.toFixed(1):''}%)</span></td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  target.innerHTML = `
+    <div class="section-label">RISK PANEL</div>
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="metric-label">STRUCTURAL RISK</div><div class="metric-val" style="color:${colS}">${struct}</div></div>
+      <div class="metric-card"><div class="metric-label">LIQUIDITY RISK</div><div class="metric-val" style="color:${colL}">${liq}</div></div>
+      <div class="metric-card"><div class="metric-label">CASHFLOW</div><div class="metric-val" style="color:${colC}">${cash}</div></div>
+    </div>
+    <div class="section-label">ALLOCATION MAP</div>
+    <div class="alloc-bars">
+      ${allocations.map(x=>`<div class="alloc-row">
+        <span class="alloc-name">${x.n}</span>
+        <div class="alloc-track"><div class="alloc-fill" style="width:${Math.min(100,x.p)}%;background:${x.col}"></div></div>
+        <span class="alloc-pct" style="color:${x.col}">${x.p.toFixed(1)}%</span>
+      </div>`).join('')}
+    </div>
+    <div style="font-size:10px;color:var(--text3);margin-top:8px">淨資產 ${pv.net_assets_twd?pv.net_assets_twd.toLocaleString():'—'} TWD</div>
+    <div class="section-label">FX</div>
+    ${fxHTML}
+    ${(wm.risk_flags||[]).length?`<div class="section-label">WARNINGS</div><div class="flag-list">${wm.risk_flags.map(f=>`<div class="flag-item">⚡ ${f}</div>`).join('')}</div>`:''}
+    <div class="section-label">TW HOLDINGS</div>
+    ${holdHTML}
+  `;
 }
 
-function renderDeskSection(id, icon, name, desk, openByDefault) {
-  if (!desk || desk.verdict === 'ERROR') {
-    return `<div class="desk-section">
-      <div class="desk-header">
-        <div class="desk-header-left">
-          <span class="desk-icon">${icon}</span>
-          <span class="desk-name">${name}</span>
-          <span class="desk-verdict-badge" style="background:var(--red-dim);color:var(--red);border:1px solid var(--red)">ERROR</span>
+function renderRisk(target){
+  const a = DATA.agents || {};
+  const dev = a.devils_advocate || {};
+  const cf = DATA.capital_flow || {};
+  const master = a.master || {};
+
+  const flags = (cf.override_flags || []).filter(f => !f.includes('STRUCTURAL_NOTE'));
+  const violations = master.constraint_violations || master.constraints_triggered || [];
+
+  const budget = cf.budget || {};
+  const tp = Math.round((budget.trading || 0) * 100);
+  const pp = Math.round((budget.portfolio || 0) * 100);
+  const cp = Math.round((budget.cash || 0) * 100);
+
+  target.innerHTML = `
+    <div class="section-label">CAPITAL FLOW ENGINE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="card">
+        <div class="card-title">BUDGET ALLOCATION</div>
+        <div class="budget-block">
+          <div class="budget-row"><span class="budget-name">TRD</span><div class="budget-track"><div class="budget-fill" style="width:${tp}%;background:var(--cyan)"></div></div><span class="budget-pct" style="color:var(--cyan)">${tp}%</span></div>
+          <div class="budget-row"><span class="budget-name">PRT</span><div class="budget-track"><div class="budget-fill" style="width:${pp}%;background:var(--purple)"></div></div><span class="budget-pct" style="color:var(--purple)">${pp}%</span></div>
+          <div class="budget-row"><span class="budget-name">CSH</span><div class="budget-track"><div class="budget-fill" style="width:${cp}%;background:var(--text2)"></div></div><span class="budget-pct" style="color:var(--text2)">${cp}%</span></div>
+        </div>
+        <div style="font-size:11px;color:var(--text2);margin-top:12px">FLOW · <b style="color:var(--gold)">${cf.flow_direction||'—'}</b></div>
+      </div>
+      <div class="card">
+        <div class="card-title">TRIGGERS</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.9">
+          <div>wealth_risk · <b style="color:${cf.wealth_risk_triggered?'var(--red)':'var(--green)'}">${cf.wealth_risk_triggered?'YES':'NO'}</b></div>
+          <div>regime_risk · <b style="color:${cf.regime_risk_triggered?'var(--red)':'var(--green)'}">${cf.regime_risk_triggered?'YES':'NO'}</b></div>
+          <div>cash_crunch · <b style="color:${cf.cash_crunch_active?'var(--red)':'var(--green)'}">${cf.cash_crunch_active?'YES':'NO'}</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="section-label">OVERRIDE FLAGS · ${flags.length}</div>
+    ${flags.length ? `<div class="flag-list">${flags.map(f=>`<div class="flag-item">⚡ ${f}</div>`).join('')}</div>` : '<div class="empty">無強制規則觸發</div>'}
+    ${violations.length ? `<div class="section-label">CONSTRAINT VIOLATIONS</div><div class="constraint">⚠ <div>${violations.join(' · ')}</div></div>` : ''}
+    <div class="section-label">DEVIL'S ADVOCATE</div>
+    <div class="devil-quote">"${clip(dev.summary, 420)}"</div>
+    ${(dev.risk_flags||[]).length ? `<div class="flag-list" style="margin-top:12px">${dev.risk_flags.map(f=>`<div class="flag-item">⚡ ${f}</div>`).join('')}</div>` : ''}
+  `;
+}
+
+function renderArchive(target){
+  const perf = DATA.performance || {};
+  const reflect = (DATA.agents || {}).reflection || {};
+
+  let statsHTML;
+  if(perf && perf.available){
+    const r = perf.overall_rate || 0;
+    const c = r>=55?'var(--green)':r>=45?'var(--yellow)':'var(--red)';
+    const byRegime = perf.by_regime || {};
+    const rows = Object.entries(byRegime).filter(([,v])=>v.total>=2).sort((a,b)=>b[1].rate - a[1].rate);
+    statsHTML = `<div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">勝率 (30日)</div><div class="stat-value" style="color:${c}">${r}%</div><div class="stat-sub">${perf.win||0}W / ${perf.loss||0}L</div></div>
+      <div class="stat-card"><div class="stat-label">總推薦</div><div class="stat-value">${perf.total||0}</div><div class="stat-sub">已結算</div></div>
+      <div class="stat-card"><div class="stat-label">最佳 REGIME</div><div class="stat-value" style="font-size:14px;color:var(--blue)">${rows[0]?rows[0][0]:'—'}</div><div class="stat-sub">勝率最高</div></div>
+      <div class="stat-card"><div class="stat-label">連續</div><div class="stat-value" style="font-size:14px">${perf.streak||'—'}</div><div class="stat-sub">當前</div></div>
+    </div>`;
+  } else {
+    statsHTML = `<div class="empty">系統累積中：${perf?.total||0}/5 筆已結算才會顯示勝率</div>`;
+  }
+
+  // ─── PickHistory ──────────────────────────────────────────────────
+  // Show recent picks if available. When backend has 0 picks logged,
+  // show "accumulating" placeholder with explanation.
+  const recentPicks = perf?.recent_picks || perf?.history || [];
+  let pickHistoryHTML;
+  if(recentPicks.length > 0){
+    pickHistoryHTML = `<table class="hold-table">
+      <thead><tr>
+        <th>日期</th><th>代號</th><th>名稱</th><th>verdict</th>
+        <th style="text-align:right">REGIME</th>
+        <th style="text-align:right">結果</th>
+      </tr></thead>
+      <tbody>${recentPicks.slice(0,30).map(p => {
+        const ret = p.return_pct;
+        const c = ret==null ? 'var(--text3)' : ret>0 ? 'var(--green)' : 'var(--red)';
+        const status = p.resolved ? (ret>0 ? '✓' : '✗') : '⋯';
+        return `<tr>
+          <td><span style="color:var(--text3);font-size:10px">${(p.date||'').slice(5)}</span></td>
+          <td><span class="hold-code">${p.code||p.stock_code||'—'}</span></td>
+          <td><span style="color:var(--text2)">${p.name||p.stock_name||''}</span></td>
+          <td><span style="color:${verdictColor(p.verdict)};font-size:10px">${p.verdict||'—'}</span></td>
+          <td style="text-align:right;color:var(--text3);font-size:10px">${p.regime||'—'}</td>
+          <td style="text-align:right;color:${c}">${status} ${ret!=null?(ret>0?'+':'')+ret.toFixed(1)+'%':'—'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+  } else {
+    pickHistoryHTML = `<div class="card">
+      <div class="card-title">SYSTEM ACCUMULATING</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.8">
+        <div>每日 13:00 後產出的 picks 會自動記錄。</div>
+        <div>目前 <b style="color:var(--yellow)">${perf?.total||0}</b> 筆已記錄 · <b style="color:var(--yellow)">${perf?.total||0}</b>/5 筆才會啟用勝率統計</div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);color:var(--text3);font-size:10px">
+          資料庫：<code style="color:var(--text2)">data/alpha.db</code> · table <code style="color:var(--text2)">picks</code>
         </div>
       </div>
     </div>`;
   }
 
-  const conf = parseFloat(desk.confidence || 0.5);
-  const recs = (desk.recommendations || []).slice(0, 4);
-  const insights = (desk.key_insights || []).slice(0, 3);
+  target.innerHTML = `
+    <div class="section-label">PERFORMANCE STATS</div>
+    ${statsHTML}
 
-  // Wealth-specific extra fields
-  let wealthExtra = '';
-  if (id === 'wealth') {
-    const metrics = [
-      { label:'STRUCTURAL RISK', val: desk.structural_risk || '—', col: desk.structural_risk==='high'?'var(--orange)':desk.structural_risk==='moderate'?'var(--yellow)':'var(--green)' },
-      { label:'LIQUIDITY RISK', val: desk.liquidity_risk || desk.risk_level || '—', col: riskColor(desk.liquidity_risk || desk.risk_level) },
-      { label:'CASHFLOW', val: desk.cashflow_stability || '—', col: desk.cashflow_stability==='critical'?'var(--red)':desk.cashflow_stability==='tight'?'var(--orange)':desk.cashflow_stability==='adequate'?'var(--yellow)':'var(--green)' },
-    ];
-    wealthExtra = `<div class="wealth-metrics">${metrics.map(m=>`
-      <div class="wealth-metric">
-        <div class="wealth-metric-label">${m.label}</div>
-        <div class="wealth-metric-val" style="color:${m.col}">${m.val}</div>
-      </div>`).join('')}</div>`;
-  }
+    <div class="section-label">PICK HISTORY</div>
+    ${pickHistoryHTML}
 
-  const openClass = openByDefault ? ' open' : '';
-
-  return `<div class="desk-section">
-    <div class="desk-header" onclick="toggleDesk('${id}')">
-      <div class="desk-header-left">
-        <span class="desk-icon">${icon}</span>
-        <span class="desk-name">${name}</span>
-        <span class="desk-verdict-badge" style="${deskVerdictStyle(desk.verdict)}">${desk.verdict}</span>
-      </div>
-      <div class="desk-conf-wrap">
-        <div class="desk-conf-bar"><div class="desk-conf-fill" style="width:${Math.round(conf*100)}%"></div></div>
-        <div class="desk-conf-val">${conf.toFixed(2)}</div>
-        <div class="desk-chevron ${openByDefault?'open':''}" id="${id}-chev">▶</div>
-      </div>
-    </div>
-    <div class="desk-body${openClass}" id="${id}-body">
-      ${wealthExtra}
-      <div class="desk-summary">${(desk.summary || '').slice(0, 200)}</div>
-      ${insights.length ? `<div class="desk-insights">${insights.map(i=>`<div class="desk-insight-item">${i}</div>`).join('')}</div>` : ''}
-      ${recs.length ? `<div class="desk-recs">${recs.map(r=>`
-        <div class="desk-rec">
-          <div class="desk-rec-action">${r.action||''}</div>
-          <div class="desk-rec-target">${r.target||''}</div>
-          <div class="desk-rec-detail">${(r.detail||'').slice(0,80)}</div>
-        </div>`).join('')}</div>` : ''}
-    </div>
-  </div>`;
+    ${reflect && reflect.summary ? `<div class="section-label">LATEST REFLECTION</div><div class="card"><div style="font-size:11px;color:var(--text2);line-height:1.7">${clip(reflect.summary, 500)}</div></div>` : ''}
+  `;
 }
 
-function renderDesksPanel(agents) {
-  const desks = [
-    { id:'trading',   icon:'📈', name:'Trading Desk',   key:'trading_master',   open:true },
-    { id:'portfolio', icon:'📊', name:'Portfolio Desk', key:'portfolio_master', open:false },
-    { id:'wealth',    icon:'🏦', name:'Wealth Desk',    key:'wealth_master',    open:false },
-    { id:'da',        icon:'🔴', name:"Devil's Advocate", key:'devils_advocate', open:false },
-  ];
-  $('desks-area').innerHTML = desks.map(d =>
-    renderDeskSection(d.id, d.icon, d.name, agents[d.key], d.open)
-  ).join('');
-}
+const ROOM_RENDERERS = {
+  exec:     {render:renderExec,     title:'EXECUTIVE FLOOR', sub:'CIO 決策中心'},
+  trading:  {render:renderTrading,  title:'TRADING FLOOR',   sub:'交易室'},
+  research: {render:renderResearch, title:'RESEARCH LAB',    sub:'研究室'},
+  wealth:   {render:renderWealth,   title:'WEALTH OFFICE',   sub:'財富辦公室'},
+  risk:     {render:renderRisk,     title:'RISK CONTROL',    sub:'風控中心'},
+  archive:  {render:renderArchive,  title:'ARCHIVE',         sub:'歷史資料庫'},
+};
 
-// ════════════════════════════════════════════════════════════════════
-// Research Panel
-// ════════════════════════════════════════════════════════════════════
-function renderResearchPanel(perf) {
-  if (!perf || !perf.available) {
-    $('perf-stats').innerHTML = `<div class="stat-card" style="grid-column:1/-1"><div class="stat-label">PERFORMANCE</div><div class="stat-value" style="font-size:16px;color:var(--text3)">暫無績效資料</div><div class="stat-sub">系統累積至少5筆已結算推薦後顯示</div></div>`;
-    $('research-note').innerHTML = `<div class="research-note"><strong>Signal Attribution</strong> 分析需要 50 筆已結算推薦（目前：${perf?.total || 0}筆）。<br>每週四系統會自動檢查並通知。</div>`;
-    return;
-  }
+// ═══════════════════════════════════════════════════════════════════
+// SYSTEMS Layer (full-screen tools, not operational rooms)
+// ═══════════════════════════════════════════════════════════════════
+function renderDecisionLog(target){
+  const perf = DATA.performance || {};
+  const picks = perf.recent_picks || perf.history || [];
 
-  const byRegime = perf.by_regime || {};
-  const stats = [
-    { label:'勝率 (30日)', val: `${perf.overall_rate || 0}%`, sub:`${perf.win||0}W / ${perf.loss||0}L`, col: perf.overall_rate>=55?'var(--green)':perf.overall_rate>=45?'var(--yellow)':'var(--red)' },
-    { label:'總推薦數', val: perf.total || 0, sub:'已結算', col:'var(--text)' },
-    { label:'最佳 Regime', val: (() => { const top = Object.entries(byRegime).sort((a,b)=>b[1].rate-a[1].rate)[0]; return top ? top[0] : '—'; })(), sub:'勝率最高', col:'var(--blue)' },
-    { label:'連勝/連敗', val: `${perf.streak || '—'}`, sub:'當前連續', col:'var(--text2)' },
-  ];
-
-  $('perf-stats').innerHTML = stats.map(s => `
-    <div class="stat-card">
-      <div class="stat-label">${s.label}</div>
-      <div class="stat-value" style="color:${s.col}">${s.val}</div>
-      <div class="stat-sub">${s.sub}</div>
-    </div>`).join('');
-
-  // Regime breakdown
-  if (Object.keys(byRegime).length) {
-    const rows = Object.entries(byRegime)
-      .filter(([,v]) => v.total >= 2)
-      .sort((a,b) => b[1].rate - a[1].rate);
-    if (rows.length) {
-      $('signal-lb').innerHTML = `<div class="signal-leaderboard">
-        <div class="lb-title">REGIME PERFORMANCE</div>
-        ${rows.map(([regime, s], i) => `
-          <div class="lb-row">
-            <div class="lb-rank">${i+1}</div>
-            <div class="lb-sig">${regime}</div>
-            <div class="lb-bar-wrap"><div class="lb-bar-bg"><div class="lb-bar-fill" style="width:${s.rate}%;background:${s.rate>=55?'var(--green)':s.rate>=45?'var(--yellow)':'var(--red)'}"></div></div></div>
-            <div class="lb-pct" style="color:${s.rate>=55?'var(--green)':s.rate>=45?'var(--yellow)':'var(--red)'}">${s.rate}%</div>
-            <div class="lb-n">n=${s.total}</div>
-          </div>`).join('')}
-      </div>`;
-    }
-  }
-
-  if (perf.total < 50) {
-    $('research-note').innerHTML = `<div class="research-note">
-      <strong>Signal Attribution 分析</strong> 需要 50 筆已結算推薦。<br>
-      目前：<strong style="color:var(--yellow)">${perf.total}</strong>/50 筆。還需 ${50 - perf.total} 筆。<br>
-      每週四系統會自動檢查，達到 50 筆後觸發完整信號歸因報告。
+  let table;
+  if(picks.length > 0){
+    table = `<table class="hold-table" style="font-size:11px">
+      <thead><tr>
+        <th>日期</th><th>代號</th><th>名稱</th><th>VERDICT</th>
+        <th style="text-align:right">CONFIDENCE</th>
+        <th style="text-align:right">REGIME</th>
+        <th style="text-align:right">ENTRY → STOP</th>
+        <th style="text-align:right">RESULT</th>
+      </tr></thead>
+      <tbody>${picks.map(p => {
+        const ret = p.return_pct;
+        const c = ret==null ? 'var(--text3)' : ret>0 ? 'var(--green)' : 'var(--red)';
+        const status = p.resolved ? (ret>0 ? '✓ TARGET' : '✗ STOP') : '⋯ open';
+        return `<tr>
+          <td>${p.date||'—'}</td>
+          <td><span class="hold-code">${p.code||p.stock_code||'—'}</span></td>
+          <td>${p.name||p.stock_name||''}</td>
+          <td><span style="color:${verdictColor(p.verdict)}">${p.verdict||'—'}</span></td>
+          <td style="text-align:right">${p.confidence?p.confidence.toFixed(2):'—'}</td>
+          <td style="text-align:right;color:var(--text3)">${p.regime||'—'}</td>
+          <td style="text-align:right;color:var(--text3)">${p.entry_zone||'—'} · ${p.stop_loss||'—'}</td>
+          <td style="text-align:right;color:${c}">${status}${ret!=null?' '+(ret>0?'+':'')+ret.toFixed(2)+'%':''}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+  } else {
+    table = `<div class="card">
+      <div class="card-title">DATABASE EMPTY</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.8">
+        <div>系統每日盤後（13:00+）會把 tw_daily_pick 寫入 <code style="color:var(--text)">data/alpha.db</code> 的 <code style="color:var(--text)">picks</code> 表。</div>
+        <div style="margin-top:8px">目前資料庫 <b style="color:var(--yellow)">0</b> 筆記錄。</div>
+        <div style="margin-top:8px;color:var(--text3);font-size:10px">資料累積後此頁會自動顯示完整推薦歷史。</div>
+      </div>
     </div>`;
   }
+
+  target.innerHTML = `
+    <div class="section-label">PICK HISTORY · ${picks.length} ENTRIES</div>
+    ${table}
+
+    <div class="section-label">PERFORMANCE BY REGIME</div>
+    ${(() => {
+      const byR = perf.by_regime || {};
+      const rows = Object.entries(byR).sort((a,b) => b[1].rate - a[1].rate);
+      if(!rows.length) return '<div class="empty">需要累積 ≥5 筆已結算才顯示</div>';
+      return `<div class="card">${rows.map(([n, s]) => {
+        const cc = s.rate>=55?'var(--green)':s.rate>=45?'var(--yellow)':'var(--red)';
+        return `<div class="alloc-row" style="grid-template-columns:140px 1fr 100px;padding:6px 0;border-bottom:1px solid var(--border)">
+          <span class="alloc-name">${n}</span>
+          <div class="alloc-track"><div class="alloc-fill" style="width:${s.rate}%;background:${cc}"></div></div>
+          <span class="alloc-pct" style="color:${cc}">${s.rate}% · n=${s.total}</span>
+        </div>`;
+      }).join('')}</div>`;
+    })()}
+  `;
 }
 
-// ════════════════════════════════════════════════════════════════════
-// Main Load
-// ════════════════════════════════════════════════════════════════════
-async function load() {
-  try {
-    const r = await fetch('data/analysis.json?t=' + Date.now());
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const data = await r.json();
+function renderSignalMatrix(target){
+  // Full-screen version of the 9 signal gauges with more detail
+  const a = DATA.agents || {};
+  const sv = a.signal_fusion || {};
+  const gaps = sv._data_gaps || [];
+  const sources = sv._sources || {};
 
-    const agents = data.agents || {};
-    const master = agents.master || {};
-    const cf = data.capital_flow || {};
-    const regime = data.regime || {};
-    const sv = agents.signal_fusion || {};
-    const perf = data.performance;
-    const snap = data.market_snapshot || {};
+  const GAUGES = [
+    {key:'market_regime_score', label:'MARKET REGIME', type:'arc', desc:'-1 恐慌 → +1 AI 主升段', colorFn:v=>v>0.2?'var(--green)':v<-0.2?'var(--red)':'var(--yellow)'},
+    {key:'trend_strength', label:'TREND STRENGTH', type:'bar', desc:'TAIEX 日漲跌 + market_overview 結合'},
+    {key:'risk_pressure', label:'RISK PRESSURE', type:'bar', inverted:true, desc:'VIX + tw_short_term + devils_advocate consensus'},
+    {key:'volatility_risk', label:'VOLATILITY RISK', type:'bar', inverted:true, desc:'VIX(70%) + TAIEX 日內波動(30%)'},
+    {key:'ai_sector_strength', label:'AI SECTOR', type:'bar', desc:'新聞 AI 相關關鍵字頻次'},
+    {key:'scanner_momentum', label:'SCANNER MOMENTUM', type:'bar', desc:'15 檔候選股的平均技術分數 / 滿分'},
+    {key:'confidence_score', label:'CONFIDENCE', type:'bar', desc:'主要 Agent 平均 confidence，ERROR 扣分'},
+    {key:'foreign_flow_strength', label:'FOREIGN FLOW', type:'bar', desc:'TWSE T86 外資買賣超（千股）'},
+    {key:'breadth_score', label:'MKT BREADTH', type:'bar', desc:'TWSE MI_INDEX 漲跌家數'},
+  ];
 
-    renderCmdBar(master, cf, regime, data.generated_at);
-    renderMktBar(snap);
-    renderSignalPanel(sv, sv._data_gaps);
-    renderTodayPanel(agents, cf, master);
-    renderDesksPanel(agents);
-    renderResearchPanel(perf);
+  target.innerHTML = `
+    <div class="section-label">SIGNAL VECTOR · ${GAUGES.length - gaps.length}/${GAUGES.length} 維可用</div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:16px">
+      九維度信號融合是系統決策的核心。每個 gauge 反映即時市場狀態的一個面向，由不同來源資料合成。
+      ${gaps.length ? `<br><span style="color:var(--yellow)">⚠ ${gaps.length} 個維度資料不足 (${gaps.join(', ')})</span>` : ''}
+    </div>
+    <div class="gauge-grid" style="grid-template-columns:repeat(3,1fr)">
+      ${GAUGES.map(g => {
+        const v = sv[g.key];
+        const isNA = gaps.includes(g.key) || v == null;
+        if(isNA){
+          return `<div class="gauge-card na">
+            <div class="gauge-label">${g.label}</div>
+            <div class="na-label">N/A</div>
+            <div class="gauge-source">${sources[g.key]||g.desc}</div>
+          </div>`;
+        }
+        let visual;
+        if(g.type === 'arc'){
+          visual = arcGaugeSVG(v, g.colorFn(v));
+        } else {
+          const c = g.colorFn ? g.colorFn(v) : sigCol(v, g.inverted);
+          visual = barGaugeHTML(v, c);
+        }
+        return `<div class="gauge-card">
+          <div class="gauge-label">${g.label}</div>
+          ${visual}
+          <div class="gauge-source"><b>SOURCE</b><br>${sources[g.key]||g.desc}</div>
+        </div>`;
+      }).join('')}
+    </div>
 
-  } catch (e) {
-    document.body.insertAdjacentHTML('afterbegin',
-      `<div class="err-msg">資料載入失敗：${e.message} — 請確認 data/analysis.json 存在</div>`);
+    <div class="section-label">FUSION LOGIC</div>
+    <div class="card">
+      <div class="card-title">如何讀這 9 個 GAUGE</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.8">
+        <div><b style="color:var(--green)">綠色</b> = 強訊號 / 健康狀態</div>
+        <div><b style="color:var(--yellow)">黃色</b> = 中性 / 留意</div>
+        <div><b style="color:var(--red)">紅色</b> = 弱訊號 / 危險</div>
+        <div style="margin-top:8px"><b>↓ 標示</b> 代表這個維度反向（值越低越好，例如 RISK PRESSURE）</div>
+        <div style="margin-top:8px;color:var(--text3);font-size:10px">
+          所有 9 維會餵給 CIO 做最終 verdict 決策。某個 gauge 大幅變動會在 LIVE TRIGGERS（右 sidebar）顯示對應的 cockpit state。
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSettings(target){
+  const s = JSON.parse(localStorage.getItem('yuzu-settings') || '{}');
+  const cur = {
+    grain: s.grain ?? 0.06,
+    saturation: s.saturation ?? 0.9,
+    vignette: s.vignette ?? 0.6,
+    aiMode: s.aiMode ?? 'hybrid',
+    ...s
+  };
+
+  target.innerHTML = `
+    <div class="section-label">ATMOSPHERE</div>
+    <div class="card">
+      <div class="card-title">FILM GRAIN · <span style="color:var(--text2)" id="set-grain-val">${cur.grain}</span></div>
+      <input type="range" id="set-grain" min="0" max="0.15" step="0.005" value="${cur.grain}" style="width:100%;accent-color:var(--gold)"/>
+      <div style="font-size:9px;color:var(--text3);margin-top:6px">0 = 無 · 0.15 = 強</div>
+
+      <div class="card-title" style="margin-top:14px">VIGNETTE · <span style="color:var(--text2)" id="set-vig-val">${cur.vignette}</span></div>
+      <input type="range" id="set-vig" min="0" max="0.85" step="0.05" value="${cur.vignette}" style="width:100%;accent-color:var(--gold)"/>
+      <div style="font-size:9px;color:var(--text3);margin-top:6px">0 = 無暗角 · 0.85 = 強暗角</div>
+
+      <div class="card-title" style="margin-top:14px">SATURATION · <span style="color:var(--text2)" id="set-sat-val">${cur.saturation}</span></div>
+      <input type="range" id="set-sat" min="0.5" max="1.2" step="0.02" value="${cur.saturation}" style="width:100%;accent-color:var(--gold)"/>
+      <div style="font-size:9px;color:var(--text3);margin-top:6px">0.5 = 完全去飽和 · 1.2 = 增強</div>
+    </div>
+
+    <div class="section-label">CHARACTER DISPLAY</div>
+    <div class="card">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:8px">角色顯示模式</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${['hybrid','png-only','svg-only'].map(m => `
+          <button class="ai-mode-btn" data-mode="${m}" style="background:${cur.aiMode===m?'var(--bg4)':'var(--bg3)'};border:1px solid ${cur.aiMode===m?'var(--gold)':'var(--border2)'};color:${cur.aiMode===m?'var(--gold)':'var(--text2)'};padding:8px 14px;border-radius:5px;font-family:inherit;font-size:10px;letter-spacing:1px;cursor:pointer">${m.toUpperCase()}</button>
+        `).join('')}
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-top:8px">HYBRID: PNG 優先、SVG 備援（推薦）· PNG-ONLY: 僅 PNG · SVG-ONLY: 強制 SVG（測試用）</div>
+    </div>
+
+    <div class="section-label">DATA</div>
+    <div class="card">
+      <div style="font-size:11px;color:var(--text2);line-height:1.7">
+        <div>analysis.json · <span style="color:var(--text)">${fmtDate(DATA.generated_at)}</span></div>
+        <div>candidate_stocks.json · <span style="color:var(--text)">${CANDS ? (CANDS.candidates||[]).length+' 檔' : '—'}</span></div>
+        <div>signal_fusion · <span style="color:var(--text)">${9 - ((DATA.agents?.signal_fusion?._data_gaps)||[]).length}/9 維可用</span></div>
+      </div>
+      <button onclick="window.location.reload()" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);padding:6px 12px;border-radius:4px;font-family:inherit;font-size:10px;letter-spacing:1px;margin-top:10px;cursor:pointer">↻ FORCE RELOAD DATA</button>
+    </div>
+
+    <div class="section-label">RESET</div>
+    <button id="set-reset" style="background:var(--red-dim);border:1px solid var(--red);color:var(--red);padding:8px 14px;border-radius:5px;font-family:inherit;font-size:10px;letter-spacing:1px;cursor:pointer">RESET TO DEFAULTS</button>
+  `;
+
+  // Wire up sliders + persistence
+  function save(){
+    localStorage.setItem('yuzu-settings', JSON.stringify(cur));
+    applySettings();
   }
+  ['grain','vig','sat'].forEach(k => {
+    const el = $('set-'+k);
+    const valEl = $('set-'+k+'-val');
+    el.addEventListener('input', e => {
+      const v = parseFloat(e.target.value);
+      const key = k==='vig'?'vignette':k==='sat'?'saturation':'grain';
+      cur[key] = v;
+      valEl.textContent = v.toFixed(k==='sat'?2:3);
+      save();
+    });
+  });
+  document.querySelectorAll('.ai-mode-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      cur.aiMode = b.dataset.mode;
+      save();
+      // re-render with new mode
+      document.querySelectorAll('.ai-mode-btn').forEach(btn => {
+        const active = btn.dataset.mode === cur.aiMode;
+        btn.style.background = active?'var(--bg4)':'var(--bg3)';
+        btn.style.borderColor = active?'var(--gold)':'var(--border2)';
+        btn.style.color = active?'var(--gold)':'var(--text2)';
+      });
+      // refresh office so character mode updates
+      renderOffice();
+    });
+  });
+  $('set-reset').addEventListener('click', () => {
+    localStorage.removeItem('yuzu-settings');
+    applySettings();
+    target.parentElement.scrollTop = 0;
+    renderSettings(target);  // re-render
+  });
+}
+
+function applySettings(){
+  const s = JSON.parse(localStorage.getItem('yuzu-settings') || '{}');
+  const grain = s.grain ?? 0.06;
+  const sat = s.saturation ?? 0.9;
+  const vig = s.vignette ?? 0.6;
+  // Inject dynamic style
+  let style = document.getElementById('yuzu-dynamic-style');
+  if(!style){
+    style = document.createElement('style');
+    style.id = 'yuzu-dynamic-style';
+    document.head.appendChild(style);
+  }
+  style.textContent = `
+    body::after{opacity:${grain} !important}
+    .app{filter:saturate(${sat}) contrast(1.02) !important}
+    .canvas::before{background:
+      radial-gradient(ellipse 70% 60% at 50% 45%, transparent ${45-vig*20}%, rgba(2,4,10,${vig}) 100%),
+      radial-gradient(ellipse 100% 30% at 50% 0%, rgba(2,4,10,${vig*0.66}), transparent 70%),
+      radial-gradient(ellipse 100% 30% at 50% 100%, rgba(2,4,10,${vig*0.66}), transparent 70%) !important}
+  `;
+}
+
+// ─── AGENT FLOWS ─────────────────────────────────────────────────────
+// Directed-graph visualization of how the 6 agents feed each other
+function renderAgentFlows(target){
+  const a = DATA.agents || {};
+  const get = k => a[k] || {};
+
+  // Node definitions — position (x, y), agent key, label, color
+  const nodes = [
+    // INPUT LAYER (top row)
+    {key:'signal_fusion',    x:120, y:60,  label:'SIGNAL FUSION',  color:'#7A8EBD', tier:'input'},
+    {key:'market_overview',  x:340, y:60,  label:'MARKET OVERVIEW', color:'#7A8EBD', tier:'input'},
+    {key:'news_sentiment',   x:560, y:60,  label:'NEWS SENTIMENT',  color:'#7A8EBD', tier:'input'},
+
+    // SPECIALIST LAYER (middle row)
+    {key:'tw_short_term',    x:80,  y:200, label:'TW',             color:'#00C896', tier:'specialist', persona:'tw'},
+    {key:'trading_master',   x:220, y:200, label:'TM',             color:'#00E5FF', tier:'specialist', persona:'tm'},
+    {key:'portfolio_master', x:360, y:200, label:'PM',             color:'#3D8EFF', tier:'specialist', persona:'pm'},
+    {key:'wealth_master',    x:500, y:200, label:'WM',             color:'#A259FF', tier:'specialist', persona:'wm'},
+    {key:'devils_advocate',  x:640, y:200, label:'DA',             color:'#FF4560', tier:'specialist', persona:'da'},
+
+    // SYNTHESIS (CIO)
+    {key:'master',           x:340, y:340, label:'CIO',            color:'#C9A84C', tier:'synthesis', persona:'cio'},
+
+    // OUTPUT LAYER
+    {key:'tw_daily_pick',    x:200, y:460, label:"TODAY'S PICK",   color:'#C9A84C', tier:'output'},
+    {key:'capital_flow',     x:480, y:460, label:'CAPITAL FLOW',   color:'#C9A84C', tier:'output'},
+  ];
+
+  // Edges (from -> to)
+  const edges = [
+    // Inputs → Specialists
+    ['signal_fusion','tw_short_term'], ['signal_fusion','trading_master'], ['signal_fusion','portfolio_master'], ['signal_fusion','wealth_master'],
+    ['market_overview','tw_short_term'], ['market_overview','trading_master'], ['market_overview','portfolio_master'],
+    ['news_sentiment','tw_short_term'], ['news_sentiment','trading_master'], ['news_sentiment','devils_advocate'],
+
+    // Specialists → CIO
+    ['tw_short_term','master'], ['trading_master','master'], ['portfolio_master','master'], ['wealth_master','master'],
+
+    // Devil's Advocate critiques CIO (bidirectional review)
+    ['devils_advocate','master'],
+
+    // CIO → Outputs
+    ['master','tw_daily_pick'], ['master','capital_flow'],
+  ];
+
+  // Get verdict color for each node
+  function nodeStatus(key){
+    const ag = get(key);
+    const v = ag.verdict;
+    if(!v) return {state:'idle', col:'var(--text3)', text:'—'};
+    if(/error/i.test(v)) return {state:'err', col:'var(--red)', text:'ERR'};
+    return {state:'active', col:verdictColor(v), text:v.slice(0,4)};
+  }
+
+  // Build SVG
+  const w = 760, h = 540;
+
+  const edgePaths = edges.map(([from, to]) => {
+    const fn = nodes.find(n=>n.key===from);
+    const tn = nodes.find(n=>n.key===to);
+    if(!fn || !tn) return '';
+    // Bezier curve from bottom of fn to top of tn
+    const cx1 = fn.x, cy1 = fn.y + 30;
+    const cx2 = tn.x, cy2 = tn.y - 30;
+    const midY = (cy1 + cy2) / 2;
+    return `<path d="M${fn.x},${fn.y+22} C${cx1},${midY} ${cx2},${midY} ${tn.x},${tn.y-22}"
+                  fill="none" stroke="${fn.color}" stroke-width="1.2" stroke-opacity="0.35"
+                  stroke-dasharray="4 3"/>`;
+  }).join('');
+
+  const nodeShapes = nodes.map(n => {
+    const st = nodeStatus(n.key);
+    const r = n.tier === 'synthesis' ? 32 : n.tier === 'output' ? 28 : 24;
+    const labelSize = n.tier === 'synthesis' ? 11 : 9;
+    return `<g class="flow-node" data-key="${n.key}">
+      <circle cx="${n.x}" cy="${n.y}" r="${r+4}" fill="${n.color}" opacity="0.12" filter="blur(4px)"/>
+      <circle cx="${n.x}" cy="${n.y}" r="${r}" fill="#0A1422" stroke="${st.col}" stroke-width="1.5" opacity="0.95"/>
+      ${n.persona ? `<text x="${n.x}" y="${n.y+1}" text-anchor="middle" fill="${n.color}" font-size="${labelSize}" font-weight="800" font-family="monospace" dominant-baseline="middle">${n.label}</text>`
+                  : `<text x="${n.x}" y="${n.y+1}" text-anchor="middle" fill="${n.color}" font-size="8" font-weight="700" font-family="monospace" dominant-baseline="middle" letter-spacing="1">${n.label}</text>`}
+      <text x="${n.x}" y="${n.y + r + 11}" text-anchor="middle" fill="${st.col}" font-size="8" font-family="monospace" font-weight="700">${st.text}</text>
+    </g>`;
+  }).join('');
+
+  const tierLabels = `
+    <text x="${w-15}" y="62" text-anchor="end" fill="rgba(122,142,189,.4)" font-size="9" font-family="monospace" letter-spacing="2">INPUT LAYER</text>
+    <text x="${w-15}" y="202" text-anchor="end" fill="rgba(122,142,189,.4)" font-size="9" font-family="monospace" letter-spacing="2">SPECIALISTS</text>
+    <text x="${w-15}" y="342" text-anchor="end" fill="rgba(201,168,76,.5)" font-size="9" font-family="monospace" letter-spacing="2">SYNTHESIS</text>
+    <text x="${w-15}" y="462" text-anchor="end" fill="rgba(122,142,189,.4)" font-size="9" font-family="monospace" letter-spacing="2">OUTPUT</text>
+    <line x1="40" y1="130" x2="${w-40}" y2="130" stroke="rgba(122,142,189,.1)" stroke-dasharray="2 4"/>
+    <line x1="40" y1="270" x2="${w-40}" y2="270" stroke="rgba(122,142,189,.1)" stroke-dasharray="2 4"/>
+    <line x1="40" y1="400" x2="${w-40}" y2="400" stroke="rgba(201,168,76,.15)" stroke-dasharray="2 4"/>
+  `;
+
+  target.innerHTML = `
+    <div class="section-label">DECISION GRAPH · ${nodes.length} NODES · ${edges.length} EDGES</div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:14px">
+      6 個 agent 與 4 個輔助 component 的決策資料流。
+      每個節點顯示**當前 verdict**，連線方向 = 上游餵下游。
+      <br>底層 <b style="color:var(--text3)">INPUT</b> → 中層 <b style="color:var(--text3)">SPECIALIST</b> → CIO <b style="color:var(--gold)">SYNTHESIS</b> → <b style="color:var(--text3)">OUTPUT</b>
+    </div>
+
+    <div class="card" style="padding:18px">
+      <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;max-height:560px;display:block">
+        ${tierLabels}
+        ${edgePaths}
+        ${nodeShapes}
+      </svg>
+    </div>
+
+    <div class="section-label">CURRENT STATE</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+      ${nodes.filter(n => get(n.key).verdict).map(n => {
+        const ag = get(n.key);
+        return `<div class="card" style="padding:10px 12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <span style="color:${n.color};font-size:10px;font-weight:800;letter-spacing:1.5px">${n.label}</span>
+            <span style="color:${verdictColor(ag.verdict)};font-size:10px;font-weight:700">${ag.verdict||'—'}${ag.confidence?` · ${ag.confidence.toFixed(2)}`:''}</span>
+          </div>
+          ${ag.summary?`<div style="font-size:10px;color:var(--text2);line-height:1.5">${clip(ag.summary,140)}</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+const SYSTEM_RENDERERS = {
+  'decision-log':  {render:renderDecisionLog,  title:'DECISION LOG',  sub:'歷史推薦紀錄'},
+  'signal-matrix': {render:renderSignalMatrix, title:'SIGNAL MATRIX', sub:'9 維度信號融合'},
+  'agent-flows':   {render:renderAgentFlows,   title:'AGENT FLOWS',   sub:'決策資料流圖'},
+  'settings':      {render:renderSettings,     title:'SETTINGS',      sub:'系統設定'},
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// Expand / collapse
+// ═══════════════════════════════════════════════════════════════════
+function expandRoom(key){
+  const cfg = ROOM_RENDERERS[key];
+  if(!cfg) return;
+  collapseAll();
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'backdrop';
+  backdrop.addEventListener('click', collapseAll);
+  document.body.appendChild(backdrop);
+  activeBackdrop = backdrop;
+
+  const panel = document.createElement('div');
+  panel.className = 'expanded';
+  panel.dataset.room = key;
+  panel.innerHTML = `
+    <div class="exp-header">
+      <div>
+        <div class="exp-title">${cfg.title}</div>
+        <div class="exp-sub">${cfg.sub}</div>
+      </div>
+      <button class="exp-close">✕  RETURN TO FLOOR</button>
+    </div>
+    <div id="exp-body"></div>
+  `;
+  document.body.appendChild(panel);
+  panel.querySelector('.exp-close').addEventListener('click', collapseAll);
+  cfg.render($('exp-body'));
+
+  $('iso-grid').classList.add('zoomed');
+  $('crumb').innerHTML = `<span class="crumb-back">YUZU CAPITAL</span> · <span class="crumb-room">${cfg.title}</span>`;
+  const back = $('crumb').querySelector('.crumb-back');
+  if(back) back.addEventListener('click', collapseAll);
+
+  // sync left nav active
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.target === key);
+  });
+
+  // Update URL for deep linking
+  history.replaceState({}, '', '?room=' + key);
+
+  activeRoom = panel;
+}
+
+function collapseAll(){
+  if(activeRoom){activeRoom.remove(); activeRoom = null}
+  if(activeBackdrop){activeBackdrop.remove(); activeBackdrop = null}
+  $('iso-grid').classList.remove('zoomed');
+  $('crumb').innerHTML = '<span class="crumb-room">YUZU CAPITAL · OVERVIEW</span>';
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.target === 'overview');
+  });
+  // Clean URL
+  if(window.location.search) history.replaceState({}, '', window.location.pathname);
+}
+
+function expandSystem(key){
+  const cfg = SYSTEM_RENDERERS[key];
+  if(!cfg) return;
+  collapseAll();
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'backdrop';
+  backdrop.addEventListener('click', collapseAll);
+  document.body.appendChild(backdrop);
+  activeBackdrop = backdrop;
+
+  const panel = document.createElement('div');
+  panel.className = 'expanded';
+  panel.dataset.system = key;
+  panel.innerHTML = `
+    <div class="exp-header">
+      <div>
+        <div class="exp-title">${cfg.title}</div>
+        <div class="exp-sub">SYSTEM · ${cfg.sub}</div>
+      </div>
+      <button class="exp-close">✕  CLOSE</button>
+    </div>
+    <div id="exp-body"></div>
+  `;
+  document.body.appendChild(panel);
+  panel.querySelector('.exp-close').addEventListener('click', collapseAll);
+  cfg.render($('exp-body'));
+
+  $('iso-grid').classList.add('zoomed');
+  $('crumb').innerHTML = `<span class="crumb-back">YUZU CAPITAL</span> · <span style="color:var(--text3)">SYSTEM</span> · <span class="crumb-room">${cfg.title}</span>`;
+  const back = $('crumb').querySelector('.crumb-back');
+  if(back) back.addEventListener('click', collapseAll);
+
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.system === key);
+  });
+
+  // Update URL
+  history.replaceState({}, '', '?system=' + key);
+
+  activeRoom = panel;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Wire navigation + stubs + ESC
+// ═══════════════════════════════════════════════════════════════════
+function wireNav(){
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.addEventListener('click', () => {
+      const target = n.dataset.target;
+      const stub = n.dataset.stub;
+      const system = n.dataset.system;
+      if(stub){
+        showToast(`${stub} · 預計於後續 phase 推出`);
+        return;
+      }
+      if(system && SYSTEM_RENDERERS[system]){
+        expandSystem(system);
+        return;
+      }
+      if(target === 'overview'){
+        collapseAll();
+      } else if(ROOM_RENDERERS[target]){
+        expandRoom(target);
+      }
+    });
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && activeRoom) collapseAll();
+  });
+}
+
+// URL routing: ?room=trading or ?system=decision-log
+function applyURLRoute(){
+  const p = new URLSearchParams(window.location.search);
+  const room = p.get('room');
+  const system = p.get('system');
+  if(room && ROOM_RENDERERS[room]) expandRoom(room);
+  else if(system && SYSTEM_RENDERERS[system]) expandSystem(system);
+}
+
+let toastTimer;
+function showToast(msg){
+  const old = document.querySelector('.toast');
+  if(old) old.remove();
+  clearTimeout(toastTimer);
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  toastTimer = setTimeout(() => el.remove(), 2500);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Main
+// ═══════════════════════════════════════════════════════════════════
+const CACHE_KEY = 'yuzu-data-cache';
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000;  // 24 hours
+
+function loadFromCache(){
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if(!raw) return null;
+    const c = JSON.parse(raw);
+    if(Date.now() - c.t > CACHE_TTL_MS) return null;
+    return c;
+  } catch(_) { return null; }
+}
+
+function saveToCache(){
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), data:DATA, cands:CANDS}));
+  } catch(_) {}
+}
+
+function renderAll(){
+  applySettings();
+  renderTopbar();
+  renderOffice();
+  renderSidebar();
+}
+
+async function load(){
+  // Phase 1: render cached data instantly (if available)
+  const cache = loadFromCache();
+  if(cache){
+    DATA = cache.data;
+    CANDS = cache.cands;
+    renderAll();
+    wireNav();
+    applyURLRoute();
+    // Subtle banner indicating cache mode
+    showStaleBanner(cache.t);
+  }
+
+  // Phase 2: fetch fresh data in background
+  try {
+    const [r1, r2] = await Promise.all([
+      fetch('data/analysis.json?t=' + Date.now()),
+      fetch('data/candidate_stocks.json?t=' + Date.now()).catch(() => null)
+    ]);
+    if(!r1.ok) throw new Error(`analysis.json HTTP ${r1.status}`);
+    const freshData = await r1.json();
+    let freshCands = null;
+    if(r2 && r2.ok){
+      try { freshCands = await r2.json(); } catch(_){ freshCands = null; }
+    }
+    // Only re-render if data is newer
+    if(!DATA || freshData.generated_at !== DATA.generated_at){
+      DATA = freshData;
+      CANDS = freshCands;
+      saveToCache();
+      if(cache) {
+        // Re-render with fresh data (preserve open room/system if any)
+        const cur = window.location.search;
+        renderAll();
+        wireNav();
+        if(cur) applyURLRoute();
+        hideStaleBanner();
+      } else {
+        renderAll();
+        wireNav();
+        applyURLRoute();
+      }
+    } else {
+      hideStaleBanner();
+    }
+  } catch(e){
+    if(!cache){
+      document.body.insertAdjacentHTML('afterbegin', `<div class="err-msg">資料載入失敗：${e.message}</div>`);
+    } else {
+      // Have cache, fetch failed — show cached but stale
+      showStaleBanner(cache.t, true);
+    }
+  }
+}
+
+function showStaleBanner(timestamp, fetchFailed=false){
+  document.getElementById('stale-banner')?.remove();
+  const el = document.createElement('div');
+  el.id = 'stale-banner';
+  const ageMin = Math.floor((Date.now() - timestamp) / 60000);
+  const ageStr = ageMin < 60 ? `${ageMin}m` : `${Math.floor(ageMin/60)}h${ageMin%60}m`;
+  el.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid '+(fetchFailed?'var(--orange)':'var(--yellow)')+';color:'+(fetchFailed?'var(--orange)':'var(--yellow)')+';padding:7px 16px;border-radius:5px;font-size:10px;letter-spacing:1px;z-index:200;font-family:monospace;box-shadow:0 6px 20px rgba(0,0,0,.5)';
+  el.textContent = fetchFailed ? `⚠ OFFLINE · 顯示 ${ageStr} 前快取資料` : `↻ LOADING FRESH DATA · 暫顯 ${ageStr} 前快取`;
+  document.body.appendChild(el);
+}
+
+function hideStaleBanner(){
+  const el = document.getElementById('stale-banner');
+  if(!el) return;
+  el.style.transition = 'opacity .4s';
+  el.style.opacity = '0';
+  setTimeout(() => el.remove(), 400);
 }
 
 load();
