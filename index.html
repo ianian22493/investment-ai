@@ -177,6 +177,19 @@ body::after{
   /* SVG fill can't take CSS pattern, so we add another rect overlay class instead */
 }
 
+/* ═══ ATMOSPHERE PRESETS (Patch ③) ═══════════════════════════════ */
+body.preset-terminal                { filter: saturate(1.00); }
+body.preset-terminal::after         { opacity: .035; }
+body.preset-terminal .canvas::before{ background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 70%, rgba(2,4,10,0) 100%); }
+
+body.preset-midnight                { filter: saturate(.62) brightness(.92) hue-rotate(-6deg); }
+body.preset-midnight::after         { opacity: .13; }
+body.preset-midnight .canvas::before{ background: radial-gradient(ellipse 55% 45% at 50% 50%, transparent 30%, rgba(2,4,10,.92) 100%); }
+
+body.preset-cinema                  { filter: saturate(.92) sepia(.05) contrast(1.04); }
+body.preset-cinema::after           { opacity: .075; }
+body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 50%, rgba(15,8,4,.55) 100%); }
+
 .floor{padding:24px 28px 80px; flex:1}
 .floor-title{
   font-size:9px; font-weight:800; letter-spacing:4px; color:var(--gold);
@@ -318,6 +331,47 @@ body::after{
 .ag-head  {opacity:.95}
 .ag-glow  {opacity:.65; filter:blur(3px)}
 
+/* ═══ AGENT BREATHING · per-persona (Patch ①) ════════════════════ */
+.agent-v3{ transform-box: fill-box; transform-origin: 50% 90%; }
+.ag-halo  { transform-box: fill-box; }
+
+@keyframes b-cio{ 0%{transform:scale(1.000)} 42%{transform:scale(1.011)} 58%{transform:scale(1.011)} 100%{transform:scale(1.000)} }
+@keyframes h-cio{ 0%{opacity:.13} 45%{opacity:.17} 55%{opacity:.17} 100%{opacity:.13} }
+.agent-v3.cio          { animation: b-cio 6.8s cubic-bezier(.65,0,.35,1) infinite; animation-delay:-1.7s; }
+.agent-v3.cio .ag-halo { animation: h-cio 11.2s cubic-bezier(.55,0,.45,1) infinite; animation-delay:-2.8s; }
+
+@keyframes b-tm{ 0%{transform:scale(1.000)} 55%{transform:scale(1.016)} 100%{transform:scale(1.000)} }
+@keyframes h-tm{ 0%{opacity:.13} 50%{opacity:.21} 100%{opacity:.13} }
+.agent-v3.tm          { animation: b-tm 4.2s cubic-bezier(.25,.85,.4,1) infinite; animation-delay:-1.3s; }
+.agent-v3.tm .ag-halo { animation: h-tm 6.4s cubic-bezier(.3,.8,.45,1) infinite; animation-delay:-3.1s; }
+
+@keyframes b-tw{ 0%{transform:scale(1.000)} 44%{transform:scale(1.012)} 56%{transform:scale(1.012)} 100%{transform:scale(1.000)} }
+@keyframes h-tw{ 0%{opacity:.13} 50%{opacity:.18} 100%{opacity:.13} }
+.agent-v3.tw          { animation: b-tw 5.0s cubic-bezier(.5,.1,.5,.95) infinite; animation-delay:-2.7s; }
+.agent-v3.tw .ag-halo { animation: h-tw 7.8s cubic-bezier(.5,.1,.5,.95) infinite; animation-delay:-4.4s; }
+
+@keyframes b-da{
+  0%{transform:scale(1.000)} 30%{transform:scale(1.009)} 38%{transform:scale(1.009)}
+  50%{transform:scale(1.011)} 62%{transform:scale(1.011)}
+  78%{transform:scale(1.004)} 100%{transform:scale(1.000)}
+}
+@keyframes h-da{ 0%{opacity:.13} 40%{opacity:.15} 55%{opacity:.16} 70%{opacity:.14} 100%{opacity:.13} }
+.agent-v3.da          { animation: b-da 7.4s cubic-bezier(.4,0,.55,1) infinite; animation-delay:-3.9s; }
+.agent-v3.da .ag-halo { animation: h-da 9.4s cubic-bezier(.4,0,.55,1) infinite; animation-delay:-0.7s; }
+
+@keyframes b-pm{ 0%,100%{transform:scale(1.000)} 50%{transform:scale(1.011)} }
+@keyframes h-pm{ 0%,100%{opacity:.13} 50%{opacity:.17} }
+.agent-v3.pm          { animation: b-pm 6.4s cubic-bezier(.5,0,.5,1) infinite; animation-delay:-2.3s; }
+.agent-v3.pm .ag-halo { animation: h-pm 10.0s cubic-bezier(.5,0,.5,1) infinite; animation-delay:-5.3s; }
+
+@keyframes b-wm{ 0%{transform:scale(1.000)} 40%{transform:scale(1.009)} 60%{transform:scale(1.009)} 100%{transform:scale(1.000)} }
+@keyframes h-wm{ 0%{opacity:.13} 42%{opacity:.16} 58%{opacity:.16} 100%{opacity:.13} }
+.agent-v3.wm          { animation: b-wm 8.2s cubic-bezier(.7,0,.3,1) infinite; animation-delay:-5.9s; }
+.agent-v3.wm .ag-halo { animation: h-wm 13.4s cubic-bezier(.7,0,.3,1) infinite; animation-delay:-8.1s; }
+
+.agent-v3.concierge          { animation: b-cio 6.8s cubic-bezier(.65,0,.35,1) infinite; animation-delay:-4.9s; }
+.agent-v3.concierge .ag-halo { animation: h-cio 11.2s cubic-bezier(.55,0,.45,1) infinite; animation-delay:-7.3s; }
+
 /* Status light per room (top-right of SVG, pulse) */
 .room-light{
   position:absolute; top:14px; right:14px; z-index:2;
@@ -392,6 +446,22 @@ body::after{
   font-size:30px; font-weight:900; letter-spacing:1.2px; line-height:1.05;
   text-shadow:0 0 24px currentColor;
   margin:6px 0 8px;
+}
+
+/* ═══ VERDICT BREATHING (Patch ②) ═════════════════════════════════ */
+@keyframes v-steady-op{ 0%,100%{opacity:.86; filter:drop-shadow(0 0 14px currentColor)} 50%{opacity:1.00; filter:drop-shadow(0 0 24px currentColor)} }
+@keyframes v-steady-sc{ 0%,100%{transform:scale(1.000)} 50%{transform:scale(1.008)} }
+.verdict-huge{
+  display:inline-block;
+  transform-origin:left center;
+  animation: v-steady-op 7.5s cubic-bezier(.45,.05,.55,.95) infinite,
+             v-steady-sc 7.5s cubic-bezier(.45,.05,.55,.95) infinite;
+}
+@keyframes v-alert-op{ 0%,100%{opacity:.78; filter:drop-shadow(0 0 12px currentColor) saturate(.92)} 50%{opacity:1.00; filter:drop-shadow(0 0 28px currentColor) saturate(1.12)} }
+@keyframes v-alert-sc{ 0%,100%{transform:scale(.995)} 50%{transform:scale(1.012)} }
+.verdict-huge.v-alert{
+  animation: v-alert-op 4.6s cubic-bezier(.55,.10,.45,1) infinite,
+             v-alert-sc 4.6s cubic-bezier(.55,.10,.45,1) infinite;
 }
 .verdict-tagline{
   font-size:10px; color:var(--text2); letter-spacing:.8px;
@@ -624,6 +694,41 @@ body::after{
   .r-lobby{grid-column:1 / -1}
   .floor{padding:18px 16px 60px}
   .expanded{left:8px; right:8px; top:8px; bottom:8px; padding:18px 16px}
+}
+
+/* ═══ Reduced motion fallback (Patch ⓪) ═══════════════════════════ */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: .001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001s !important;
+  }
+}
+
+/* ═══ REPLAY OVERLAY (Patch ④) ═══════════════════════════════════ */
+.pick-summary{ position:relative; }
+.replay-overlay{
+  position:absolute; inset:0; pointer-events:none;
+  opacity:0; transition:opacity .4s ease;
+}
+.pick-summary:hover .replay-overlay,
+body.demo-mode .pick-summary .replay-overlay{
+  opacity:1; transition:opacity 1.5s ease;
+}
+.r-path.warm{ stroke: rgba(201,168,76,.42) !important; transition: stroke .4s ease; }
+.r-agent-label{
+  font: 700 9px/1 "JetBrains Mono", monospace;
+  letter-spacing: 1.2px;
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+.r-agent-label.on{ opacity: 1; }
+
+/* Demo mode subtle UI dim */
+body.demo-mode .sidebar-left,
+body.demo-mode .sidebar-right{
+  filter: brightness(.92);
+  transition: filter 1.5s ease;
 }
 </style>
 </head>
@@ -1027,7 +1132,9 @@ function agentSVGv3({x, y, scale, role, facing}){
   const isTrench = ext.trench;
   const jacketBottom = isTrench ? 6 : 2;  // trench is longer
 
-  return `<g class="agent-v3 ${role}" transform="translate(${x},${y}) scale(${scale})">
+  // Split-layer: outer <g> owns position (translate, never animated);
+  // inner <g class="agent-v3"> owns scale (CSS keyframes take over breathing).
+  return `<g transform="translate(${x},${y})"><g class="agent-v3 ${role}" transform="scale(${scale})">
     <defs>
       <linearGradient id="${gid}-jk" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="${r.jacket[0]}"/>
@@ -1049,7 +1156,7 @@ function agentSVGv3({x, y, scale, role, facing}){
     <ellipse cx="0" cy="14.2" rx="4.5" ry=".7" fill="rgba(0,0,0,.65)"/>
 
     <!-- Identity halo (brand color) -->
-    <ellipse cx="0" cy="-3" rx="11" ry="16" fill="${r.halo}" opacity=".13" filter="blur(5px)"/>
+    <ellipse class="ag-halo" cx="0" cy="-3" rx="11" ry="16" fill="${r.halo}" opacity=".13" filter="blur(5px)"/>
 
     <!-- Pants / legs -->
     <rect x=".3" y="2" width="3.2" height="11.5" fill="url(#${gid}-pt)"/>
@@ -1157,7 +1264,7 @@ function agentSVGv3({x, y, scale, role, facing}){
 
     <!-- Accessories -->
     ${drawAccessory(ext, back)}
-  </g>`;
+  </g></g>`;
 }
 
 // (legacy bodies removed below)
@@ -1910,6 +2017,8 @@ function renderSidebar(){
   const vCol = verdictColor(v);
   $('briefing-verdict').textContent = v;
   $('briefing-verdict').style.color = vCol;
+  // Patch ②: switch to alert breathing for red/危險 verdicts
+  $('briefing-verdict').classList.toggle('v-alert', /防守|賣出|減碼|空手|危險/.test(v));
   // Tagline: regime + key insight short
   const tagline = (regime.market_regime || '—') + ' · ' + (regime.short_term_trading_favorable ? 'TRADING FAVORABLE' : 'NOT TRADING-FRIENDLY');
   $('briefing-tagline').textContent = tagline;
@@ -2122,7 +2231,19 @@ function renderTrading(target){
   if(pick.pick && pick.pick.code && pick.pick.code !== '—'){
     const p = pick.pick;
     const cl = pick.core_logic || {};
-    pickHTML = `<div class="pick-summary">
+    pickHTML = `<div class="pick-summary" data-replay title="hover 查看 TW → DA → CIO 決策流程">
+      <!-- Replay overlay (Patch ④) -->
+      <svg class="replay-overlay" viewBox="0 0 600 200" preserveAspectRatio="none">
+        <path class="r-path p1" d="M 100 120 Q 200 80 300 120" fill="none" stroke="rgba(201,168,76,.10)" stroke-width="1" stroke-dasharray="2 3"/>
+        <path class="r-path p2" d="M 300 120 Q 400 160 500 120" fill="none" stroke="rgba(201,168,76,.10)" stroke-width="1" stroke-dasharray="2 3"/>
+        <circle cx="100" cy="120" r="6" fill="rgba(0,200,150,.20)"/>
+        <circle cx="300" cy="120" r="6" fill="rgba(255,69,96,.20)"/>
+        <circle cx="500" cy="120" r="6" fill="rgba(201,168,76,.25)"/>
+        <text class="r-agent-label tw"  x="100" y="105" text-anchor="middle" fill="var(--green)">TW</text>
+        <text class="r-agent-label da"  x="300" y="105" text-anchor="middle" fill="var(--red)">DA</text>
+        <text class="r-agent-label cio" x="500" y="105" text-anchor="middle" fill="var(--gold)">CIO</text>
+        <circle class="r-pulse" r="5" cx="100" cy="120" fill="var(--gold)" opacity="0" filter="drop-shadow(0 0 6px var(--gold))"/>
+      </svg>
       <div class="pick-grid">
         <div>
           <div class="pick-code">${p.code}</div>
@@ -2662,20 +2783,42 @@ function renderSettings(target){
     ...s
   };
 
+  const curPreset = cur.preset || 'terminal';
+  const PRESETS = [
+    {key:'terminal', name:'TERMINAL', desc:'盤前清晰資料 · 無暗角、無 grain'},
+    {key:'midnight', name:'MIDNIGHT', desc:'凌晨、孤獨、沉思 · 深暗角、低飽和'},
+    {key:'cinema',   name:'CINEMA',   desc:'週末儀式 · 暖色調、film grain'},
+  ];
+
   target.innerHTML = `
-    <div class="section-label">ATMOSPHERE</div>
+    <div class="section-label">ATMOSPHERE PRESET</div>
     <div class="card">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        ${PRESETS.map(p => `
+          <button class="preset-btn" data-preset="${p.key}" style="flex:1;min-width:100px;background:${curPreset===p.key?'var(--bg4)':'var(--bg3)'};border:1px solid ${curPreset===p.key?'var(--gold)':'var(--border2)'};color:${curPreset===p.key?'var(--gold)':'var(--text2)'};padding:12px 14px;border-radius:6px;font-family:inherit;font-size:11px;letter-spacing:1.5px;cursor:pointer;text-align:center">${p.name}</button>
+        `).join('')}
+      </div>
+      <div style="font-size:10px;color:var(--text3);line-height:1.7" id="preset-desc">
+        ${PRESETS.find(p => p.key === curPreset)?.desc || ''}
+      </div>
+    </div>
+
+    <div class="section-label">CUSTOM (進階)</div>
+    <div class="card">
+      <div style="font-size:10px;color:var(--text3);margin-bottom:10px">調動下面任一 slider 會切換到 CUSTOM 模式，覆蓋預設</div>
+
       <div class="card-title">FILM GRAIN · <span style="color:var(--text2)" id="set-grain-val">${cur.grain}</span></div>
       <input type="range" id="set-grain" min="0" max="0.15" step="0.005" value="${cur.grain}" style="width:100%;accent-color:var(--gold)"/>
-      <div style="font-size:9px;color:var(--text3);margin-top:6px">0 = 無 · 0.15 = 強</div>
 
       <div class="card-title" style="margin-top:14px">VIGNETTE · <span style="color:var(--text2)" id="set-vig-val">${cur.vignette}</span></div>
       <input type="range" id="set-vig" min="0" max="0.85" step="0.05" value="${cur.vignette}" style="width:100%;accent-color:var(--gold)"/>
-      <div style="font-size:9px;color:var(--text3);margin-top:6px">0 = 無暗角 · 0.85 = 強暗角</div>
 
       <div class="card-title" style="margin-top:14px">SATURATION · <span style="color:var(--text2)" id="set-sat-val">${cur.saturation}</span></div>
       <input type="range" id="set-sat" min="0.5" max="1.2" step="0.02" value="${cur.saturation}" style="width:100%;accent-color:var(--gold)"/>
-      <div style="font-size:9px;color:var(--text3);margin-top:6px">0.5 = 完全去飽和 · 1.2 = 增強</div>
+
+      <div style="font-size:9px;color:${cur.mode==='custom'?'var(--gold)':'var(--text3)'};margin-top:8px">
+        模式：<b>${cur.mode==='custom'?'CUSTOM (覆蓋 preset)':'PRESET'}</b>
+      </div>
     </div>
 
     <div class="section-label">CHARACTER DISPLAY</div>
@@ -2708,6 +2851,17 @@ function renderSettings(target){
     localStorage.setItem('yuzu-settings', JSON.stringify(cur));
     applySettings();
   }
+  // Preset buttons (Patch ③)
+  document.querySelectorAll('.preset-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      cur.preset = b.dataset.preset;
+      cur.mode = 'preset';
+      save();
+      // Re-render to update active highlight
+      renderSettings(target);
+    });
+  });
+  // Sliders switch to custom mode when changed
   ['grain','vig','sat'].forEach(k => {
     const el = $('set-'+k);
     const valEl = $('set-'+k+'-val');
@@ -2715,6 +2869,7 @@ function renderSettings(target){
       const v = parseFloat(e.target.value);
       const key = k==='vig'?'vignette':k==='sat'?'saturation':'grain';
       cur[key] = v;
+      cur.mode = 'custom';
       valEl.textContent = v.toFixed(k==='sat'?2:3);
       save();
     });
@@ -2744,24 +2899,42 @@ function renderSettings(target){
 
 function applySettings(){
   const s = JSON.parse(localStorage.getItem('yuzu-settings') || '{}');
-  const grain = s.grain ?? 0.06;
-  const sat = s.saturation ?? 0.9;
-  const vig = s.vignette ?? 0.6;
-  // Inject dynamic style
+
+  // Patch ③: atmosphere preset (preferred path)
+  const preset = s.preset || 'terminal';
+  document.body.classList.remove('preset-terminal','preset-midnight','preset-cinema');
+  document.body.classList.add('preset-' + preset);
+
+  // Custom sliders override preset if mode === 'custom'
   let style = document.getElementById('yuzu-dynamic-style');
   if(!style){
     style = document.createElement('style');
     style.id = 'yuzu-dynamic-style';
     document.head.appendChild(style);
   }
-  style.textContent = `
-    body::after{opacity:${grain} !important}
-    .app{filter:saturate(${sat}) contrast(1.02) !important}
-    .canvas::before{background:
-      radial-gradient(ellipse 70% 60% at 50% 45%, transparent ${45-vig*20}%, rgba(2,4,10,${vig}) 100%),
-      radial-gradient(ellipse 100% 30% at 50% 0%, rgba(2,4,10,${vig*0.66}), transparent 70%),
-      radial-gradient(ellipse 100% 30% at 50% 100%, rgba(2,4,10,${vig*0.66}), transparent 70%) !important}
-  `;
+  if(s.mode === 'custom'){
+    const grain = s.grain ?? 0.06;
+    const sat = s.saturation ?? 0.9;
+    const vig = s.vignette ?? 0.6;
+    style.textContent = `
+      body{filter:saturate(${sat}) contrast(1.02) !important}
+      body::after{opacity:${grain} !important}
+      .canvas::before{background:
+        radial-gradient(ellipse 70% 60% at 50% 45%, transparent ${45-vig*20}%, rgba(2,4,10,${vig}) 100%),
+        radial-gradient(ellipse 100% 30% at 50% 0%, rgba(2,4,10,${vig*0.66}), transparent 70%),
+        radial-gradient(ellipse 100% 30% at 50% 100%, rgba(2,4,10,${vig*0.66}), transparent 70%) !important}
+    `;
+  } else {
+    style.textContent = '';  // let preset class drive everything
+  }
+}
+
+function applyPreset(name){
+  const s = JSON.parse(localStorage.getItem('yuzu-settings') || '{}');
+  s.preset = name;
+  s.mode = 'preset';
+  localStorage.setItem('yuzu-settings', JSON.stringify(s));
+  applySettings();
 }
 
 // ─── AGENT FLOWS ─────────────────────────────────────────────────────
@@ -3152,6 +3325,112 @@ function hideStaleBanner(){
 }
 
 load();
+
+// ═══════════════════════════════════════════════════════════════════
+// Patch ④ — Workflow Replay on Hover (TW → DA → CIO light flow)
+// ═══════════════════════════════════════════════════════════════════
+function runReplay(card){
+  const pulse = card.querySelector('.r-pulse');
+  const p1 = card.querySelector('.p1');
+  const p2 = card.querySelector('.p2');
+  const labelTW  = card.querySelector('.r-agent-label.tw');
+  const labelDA  = card.querySelector('.r-agent-label.da');
+  const labelCIO = card.querySelector('.r-agent-label.cio');
+  if(!pulse) return;
+
+  const DUR = 2500;  // total ms
+  const leg1 = [[100,120],[200,90],[300,120]];   // TW → DA (quadratic bezier control pts)
+  const leg2 = [[300,120],[400,150],[500,120]];  // DA → CIO
+
+  function alongQ(el, pts, duration){
+    const start = performance.now();
+    function tick(now){
+      const e = Math.min(1, (now-start)/duration);
+      const u = 1-e;
+      const x = u*u*pts[0][0] + 2*u*e*pts[1][0] + e*e*pts[2][0];
+      const y = u*u*pts[0][1] + 2*u*e*pts[1][1] + e*e*pts[2][1];
+      el.setAttribute('cx', x);
+      el.setAttribute('cy', y);
+      if(e<1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // Sequence: label TW on → light TW→DA → label DA on → light DA→CIO → label CIO on → fadeout
+  setTimeout(() => { labelTW?.classList.add('on'); pulse.style.opacity = 1; p1.classList.add('warm'); alongQ(pulse, leg1, DUR*.32); }, DUR*.08);
+  setTimeout(() => { labelDA?.classList.add('on'); p2.classList.add('warm'); alongQ(pulse, leg2, DUR*.32); }, DUR*.44);
+  setTimeout(() => { labelCIO?.classList.add('on'); }, DUR*.76);
+  setTimeout(() => {
+    pulse.style.opacity = 0;
+    p1.classList.remove('warm'); p2.classList.remove('warm');
+    labelTW?.classList.remove('on'); labelDA?.classList.remove('on'); labelCIO?.classList.remove('on');
+  }, DUR*.96);
+}
+
+document.addEventListener('mouseover', (e) => {
+  const card = e.target.closest('[data-replay]');
+  if(card && !card._replayRunning){
+    card._replayRunning = true;
+    runReplay(card);
+    setTimeout(() => { card._replayRunning = false; }, 2700);
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// Patch ⑤ — Demo Mode 守夜 (30s idle → screensaver replay)
+// ═══════════════════════════════════════════════════════════════════
+const DEMO = {
+  IDLE_MS: 30000,
+  FADE_IN_MS: 1500,
+  PLAYING_MS: 5500,
+  FADE_OUT_MS: 1200,
+  COOL_MIN: 22000,
+  COOL_MAX: 28000,
+};
+let demoState = 'idle';
+let demoTimer = null;
+
+function setDemoState(s){
+  clearTimeout(demoTimer);
+  demoState = s;
+  if(s === 'idle'){
+    document.body.classList.remove('demo-mode');
+    demoTimer = setTimeout(() => setDemoState('fade-in'), DEMO.IDLE_MS);
+  } else if(s === 'fade-in'){
+    document.body.classList.add('demo-mode');
+    demoTimer = setTimeout(() => setDemoState('playing'), DEMO.FADE_IN_MS);
+  } else if(s === 'playing'){
+    const card = document.querySelector('.pick-summary[data-replay]');
+    if(card) runReplay(card);
+    demoTimer = setTimeout(() => setDemoState('fade-out'), DEMO.PLAYING_MS);
+  } else if(s === 'fade-out'){
+    document.body.classList.remove('demo-mode');
+    demoTimer = setTimeout(() => setDemoState('cooldown'), DEMO.FADE_OUT_MS);
+  } else if(s === 'cooldown'){
+    const wait = DEMO.COOL_MIN + Math.random() * (DEMO.COOL_MAX - DEMO.COOL_MIN);
+    demoTimer = setTimeout(() => setDemoState('fade-in'), wait);
+  }
+}
+
+function resetIdle(){
+  if(demoState === 'fade-in' || demoState === 'playing'){
+    setDemoState('fade-out');
+  } else if(demoState === 'cooldown'){
+    setDemoState('idle');
+  }
+  // If already idle, the existing timer keeps counting — no reset needed
+  // since user activity during idle just delays the trigger naturally
+  // via the IDLE_MS countdown restart below:
+  if(demoState === 'idle'){
+    clearTimeout(demoTimer);
+    demoTimer = setTimeout(() => setDemoState('fade-in'), DEMO.IDLE_MS);
+  }
+}
+['pointermove','keydown','wheel','touchstart'].forEach(ev => {
+  window.addEventListener(ev, resetIdle, {passive:true});
+});
+
+setDemoState('idle');
 </script>
 </body>
 </html>
