@@ -6,7 +6,7 @@ Alpha Database — SQLite 持久化層
 import json
 import os
 import sqlite3
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 
 TZ = ZoneInfo("Asia/Taipei")
@@ -175,31 +175,45 @@ def get_recent_picks(days: int = 30) -> list[dict]:
 
 def get_performance_stats(days: int = 30) -> dict:
     """
-    Compute win rates by regime and by signal for the last N resolved picks.
-    Returns a dict ready for prompt injection.
+    Compute win rates by regime and by signal. Includes:
+      - resolved aggregate stats (overall_rate, wins, losses)
+      - open positions (resolved=0)
+      - recent_picks (last 30, both open and resolved, for dashboard display)
+      - best / worst trade
+      - avg win/loss return
+      - hit-target vs hit-stop breakdown
     """
     init_db()
-    picks = get_recent_picks(days)
-    if not picks:
-        return {"available": False, "total": 0}
 
-    total = len(picks)
-    wins = sum(1 for p in picks if p["success"] == 1)
+    # All recent picks (resolved + open) — for dashboard recent_picks list
+    all_recent = _query_recent_picks(days, include_open=True)
+    # Just resolved — for win-rate stats
+    resolved = [p for p in all_recent if p.get("resolved") == 1]
+    open_picks = [p for p in all_recent if p.get("resolved") != 1]
+
+    if not resolved and not open_picks:
+        return {"available": False, "total": 0, "open_count": 0, "recent_picks": []}
+
+    total = len(resolved)
+    wins = sum(1 for p in resolved if p["success"] == 1)
+    losses = total - wins
     overall_rate = round(wins / total * 100, 1) if total else 0
 
-    # Win rate by regime
+    # Win rate by regime (with pre-computed rate)
     regime_stats: dict[str, dict] = {}
-    for p in picks:
+    for p in resolved:
         r = p.get("regime") or "未知"
         if r not in regime_stats:
             regime_stats[r] = {"wins": 0, "total": 0}
         regime_stats[r]["total"] += 1
         if p["success"] == 1:
             regime_stats[r]["wins"] += 1
+    for r in regime_stats.values():
+        r["rate"] = round(r["wins"] / r["total"] * 100, 1) if r["total"] else 0
 
     # Win rate by signal
     signal_stats: dict[str, dict] = {}
-    for p in picks:
+    for p in resolved:
         try:
             sigs = json.loads(p.get("signals") or "[]")
         except Exception:
@@ -210,20 +224,90 @@ def get_performance_stats(days: int = 30) -> dict:
             signal_stats[s]["total"] += 1
             if p["success"] == 1:
                 signal_stats[s]["wins"] += 1
+    for s in signal_stats.values():
+        s["rate"] = round(s["wins"] / s["total"] * 100, 1) if s["total"] else 0
 
-    # Recent streak (last 7)
-    recent7 = picks[:7]
+    # Recent streak (last 7 resolved)
+    recent7 = resolved[:7]
     streak = "".join("✓" if p["success"] == 1 else "✗" for p in recent7)
+
+    # Return distribution stats
+    returns = [p["return_pct"] for p in resolved if p.get("return_pct") is not None]
+    win_returns = [p["return_pct"] for p in resolved
+                   if p.get("success") == 1 and p.get("return_pct") is not None]
+    loss_returns = [p["return_pct"] for p in resolved
+                    if p.get("success") != 1 and p.get("return_pct") is not None]
+
+    best_pick = max(resolved, key=lambda p: p.get("return_pct") or -999, default=None) if returns else None
+    worst_pick = min(resolved, key=lambda p: p.get("return_pct") or 999, default=None) if returns else None
+
+    avg_win = round(sum(win_returns) / len(win_returns), 2) if win_returns else None
+    avg_loss = round(sum(loss_returns) / len(loss_returns), 2) if loss_returns else None
+    avg_return = round(sum(returns) / len(returns), 2) if returns else None
+
+    # Hit-target vs hit-stop
+    hit_target = sum(1 for p in resolved if p.get("hit_target") == 1)
+    hit_stop = sum(1 for p in resolved if p.get("hit_stop") == 1)
+
+    # Lightweight recent_picks for dashboard (strip heavy fields)
+    def _trim(p):
+        return {
+            "id": p.get("id"),
+            "date": p.get("date"),
+            "code": p.get("stock_code"),
+            "name": p.get("stock_name"),
+            "verdict": p.get("verdict"),
+            "confidence": p.get("confidence"),
+            "regime": p.get("regime"),
+            "entry_zone": p.get("entry_zone"),
+            "stop_loss": p.get("stop_loss"),
+            "target": p.get("target"),
+            "hold_days": p.get("hold_days"),
+            "ref_close": p.get("ref_close"),
+            "close_next_day": p.get("close_next_day"),
+            "return_pct": p.get("return_pct"),
+            "hit_target": p.get("hit_target"),
+            "hit_stop": p.get("hit_stop"),
+            "success": p.get("success"),
+            "resolved": p.get("resolved"),
+            "resolved_at": p.get("resolved_at"),
+        }
 
     return {
         "available": True,
         "total": total,
         "wins": wins,
+        "losses": losses,
         "overall_rate": overall_rate,
         "regime_stats": regime_stats,
         "signal_stats": signal_stats,
         "recent_streak": streak,
+        "open_count": len(open_picks),
+        "open_picks": [_trim(p) for p in open_picks],
+        "recent_picks": [_trim(p) for p in all_recent],
+        "avg_return": avg_return,
+        "avg_win": avg_win,
+        "avg_loss": avg_loss,
+        "best": _trim(best_pick) if best_pick else None,
+        "worst": _trim(worst_pick) if worst_pick else None,
+        "hit_target_count": hit_target,
+        "hit_stop_count": hit_stop,
     }
+
+
+def _query_recent_picks(days: int = 30, include_open: bool = False) -> list[dict]:
+    """Internal: get recent picks, optionally including unresolved ones."""
+    init_db()
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cutoff_date = (date.today() - timedelta(days=days)).isoformat()
+    if include_open:
+        sql = "SELECT * FROM picks WHERE date >= ? ORDER BY date DESC, id DESC"
+    else:
+        sql = "SELECT * FROM picks WHERE resolved = 1 AND date >= ? ORDER BY date DESC, id DESC"
+    rows = conn.execute(sql, (cutoff_date,)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
 
 
 def format_stats_for_prompt(stats: dict) -> str:

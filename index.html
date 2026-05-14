@@ -2424,71 +2424,147 @@ function renderRisk(target){
 function renderArchive(target){
   const perf = DATA.performance || {};
   const reflect = (DATA.agents || {}).reflection || {};
+  target.innerHTML = renderPerformancePanel(perf) +
+    (reflect && reflect.summary
+      ? `<div class="section-label">LATEST REFLECTION</div><div class="card"><div style="font-size:11px;color:var(--text2);line-height:1.7">${clip(reflect.summary, 500)}</div></div>`
+      : '');
+}
 
-  let statsHTML;
-  if(perf && perf.available){
-    const r = perf.overall_rate || 0;
-    const c = r>=55?'var(--green)':r>=45?'var(--yellow)':'var(--red)';
-    const byRegime = perf.by_regime || {};
-    const rows = Object.entries(byRegime).filter(([,v])=>v.total>=2).sort((a,b)=>b[1].rate - a[1].rate);
-    statsHTML = `<div class="stat-grid">
-      <div class="stat-card"><div class="stat-label">勝率 (30日)</div><div class="stat-value" style="color:${c}">${r}%</div><div class="stat-sub">${perf.win||0}W / ${perf.loss||0}L</div></div>
-      <div class="stat-card"><div class="stat-label">總推薦</div><div class="stat-value">${perf.total||0}</div><div class="stat-sub">已結算</div></div>
-      <div class="stat-card"><div class="stat-label">最佳 REGIME</div><div class="stat-value" style="font-size:14px;color:var(--blue)">${rows[0]?rows[0][0]:'—'}</div><div class="stat-sub">勝率最高</div></div>
-      <div class="stat-card"><div class="stat-label">連續</div><div class="stat-value" style="font-size:14px">${perf.streak||'—'}</div><div class="stat-sub">當前</div></div>
-    </div>`;
-  } else {
-    statsHTML = `<div class="empty">系統累積中：${perf?.total||0}/5 筆已結算才會顯示勝率</div>`;
+// Shared performance/picks panel — used by ARCHIVE room + DECISION LOG system
+function renderPerformancePanel(perf){
+  if(!perf || !perf.available){
+    return `<div class="section-label">PERFORMANCE STATS</div>
+      <div class="card">
+        <div class="card-title">SYSTEM ACCUMULATING</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8">
+          <div>每日 13:00 後產出的 picks 會自動寫入 <code style="color:var(--text)">data/alpha.db</code>。</div>
+          <div style="margin-top:6px">目前 <b style="color:var(--yellow)">${perf?.total||0}</b> 筆已結算 · <b style="color:var(--yellow)">${perf?.open_count||0}</b> 筆持倉中</div>
+          <div style="margin-top:8px;color:var(--text3);font-size:10px">至少 5 筆已結算才會啟用勝率統計</div>
+        </div>
+      </div>`;
   }
 
-  // ─── PickHistory ──────────────────────────────────────────────────
-  // Show recent picks if available. When backend has 0 picks logged,
-  // show "accumulating" placeholder with explanation.
-  const recentPicks = perf?.recent_picks || perf?.history || [];
-  let pickHistoryHTML;
-  if(recentPicks.length > 0){
-    pickHistoryHTML = `<table class="hold-table">
-      <thead><tr>
-        <th>日期</th><th>代號</th><th>名稱</th><th>verdict</th>
-        <th style="text-align:right">REGIME</th>
-        <th style="text-align:right">結果</th>
-      </tr></thead>
-      <tbody>${recentPicks.slice(0,30).map(p => {
-        const ret = p.return_pct;
-        const c = ret==null ? 'var(--text3)' : ret>0 ? 'var(--green)' : 'var(--red)';
-        const status = p.resolved ? (ret>0 ? '✓' : '✗') : '⋯';
-        return `<tr>
-          <td><span style="color:var(--text3);font-size:10px">${(p.date||'').slice(5)}</span></td>
-          <td><span class="hold-code">${p.code||p.stock_code||'—'}</span></td>
-          <td><span style="color:var(--text2)">${p.name||p.stock_name||''}</span></td>
-          <td><span style="color:${verdictColor(p.verdict)};font-size:10px">${p.verdict||'—'}</span></td>
-          <td style="text-align:right;color:var(--text3);font-size:10px">${p.regime||'—'}</td>
-          <td style="text-align:right;color:${c}">${status} ${ret!=null?(ret>0?'+':'')+ret.toFixed(1)+'%':'—'}</td>
-        </tr>`;
-      }).join('')}</tbody>
-    </table>`;
-  } else {
-    pickHistoryHTML = `<div class="card">
-      <div class="card-title">SYSTEM ACCUMULATING</div>
-      <div style="font-size:11px;color:var(--text2);line-height:1.8">
-        <div>每日 13:00 後產出的 picks 會自動記錄。</div>
-        <div>目前 <b style="color:var(--yellow)">${perf?.total||0}</b> 筆已記錄 · <b style="color:var(--yellow)">${perf?.total||0}</b>/5 筆才會啟用勝率統計</div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);color:var(--text3);font-size:10px">
-          資料庫：<code style="color:var(--text2)">data/alpha.db</code> · table <code style="color:var(--text2)">picks</code>
-        </div>
+  const r = perf.overall_rate || 0;
+  const c = r>=55?'var(--green)':r>=45?'var(--yellow)':'var(--red)';
+  const regimeStats = perf.regime_stats || {};
+  const sortedRegimes = Object.entries(regimeStats).sort((a,b) => b[1].rate - a[1].rate);
+  const topRegime = sortedRegimes[0];
+  const streak = perf.recent_streak || '—';
+
+  // Headline metric row — 4 cards
+  let statsHTML = `<div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">勝率</div><div class="stat-value" style="color:${c}">${r}%</div><div class="stat-sub">${perf.wins||0}W / ${perf.losses||0}L · 已結算</div></div>
+    <div class="stat-card"><div class="stat-label">持倉</div><div class="stat-value" style="color:var(--gold)">${perf.open_count||0}</div><div class="stat-sub">追蹤中</div></div>
+    <div class="stat-card"><div class="stat-label">平均報酬</div><div class="stat-value" style="font-size:18px;color:${perf.avg_return>0?'var(--green)':perf.avg_return<0?'var(--red)':'var(--text2)'}">${perf.avg_return!=null?(perf.avg_return>0?'+':'')+perf.avg_return+'%':'—'}</div><div class="stat-sub">每筆已結算</div></div>
+    <div class="stat-card"><div class="stat-label">連續</div><div class="stat-value" style="font-size:16px;letter-spacing:2px">${streak}</div><div class="stat-sub">最近 ${streak.replace(/[^✓✗]/g,'').length || '—'} 筆</div></div>
+  </div>`;
+
+  // Win/Loss breakdown
+  if(perf.avg_win !== null || perf.avg_loss !== null){
+    statsHTML += `<div class="card" style="margin-top:10px">
+      <div class="card-title">WIN / LOSS BREAKDOWN</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;font-size:11px">
+        <div><div style="color:var(--text3);font-size:9px;letter-spacing:1px;margin-bottom:3px">AVG WIN</div><div style="font-size:15px;color:var(--green);font-weight:700">${perf.avg_win!=null?'+'+perf.avg_win+'%':'—'}</div></div>
+        <div><div style="color:var(--text3);font-size:9px;letter-spacing:1px;margin-bottom:3px">AVG LOSS</div><div style="font-size:15px;color:var(--red);font-weight:700">${perf.avg_loss!=null?perf.avg_loss+'%':'—'}</div></div>
+        <div><div style="color:var(--text3);font-size:9px;letter-spacing:1px;margin-bottom:3px">HIT TARGET</div><div style="font-size:15px;color:var(--green);font-weight:700">${perf.hit_target_count||0}</div></div>
+        <div><div style="color:var(--text3);font-size:9px;letter-spacing:1px;margin-bottom:3px">HIT STOP</div><div style="font-size:15px;color:var(--red);font-weight:700">${perf.hit_stop_count||0}</div></div>
       </div>
     </div>`;
   }
 
-  target.innerHTML = `
-    <div class="section-label">PERFORMANCE STATS</div>
+  // Best / Worst trade
+  let bestWorstHTML = '';
+  if(perf.best || perf.worst){
+    const card = (p, label, col) => p ? `
+      <div class="card" style="border-left:2px solid ${col};padding:10px 12px">
+        <div style="font-size:9px;letter-spacing:1.5px;color:${col};font-weight:700;margin-bottom:5px">${label}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:16px;font-weight:800;color:var(--text)">${p.code} · ${p.name||''}</div>
+            <div style="font-size:10px;color:var(--text3);margin-top:2px">${p.date||''} · ${p.regime||''}</div>
+          </div>
+          <div style="font-size:18px;font-weight:900;color:${col}">${p.return_pct>0?'+':''}${p.return_pct?.toFixed(2)}%</div>
+        </div>
+      </div>` : '';
+    bestWorstHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+      ${card(perf.best, 'BEST TRADE', 'var(--green)')}
+      ${card(perf.worst, 'WORST TRADE', 'var(--red)')}
+    </div>`;
+  }
+
+  // Open positions
+  let openHTML = '';
+  if((perf.open_picks||[]).length > 0){
+    openHTML = `<div class="section-label">OPEN POSITIONS · ${perf.open_picks.length}</div>
+      ${perf.open_picks.map(p => `<div class="pick-summary" style="margin-bottom:10px">
+        <div class="pick-grid">
+          <div>
+            <div class="pick-code">${p.code||'—'}</div>
+            <div class="pick-name">${p.name||''}</div>
+            <div style="font-size:10px;color:var(--gold);margin-top:6px;letter-spacing:.8px">⋯ TRACKING · ${p.date||''}</div>
+            ${p.ref_close ? `<div style="font-size:10px;color:var(--text3);margin-top:3px">REF ${p.ref_close}</div>` : ''}
+          </div>
+          <div class="pick-fields">
+            <div><div class="pick-field-label">ENTRY</div><div class="pick-field-val entry">${p.entry_zone||'—'}</div></div>
+            <div><div class="pick-field-label">STOP</div><div class="pick-field-val stop">${p.stop_loss||'—'}</div></div>
+            <div><div class="pick-field-label">TARGET</div><div class="pick-field-val target">${p.target||'—'}</div></div>
+            <div><div class="pick-field-label">HOLD</div><div class="pick-field-val">${p.hold_days||'—'}</div></div>
+          </div>
+        </div>
+      </div>`).join('')}`;
+  }
+
+  // Regime performance breakdown
+  let regimeHTML = '';
+  if(sortedRegimes.length){
+    regimeHTML = `<div class="section-label">PERFORMANCE BY REGIME</div>
+      <div class="card">${sortedRegimes.map(([n, s]) => {
+        const cc = s.rate>=55?'var(--green)':s.rate>=45?'var(--yellow)':'var(--red)';
+        return `<div class="alloc-row" style="grid-template-columns:140px 1fr 100px;padding:6px 0;border-bottom:1px solid var(--border)">
+          <span class="alloc-name">${n}</span>
+          <div class="alloc-track"><div class="alloc-fill" style="width:${s.rate}%;background:${cc}"></div></div>
+          <span class="alloc-pct" style="color:${cc}">${s.rate}% · ${s.wins}/${s.total}</span>
+        </div>`;
+      }).join('')}</div>`;
+  }
+
+  // Recent picks list (full history)
+  const recentPicks = perf.recent_picks || [];
+  let pickListHTML = '';
+  if(recentPicks.length > 0){
+    pickListHTML = `<div class="section-label">PICK HISTORY · ${recentPicks.length} ENTRIES</div>
+      <table class="hold-table">
+        <thead><tr>
+          <th>日期</th><th>代號 / 名稱</th>
+          <th style="text-align:right">REGIME</th>
+          <th style="text-align:right">ENTRY → STOP / TARGET</th>
+          <th style="text-align:right">結果</th>
+        </tr></thead>
+        <tbody>${recentPicks.map(p => {
+          const ret = p.return_pct;
+          const isOpen = p.resolved !== 1;
+          const c = isOpen ? 'var(--gold)' : ret==null ? 'var(--text3)' : ret>0 ? 'var(--green)' : 'var(--red)';
+          const status = isOpen ? '⋯ OPEN' : (ret>0 ? '✓' : '✗');
+          return `<tr style="${isOpen?'background:rgba(201,168,76,.04)':''}">
+            <td><span style="color:var(--text3);font-size:10px">${(p.date||'').slice(5)}</span></td>
+            <td><span class="hold-code">${p.code||'—'}</span> <span style="color:var(--text2);font-size:10px">${p.name||''}</span></td>
+            <td style="text-align:right;color:var(--text3);font-size:10px">${p.regime||'—'}</td>
+            <td style="text-align:right;font-size:10px;color:var(--text2)">
+              <span style="color:var(--cyan)">${clip(p.entry_zone||'—', 18)}</span><br>
+              <span style="color:var(--red)">${clip(p.stop_loss||'—', 12)}</span> / <span style="color:var(--green)">${clip(p.target||'—', 12)}</span>
+            </td>
+            <td style="text-align:right;color:${c};font-weight:700">${status}${ret!=null?' '+(ret>0?'+':'')+ret.toFixed(2)+'%':''}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>`;
+  }
+
+  return `<div class="section-label">PERFORMANCE STATS</div>
     ${statsHTML}
-
-    <div class="section-label">PICK HISTORY</div>
-    ${pickHistoryHTML}
-
-    ${reflect && reflect.summary ? `<div class="section-label">LATEST REFLECTION</div><div class="card"><div style="font-size:11px;color:var(--text2);line-height:1.7">${clip(reflect.summary, 500)}</div></div>` : ''}
-  `;
+    ${bestWorstHTML}
+    ${openHTML}
+    ${regimeHTML}
+    ${pickListHTML}`;
 }
 
 const ROOM_RENDERERS = {
@@ -2504,65 +2580,8 @@ const ROOM_RENDERERS = {
 // SYSTEMS Layer (full-screen tools, not operational rooms)
 // ═══════════════════════════════════════════════════════════════════
 function renderDecisionLog(target){
-  const perf = DATA.performance || {};
-  const picks = perf.recent_picks || perf.history || [];
-
-  let table;
-  if(picks.length > 0){
-    table = `<table class="hold-table" style="font-size:11px">
-      <thead><tr>
-        <th>日期</th><th>代號</th><th>名稱</th><th>VERDICT</th>
-        <th style="text-align:right">CONFIDENCE</th>
-        <th style="text-align:right">REGIME</th>
-        <th style="text-align:right">ENTRY → STOP</th>
-        <th style="text-align:right">RESULT</th>
-      </tr></thead>
-      <tbody>${picks.map(p => {
-        const ret = p.return_pct;
-        const c = ret==null ? 'var(--text3)' : ret>0 ? 'var(--green)' : 'var(--red)';
-        const status = p.resolved ? (ret>0 ? '✓ TARGET' : '✗ STOP') : '⋯ open';
-        return `<tr>
-          <td>${p.date||'—'}</td>
-          <td><span class="hold-code">${p.code||p.stock_code||'—'}</span></td>
-          <td>${p.name||p.stock_name||''}</td>
-          <td><span style="color:${verdictColor(p.verdict)}">${p.verdict||'—'}</span></td>
-          <td style="text-align:right">${p.confidence?p.confidence.toFixed(2):'—'}</td>
-          <td style="text-align:right;color:var(--text3)">${p.regime||'—'}</td>
-          <td style="text-align:right;color:var(--text3)">${p.entry_zone||'—'} · ${p.stop_loss||'—'}</td>
-          <td style="text-align:right;color:${c}">${status}${ret!=null?' '+(ret>0?'+':'')+ret.toFixed(2)+'%':''}</td>
-        </tr>`;
-      }).join('')}</tbody>
-    </table>`;
-  } else {
-    table = `<div class="card">
-      <div class="card-title">DATABASE EMPTY</div>
-      <div style="font-size:11px;color:var(--text2);line-height:1.8">
-        <div>系統每日盤後（13:00+）會把 tw_daily_pick 寫入 <code style="color:var(--text)">data/alpha.db</code> 的 <code style="color:var(--text)">picks</code> 表。</div>
-        <div style="margin-top:8px">目前資料庫 <b style="color:var(--yellow)">0</b> 筆記錄。</div>
-        <div style="margin-top:8px;color:var(--text3);font-size:10px">資料累積後此頁會自動顯示完整推薦歷史。</div>
-      </div>
-    </div>`;
-  }
-
-  target.innerHTML = `
-    <div class="section-label">PICK HISTORY · ${picks.length} ENTRIES</div>
-    ${table}
-
-    <div class="section-label">PERFORMANCE BY REGIME</div>
-    ${(() => {
-      const byR = perf.by_regime || {};
-      const rows = Object.entries(byR).sort((a,b) => b[1].rate - a[1].rate);
-      if(!rows.length) return '<div class="empty">需要累積 ≥5 筆已結算才顯示</div>';
-      return `<div class="card">${rows.map(([n, s]) => {
-        const cc = s.rate>=55?'var(--green)':s.rate>=45?'var(--yellow)':'var(--red)';
-        return `<div class="alloc-row" style="grid-template-columns:140px 1fr 100px;padding:6px 0;border-bottom:1px solid var(--border)">
-          <span class="alloc-name">${n}</span>
-          <div class="alloc-track"><div class="alloc-fill" style="width:${s.rate}%;background:${cc}"></div></div>
-          <span class="alloc-pct" style="color:${cc}">${s.rate}% · n=${s.total}</span>
-        </div>`;
-      }).join('')}</div>`;
-    })()}
-  `;
+  // DECISION LOG = full-screen version of the performance panel
+  target.innerHTML = renderPerformancePanel(DATA.performance || {});
 }
 
 function renderSignalMatrix(target){
