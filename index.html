@@ -1896,7 +1896,7 @@ function renderSidebar(){
   // ───── DATA HEALTH ─────
   const ageMin = minsAgo(DATA.generated_at);
   const gaps = (sv._data_gaps || []).length;
-  const totalGauges = 9;
+  const totalGauges = 10;
   const ageStatus = ageMin == null ? 'bad' : ageMin < 360 ? 'ok' : ageMin < 720 ? 'warn' : 'bad';
   const gapStatus = gaps === 0 ? 'ok' : gaps <= 2 ? 'warn' : 'bad';
   $('health-rows').innerHTML = `
@@ -2233,8 +2233,9 @@ function renderResearch(target){
     {key:'ai_sector_strength', label:'AI SECTOR', type:'bar', desc:'新聞 AI 關鍵字'},
     {key:'scanner_momentum', label:'SCANNER MOMENTUM', type:'bar', desc:'候選股技術分數'},
     {key:'confidence_score', label:'CONFIDENCE', type:'bar', desc:'Agent 平均 confidence'},
-    {key:'foreign_flow_strength', label:'FOREIGN FLOW', type:'bar', desc:'TWSE T86'},
-    {key:'breadth_score', label:'MKT BREADTH', type:'bar', desc:'TWSE 漲跌家數'},
+    {key:'foreign_flow_strength', label:'FOREIGN FLOW', type:'bar', desc:'TWSE BFI82U 外資買賣超金額'},
+    {key:'breadth_score', label:'MKT BREADTH', type:'bar', desc:'TWSE 上漲家數 / (漲+跌)'},
+    {key:'liquidity_score', label:'LIQUIDITY', type:'bar', desc:'TWSE MI_MARGN 融資餘額變化（去槓桿利好）'},
   ];
 
   const gaugesHTML = GAUGES.map(g=>{
@@ -2300,7 +2301,7 @@ function renderResearch(target){
   </div>` : '';
 
   target.innerHTML = `
-    <div class="section-label">SIGNAL VECTOR · 9 維度</div>
+    <div class="section-label">SIGNAL VECTOR · 10 維度</div>
     <div class="gauge-grid">${gaugesHTML}</div>
 
     <div class="section-label">SIGNAL LEADERBOARD</div>
@@ -2579,8 +2580,9 @@ function renderSignalMatrix(target){
     {key:'ai_sector_strength', label:'AI SECTOR', type:'bar', desc:'新聞 AI 相關關鍵字頻次'},
     {key:'scanner_momentum', label:'SCANNER MOMENTUM', type:'bar', desc:'15 檔候選股的平均技術分數 / 滿分'},
     {key:'confidence_score', label:'CONFIDENCE', type:'bar', desc:'主要 Agent 平均 confidence，ERROR 扣分'},
-    {key:'foreign_flow_strength', label:'FOREIGN FLOW', type:'bar', desc:'TWSE T86 外資買賣超（千股）'},
-    {key:'breadth_score', label:'MKT BREADTH', type:'bar', desc:'TWSE MI_INDEX 漲跌家數'},
+    {key:'foreign_flow_strength', label:'FOREIGN FLOW', type:'bar', desc:'TWSE BFI82U 外資買賣超金額（±500億 → 0.0-1.0）'},
+    {key:'breadth_score', label:'MKT BREADTH', type:'bar', desc:'TWSE MI_INDEX 漲跌家數（股票，含漲跌停）'},
+    {key:'liquidity_score', label:'LIQUIDITY', type:'bar', desc:'TWSE MI_MARGN 融資餘額變化（負向：去槓桿越多越健康）'},
   ];
 
   target.innerHTML = `
@@ -2624,7 +2626,7 @@ function renderSignalMatrix(target){
         <div><b style="color:var(--red)">紅色</b> = 弱訊號 / 危險</div>
         <div style="margin-top:8px"><b>↓ 標示</b> 代表這個維度反向（值越低越好，例如 RISK PRESSURE）</div>
         <div style="margin-top:8px;color:var(--text3);font-size:10px">
-          所有 9 維會餵給 CIO 做最終 verdict 決策。某個 gauge 大幅變動會在 LIVE TRIGGERS（右 sidebar）顯示對應的 cockpit state。
+          所有 10 維會餵給 CIO 做最終 verdict 決策。某個 gauge 大幅變動會在 LIVE TRIGGERS（右 sidebar）顯示對應的 cockpit state。
         </div>
       </div>
     </div>
@@ -2673,7 +2675,7 @@ function renderSettings(target){
       <div style="font-size:11px;color:var(--text2);line-height:1.7">
         <div>analysis.json · <span style="color:var(--text)">${fmtDate(DATA.generated_at)}</span></div>
         <div>candidate_stocks.json · <span style="color:var(--text)">${CANDS ? (CANDS.candidates||[]).length+' 檔' : '—'}</span></div>
-        <div>signal_fusion · <span style="color:var(--text)">${9 - ((DATA.agents?.signal_fusion?._data_gaps)||[]).length}/9 維可用</span></div>
+        <div>signal_fusion · <span style="color:var(--text)">${10 - ((DATA.agents?.signal_fusion?._data_gaps)||[]).length}/10 維可用</span></div>
       </div>
       <button onclick="window.location.reload()" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);padding:6px 12px;border-radius:4px;font-family:inherit;font-size:10px;letter-spacing:1px;margin-top:10px;cursor:pointer">↻ FORCE RELOAD DATA</button>
     </div>
@@ -2870,7 +2872,7 @@ function renderAgentFlows(target){
 
 const SYSTEM_RENDERERS = {
   'decision-log':  {render:renderDecisionLog,  title:'DECISION LOG',  sub:'歷史推薦紀錄'},
-  'signal-matrix': {render:renderSignalMatrix, title:'SIGNAL MATRIX', sub:'9 維度信號融合'},
+  'signal-matrix': {render:renderSignalMatrix, title:'SIGNAL MATRIX', sub:'10 維度信號融合'},
   'agent-flows':   {render:renderAgentFlows,   title:'AGENT FLOWS',   sub:'決策資料流圖'},
   'settings':      {render:renderSettings,     title:'SETTINGS',      sub:'系統設定'},
 };

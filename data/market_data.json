@@ -456,8 +456,27 @@
     }
   },
   "tw_positions_live": [],
-  "breadth": {},
-  "institutional_market": {},
+  "breadth": {
+    "advance": 335,
+    "decline": 677,
+    "limit_up": 29,
+    "limit_down": 9,
+    "unchanged": 57,
+    "advance_ratio": 0.331,
+    "total_stocks": 1069
+  },
+  "institutional_market": {
+    "foreign_net_amount": -43429473975,
+    "trust_net_amount": 26061631805,
+    "dealer_net_amount": -30266247259,
+    "total_institutional_net": -47634089429,
+    "foreign_net_positive": false,
+    "date": "20260513",
+    "foreign_net_shares": -43429473975,
+    "trust_net_shares": 26061631805,
+    "dealer_net_shares": -30266247259,
+    "unit": "TWD"
+  },
   "news": {
     "tw": [
       "【Hot台股】聯電再閃燈奔25年新高！網嗨「二哥沒有輸」 分析師喊抱緊 - Yahoo股市",
@@ -485,5 +504,14 @@
       "Stock market today: Dow, S&P 500, Nasdaq futures rise as Wall Street weighs US trade data - Yahoo Finance",
       "Wall Street futures signal mixed start as inflation concerns offset tech strength: Dow Jones, S&P, Nasdaq - Yahoo Finance"
     ]
+  },
+  "margin_balance": {
+    "margin_balance_amount": 494418035000,
+    "margin_prev_balance": 491194846000,
+    "margin_change_amount": 3223189000,
+    "margin_change_pct": 0.656,
+    "short_balance_units": 228157,
+    "short_prev_units": 211972,
+    "date": "20260513"
   }
 }

@@ -8,6 +8,12 @@ import json, os, time, requests
 from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 import yfinance as yf
+import urllib3
+
+# TWSE 證交所 SSL 憑證鏈不完整（Missing Subject Key Identifier）→ 對 TWSE 請求關閉驗證。
+# 政府公開資料來源、且非機密路徑，可接受。
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+TWSE_VERIFY = False
 
 TZ = ZoneInfo("Asia/Taipei")
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -164,7 +170,7 @@ def fetch_tw_institutional(date_str: str = None) -> dict:
         date_str = date.today().strftime("%Y%m%d")
     url = f"https://www.twse.com.tw/rwd/zh/fund/TWT38U?response=json&date={date_str}"
     try:
-        r = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+        r = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"}, verify=TWSE_VERIFY)
         data = r.json()
         if data.get("stat") != "OK":
             return {}
@@ -189,70 +195,75 @@ def fetch_tw_institutional(date_str: str = None) -> dict:
 
 
 def fetch_market_breadth() -> dict:
-    """台股漲跌家數 via TWSE MI_INDEX（全市場廣度指標）.
+    """台股漲跌家數 via TWSE MI_INDEX. 找「漲跌證券數合計」表。
+    新格式（2026 起）：fields=['類型', '整體市場', '股票'],
+                       data=[['上漲(漲停)', '6,492(374)', '335(29)'], ...]
     Returns: advance, decline, unchanged, limit_up, limit_down, advance_ratio
     """
+    import re
     url = "https://www.twse.com.tw/exchangeReport/MI_INDEX"
     params = {"response": "json", "type": "ALLBUT0999"}
     try:
-        r = requests.get(url, params=params, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+        r = requests.get(url, params=params, timeout=15, headers={"User-Agent": "Mozilla/5.0"}, verify=TWSE_VERIFY)
         raw = r.json()
         if raw.get("stat") != "OK":
             return {}
 
+        # Locate table by title "漲跌證券數合計"
+        target = None
+        for t in raw.get("tables", []):
+            if "漲跌證券數合計" in str(t.get("title", "")):
+                target = t
+                break
+        if not target:
+            print("  [WARN] MI_INDEX: 找不到「漲跌證券數合計」表")
+            return {}
+
+        fields = target.get("fields", [])
+        data = target.get("data", [])
+        # Find "股票" column index (only-stock, excludes ETF/warrants — preferred for breadth signal)
+        try:
+            col_stock = fields.index("股票")
+        except ValueError:
+            col_stock = 2  # fallback to known position
+
+        def parse_count(s):
+            """Parse "335(29)" → (main_count, limit_count). Plain "57" → (57, 0)."""
+            s = str(s).replace(",", "").strip()
+            m = re.match(r"^(-?\d+)(?:\((-?\d+)\))?$", s)
+            if not m:
+                return 0, 0
+            return int(m.group(1)), int(m.group(2) or 0)
+
         advance = decline = unchanged = limit_up = limit_down = 0
-
-        # MI_INDEX returns multiple tables; find the one with 漲跌家數
-        tables = raw.get("tables", [])
-        for table in tables:
-            fields = table.get("fields", [])
-            data = table.get("data", [])
-            # Look for table with "漲跌情形" or "漲停" in fields/data
-            field_str = " ".join(str(f) for f in fields)
-            if "漲跌" not in field_str and not any("漲停" in str(r[0]) for r in data[:3] if r):
+        for row in data:
+            if not row or col_stock >= len(row):
                 continue
-            for row in data:
-                if not row:
-                    continue
-                try:
-                    label = str(row[0])
-                    # Count column: last numeric column
-                    cnt_str = next(
-                        (str(row[i]).replace(",", "").strip() for i in range(len(row)-1, -1, -1)
-                         if str(row[i]).replace(",", "").strip().lstrip("-").isdigit()), "0"
-                    )
-                    cnt = int(cnt_str)
-                    if "漲停" in label:
-                        limit_up += cnt
-                    elif "上漲" in label:
-                        advance += cnt
-                    elif "未漲跌" in label or "平盤" in label:
-                        unchanged += cnt
-                    elif "下跌" in label and "跌停" not in label:
-                        decline += cnt
-                    elif "跌停" in label:
-                        limit_down += cnt
-                except (ValueError, IndexError):
-                    continue
+            label = str(row[0])
+            main, limit = parse_count(row[col_stock])
+            if "上漲" in label:
+                advance = main           # main already includes limit_up
+                limit_up = limit
+            elif "下跌" in label:
+                decline = main
+                limit_down = limit
+            elif "持平" in label or "平盤" in label or "未漲跌" in label:
+                unchanged = main
 
-        total_directional = advance + limit_up + decline + limit_down
+        total_directional = advance + decline
         if total_directional == 0:
             return {}
 
-        # Include limit-up/down in advance/decline for ratio
-        adv_total = advance + limit_up
-        dec_total = decline + limit_down
-        advance_ratio = round(adv_total / max(adv_total + dec_total, 1), 3)
-
-        print(f"  [Breadth] 上漲:{adv_total} 下跌:{dec_total} 漲停:{limit_up} 跌停:{limit_down} 廣度:{advance_ratio:.2%}")
+        advance_ratio = round(advance / total_directional, 3)
+        print(f"  [Breadth] 上漲:{advance}({limit_up}漲停) 下跌:{decline}({limit_down}跌停) 持平:{unchanged} 廣度:{advance_ratio:.2%}")
         return {
-            "advance":       adv_total,
-            "decline":       dec_total,
+            "advance":       advance,
+            "decline":       decline,
             "limit_up":      limit_up,
             "limit_down":    limit_down,
             "unchanged":     unchanged,
             "advance_ratio": advance_ratio,
-            "total_stocks":  adv_total + dec_total + unchanged,
+            "total_stocks":  advance + decline + unchanged,
         }
     except Exception as e:
         print(f"  [WARN] MI_INDEX breadth: {e}")
@@ -260,27 +271,23 @@ def fetch_market_breadth() -> dict:
 
 
 def fetch_market_institutional(date_str: str = None) -> dict:
-    """全市場三大法人買賣超 via TWSE T86（市場級，非個股）.
-    Returns: foreign_net_shares, trust_net_shares, dealer_net_shares, total_institutional_net
-    單位：股
+    """全市場三大法人買賣超 via TWSE BFI82U（市場級匯總，買賣金額）.
+    T86 是每股一筆無合計，BFI82U 直接給 4 大類 + 合計（買進/賣出/買賣差額，單位：元）.
     """
     if not date_str:
         date_str = date.today().strftime("%Y%m%d")
-    url = "https://www.twse.com.tw/rwd/zh/fund/T86"
-    params = {"date": date_str, "selectType": "ALLBUT0999", "response": "json"}
+    url = "https://www.twse.com.tw/rwd/zh/fund/BFI82U"
+    params = {"dayDate": date_str, "type": "day", "response": "json"}
     try:
-        r = requests.get(url, params=params, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+        r = requests.get(url, params=params, timeout=15, headers={"User-Agent": "Mozilla/5.0"}, verify=TWSE_VERIFY)
         raw = r.json()
         if raw.get("stat") != "OK":
+            # 盤中或假日 → 沒資料
             return {}
 
-        fields = raw.get("fields", [])
-        data   = raw.get("data", [])
-        if not data or not fields:
+        data = raw.get("data", [])
+        if not data:
             return {}
-
-        # Last data row = 合計（全市場匯總）
-        total_row = data[-1]
 
         def parse_int(s):
             try:
@@ -289,37 +296,99 @@ def fetch_market_institutional(date_str: str = None) -> dict:
                 return 0
 
         foreign_net = trust_net = dealer_net = total_net = 0
-        for i, field in enumerate(fields):
-            if i >= len(total_row):
-                break
-            val = parse_int(total_row[i])
-            # 外資及陸資（不含外資自營商）買賣超
-            if "外資" in field and "自營商" not in field and "買賣超" in field:
-                foreign_net = val
-            # 投信買賣超
-            elif "投信" in field and "買賣超" in field:
-                trust_net = val
-            # 自營商（自行買賣）買賣超（取合計）
-            elif "自營商" in field and "買賣超" in field and "避險" not in field:
-                dealer_net += val
-            # 三大法人合計
-            elif "三大法人" in field and "合計" in field:
-                total_net = val
+        for row in data:
+            if not row or len(row) < 4:
+                continue
+            name = str(row[0]).strip()
+            net = parse_int(row[3])  # 買賣差額
+            if name.startswith("外資及陸資"):
+                foreign_net = net      # 含「(不含外資自營商)」註記，這是主要外資數
+            elif name == "外資自營商":
+                dealer_net += net      # 外資自營商歸入 dealer
+            elif "投信" in name:
+                trust_net = net
+            elif name.startswith("自營商"):
+                dealer_net += net      # 自營商(自行買賣) + 自營商(避險)
+            elif "合計" in name:
+                total_net = net
 
         print(
-            f"  [T86] 外資:{foreign_net:+,} 投信:{trust_net:+,} "
-            f"自營:{dealer_net:+,} 合計:{total_net:+,}"
+            f"  [BFI82U] 外資:{foreign_net/1e8:+.1f}億 投信:{trust_net/1e8:+.1f}億 "
+            f"自營:{dealer_net/1e8:+.1f}億 合計:{total_net/1e8:+.1f}億"
         )
         return {
-            "foreign_net_shares":       foreign_net,
-            "trust_net_shares":         trust_net,
-            "dealer_net_shares":        dealer_net,
+            "foreign_net_amount":       foreign_net,    # 元
+            "trust_net_amount":         trust_net,
+            "dealer_net_amount":        dealer_net,
             "total_institutional_net":  total_net,
             "foreign_net_positive":     foreign_net > 0,
             "date":                     date_str,
+            # Backward-compat: keep "shares" name pointing to amount (will normalize differently in signal_fusion)
+            "foreign_net_shares":       foreign_net,
+            "trust_net_shares":         trust_net,
+            "dealer_net_shares":        dealer_net,
+            "unit":                     "TWD",          # 元
         }
     except Exception as e:
-        print(f"  [WARN] T86 institutional: {e}")
+        print(f"  [WARN] BFI82U institutional: {e}")
+        return {}
+
+
+def fetch_margin_balance(date_str: str = None) -> dict:
+    """全市場融資/融券餘額 via TWSE MI_MARGN.
+    用於衡量市場流動性與槓桿健康度。
+    Returns: margin_balance_amount, prev_balance, balance_change_pct, ...
+    """
+    if not date_str:
+        date_str = date.today().strftime("%Y%m%d")
+    url = "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN"
+    params = {"date": date_str, "selectType": "MS", "response": "json"}
+    try:
+        r = requests.get(url, params=params, timeout=15, headers={"User-Agent": "Mozilla/5.0"}, verify=TWSE_VERIFY)
+        raw = r.json()
+        if raw.get("stat") != "OK":
+            return {}
+
+        def parse_int(s):
+            try:
+                return int(str(s).replace(",", "").strip())
+            except (ValueError, TypeError):
+                return 0
+
+        margin_today = margin_prev = short_today = short_prev = 0
+        for t in raw.get("tables", []):
+            for row in t.get("data", []):
+                if not row or len(row) < 6:
+                    continue
+                label = str(row[0])
+                if "融資金額" in label and "仟元" in label:
+                    margin_prev = parse_int(row[4]) * 1000     # 前日餘額 → 元
+                    margin_today = parse_int(row[5]) * 1000    # 今日餘額 → 元
+                elif "融券" in label and "交易單位" in label:
+                    short_prev = parse_int(row[4])
+                    short_today = parse_int(row[5])
+
+        if margin_today == 0:
+            return {}
+
+        balance_change = margin_today - margin_prev
+        balance_change_pct = round(balance_change / max(margin_prev, 1) * 100, 3) if margin_prev else 0
+
+        print(
+            f"  [Margin] 融資餘額:{margin_today/1e8:.0f}億 ({balance_change_pct:+.2f}%) "
+            f"融券:{short_today:,}張"
+        )
+        return {
+            "margin_balance_amount":    margin_today,
+            "margin_prev_balance":      margin_prev,
+            "margin_change_amount":     balance_change,
+            "margin_change_pct":        balance_change_pct,
+            "short_balance_units":      short_today,
+            "short_prev_units":         short_prev,
+            "date":                     date_str,
+        }
+    except Exception as e:
+        print(f"  [WARN] MI_MARGN: {e}")
         return {}
 
 
@@ -522,8 +591,11 @@ def run():
     print("  market breadth (MI_INDEX)...")
     breadth = fetch_market_breadth()
 
-    print("  market institutional total (T86)...")
+    print("  market institutional total (BFI82U)...")
     institutional_market = fetch_market_institutional()
+
+    print("  margin balance (MI_MARGN)...")
+    margin_balance = fetch_margin_balance()
 
     print("  technical indicators (FinMind)...")
     technicals = {}
@@ -559,6 +631,7 @@ def run():
         "tw_positions_live": tw_positions,
         "breadth": breadth,
         "institutional_market": institutional_market,
+        "margin_balance": margin_balance,
         "news": news,
     }
 

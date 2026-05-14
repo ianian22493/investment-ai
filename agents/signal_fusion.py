@@ -181,21 +181,22 @@ def compute(
 
     # ──────────────────────────────────────────────────────────────────────────
     # 8. foreign_flow_strength  (0.0 ~ 1.0)
-    #    Source: TWSE T86 外資及陸資買賣超股數（全市場合計）
-    #    Normalize: +1B shares → 1.0 | 0 → 0.5 | -1B shares → 0.0
+    #    Source: TWSE BFI82U 外資及陸資買賣超「金額」（全市場合計，單位:元）
+    #    Normalize: +500億 → 1.0 | 0 → 0.5 | -500億 → 0.0
     # ──────────────────────────────────────────────────────────────────────────
     inst = market_data.get("institutional_market", {})
-    if inst.get("foreign_net_shares") is not None:
-        f_net = _safe(inst["foreign_net_shares"], 0.0)
-        # Clamp to ±1B shares range
-        foreign_flow_strength = _clamp(0.5 + f_net / 2e9)
+    f_net_amt = inst.get("foreign_net_amount", inst.get("foreign_net_shares"))
+    if f_net_amt is not None and inst.get("foreign_net_amount") is not None:
+        f_net = _safe(f_net_amt, 0.0)
+        # Clamp to ±500 億元 range (±5e10)
+        foreign_flow_strength = _clamp(0.5 + f_net / 1e11)
         sources["foreign_flow_strength"] = (
-            f"T86_foreign_net={int(f_net):+,}股 → "
-            f"normalized={foreign_flow_strength:.3f} (÷2B clamp±0.5)"
+            f"BFI82U_foreign_net={f_net/1e8:+.1f}億元 → "
+            f"normalized={foreign_flow_strength:.3f} (÷500億 clamp±0.5)"
         )
     else:
         foreign_flow_strength = 0.5
-        sources["foreign_flow_strength"] = "T86 data unavailable → 0.50 neutral"
+        sources["foreign_flow_strength"] = "BFI82U data unavailable (盤中/假日) → 0.50 neutral"
         data_gaps.append("foreign_flow_strength")
 
     # ──────────────────────────────────────────────────────────────────────────
@@ -223,11 +224,26 @@ def compute(
         data_gaps.append("breadth_score")
 
     # ──────────────────────────────────────────────────────────────────────────
-    # 10. liquidity_score — still placeholder (needs 融資/融券 data, batch 3)
+    # 10. liquidity_score  (0.0 ~ 1.0)
+    #    Source: TWSE MI_MARGN 融資餘額日變化
+    #    Logic: 融資餘額大增 = 散戶加槓桿 = 流動性脆弱（score 偏低）
+    #           融資餘額減少 = 去槓桿 = 較健康（score 偏高）
+    #    Normalize: -2% → 0.7  | 0% → 0.5 | +2% → 0.3
     # ──────────────────────────────────────────────────────────────────────────
-    liquidity_score = 0.5
-    sources["liquidity_score"] = "data_unavailable → 0.50 neutral (融資/融券, batch 3)"
-    data_gaps.append("liquidity_score")
+    margin = market_data.get("margin_balance", {})
+    if margin and margin.get("margin_change_pct") is not None:
+        pct = _safe(margin["margin_change_pct"], 0.0)
+        # Higher margin balance = more leverage = less healthy liquidity (inverted)
+        # ±2% change maps to ±0.2 from 0.5
+        liquidity_score = _clamp(0.5 - pct / 10.0)
+        sources["liquidity_score"] = (
+            f"margin_balance={margin.get('margin_balance_amount',0)/1e8:.0f}億元 "
+            f"變化={pct:+.2f}% → score={liquidity_score:.3f} (-2%→0.7, +2%→0.3)"
+        )
+    else:
+        liquidity_score = 0.5
+        sources["liquidity_score"] = "margin balance unavailable → 0.50 neutral"
+        data_gaps.append("liquidity_score")
 
     return {
         "market_regime_score": round(market_regime_score, 3),
