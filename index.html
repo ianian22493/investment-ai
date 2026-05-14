@@ -331,46 +331,9 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
 .ag-head  {opacity:.95}
 .ag-glow  {opacity:.65; filter:blur(3px)}
 
-/* ═══ AGENT BREATHING · per-persona (Patch ①) ════════════════════ */
-.agent-v3{ transform-box: fill-box; transform-origin: 50% 90%; }
-.ag-halo  { transform-box: fill-box; }
-
-@keyframes b-cio{ 0%{transform:scale(1.000)} 42%{transform:scale(1.011)} 58%{transform:scale(1.011)} 100%{transform:scale(1.000)} }
-@keyframes h-cio{ 0%{opacity:.13} 45%{opacity:.17} 55%{opacity:.17} 100%{opacity:.13} }
-.agent-v3.cio          { animation: b-cio 6.8s cubic-bezier(.65,0,.35,1) infinite; animation-delay:-1.7s; }
-.agent-v3.cio .ag-halo { animation: h-cio 11.2s cubic-bezier(.55,0,.45,1) infinite; animation-delay:-2.8s; }
-
-@keyframes b-tm{ 0%{transform:scale(1.000)} 55%{transform:scale(1.016)} 100%{transform:scale(1.000)} }
-@keyframes h-tm{ 0%{opacity:.13} 50%{opacity:.21} 100%{opacity:.13} }
-.agent-v3.tm          { animation: b-tm 4.2s cubic-bezier(.25,.85,.4,1) infinite; animation-delay:-1.3s; }
-.agent-v3.tm .ag-halo { animation: h-tm 6.4s cubic-bezier(.3,.8,.45,1) infinite; animation-delay:-3.1s; }
-
-@keyframes b-tw{ 0%{transform:scale(1.000)} 44%{transform:scale(1.012)} 56%{transform:scale(1.012)} 100%{transform:scale(1.000)} }
-@keyframes h-tw{ 0%{opacity:.13} 50%{opacity:.18} 100%{opacity:.13} }
-.agent-v3.tw          { animation: b-tw 5.0s cubic-bezier(.5,.1,.5,.95) infinite; animation-delay:-2.7s; }
-.agent-v3.tw .ag-halo { animation: h-tw 7.8s cubic-bezier(.5,.1,.5,.95) infinite; animation-delay:-4.4s; }
-
-@keyframes b-da{
-  0%{transform:scale(1.000)} 30%{transform:scale(1.009)} 38%{transform:scale(1.009)}
-  50%{transform:scale(1.011)} 62%{transform:scale(1.011)}
-  78%{transform:scale(1.004)} 100%{transform:scale(1.000)}
-}
-@keyframes h-da{ 0%{opacity:.13} 40%{opacity:.15} 55%{opacity:.16} 70%{opacity:.14} 100%{opacity:.13} }
-.agent-v3.da          { animation: b-da 7.4s cubic-bezier(.4,0,.55,1) infinite; animation-delay:-3.9s; }
-.agent-v3.da .ag-halo { animation: h-da 9.4s cubic-bezier(.4,0,.55,1) infinite; animation-delay:-0.7s; }
-
-@keyframes b-pm{ 0%,100%{transform:scale(1.000)} 50%{transform:scale(1.011)} }
-@keyframes h-pm{ 0%,100%{opacity:.13} 50%{opacity:.17} }
-.agent-v3.pm          { animation: b-pm 6.4s cubic-bezier(.5,0,.5,1) infinite; animation-delay:-2.3s; }
-.agent-v3.pm .ag-halo { animation: h-pm 10.0s cubic-bezier(.5,0,.5,1) infinite; animation-delay:-5.3s; }
-
-@keyframes b-wm{ 0%{transform:scale(1.000)} 40%{transform:scale(1.009)} 60%{transform:scale(1.009)} 100%{transform:scale(1.000)} }
-@keyframes h-wm{ 0%{opacity:.13} 42%{opacity:.16} 58%{opacity:.16} 100%{opacity:.13} }
-.agent-v3.wm          { animation: b-wm 8.2s cubic-bezier(.7,0,.3,1) infinite; animation-delay:-5.9s; }
-.agent-v3.wm .ag-halo { animation: h-wm 13.4s cubic-bezier(.7,0,.3,1) infinite; animation-delay:-8.1s; }
-
-.agent-v3.concierge          { animation: b-cio 6.8s cubic-bezier(.65,0,.35,1) infinite; animation-delay:-4.9s; }
-.agent-v3.concierge .ag-halo { animation: h-cio 11.2s cubic-bezier(.55,0,.45,1) infinite; animation-delay:-7.3s; }
+/* ═══ AGENT BREATHING · driven via JS rAF, not CSS ════════════════
+   (CSS @keyframes on SVG <g> doesn't reliably animate transform on
+   Chromium — see startBreathing() in JS) */
 
 /* Status light per room (top-right of SVG, pulse) */
 .room-light{
@@ -1101,17 +1064,18 @@ const AGENT_RASTER_SIZE = 40;  // viewBox units — base size before per-call sc
 
 function agentImg({x, y, scale, role, facing}){
   scale = scale || 1;
-  const s = AGENT_RASTER_SIZE * scale;
+  const S = AGENT_RASTER_SIZE;  // base size; middle <g> applies the scale
   const href = `${AI_BASE}${role}-${facing}.png`;
-  // Anchor (x, y) = body center (matches SVG agent anchor).
-  // Image extends from y-0.55s (top, head area) to y+0.45s (bottom, feet).
-  // Character occupies middle 90% of image; visible feet land at y+0.4s.
-  return `<image href="${href}"
-            x="${x - s/2}" y="${y - s*0.55}"
-            width="${s}" height="${s}"
-            visibility="hidden"
-            onload="this.setAttribute('visibility','visible')"
-            preserveAspectRatio="xMidYMax meet"/>`;
+  // Same 3-layer wrapping as agentSVGv3 so the PNG breathes in sync.
+  // Coordinates are relative to anchor (0,0) inside inner <g>.
+  return `<g transform="translate(${x},${y})"><g transform="scale(${scale})"><g class="agent-v3 ${role}">
+    <image href="${href}"
+      x="${-S/2}" y="${-S*0.55}"
+      width="${S}" height="${S}"
+      visibility="hidden"
+      onload="this.setAttribute('visibility','visible')"
+      preserveAspectRatio="xMidYMax meet"/>
+  </g></g></g>`;
 }
 
 // Combined renderer: SVG below (always renders), PNG on top (only if loaded)
@@ -1132,9 +1096,10 @@ function agentSVGv3({x, y, scale, role, facing}){
   const isTrench = ext.trench;
   const jacketBottom = isTrench ? 6 : 2;  // trench is longer
 
-  // Split-layer: outer <g> owns position (translate, never animated);
-  // inner <g class="agent-v3"> owns scale (CSS keyframes take over breathing).
-  return `<g transform="translate(${x},${y})"><g class="agent-v3 ${role}" transform="scale(${scale})">
+  // 3-layer: outer <g> = position (translate). middle <g> = base size (scale).
+  // inner <g class="agent-v3"> = breathing animation (CSS keyframes own its transform).
+  // This way breath scale (1.000 ↔ 1.011) multiplies onto base scale (1.5) — both effects compose.
+  return `<g transform="translate(${x},${y})"><g transform="scale(${scale})"><g class="agent-v3 ${role}">
     <defs>
       <linearGradient id="${gid}-jk" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="${r.jacket[0]}"/>
@@ -1264,7 +1229,7 @@ function agentSVGv3({x, y, scale, role, facing}){
 
     <!-- Accessories -->
     ${drawAccessory(ext, back)}
-  </g></g>`;
+  </g></g></g>`;
 }
 
 // (legacy bodies removed below)
@@ -2015,10 +1980,11 @@ function renderSidebar(){
   // ───── TODAY'S BRIEFING ─────
   const v = master.verdict || '—';
   const vCol = verdictColor(v);
-  $('briefing-verdict').textContent = v;
-  $('briefing-verdict').style.color = vCol;
-  // Patch ②: switch to alert breathing for red/危險 verdicts
-  $('briefing-verdict').classList.toggle('v-alert', /防守|賣出|減碼|空手|危險/.test(v));
+  const vEl = $('briefing-verdict');
+  vEl.textContent = v;
+  vEl.style.color = vCol;
+  // Patch ②: switch to alert breathing for red/危險 verdicts (CSS handles the rest)
+  vEl.classList.toggle('v-alert', /防守|賣出|減碼|空手|危險/.test(v));
   // Tagline: regime + key insight short
   const tagline = (regime.market_regime || '—') + ' · ' + (regime.short_term_trading_favorable ? 'TRADING FAVORABLE' : 'NOT TRADING-FRIENDLY');
   $('briefing-tagline').textContent = tagline;
@@ -3325,6 +3291,74 @@ function hideStaleBanner(){
 }
 
 load();
+
+// ═══════════════════════════════════════════════════════════════════
+// Patch ① — Agent breathing (Web Animations API, reliable on SVG <g>)
+// CSS @keyframes on SVG groups don't trigger reflow consistently on
+// Chromium when nested inside transformed parents. Element.animate() works.
+// ═══════════════════════════════════════════════════════════════════
+const BREATH_PRESETS = {
+  cio:       {dur:6800, hold:true,  peak:1.011, halo:{dur:11200, peakOpacity:.17}, delayBody:-1700, delayHalo:-2800},
+  tm:        {dur:4200, hold:false, peak:1.016, halo:{dur:6400,  peakOpacity:.21}, delayBody:-1300, delayHalo:-3100},
+  tw:        {dur:5000, hold:true,  peak:1.012, halo:{dur:7800,  peakOpacity:.18}, delayBody:-2700, delayHalo:-4400},
+  da:        {dur:7400, hold:true,  peak:1.011, halo:{dur:9400,  peakOpacity:.16}, delayBody:-3900, delayHalo:-700},
+  pm:        {dur:6400, hold:false, peak:1.011, halo:{dur:10000, peakOpacity:.17}, delayBody:-2300, delayHalo:-5300},
+  wm:        {dur:8200, hold:true,  peak:1.009, halo:{dur:13400, peakOpacity:.16}, delayBody:-5900, delayHalo:-8100},
+  concierge: {dur:6800, hold:true,  peak:1.011, halo:{dur:11200, peakOpacity:.17}, delayBody:-4900, delayHalo:-7300},
+};
+
+// rAF-driven breathing. SVG <g> ignores CSS animation + Web Animations API
+// for transform property — direct attribute manipulation is the only reliable path.
+let _breathRAF = null;
+function startBreathing(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(_breathRAF) return;  // single loop drives all agents
+
+  const t0 = performance.now();
+  // Smooth ease (cubic bezier approximation via sine)
+  const smooth = u => (1 - Math.cos(u * Math.PI)) / 2;  // 0→1 with ease
+
+  function curve(t, peak, hold){
+    // t: 0..1 phase. Returns scale value.
+    if(hold){
+      if(t < .42) return 1 + (peak - 1) * smooth(t / .42);
+      if(t < .58) return peak;
+      return 1 + (peak - 1) * smooth((1 - t) / .42);
+    }
+    return 1 + (peak - 1) * Math.sin(t * Math.PI);
+  }
+
+  function tick(now){
+    document.querySelectorAll('.agent-v3').forEach(el => {
+      const role = Array.from(el.classList).find(c => BREATH_PRESETS[c]);
+      if(!role) return;
+      const p = BREATH_PRESETS[role];
+
+      // Body breathing — phase in [0,1)
+      const phase = (((now - t0) - p.delayBody) % p.dur) / p.dur;
+      const scale = curve(phase, p.peak, p.hold);
+      el.setAttribute('transform', `scale(${scale.toFixed(4)})`);
+
+      // Halo opacity — separate phase (out of sync)
+      const halo = el.querySelector('.ag-halo');
+      if(halo){
+        const hPhase = (((now - t0) - p.delayHalo) % p.halo.dur) / p.halo.dur;
+        const op = .13 + (p.halo.peakOpacity - .13) * Math.sin(hPhase * Math.PI);
+        halo.setAttribute('opacity', Math.max(.13, op).toFixed(3));
+      }
+    });
+    _breathRAF = requestAnimationFrame(tick);
+  }
+  _breathRAF = requestAnimationFrame(tick);
+}
+
+// Start the breathing rAF loop once. The tick function re-queries .agent-v3
+// every frame, so newly added agents (after data refresh / re-render) auto-pick-up.
+// rAF pauses when tab is hidden — that's correct behavior (no animation needed
+// when user isn't looking).
+startBreathing();
+
+// Verdict breathing: handled by CSS animation on .verdict-huge (works fine on HTML elements)
 
 // ═══════════════════════════════════════════════════════════════════
 // Patch ④ — Workflow Replay on Hover (TW → DA → CIO light flow)
