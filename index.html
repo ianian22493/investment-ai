@@ -347,21 +347,50 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
   pointer-events:none;
 }
 
-/* Persona hover tooltip */
+/* ═══ Persona hover tooltip · Task 5 (viewport-aware, fixed-positioned) ═══ */
 .char-tip{
-  position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
-  background:var(--bg); border:1px solid var(--gold); border-radius:6px;
-  padding:9px 11px; width:210px;
-  opacity:0; pointer-events:none; transition:opacity .15s;
-  font-size:10px; color:var(--text2); line-height:1.55;
-  z-index:30; box-shadow:0 8px 28px rgba(0,0,0,.7);
+  position:fixed;
+  width:240px;
+  background:linear-gradient(180deg, var(--bg2), var(--bg));
+  border:1px solid var(--ag-color, var(--gold));
+  border-radius:7px;
+  padding:11px 13px;
+  pointer-events:none;
+  opacity:0; transform:translateY(4px);
+  transition:opacity .15s ease, transform .15s ease;
+  z-index:50;
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.7),
+    0 0 24px color-mix(in oklab, var(--ag-color, var(--gold)), transparent 80%);
+  font-size:10px; color:var(--text2);
 }
-.char-tip.show{opacity:1}
-.char-tip-title{font-size:10px; font-weight:800; letter-spacing:1.2px; margin-bottom:1px}
-.char-tip-role{font-size:9px; color:var(--text3); margin-bottom:6px; padding-bottom:5px; border-bottom:1px dashed var(--border2)}
-.char-tip-row{display:flex; gap:6px; margin:1px 0}
-.char-tip-key{color:var(--text3); min-width:46px}
-.char-tip-val{color:var(--text)}
+.char-tip.show{ opacity:1; transform:translateY(0) }
+.char-tip-title{ font-size:11px; font-weight:800; letter-spacing:1.2px; margin-bottom:2px }
+.char-tip-role{
+  font-size:9px; color:var(--text3); letter-spacing:.5px;
+  margin-bottom:8px; padding-bottom:7px;
+  border-bottom:1px dashed var(--border2);
+}
+.char-tip .verd-line{
+  display:flex; justify-content:space-between; align-items:baseline;
+  font-size:11px; margin-bottom:5px;
+}
+.char-tip .verd{ color:var(--text); font-weight:700 }
+.char-tip .conf{ font-size:9px; color:var(--text3); letter-spacing:.5px }
+.char-tip .ct-bar{
+  height:3px; background:rgba(122,142,189,.12);
+  border-radius:2px; overflow:hidden; margin-bottom:9px;
+}
+.char-tip .ct-bar > i{ display:block; height:100%; opacity:.85 }
+.char-tip .ct-rows{ display:flex; flex-direction:column; gap:3px; margin-bottom:9px }
+.char-tip .ct-row{ display:flex; justify-content:space-between; font-size:9px }
+.char-tip .ct-row .k{ color:var(--text3); letter-spacing:1px }
+.char-tip .ct-row .v{ color:var(--text2) }
+.char-tip .ct-cta{
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:9px; font-weight:700; letter-spacing:1.5px;
+  padding-top:7px; border-top:1px dashed var(--border2);
+}
 
 /* ═══ RIGHT SIDEBAR ══════════════════════════════════════════════════ */
 .sidebar-right{
@@ -3626,6 +3655,99 @@ function startBreathing(){
 startBreathing();
 
 // Verdict breathing: handled by CSS animation on .verdict-huge (works fine on HTML elements)
+
+// ═══════════════════════════════════════════════════════════════════
+// Task 5 · Agent Hover Persona Cards (viewport-aware, single global tip)
+// ═══════════════════════════════════════════════════════════════════
+const AGENT_CARDS = {
+  cio:       {name:'CIO',  role:'Chief Investment Officer', bias:'Integrative · 整合', specialty:'Cross-desk synthesis',    color:'#C9A84C', room:'exec',     dataKey:'master'},
+  tm:        {name:'TM',   role:'Trading Master',           bias:'Aggressive · 激進',  specialty:'Breakout + Volume',        color:'#00E5FF', room:'trading',  dataKey:'trading_master'},
+  tw:        {name:'TW',   role:'TW Analyst',               bias:'Tactical · 戰術',    specialty:'Technical Momentum',       color:'#00C896', room:'trading',  dataKey:'tw_short_term'},
+  da:        {name:'DA',   role:"Devil's Advocate",          bias:'Skeptical · 懷疑',   specialty:'Contradiction Detection',  color:'#FF4560', room:'risk',     dataKey:'devils_advocate'},
+  pm:        {name:'PM',   role:'Portfolio Master',         bias:'Balanced · 中性',    specialty:'Cross-asset Rotation',     color:'#3D8EFF', room:'research', dataKey:'portfolio_master'},
+  wm:        {name:'WM',   role:'Wealth Master',            bias:'Conservative · 保守', specialty:'Liquidity Survival',       color:'#A259FF', room:'wealth',   dataKey:'wealth_master'},
+  concierge: {name:'CONCIERGE', role:'Reception',            bias:'Neutral · 中性',     specialty:'Wayfinding',               color:'#C9A84C', room:null,       dataKey:null},
+};
+
+let _tip = document.getElementById('char-tip');
+if(!_tip){
+  _tip = document.createElement('div');
+  _tip.id = 'char-tip';
+  _tip.className = 'char-tip';
+  document.body.appendChild(_tip);
+}
+let _tipTimer;
+
+function showCharTip(el){
+  // Derive role from class
+  const role = Array.from(el.classList).find(c => AGENT_CARDS[c]);
+  if(!role) return;
+  const ag = AGENT_CARDS[role];
+  const v = (ag.dataKey ? (DATA.agents||{})[ag.dataKey] : null) || {};
+  const conf = v.confidence != null ? Math.round(v.confidence * 100) : 0;
+  const verdict = (v.verdict && v.verdict !== 'ERROR') ? v.verdict : '—';
+
+  _tip.style.setProperty('--ag-color', ag.color);
+  _tip.innerHTML = `
+    <div class="char-tip-title" style="color:${ag.color}">${ag.name}</div>
+    <div class="char-tip-role">${ag.role}</div>
+    <div class="verd-line">
+      <span class="verd">${verdict}</span>
+      <span class="conf">conf · <b style="color:${ag.color}">${conf}%</b></span>
+    </div>
+    <div class="ct-bar"><i style="width:${conf}%;background:${ag.color}"></i></div>
+    <div class="ct-rows">
+      <div class="ct-row"><span class="k">BIAS</span><span class="v">${ag.bias}</span></div>
+      <div class="ct-row"><span class="k">SPEC</span><span class="v">${ag.specialty}</span></div>
+    </div>
+    ${ag.room ? `<div class="ct-cta" style="color:${ag.color}">
+      <span>CLICK · OPEN ${ag.room.toUpperCase()}</span><span>→</span>
+    </div>` : ''}`;
+
+  // Show first (to get tooltip dimensions), then position
+  _tip.classList.add('show');
+  const r = el.getBoundingClientRect();
+  const tr = _tip.getBoundingClientRect();
+  let top = r.top - tr.height - 10;
+  let left = r.left + r.width/2 - tr.width/2;
+  if(top < 8) top = r.bottom + 10;       // flip below if above clipped
+  if(left < 8) left = 8;
+  if(left + tr.width > innerWidth - 8) left = innerWidth - tr.width - 8;
+  _tip.style.top = top + 'px';
+  _tip.style.left = left + 'px';
+}
+
+function hideCharTip(){ _tip.classList.remove('show'); }
+
+// Use event delegation so newly rendered agents auto-pickup
+document.addEventListener('pointerenter', (e) => {
+  const el = e.target.closest && e.target.closest('.agent-v3');
+  if(!el) return;
+  const role = Array.from(el.classList).find(c => AGENT_CARDS[c]);
+  if(!role) return;
+  el.style.cursor = AGENT_CARDS[role].room ? 'pointer' : 'default';
+  clearTimeout(_tipTimer);
+  _tipTimer = setTimeout(() => showCharTip(el), 120);
+}, true);
+
+document.addEventListener('pointerleave', (e) => {
+  const el = e.target.closest && e.target.closest('.agent-v3');
+  if(!el) return;
+  clearTimeout(_tipTimer);
+  hideCharTip();
+}, true);
+
+document.addEventListener('click', (e) => {
+  const el = e.target.closest && e.target.closest('.agent-v3');
+  if(!el) return;
+  const role = Array.from(el.classList).find(c => AGENT_CARDS[c]);
+  if(!role) return;
+  const ag = AGENT_CARDS[role];
+  if(ag.room && typeof expandRoom === 'function'){
+    e.stopPropagation();  // prevent room-handler double-fire on same click
+    expandRoom(ag.room);
+  }
+}, true);  // capture phase so we beat the room handler
 
 // ═══════════════════════════════════════════════════════════════════
 // Patch ④ — Workflow Replay on Hover (TW → DA → CIO light flow)
