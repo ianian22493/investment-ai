@@ -663,6 +663,22 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
   .expanded{left:8px; right:8px; top:8px; bottom:8px; padding:18px 16px}
 }
 
+/* ═══ Patch Task 4 · AUTO badge (top-bar) ═════════════════════════ */
+.auto-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 9px;
+  border: 1px solid var(--cyan);
+  border-radius: 3px;
+  font-size: 9px; letter-spacing: 1.5px;
+  color: var(--cyan);
+  font-weight: 800;
+}
+.auto-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--cyan); box-shadow: 0 0 5px var(--cyan);
+  animation: pulse 4.5s ease-in-out infinite;
+}
+
 /* ═══ Reduced motion fallback (Patch ⓪) ═══════════════════════════ */
 @media (prefers-reduced-motion: reduce){
   *, *::before, *::after{
@@ -782,6 +798,9 @@ body.demo-mode .sidebar-right{
         <span class="crumb-room">YUZU CAPITAL · OVERVIEW</span>
       </div>
       <div class="topbar-meta">
+        <span class="auto-badge" id="autoBadge" hidden>
+          <span class="auto-dot"></span>AUTO · <span id="autoName">CINEMA</span>
+        </span>
         <div><span class="live-dot"></span><span id="ts">—</span></div>
       </div>
     </header>
@@ -2762,16 +2781,18 @@ function renderSettings(target){
     {key:'cinema',   name:'CINEMA',   desc:'週末儀式 · 暖色調、film grain'},
   ];
 
+  const isAuto = cur.mode === 'auto';
   target.innerHTML = `
     <div class="section-label">ATMOSPHERE PRESET</div>
     <div class="card">
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
         ${PRESETS.map(p => `
-          <button class="preset-btn" data-preset="${p.key}" style="flex:1;min-width:100px;background:${curPreset===p.key?'var(--bg4)':'var(--bg3)'};border:1px solid ${curPreset===p.key?'var(--gold)':'var(--border2)'};color:${curPreset===p.key?'var(--gold)':'var(--text2)'};padding:12px 14px;border-radius:6px;font-family:inherit;font-size:11px;letter-spacing:1.5px;cursor:pointer;text-align:center">${p.name}</button>
+          <button class="preset-btn" data-preset="${p.key}" style="flex:1;min-width:90px;background:${(!isAuto && curPreset===p.key)?'var(--bg4)':'var(--bg3)'};border:1px solid ${(!isAuto && curPreset===p.key)?'var(--gold)':'var(--border2)'};color:${(!isAuto && curPreset===p.key)?'var(--gold)':'var(--text2)'};padding:12px 14px;border-radius:6px;font-family:inherit;font-size:11px;letter-spacing:1.5px;cursor:pointer;text-align:center">${p.name}</button>
         `).join('')}
+        <button class="preset-btn" data-preset="auto" style="flex:1;min-width:90px;background:${isAuto?'var(--bg4)':'var(--bg3)'};border:1px solid ${isAuto?'var(--cyan)':'var(--border2)'};color:${isAuto?'var(--cyan)':'var(--text2)'};padding:12px 14px;border-radius:6px;font-family:inherit;font-size:11px;letter-spacing:1.5px;cursor:pointer;text-align:center">AUTO</button>
       </div>
       <div style="font-size:10px;color:var(--text3);line-height:1.7" id="preset-desc">
-        ${PRESETS.find(p => p.key === curPreset)?.desc || ''}
+        ${isAuto ? `按時段自動切換 · 目前 <b style="color:var(--cyan)">${(cur.preset||'terminal').toUpperCase()}</b><br>06:00 TERMINAL · 13:30 CINEMA · 22:00 MIDNIGHT (Asia/Taipei)` : (PRESETS.find(p => p.key === curPreset)?.desc || '')}
       </div>
     </div>
 
@@ -2823,14 +2844,19 @@ function renderSettings(target){
     localStorage.setItem('yuzu-settings', JSON.stringify(cur));
     applySettings();
   }
-  // Preset buttons (Patch ③)
+  // Preset buttons (Patch ③ + Task 4 auto)
   document.querySelectorAll('.preset-btn').forEach(b => {
     b.addEventListener('click', () => {
-      cur.preset = b.dataset.preset;
-      cur.mode = 'preset';
-      save();
-      // Re-render to update active highlight
-      renderSettings(target);
+      if(b.dataset.preset === 'auto'){
+        // Task 4: enable auto schedule mode
+        applyPreset(currentScheduledPreset(), 'auto');
+        scheduleNextSwitch();
+        renderSettings(target);
+      } else {
+        // Manual preset selection
+        applyPreset(b.dataset.preset, 'manual');
+        renderSettings(target);
+      }
     });
   });
   // Sliders switch to custom mode when changed
@@ -2901,12 +2927,78 @@ function applySettings(){
   }
 }
 
-function applyPreset(name){
+// ═══ Patch Task 4 · Time-aware atmosphere auto-switch ═══════════
+const SCHEDULE = [
+  { h: 6,  m: 0,  preset: 'terminal' },
+  { h: 13, m: 30, preset: 'cinema'   },
+  { h: 22, m: 0,  preset: 'midnight' },
+];
+
+function currentScheduledPreset(){
+  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+  const mins = now.getHours() * 60 + now.getMinutes();
+  let active = SCHEDULE[SCHEDULE.length - 1].preset; // wraps to midnight before 6:00
+  for(const s of SCHEDULE){
+    if(mins >= s.h * 60 + s.m) active = s.preset;
+  }
+  return active;
+}
+
+function applyPreset(name, source = 'manual'){
+  const dur = source === 'auto' ? 12000 : 0;  // 12s crossfade on auto, instant on manual
+  document.body.style.transition = `filter ${dur}ms cubic-bezier(.45,.05,.55,.95)`;
+  document.body.classList.remove('preset-terminal','preset-midnight','preset-cinema');
+  document.body.classList.add('preset-' + name);
   const s = JSON.parse(localStorage.getItem('yuzu-settings') || '{}');
   s.preset = name;
-  s.mode = 'preset';
+  s.mode = (source === 'auto') ? 'auto' : 'preset';
   localStorage.setItem('yuzu-settings', JSON.stringify(s));
   applySettings();
+  updateAutoBadge();
+}
+
+function scheduleNextSwitch(){
+  const s = JSON.parse(localStorage.getItem('yuzu-settings') || '{}');
+  if(s.mode !== 'auto') return;
+  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+  const mins = now.getHours() * 60 + now.getMinutes();
+  const next = SCHEDULE.find(p => p.h * 60 + p.m > mins)
+              || { ...SCHEDULE[0], h: 24 + SCHEDULE[0].h };
+  const msUntil = (next.h * 60 + next.m - mins) * 60000 - now.getSeconds() * 1000;
+  setTimeout(() => {
+    applyPreset(next.preset, 'auto');
+    scheduleNextSwitch();
+  }, msUntil);
+}
+
+function updateAutoBadge(){
+  const s = JSON.parse(localStorage.getItem('yuzu-settings') || '{}');
+  const badge = document.getElementById('autoBadge');
+  const nameEl = document.getElementById('autoName');
+  if(!badge) return;
+  if(s.mode === 'auto'){
+    badge.hidden = false;
+    if(nameEl) nameEl.textContent = (s.preset || 'terminal').toUpperCase();
+  } else {
+    badge.hidden = true;
+  }
+}
+
+// Re-sync if tab was backgrounded across a schedule boundary
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible'){
+    const s = JSON.parse(localStorage.getItem('yuzu-settings') || '{}');
+    if(s.mode === 'auto'){
+      const should = currentScheduledPreset();
+      if(should !== s.preset) applyPreset(should, 'auto');
+    }
+  }
+});
+
+// Boot: if mode was 'auto' last session, restart auto from current schedule slot
+if(JSON.parse(localStorage.getItem('yuzu-settings') || '{}').mode === 'auto'){
+  applyPreset(currentScheduledPreset(), 'auto');
+  scheduleNextSwitch();
 }
 
 // ─── AGENT FLOWS ─────────────────────────────────────────────────────
