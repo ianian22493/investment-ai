@@ -3303,14 +3303,16 @@ load();
 // CSS @keyframes on SVG groups don't trigger reflow consistently on
 // Chromium when nested inside transformed parents. Element.animate() works.
 // ═══════════════════════════════════════════════════════════════════
+// Peak values bumped 2-3x from initial design (which was too subtle to perceive
+// at small character render size). Now visible but still "low frequency".
 const BREATH_PRESETS = {
-  cio:       {dur:6800, hold:true,  peak:1.011, halo:{dur:11200, peakOpacity:.17}, delayBody:-1700, delayHalo:-2800},
-  tm:        {dur:4200, hold:false, peak:1.016, halo:{dur:6400,  peakOpacity:.21}, delayBody:-1300, delayHalo:-3100},
-  tw:        {dur:5000, hold:true,  peak:1.012, halo:{dur:7800,  peakOpacity:.18}, delayBody:-2700, delayHalo:-4400},
-  da:        {dur:7400, hold:true,  peak:1.011, halo:{dur:9400,  peakOpacity:.16}, delayBody:-3900, delayHalo:-700},
-  pm:        {dur:6400, hold:false, peak:1.011, halo:{dur:10000, peakOpacity:.17}, delayBody:-2300, delayHalo:-5300},
-  wm:        {dur:8200, hold:true,  peak:1.009, halo:{dur:13400, peakOpacity:.16}, delayBody:-5900, delayHalo:-8100},
-  concierge: {dur:6800, hold:true,  peak:1.011, halo:{dur:11200, peakOpacity:.17}, delayBody:-4900, delayHalo:-7300},
+  cio:       {dur:6800, hold:true,  peak:1.028, halo:{dur:11200, peakOpacity:.28}, delayBody:-1700, delayHalo:-2800},
+  tm:        {dur:4200, hold:false, peak:1.038, halo:{dur:6400,  peakOpacity:.34}, delayBody:-1300, delayHalo:-3100},
+  tw:        {dur:5000, hold:true,  peak:1.030, halo:{dur:7800,  peakOpacity:.28}, delayBody:-2700, delayHalo:-4400},
+  da:        {dur:7400, hold:true,  peak:1.025, halo:{dur:9400,  peakOpacity:.24}, delayBody:-3900, delayHalo:-700},
+  pm:        {dur:6400, hold:false, peak:1.028, halo:{dur:10000, peakOpacity:.26}, delayBody:-2300, delayHalo:-5300},
+  wm:        {dur:8200, hold:true,  peak:1.022, halo:{dur:13400, peakOpacity:.24}, delayBody:-5900, delayHalo:-8100},
+  concierge: {dur:6800, hold:true,  peak:1.028, halo:{dur:11200, peakOpacity:.28}, delayBody:-4900, delayHalo:-7300},
 };
 
 // rAF-driven breathing. SVG <g> ignores CSS animation + Web Animations API
