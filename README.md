@@ -308,26 +308,96 @@ index.html
 
 ---
 
-## Local Development
+## First-time Setup
+
+If you're forking this for your own use, here's the full setup. Plan ~30 minutes end-to-end.
+
+### 1. Fork & clone
 
 ```bash
-# Install deps
+# Fork on GitHub, then:
+git clone https://github.com/<your-username>/investment-ai.git
+cd investment-ai
+```
+
+### 2. Get API keys
+
+| Service | What for | Where to get it |
+|---|---|---|
+| **Gemini API** | Powers all 14 agents | https://aistudio.google.com/apikey · Free tier ≈ 20 RPD on `gemini-2.5-flash` (enough for the 2x/day schedule) |
+| **Shioaji** (optional) | Live TW portfolio quotes | https://sinotrade.com.tw · API key + secret from 永豐金證券. Skip if you don't need live positions — yfinance will be used as fallback. |
+
+### 3. Add GitHub secrets
+
+In your fork: `Settings → Secrets and variables → Actions → New repository secret`
+
+```
+GEMINI_API_KEY        = (required)
+SHIOAJI_API_KEY       = (optional)
+SHIOAJI_SECRET_KEY    = (optional)
+```
+
+### 4. Enable GitHub Pages
+
+`Settings → Pages → Source: Deploy from a branch · Branch: main · Folder: / (root) · Save`
+
+Wait ~1 min, your site goes live at `https://<your-username>.github.io/investment-ai/`.
+
+### 5. Set up cron-job.org triggers (the actual scheduler)
+
+GitHub's built-in cron drifts and skips runs. Use [cron-job.org](https://cron-job.org) instead — it triggers the workflow via API.
+
+a. Get a GitHub PAT with `repo` + `workflow` scope: https://github.com/settings/tokens
+
+b. Create two jobs on cron-job.org, both pointing at:
+   ```
+   URL:     https://api.github.com/repos/<your-username>/investment-ai/actions/workflows/daily_analysis.yml/dispatches
+   Method:  POST
+   Headers: Authorization: Bearer <PAT>
+            Accept: application/vnd.github+json
+   Body:    {"ref":"main"}
+   ```
+
+c. Schedule (Asia/Taipei):
+   - **Pre-market** · 09:00 weekdays (Mon-Fri)
+   - **Post-market** · 13:30 weekdays — TWSE institutional/breadth data finalizes ~14:30, so this catches complete data
+
+### 6. Customize your portfolio
+
+Edit `data/portfolio.json`:
+```json
+{
+  "tw_stocks": { "2330": { "shares": 1000, "avg_cost": 800 } },
+  "us_stocks": { "NVDA": { "shares": 10, "avg_cost": 450 } }
+}
+```
+
+And the watchlists in `fetch_market_data.py`:
+```python
+TW_CODES   = ["00692", "2330", ...]      # your TW holdings
+US_TICKERS = ["AMZN", "NVDA", "TSLA", ...] # your US holdings
+```
+
+### 7. First run
+
+Either trigger the cron-job.org job manually (button in their UI), or run locally to verify before deploying:
+
+```bash
 pip install -r requirements.txt
-
-# Set env vars
 export GEMINI_API_KEY=...
-export SHIOAJI_API_KEY=...
-export SHIOAJI_SECRET_KEY=...
+export SHIOAJI_API_KEY=...        # optional
+export SHIOAJI_SECRET_KEY=...     # optional
 
-# Run pipeline
-python fetch_market_data.py
-python scanner.py
-python run_agents.py
+python fetch_market_data.py       # → data/market_data.json
+python scanner.py                 # → data/candidate_stocks.json
+python run_agents.py              # → data/analysis.json (this calls Gemini)
 
-# Serve frontend locally
+# Serve frontend
 python -m http.server 8000
 # → http://localhost:8000
 ```
+
+If the first run succeeds, the data files commit themselves on the next GitHub Actions run.
 
 ---
 
