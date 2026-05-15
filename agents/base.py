@@ -2,6 +2,7 @@
 
 import json
 import os
+import random
 import re
 import time
 
@@ -10,6 +11,14 @@ from google.genai import types
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 MODEL = "gemini-2.5-flash"
+
+# Errors worth retrying — covers quota (429), Gemini overload (503/UNAVAILABLE),
+# upstream transient failures (500/502/504), and network blips.
+RETRYABLE_TOKENS = (
+    "429", "503", "500", "502", "504",
+    "UNAVAILABLE", "RESOURCE_EXHAUSTED", "INTERNAL", "DEADLINE_EXCEEDED",
+    "ConnectionError", "Timeout", "TimeoutError",
+)
 
 RESPONSE_SCHEMA = """
 Your response MUST be valid JSON only. No markdown, no explanation outside JSON.
@@ -34,8 +43,9 @@ Structure:
 
 
 def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
-    """Call Gemini API and parse JSON response. Retries on 429 quota errors."""
-    for attempt in range(4):
+    """Call Gemini API and parse JSON response. Retries on transient errors (429/503/5xx)."""
+    MAX_ATTEMPTS = 5
+    for attempt in range(MAX_ATTEMPTS):
         try:
             resp = client.models.generate_content(
                 model=MODEL,
@@ -51,8 +61,8 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
             raw = re.sub(r'\[\d+\]', '', raw)
             return json.loads(raw)
         except json.JSONDecodeError as e:
-            if attempt < 3:
-                print(f"  [{agent_name}] JSON parse error, retry {attempt+1}/4...")
+            if attempt < MAX_ATTEMPTS - 1:
+                print(f"  [{agent_name}] JSON parse error, retry {attempt+1}/{MAX_ATTEMPTS}...")
                 time.sleep(15)
                 continue
             return {
@@ -66,9 +76,10 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
             }
         except Exception as e:
             err = str(e)
-            if attempt < 3:
-                wait = 15 * (attempt + 1)
-                print(f"  [{agent_name}] error: {err[:80]}, waiting {wait}s (attempt {attempt+1}/4)...")
+            retryable = any(tok in err for tok in RETRYABLE_TOKENS)
+            if retryable and attempt < MAX_ATTEMPTS - 1:
+                wait = min(60, 10 * (2 ** attempt)) + random.uniform(0, 3)
+                print(f"  [{agent_name}] {err[:80]}, backoff {wait:.1f}s (attempt {attempt+1}/{MAX_ATTEMPTS})")
                 time.sleep(wait)
                 continue
             return {

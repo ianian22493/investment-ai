@@ -137,11 +137,12 @@ def run(
 
     system_with_schema = SYSTEM + "\n\n" + REFLECTION_SCHEMA
 
-    from .base import client, MODEL
+    from .base import client, MODEL, RETRYABLE_TOKENS
     from google.genai import types
-    import json, re, time
+    import json, re, time, random
 
-    for attempt in range(3):
+    MAX_ATTEMPTS = 5
+    for attempt in range(MAX_ATTEMPTS):
         try:
             resp = client.models.generate_content(
                 model=MODEL,
@@ -170,9 +171,10 @@ def run(
             }
         except Exception as e:
             err = str(e)
-            if "429" in err and attempt < 2:
-                wait = 15 * (attempt + 1)
-                print(f"  [reflection] 429 quota hit, waiting {wait}s...")
+            retryable = any(tok in err for tok in RETRYABLE_TOKENS)
+            if retryable and attempt < MAX_ATTEMPTS - 1:
+                wait = min(60, 10 * (2 ** attempt)) + random.uniform(0, 3)
+                print(f"  [reflection] {err[:80]}, backoff {wait:.1f}s (attempt {attempt+1}/{MAX_ATTEMPTS})")
                 time.sleep(wait)
                 continue
             return {

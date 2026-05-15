@@ -194,15 +194,14 @@ def fetch_tw_institutional(date_str: str = None) -> dict:
         return {}
 
 
-def fetch_market_breadth() -> dict:
-    """台股漲跌家數 via TWSE MI_INDEX. 找「漲跌證券數合計」表。
+def _fetch_market_breadth_for_date(date_str: str) -> dict:
+    """單日 MI_INDEX 抓取（不含 fallback 邏輯）.
     新格式（2026 起）：fields=['類型', '整體市場', '股票'],
                        data=[['上漲(漲停)', '6,492(374)', '335(29)'], ...]
-    Returns: advance, decline, unchanged, limit_up, limit_down, advance_ratio
     """
     import re
     url = "https://www.twse.com.tw/exchangeReport/MI_INDEX"
-    params = {"response": "json", "type": "ALLBUT0999"}
+    params = {"response": "json", "type": "ALLBUT0999", "date": date_str}
     try:
         r = requests.get(url, params=params, timeout=15, headers={"User-Agent": "Mozilla/5.0"}, verify=TWSE_VERIFY)
         raw = r.json()
@@ -270,19 +269,37 @@ def fetch_market_breadth() -> dict:
         return {}
 
 
-def fetch_market_institutional(date_str: str = None) -> dict:
-    """全市場三大法人買賣超 via TWSE BFI82U（市場級匯總，買賣金額）.
-    T86 是每股一筆無合計，BFI82U 直接給 4 大類 + 合計（買進/賣出/買賣差額，單位：元）.
+def fetch_market_breadth() -> dict:
+    """台股漲跌家數 — 自動回溯到最近一個有資料的交易日."""
+    return _twse_fetch_with_fallback(_fetch_market_breadth_for_date)
+
+
+def _twse_fetch_with_fallback(fetcher, max_days_back: int = 7):
+    """呼叫 fetcher(date_str)，若回空就往前一交易日找，最多回溯 max_days_back 天。
+    覆蓋情境：盤中（當天還沒出資料）、週末、國定假日。
     """
-    if not date_str:
-        date_str = date.today().strftime("%Y%m%d")
+    base = date.today()
+    for back in range(max_days_back + 1):
+        d = (base - timedelta(days=back))
+        if d.weekday() >= 5:  # Sat/Sun — TWSE 不發
+            continue
+        date_str = d.strftime("%Y%m%d")
+        result = fetcher(date_str)
+        if result:
+            if back > 0:
+                print(f"    [fallback] 使用 {date_str} 的資料（往前 {back} 天）")
+            return result
+    return {}
+
+
+def _fetch_market_institutional_for_date(date_str: str) -> dict:
+    """單日 BFI82U 抓取（不含 fallback 邏輯）."""
     url = "https://www.twse.com.tw/rwd/zh/fund/BFI82U"
     params = {"dayDate": date_str, "type": "day", "response": "json"}
     try:
         r = requests.get(url, params=params, timeout=15, headers={"User-Agent": "Mozilla/5.0"}, verify=TWSE_VERIFY)
         raw = r.json()
         if raw.get("stat") != "OK":
-            # 盤中或假日 → 沒資料
             return {}
 
         data = raw.get("data", [])
@@ -334,13 +351,13 @@ def fetch_market_institutional(date_str: str = None) -> dict:
         return {}
 
 
-def fetch_margin_balance(date_str: str = None) -> dict:
-    """全市場融資/融券餘額 via TWSE MI_MARGN.
-    用於衡量市場流動性與槓桿健康度。
-    Returns: margin_balance_amount, prev_balance, balance_change_pct, ...
-    """
-    if not date_str:
-        date_str = date.today().strftime("%Y%m%d")
+def fetch_market_institutional() -> dict:
+    """全市場三大法人買賣超 — 自動回溯到最近一個有資料的交易日."""
+    return _twse_fetch_with_fallback(_fetch_market_institutional_for_date)
+
+
+def _fetch_margin_balance_for_date(date_str: str) -> dict:
+    """單日 MI_MARGN 抓取（不含 fallback 邏輯）."""
     url = "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN"
     params = {"date": date_str, "selectType": "MS", "response": "json"}
     try:
@@ -390,6 +407,11 @@ def fetch_margin_balance(date_str: str = None) -> dict:
     except Exception as e:
         print(f"  [WARN] MI_MARGN: {e}")
         return {}
+
+
+def fetch_margin_balance() -> dict:
+    """全市場融資/融券餘額 — 自動回溯到最近一個有資料的交易日."""
+    return _twse_fetch_with_fallback(_fetch_margin_balance_for_date)
 
 
 def fetch_finmind_technical(code: str) -> dict:

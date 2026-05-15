@@ -181,10 +181,11 @@ def run(
 - 反方觀點必須提供
 """
 
-    import json, re
+    import json, re, time, random
     system_with_schema = SYSTEM + "\n\n" + PICK_SCHEMA
-    from .base import client, MODEL
-    for attempt in range(4):
+    from .base import client, MODEL, RETRYABLE_TOKENS
+    MAX_ATTEMPTS = 5
+    for attempt in range(MAX_ATTEMPTS):
         try:
             from google.genai import types
             resp = client.models.generate_content(
@@ -213,11 +214,11 @@ def run(
                 "risk_flags": ["解析失敗"], "agent_note": "parse error",
             }
         except Exception as e:
-            import time
             err = str(e)
-            if "429" in err and attempt < 3:
-                wait = 15 * (attempt + 1)
-                print(f"  [tw_daily_pick] 429 quota hit, waiting {wait}s (attempt {attempt+1}/4)...")
+            retryable = any(tok in err for tok in RETRYABLE_TOKENS)
+            if retryable and attempt < MAX_ATTEMPTS - 1:
+                wait = min(60, 10 * (2 ** attempt)) + random.uniform(0, 3)
+                print(f"  [tw_daily_pick] {err[:80]}, backoff {wait:.1f}s (attempt {attempt+1}/{MAX_ATTEMPTS})")
                 time.sleep(wait)
                 continue
             return {
