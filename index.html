@@ -923,6 +923,154 @@ body.midnight-deep::after{ opacity:.18 !important; }
   .lobby-quote, .top-line, .egg-candle, .egg-moon{ transition:none; }
   .egg-candle .flame{ animation:none; }
 }
+
+/* ═══════════ YUZU COUNSEL (Task 7) ═══════════ */
+.counsel-backdrop{
+  position:fixed; inset:0; z-index:9500;
+  background:rgba(2,6,16,.72);
+  backdrop-filter: blur(6px) saturate(.7);
+  -webkit-backdrop-filter: blur(6px) saturate(.7);
+  opacity:0; transition: opacity .25s ease;
+  pointer-events:none;
+}
+.counsel-backdrop.open{ opacity:1; pointer-events:auto; }
+.counsel-panel{
+  position:fixed; top:50%; left:50%;
+  transform: translate(-50%, -48%) scale(.97);
+  width: min(720px, 92vw); max-height: 78vh;
+  display:flex; flex-direction:column;
+  background: linear-gradient(180deg, #0E1A2C 0%, #08111E 100%);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(201,168,76,.08) inset;
+  z-index:9600;
+  opacity:0; pointer-events:none;
+  transition: opacity .25s ease, transform .3s cubic-bezier(.2,.7,.2,1);
+}
+.counsel-backdrop.open ~ .counsel-panel,
+.counsel-panel.open{
+  opacity:1; pointer-events:auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+.counsel-header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+}
+.counsel-title{
+  font:800 12px/1 "JetBrains Mono", monospace;
+  letter-spacing:2.5px; color:var(--gold);
+}
+.counsel-sub{
+  font:10px/1.5 "JetBrains Mono", monospace;
+  letter-spacing:1px; color:var(--text3);
+  margin-top:4px;
+}
+.counsel-mock-badge{
+  font:9px/1 "JetBrains Mono", monospace;
+  letter-spacing:1.5px; color:#cba36a;
+  padding:3px 7px;
+  border:1px solid rgba(201,168,76,.25);
+  border-radius:3px;
+  margin-right:10px;
+}
+.counsel-close{
+  background:transparent; border:1px solid var(--border2); color:var(--text2);
+  font:600 10px/1 "JetBrains Mono", monospace;
+  letter-spacing:1.2px; padding:6px 10px; border-radius:4px;
+  cursor:pointer; transition: color .2s, border-color .2s;
+}
+.counsel-close:hover{ color:var(--text); border-color:var(--gold); }
+.counsel-body{
+  flex:1; overflow-y:auto;
+  padding:18px 22px;
+  display:flex; flex-direction:column; gap:14px;
+  scrollbar-width: thin;
+}
+.counsel-body::-webkit-scrollbar{ width:6px; }
+.counsel-body::-webkit-scrollbar-thumb{ background:var(--border2); border-radius:3px; }
+.counsel-msg{ display:flex; gap:10px; align-items:flex-start; }
+.counsel-msg.user{
+  align-self:flex-end; max-width:78%;
+  background: rgba(201,168,76,.07);
+  border-left: 2px solid var(--gold);
+  padding:10px 14px; border-radius:4px;
+  font:13px/1.55 system-ui, sans-serif; color:var(--text);
+}
+.counsel-msg.agent{ flex-direction:column; gap:4px; }
+.counsel-msg .agent-tag{
+  font:800 10px/1 "JetBrains Mono", monospace;
+  letter-spacing:2px; padding:3px 8px;
+  border-radius:3px; align-self:flex-start;
+  background: rgba(255,255,255,.04);
+}
+.counsel-msg.agent .msg-text{
+  font:13px/1.65 system-ui, sans-serif;
+  color:var(--text); padding-left:2px;
+}
+.counsel-msg .msg-text .cite{
+  display:inline-block;
+  font:700 9px/1.2 "JetBrains Mono", monospace;
+  letter-spacing:1.2px;
+  padding:2px 6px; margin:0 2px;
+  background: rgba(255,255,255,.04);
+  border:1px solid var(--border2);
+  border-radius:3px; cursor:pointer;
+  color:var(--text2);
+  transition: color .2s, border-color .2s, background .2s;
+}
+.counsel-msg .msg-text .cite:hover{
+  color:var(--gold); border-color:var(--gold);
+  background: rgba(201,168,76,.08);
+}
+.counsel-input{
+  display:flex; gap:10px; align-items:flex-end;
+  padding:12px 14px;
+  border-top:1px solid var(--border);
+  background: rgba(7,11,22,.4);
+}
+.counsel-input textarea{
+  flex:1; resize:none;
+  background:transparent; border:none; color:var(--text);
+  font:13px/1.55 system-ui, sans-serif;
+  padding:8px; min-height:36px; max-height:120px;
+  outline:none;
+}
+.counsel-input textarea::placeholder{ color:var(--text3); font-style:italic; }
+.counsel-send{
+  background: var(--gold); color:#0A1422;
+  border:none; padding:8px 14px; border-radius:4px;
+  font:800 10px/1 "JetBrains Mono", monospace;
+  letter-spacing:1.5px; cursor:pointer;
+  transition: filter .2s, opacity .2s;
+}
+.counsel-send:disabled{ opacity:.4; cursor:not-allowed; }
+.counsel-send:hover:not(:disabled){ filter:brightness(1.1); }
+.counsel-thinking{
+  font:italic 11px/1 system-ui, sans-serif;
+  color:var(--text3); padding:6px 2px;
+}
+.counsel-pill{
+  position:fixed; right:24px; bottom:24px;
+  background: linear-gradient(180deg, #1A2640 0%, #0E1A2C 100%);
+  border:1px solid var(--gold);
+  color:var(--gold);
+  padding:9px 14px; border-radius:24px;
+  font:800 10px/1 "JetBrains Mono", monospace;
+  letter-spacing:1.8px;
+  cursor:pointer; z-index:9400;
+  box-shadow:0 6px 24px rgba(0,0,0,.5);
+  display:none;
+}
+.counsel-pill.show{ display:block; }
+.counsel-pill:hover{ filter:brightness(1.15); }
+
+@media (max-width: 900px){
+  .counsel-panel{ width:96vw; max-height:86vh; }
+}
+@media (prefers-reduced-motion: reduce){
+  .counsel-panel, .counsel-backdrop{ transition:none; }
+}
 </style>
 </head>
 <body>
@@ -4270,6 +4418,313 @@ window.addEventListener('resize', () => {
 document.addEventListener('iso-rendered', () => {
   if(_mobileSnap){ _mobileSnap.disconnect(); _mobileSnap = null; }
   _mobileSnap = attachMobileSnap();
+});
+
+// ═══════════════════════════════════════════════════════════════
+// YUZU COUNSEL (Task 7) — multi-agent AI consultation panel
+// Skeleton + mock backend. Real Gemini wiring left as TODO; the
+// patch's POST /api/counsel SSE contract is implemented as a local
+// async generator so the UI is fully testable today.
+// ═══════════════════════════════════════════════════════════════
+
+const AGENT_DATA_KEYS = {
+  cio: 'master', pm: 'portfolio_master', wm: 'wealth_master',
+  da:  'devils_advocate', tw: 'tw_short_term', tm: 'trading_master',
+};
+
+let counselEl = null;
+let counselPill = null;
+let counselBusy = false;
+let counselHistory = [];
+
+function counselOpen(){ return !!document.querySelector('.counsel-panel.open'); }
+
+function toggleCounsel(){ counselOpen() ? closeCounsel() : openCounsel(); }
+
+function openCounsel(){
+  if(!counselEl) counselEl = buildCounselDOM();
+  document.body.appendChild(counselEl);
+  // Pill (minimized state) lives in body too — ensure visible state cleared
+  if(counselPill) counselPill.classList.remove('show');
+  requestAnimationFrame(() => {
+    counselEl.querySelector('.counsel-backdrop').classList.add('open');
+    counselEl.querySelector('.counsel-panel').classList.add('open');
+    counselEl.querySelector('textarea').focus();
+  });
+}
+
+function closeCounsel(){
+  if(!counselEl) return;
+  counselEl.querySelector('.counsel-backdrop')?.classList.remove('open');
+  counselEl.querySelector('.counsel-panel')?.classList.remove('open');
+  if(counselPill) counselPill.classList.remove('show');
+  setTimeout(() => { counselEl?.remove(); counselEl = null; }, 260);
+}
+
+function minimizeCounsel(){
+  if(!counselEl) return;
+  counselEl.querySelector('.counsel-backdrop')?.classList.remove('open');
+  counselEl.querySelector('.counsel-panel')?.classList.remove('open');
+  setTimeout(() => {
+    if(!counselPill){
+      counselPill = document.createElement('div');
+      counselPill.className = 'counsel-pill';
+      counselPill.textContent = 'YUZU COUNSEL · ⌘K';
+      counselPill.addEventListener('click', () => {
+        counselPill.classList.remove('show');
+        openCounsel();
+      });
+      document.body.appendChild(counselPill);
+    }
+    counselPill.classList.add('show');
+  }, 200);
+}
+
+function buildCounselDOM(){
+  const root = document.createElement('div');
+  root.innerHTML = `
+    <div class="counsel-backdrop"></div>
+    <div class="counsel-panel" role="dialog" aria-label="Yuzu Counsel">
+      <div class="counsel-header">
+        <div>
+          <div class="counsel-title">YUZU COUNSEL</div>
+          <div class="counsel-sub">Ask the desk · ⌘K to toggle · ESC to close</div>
+        </div>
+        <div style="display:flex; align-items:center">
+          <span class="counsel-mock-badge" title="No backend yet — replies are derived from analysis.json locally">MOCK</span>
+          <button class="counsel-close">✕ CLOSE</button>
+        </div>
+      </div>
+      <div class="counsel-body"></div>
+      <div class="counsel-input">
+        <textarea rows="1" placeholder="例如：2536 為什麼還沒停損？" autocomplete="off"></textarea>
+        <button class="counsel-send">↑ SEND</button>
+      </div>
+    </div>
+  `;
+  // Pre-wire interactions before returning
+  const frag = document.createDocumentFragment();
+  while(root.firstChild) frag.appendChild(root.firstChild);
+  const wrap = document.createElement('div');
+  wrap.appendChild(frag);
+
+  wrap.querySelector('.counsel-backdrop').addEventListener('click', closeCounsel);
+  wrap.querySelector('.counsel-close').addEventListener('click', closeCounsel);
+
+  const ta = wrap.querySelector('textarea');
+  const send = wrap.querySelector('.counsel-send');
+  const body = wrap.querySelector('.counsel-body');
+
+  // Greeting message
+  body.innerHTML = `
+    <div class="counsel-msg agent" data-agent="cio">
+      <span class="agent-tag" style="color:#C9A84C; border:1px solid rgba(201,168,76,.4)">CIO</span>
+      <div class="msg-text">早安。問我任何今天 desk 的判斷，或某檔股票該如何處理。我會把相關的 agents 拉進來一起回答。</div>
+    </div>`;
+
+  function autoresize(){
+    ta.style.height = '36px';
+    ta.style.height = Math.min(120, ta.scrollHeight) + 'px';
+  }
+  ta.addEventListener('input', autoresize);
+
+  function trySend(){
+    const q = ta.value.trim();
+    if(!q || counselBusy) return;
+    ta.value = ''; autoresize();
+    submitQuestion(q, body);
+  }
+  send.addEventListener('click', trySend);
+  ta.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); trySend(); }
+  });
+
+  return wrap;
+}
+
+async function submitQuestion(question, body){
+  counselBusy = true;
+  document.querySelector('.counsel-send')?.setAttribute('disabled', 'true');
+
+  // User bubble
+  const userMsg = document.createElement('div');
+  userMsg.className = 'counsel-msg user';
+  userMsg.textContent = question;
+  body.appendChild(userMsg);
+  body.scrollTop = body.scrollHeight;
+
+  counselHistory.push({ role:'user', text: question });
+
+  // Thinking marker
+  const thinking = document.createElement('div');
+  thinking.className = 'counsel-thinking';
+  thinking.textContent = '⋯ desk thinking ⋯';
+  body.appendChild(thinking);
+  body.scrollTop = body.scrollHeight;
+
+  let currentMsg = null;
+
+  await askCounsel(question, {
+    onAgent: (evt) => {
+      thinking.remove();
+      currentMsg = document.createElement('div');
+      currentMsg.className = 'counsel-msg agent';
+      currentMsg.dataset.agent = evt.agent;
+      const card = (typeof AGENT_CARDS !== 'undefined') ? AGENT_CARDS[evt.agent] : null;
+      const color = card?.color || '#7A8EBD';
+      const name = card?.name || evt.agent.toUpperCase();
+      currentMsg.innerHTML = `
+        <span class="agent-tag" style="color:${color}; border:1px solid ${color}55">${name}</span>
+        <div class="msg-text"></div>`;
+      body.appendChild(currentMsg);
+      body.scrollTop = body.scrollHeight;
+    },
+    onToken: (evt) => {
+      if(!currentMsg) return;
+      const txt = currentMsg.querySelector('.msg-text');
+      txt.insertAdjacentText('beforeend', evt.text);
+      body.scrollTop = body.scrollHeight;
+    },
+    onCite: (evt) => {
+      if(!currentMsg) return;
+      const txt = currentMsg.querySelector('.msg-text');
+      const chip = document.createElement('span');
+      chip.className = 'cite';
+      chip.dataset.cite = evt.ref;
+      chip.textContent = evt.ref;
+      txt.appendChild(chip);
+      txt.insertAdjacentText('beforeend', ' ');
+    },
+    onDone: () => { /* finalize below */ },
+  });
+
+  counselBusy = false;
+  document.querySelector('.counsel-send')?.removeAttribute('disabled');
+  counselHistory.push({ role:'assistant', text:'(streamed responses recorded)' });
+}
+
+// ═══ askCounsel — local mock streamer (no backend yet) ═══
+async function askCounsel(question, { onAgent, onToken, onCite, onDone } = {}){
+  const ctx = window.DATA || {};
+  const agents = pickRelevantAgents(question);
+
+  for(const agent of agents){
+    onAgent?.({ type:'agent-start', agent });
+    const reply = generateMockReply(agent, question, ctx);
+    // Stream tokens in small chunks
+    const chunks = chunkText(reply.text, 4 + Math.floor(Math.random()*4));
+    for(const c of chunks){
+      onToken?.({ type:'token', agent, text:c });
+      await sleep(28 + Math.random()*22);
+    }
+    // Emit citations after the prose
+    for(const cite of reply.cites){
+      onCite?.({ type:'cite', agent, ref:cite });
+      await sleep(60);
+    }
+    await sleep(220);
+  }
+  onDone?.({ type:'done' });
+}
+
+function pickRelevantAgents(q){
+  const s = q;
+  if(/停損|斷頭|止損|cut/i.test(s))                return ['pm', 'da', 'cio'];
+  if(/進場|買進|加碼|追擊|breakout/i.test(s))        return ['tm', 'tw', 'cio'];
+  if(/市場|大盤|體制|regime/i.test(s))               return ['pm', 'cio'];
+  if(/風險|風控|worst|下行/i.test(s))                return ['da', 'wm', 'cio'];
+  if(/配置|資產|多空|allocation/i.test(s))           return ['pm', 'wm', 'cio'];
+  if(/流動|現金|cash/i.test(s))                     return ['wm', 'cio'];
+  if(/今日|today|現況/i.test(s))                    return ['tm', 'da', 'cio'];
+  return ['pm', 'da', 'cio'];  // default trio
+}
+
+function generateMockReply(agent, question, ctx){
+  const key = AGENT_DATA_KEYS[agent];
+  const a = (ctx.agents || {})[key] || {};
+  const pick = (ctx.agents?.tw_daily_pick?.pick) || {};
+  const regime = ctx.regime?.market_regime || '—';
+  const verdict = a.verdict || '—';
+
+  // Detect 4-digit stock code in question for cite targeting
+  const codeMatch = question.match(/\b\d{4}\b/);
+  const code = codeMatch ? codeMatch[0] : (pick.code && pick.code !== '—' ? pick.code : null);
+
+  // Pull first non-trivial sentence from agent summary
+  const summary = (a.summary || '').replace(/\s+/g, ' ').trim();
+  const firstSent = summary.split(/[。．.]/).filter(Boolean)[0] || '';
+  const insight = (a.key_insights || [])[0] || '';
+
+  // Build response per agent persona
+  let text;
+  switch(agent){
+    case 'cio':
+      text = firstSent
+        ? `綜合來看，${firstSent}。目前 verdict: ${verdict}，regime: ${regime}。`
+        : `綜合各 desk 意見，verdict 維持 ${verdict}。regime: ${regime}。`;
+      break;
+    case 'pm':
+      text = insight
+        ? `從配置角度看，${insight}。`
+        : `Portfolio 觀點: ${verdict}。${firstSent}`.trim();
+      break;
+    case 'da':
+      const risk = (a.risk_flags || [])[0] || (a.counter_argument) || '';
+      text = risk ? `風險上要注意: ${risk}` : `從風控觀點: ${verdict}。${firstSent}`.trim();
+      break;
+    case 'tm':
+      text = pick.code && pick.code !== '—'
+        ? `今日盤面候選: ${pick.name}(${pick.code}), entry ${pick.entry_zone}, stop ${pick.stop_loss}, target ${pick.target}。`
+        : firstSent || '盤面短線觀察中，無強烈訊號。';
+      break;
+    case 'tw':
+      text = insight ? `${insight}` : (firstSent || '台股短線觀察中。');
+      break;
+    case 'wm':
+      text = insight ? `流動性面: ${insight}` : (firstSent || '財富面尚屬穩定。');
+      break;
+    default:
+      text = firstSent || verdict;
+  }
+
+  // Build citations
+  const cites = [];
+  if(code) cites.push(`${agent.toUpperCase()}·${code}`);
+  cites.push(`${agent.toUpperCase()}·VERDICT`);
+
+  return { text, cites };
+}
+
+function chunkText(text, n){
+  const out = [];
+  for(let i = 0; i < text.length; i += n) out.push(text.slice(i, i + n));
+  return out;
+}
+
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+// ═══ Trigger: ⌘K / Ctrl-K + ESC ═══
+document.addEventListener('keydown', (e) => {
+  if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault();
+    toggleCounsel();
+  } else if(e.key === 'Escape' && counselOpen()){
+    closeCounsel();
+  }
+});
+
+// ═══ Citation chip click → expand the agent's room ═══
+document.addEventListener('click', (e) => {
+  const chip = e.target.closest && e.target.closest('.cite');
+  if(!chip) return;
+  const ref = chip.dataset.cite || '';
+  const [agentUC] = ref.split('·');
+  const agent = (agentUC || '').toLowerCase();
+  const card = (typeof AGENT_CARDS !== 'undefined') ? AGENT_CARDS[agent] : null;
+  if(!card || !card.room) return;
+  minimizeCounsel();
+  // Defer expand so the minimize transition can run first
+  setTimeout(() => expandRoom(card.room), 220);
 });
 </script>
 </body>
