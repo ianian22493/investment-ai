@@ -889,6 +889,28 @@ body.demo-mode .sidebar-right{
 
 body.midnight-deep{ filter: saturate(.5) brightness(.78) hue-rotate(-10deg) !important; }
 body.midnight-deep::after{ opacity:.18 !important; }
+
+/* ─── Corridor walker (Task 1) ─── */
+#walker{
+  position:absolute; top:0; left:0;
+  width:10px; height:10px; border-radius:50%;
+  background: var(--walker-color, #C9A84C);
+  box-shadow: 0 0 12px 2px var(--walker-color, #C9A84C),
+              0 0 28px var(--walker-color, #C9A84C);
+  pointer-events:none; display:none; z-index:50;
+  opacity:.92;
+  offset-anchor:center;
+  offset-rotate: 0deg;
+}
+.room.ghosting .agent-v3{
+  opacity:.18 !important;
+  transition: opacity .9s ease;
+}
+.room.ghosting .agent-v3 .ag-glow{ opacity:0 !important; }
+@media (prefers-reduced-motion: reduce){
+  #walker{ display:none !important; }
+  .room.ghosting .agent-v3{ opacity:1 !important; }
+}
 .egg-moon{
   position:fixed; right:44px; top:84px;
   width:54px; height:54px;
@@ -3739,6 +3761,121 @@ function startBreathing(){
 // rAF pauses when tab is hidden — that's correct behavior (no animation needed
 // when user isn't looking).
 startBreathing();
+
+// ═══════════════════════════════════════════════════════════════
+// CORRIDOR WALKING SYSTEM (Task 1)
+// Agents occasionally drift out of their rooms, walk a path through the
+// corridor, then return. Single global walker, generous cooldowns, opt-in
+// triggers — designed to feel like a ritual, not a loop.
+// ═══════════════════════════════════════════════════════════════
+
+const WALKS = {
+  cio: { path:"M180,200 L180,215 L400,215 L400,90 L220,90 L220,200",
+         dur:5600, ease:"cubic-bezier(.4,0,.4,1)",
+         color:"#C9A84C", cd:180000, from:"exec" },
+  da:  { path:"M180,320 L180,335 L295,335 L295,340",
+         dur:4200, ease:"cubic-bezier(.4,.1,.8,.5)",
+         color:"#FF4560", cd:75000,  from:"risk" },
+  tw:  { path:"M620,200 L620,215 L410,215 L410,200",
+         dur:5800, ease:"cubic-bezier(.4,0,.4,1)",
+         color:"#00C896", cd:90000,  from:"research" },
+  tm:  { path:"M295,340 L295,335 L510,335 L520,338",
+         dur:4800, ease:"linear",
+         color:"#00E5FF", cd:120000, from:"trading" },
+  pm:  { path:"M400,220 L400,215 L510,215 L510,270 L520,270",
+         dur:5200, ease:"cubic-bezier(.3,0,.3,1)",
+         color:"#3D8EFF", cd:90000,  from:"wealth" },
+  wm:  { path:"M400,220 L400,215 L220,215 L220,200",
+         dur:5000, ease:"cubic-bezier(.5,.1,.3,1)",
+         color:"#A259FF", cd:100000, from:"wealth" },
+};
+
+const walkState = { active:null, lastEnd:-Infinity, lastByAgent:{} };
+
+function ensureWalker(){
+  let dot = document.getElementById('walker');
+  if(dot) return dot;
+  const grid = document.querySelector('.iso-grid');
+  if(!grid) return null;
+  dot = document.createElement('div');
+  dot.id = 'walker';
+  grid.appendChild(dot);
+  return dot;
+}
+
+function tryWalk(agent){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  const w = WALKS[agent];
+  if(!w) return false;
+  const now = performance.now();
+  if(walkState.active) return false;                         // global lock
+  if(now - walkState.lastEnd < 90000) return false;          // 90s global spacing
+  const lastAgent = walkState.lastByAgent[agent];
+  if(lastAgent != null && now - lastAgent < w.cd) return false;
+  // Source room must exist in current DOM
+  if(!document.querySelector(`.room[data-room="${w.from}"]`)) return false;
+  startWalk(agent);
+  return true;
+}
+
+function startWalk(agent){
+  const w = WALKS[agent];
+  const dot = ensureWalker();
+  if(!dot) return;
+  walkState.active = agent;
+  document.querySelector(`.room[data-room="${w.from}"]`)?.classList.add('ghosting');
+  dot.style.offsetPath = `path("${w.path}")`;
+  dot.style.offsetDistance = '0%';
+  dot.style.setProperty('--walker-color', w.color);
+  dot.style.display = 'block';
+  dot.animate(
+    [{ offsetDistance:'0%' }, { offsetDistance:'100%' }],
+    { duration:w.dur, easing:w.ease, fill:'forwards' }
+  ).onfinish = () => arriveAndReturn(agent);
+}
+
+function arriveAndReturn(agent){
+  const w = WALKS[agent];
+  const dot = document.getElementById('walker');
+  setTimeout(() => {
+    if(!dot){ finishWalk(agent); return; }
+    dot.animate(
+      [{ offsetDistance:'100%' }, { offsetDistance:'0%' }],
+      { duration:w.dur, easing:w.ease, fill:'forwards' }
+    ).onfinish = () => finishWalk(agent);
+  }, 2500);
+}
+
+function finishWalk(agent){
+  const w = WALKS[agent];
+  const dot = document.getElementById('walker');
+  if(dot) dot.style.display = 'none';
+  document.querySelector(`.room[data-room="${w.from}"]`)?.classList.remove('ghosting');
+  walkState.active = null;
+  walkState.lastEnd = performance.now();
+  walkState.lastByAgent[agent] = performance.now();
+}
+
+// ─── Trigger · CIO morning round ───────────────────────────────
+// Refinement F: 8–30s random delay (let viewer's eyes adapt first),
+// once per browser session. The viewer who misses today knows there'll
+// be another tomorrow — that's the ritual.
+(function cioMorningRound(){
+  if(sessionStorage.getItem('cio-walked-this-session')) return;
+  const delay = 8000 + Math.random() * 22000;
+  setTimeout(() => {
+    if(tryWalk('cio')) sessionStorage.setItem('cio-walked-this-session', '1');
+  }, delay);
+})();
+
+// ─── Trigger · TM momentum logging ─────────────────────────────
+// Refinement F: when scanner_momentum > .8, TM walks from TRADING to
+// ARCHIVE — physically "filing" the day's strongest names. Trigger
+// polls every 45s; the 120s per-agent cooldown gates re-fires.
+setInterval(() => {
+  const sv = (window.DATA && DATA.agents && DATA.agents.signal_fusion) || {};
+  if((sv.scanner_momentum || 0) > 0.8) tryWalk('tm');
+}, 45000);
 
 // Verdict breathing: handled by CSS animation on .verdict-huge (works fine on HTML elements)
 
