@@ -818,6 +818,60 @@ body.demo-mode .sidebar-right{
   filter: brightness(.92);
   transition: filter 1.5s ease;
 }
+
+/* ═══════════ EASTER EGGS ═══════════ */
+.lobby-quote{
+  position:fixed; left:50%; top:42%;
+  transform: translate(-50%, -20px);
+  font-family: 'Lora', Georgia, serif; font-style:italic;
+  font-size: clamp(20px, 2.4vw, 30px);
+  color:#dac98a; letter-spacing:.5px;
+  text-align:center; line-height:1.4;
+  max-width:80vw;
+  text-shadow: 0 0 24px rgba(201,168,76,.5), 0 0 60px rgba(201,168,76,.25);
+  opacity:0; pointer-events:none; z-index:9000;
+  transition: opacity 2.4s ease, transform 2.4s cubic-bezier(.2,.6,.2,1);
+}
+.lobby-quote.show{ opacity:1; transform: translate(-50%, 0); }
+
+.top-line{
+  position:fixed; left:0; right:0; top:54px;
+  text-align:center; font-size:13px; letter-spacing:1.2px;
+  color:#cbb87a; font-style:italic; opacity:0;
+  z-index:9000; pointer-events:none;
+  text-shadow: 0 0 18px rgba(201,168,76,.35);
+  transition: opacity var(--tl-in, 1.4s) ease;
+}
+.top-line.show{ opacity:.92; }
+
+.egg-candle{
+  position:fixed; right:36px; bottom:36px;
+  width:38px; height:62px;
+  opacity:0; z-index:8500; pointer-events:none;
+  transition: opacity 3.2s ease;
+}
+.egg-candle.show{ opacity:.78; }
+.egg-candle .flame{ transform-origin:50% 80%; animation: candleFlicker 2.4s ease-in-out infinite; }
+@keyframes candleFlicker{
+  0%,100%{ transform: scale(1,1);     opacity:.92; }
+  35%   { transform: scale(1.05,1.08); opacity:1; }
+  62%   { transform: scale(.96,.92);   opacity:.74; }
+}
+
+body.midnight-deep{ filter: saturate(.5) brightness(.78) hue-rotate(-10deg) !important; }
+body.midnight-deep::after{ opacity:.18 !important; }
+.egg-moon{
+  position:fixed; right:44px; top:84px;
+  width:54px; height:54px;
+  opacity:0; z-index:8000; pointer-events:none;
+  transition: opacity 4s ease;
+}
+.egg-moon.show{ opacity:.85; }
+
+@media (prefers-reduced-motion: reduce){
+  .lobby-quote, .top-line, .egg-candle, .egg-moon{ transition:none; }
+  .egg-candle .flame{ animation:none; }
+}
 </style>
 </head>
 <body>
@@ -3854,6 +3908,169 @@ function resetIdle(){
 });
 
 setDemoState('idle');
+
+// ═══════════════════════════════════════════════════════════════
+// EASTER EGGS — 5 contemplative triggers
+// ═══════════════════════════════════════════════════════════════
+const eggDay = () => new Date().toISOString().slice(0,10);
+const eggFiredToday = (id) => localStorage.getItem('egg-'+id) === eggDay();
+const markEgg = (id) => localStorage.setItem('egg-'+id, eggDay());
+
+// ─── Visual helpers ───────────────────────────────────────────
+function showLobbyQuote(text){
+  let el = document.querySelector('.lobby-quote');
+  if(!el){ el = document.createElement('div'); el.className='lobby-quote'; document.body.appendChild(el); }
+  el.textContent = text;
+  requestAnimationFrame(() => el.classList.add('show'));
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 7000);
+}
+
+function showTopLine(text, opts){
+  opts = opts || {};
+  let el = document.querySelector('.top-line');
+  if(!el){ el = document.createElement('div'); el.className='top-line'; document.body.appendChild(el); }
+  el.style.setProperty('--tl-in', (opts.in || 1400) + 'ms');
+  el.textContent = text;
+  requestAnimationFrame(() => el.classList.add('show'));
+  clearTimeout(el._t);
+  el._t = setTimeout(() => {
+    el.style.setProperty('--tl-in', (opts.out || 1800) + 'ms');
+    el.classList.remove('show');
+  }, opts.stay || 9000);
+}
+
+const CANDLE_SVG = `<svg viewBox="0 0 38 62" xmlns="http://www.w3.org/2000/svg">
+  <rect x="14" y="28" width="10" height="28" rx="1.2" fill="#e6d9b3"/>
+  <rect x="14" y="28" width="10" height="3" fill="#b9a875"/>
+  <line x1="19" y1="14" x2="19" y2="28" stroke="#3a2d18" stroke-width="1.2"/>
+  <g class="flame">
+    <ellipse cx="19" cy="14" rx="4.2" ry="7.5" fill="#ffb35a"/>
+    <ellipse cx="19" cy="15" rx="2.5" ry="5" fill="#ffe9b5"/>
+    <ellipse cx="19" cy="16" rx="1.1" ry="3" fill="#fff"/>
+  </g>
+</svg>`;
+function showCandle(){
+  let el = document.querySelector('.egg-candle');
+  if(!el){ el = document.createElement('div'); el.className='egg-candle'; el.innerHTML = CANDLE_SVG; document.body.appendChild(el); }
+  requestAnimationFrame(() => el.classList.add('show'));
+}
+function hideCandle(){
+  const el = document.querySelector('.egg-candle');
+  if(el) el.classList.remove('show');
+}
+
+const MOON_SVG = `<svg viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="moonGlow" cx=".4" cy=".4" r=".7">
+      <stop offset="0" stop-color="#fff8dc" stop-opacity=".95"/>
+      <stop offset="1" stop-color="#fff8dc" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="27" cy="27" r="22" fill="url(#moonGlow)" opacity=".5"/>
+  <circle cx="27" cy="27" r="14" fill="#ece1b5"/>
+  <circle cx="33" cy="22" r="14" fill="#0d1422"/>
+</svg>`;
+function showMoon(){
+  let el = document.querySelector('.egg-moon');
+  if(!el){ el = document.createElement('div'); el.className='egg-moon'; el.innerHTML = MOON_SVG; document.body.appendChild(el); }
+  requestAnimationFrame(() => el.classList.add('show'));
+}
+function deepenMidnight(){ document.body.classList.add('midnight-deep'); }
+
+// ─── EGG 1 · Logo × 7 ─────────────────────────────────────────
+(function(){
+  const logo = document.querySelector('.brand img');
+  if(!logo) return;
+  let count = 0, t;
+  logo.style.cursor = 'pointer';
+  logo.addEventListener('click', () => {
+    clearTimeout(t); count++;
+    t = setTimeout(() => count = 0, 5000);
+    if(count >= 7 && !eggFiredToday('1')){
+      count = 0; markEgg('1');
+      showLobbyQuote('市場是面鏡子，不是窗戶。');
+    }
+  });
+})();
+
+// ─── EGG 2 · ESC × 3 ──────────────────────────────────────────
+(function(){
+  const LINES = [
+    '市場是有耐心的人贏的遊戲。',
+    '不確定性不是風險，是機會被定價的方式。',
+    '最好的部位往往看起來最無聊。',
+    '你看不見 alpha，因為你還在找它。',
+    '倉位是承諾，不是預測。'
+  ];
+  let count = 0, t;
+  document.addEventListener('keydown', e => {
+    if(e.key !== 'Escape') return;
+    clearTimeout(t); count++;
+    t = setTimeout(() => count = 0, 1500);
+    if(count >= 3){
+      count = 0;
+      const line = LINES[Math.floor(Math.random() * LINES.length)];
+      showTopLine(line, { in: 1400, stay: 9000, out: 1800 });
+    }
+  });
+})();
+
+// ─── EGG 3 · Shift + hover agent — show true thought ──────────
+const TRUE_THOUGHTS = {
+  cio: '其實我也不確定，但有人得拍板。',
+  tm:  '今天看起來能追，但我答應過 CIO 不再衝。',
+  tw:  '這是長線，但短線不舒服。',
+  da:  '集中度 28% 我其實覺得還好，但 CIO 在看。',
+  pm:  '2536 該停損了。每天看一次都更痛。',
+  wm:  '7 月外牆款比這顆股票重要。'
+};
+let _shiftDown = false;
+window.addEventListener('keydown', e => { if(e.key === 'Shift') _shiftDown = true; });
+window.addEventListener('keyup',   e => { if(e.key === 'Shift') _shiftDown = false; });
+window.addEventListener('blur',     () => { _shiftDown = false; });
+
+// Wrap showCharTip — after it renders, if Shift is held, swap verdict text
+const _origShowCharTip = showCharTip;
+showCharTip = function(el){
+  _origShowCharTip(el);
+  if(!_shiftDown) return;
+  const role = Array.from(el.classList).find(c => AGENT_CARDS[c]);
+  if(!role || !TRUE_THOUGHTS[role]) return;
+  const verdEl = _tip.querySelector('.verd');
+  if(verdEl){
+    verdEl.textContent = TRUE_THOUGHTS[role];
+    verdEl.style.fontStyle = 'italic';
+    verdEl.style.opacity = '.82';
+  }
+};
+
+// ─── EGG 4 · 90s stillness — candle ───────────────────────────
+(function(){
+  let stillTimer;
+  const reset = () => {
+    clearTimeout(stillTimer);
+    hideCandle();
+    stillTimer = setTimeout(showCandle, 90000);
+  };
+  ['mousemove','keydown','touchstart'].forEach(ev =>
+    window.addEventListener(ev, reset, { passive: true }));
+  reset();
+})();
+
+// ─── EGG 5 · 03:33 Taipei time — deep midnight + moon ─────────
+(function(){
+  function check(){
+    const tw = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+    if(tw.getHours() === 3 && tw.getMinutes() === 33 && !eggFiredToday('5')){
+      markEgg('5');
+      deepenMidnight();
+      showMoon();
+    }
+  }
+  check();
+  setInterval(check, 30000);
+})();
 </script>
 </body>
 </html>
