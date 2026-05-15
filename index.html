@@ -678,18 +678,47 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
 @media(max-width:1100px){
   .app{grid-template-columns:200px 1fr 280px}
 }
-@media(max-width:900px){
-  .app{grid-template-columns:1fr; grid-template-rows:auto auto auto}
-  .sidebar-left, .sidebar-right{height:auto; max-height:none}
-  .sidebar-left{order:1; border-right:none; border-bottom:1px solid var(--border)}
-  .canvas{order:2}
-  .sidebar-right{order:3; border-left:none; border-top:1px solid var(--border)}
-  .iso-grid{grid-template-columns:1fr 1fr; grid-template-rows:auto}
-  .r-exec, .r-trading, .r-research, .r-risk, .r-wealth, .r-archive, .r-lobby{grid-area:auto}
-  .r-trading{grid-column:1 / -1}
-  .r-lobby{grid-column:1 / -1}
-  .floor{padding:18px 16px 60px}
-  .expanded{left:8px; right:8px; top:8px; bottom:8px; padding:18px 16px}
+@media (max-width: 900px) {
+  /* App skeleton — single column, sidebars hidden on mobile */
+  .app{ grid-template-columns:1fr; grid-template-rows:auto 1fr auto }
+  .sidebar-left, .sidebar-right{ display:none }
+  .canvas .topbar{ padding:0 14px; height:54px }
+  .canvas .stage{ padding:10px 0 0 }
+
+  /* Iso-grid → horizontal snap rail */
+  .iso-grid{
+    display:flex;
+    grid-template:none;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 24px 32% 24px 32%;
+    gap:14px;
+    border:none; box-shadow:none; background:none;
+  }
+  .iso-grid::-webkit-scrollbar{ display:none }
+  .iso-grid::before, .iso-grid::after{ display:none }
+
+  /* Rooms — flex items with snap, gentler iso angle for mobile */
+  .room{
+    flex: 0 0 64%;
+    scroll-snap-align:center;
+    scroll-snap-stop: always;
+    transform: perspective(900px) rotateX(8deg) rotateZ(-3deg);
+    min-height: 340px;
+    border-radius:10px;
+    border:1px solid var(--border2);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  .room:not(.m-focus){ opacity:.45 }
+
+  /* Drop grid-area assignments — flex order takes over */
+  .r-exec, .r-research, .r-lobby, .r-risk,
+  .r-wealth, .r-trading, .r-archive{ grid-area:auto }
+
+  .floor{ padding:18px 16px 60px }
+  .expanded{ left:8px; right:8px; top:8px; bottom:8px; padding:18px 16px }
 }
 
 /* ═══ Patch Task 2 · Empty State (空手觀望) ═══════════════════════ */
@@ -2227,6 +2256,9 @@ function renderOffice(){
   grid.querySelectorAll('.room[data-room]').forEach(r => {
     r.addEventListener('click', () => expandRoom(r.dataset.room));
   });
+
+  // Let mobile snap observer re-attach to the freshly rendered rooms
+  document.dispatchEvent(new CustomEvent('iso-rendered'));
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -4071,6 +4103,37 @@ showCharTip = function(el){
   check();
   setInterval(check, 30000);
 })();
+
+// ═══════════════════════════════════════════════════════════════
+// MOBILE · Horizontal snap rail — IntersectionObserver picks focused room
+// ═══════════════════════════════════════════════════════════════
+function attachMobileSnap(){
+  if(window.innerWidth >= 900) return null;
+  const grid = document.querySelector('.iso-grid');
+  if(!grid) return null;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.intersectionRatio > 0.55){
+        document.querySelectorAll('.room').forEach(r => r.classList.remove('m-focus'));
+        e.target.classList.add('m-focus');
+        document.dispatchEvent(new CustomEvent('room-focus', { detail: e.target.dataset.room }));
+      }
+    });
+  }, { root: grid, threshold: [0.55, 0.85] });
+  document.querySelectorAll('.room').forEach(r => io.observe(r));
+  return io;
+}
+let _mobileSnap = attachMobileSnap();
+
+// Re-attach on resize crossing the breakpoint or after each iso-grid re-render
+window.addEventListener('resize', () => {
+  if(_mobileSnap){ _mobileSnap.disconnect(); _mobileSnap = null; }
+  _mobileSnap = attachMobileSnap();
+});
+document.addEventListener('iso-rendered', () => {
+  if(_mobileSnap){ _mobileSnap.disconnect(); _mobileSnap = null; }
+  _mobileSnap = attachMobileSnap();
+});
 </script>
 </body>
 </html>
