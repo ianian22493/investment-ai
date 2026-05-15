@@ -4,10 +4,16 @@ import json
 import os
 import random
 import re
+import sys
 import time
 
 from google import genai
 from google.genai import types
+
+# Make project root imports work whether base.py is loaded from cwd or sibling
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import prompt_cache
+from error_log import log_error as _log_error
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 MODEL = "gemini-2.5-flash"
@@ -43,7 +49,15 @@ Structure:
 
 
 def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
-    """Call Gemini API and parse JSON response. Retries on transient errors (429/503/5xx)."""
+    """Call Gemini API and parse JSON response. Retries on transient errors (429/503/5xx).
+    Prompt-hash cache layer in front — skips API call if identical prompt was seen
+    within the last 24h. Cache complementary to agent_cache.py (agent-level TTL)."""
+    full_system = system_prompt + "\n\n" + RESPONSE_SCHEMA
+    cached = prompt_cache.get(MODEL, full_system, user_content)
+    if cached is not None:
+        print(f"  [prompt-cache hit] {agent_name}")
+        return cached
+
     MAX_ATTEMPTS = 5
     for attempt in range(MAX_ATTEMPTS):
         try:
@@ -51,7 +65,7 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
                 model=MODEL,
                 contents=user_content,
                 config=types.GenerateContentConfig(
-                    system_instruction=system_prompt + "\n\n" + RESPONSE_SCHEMA,
+                    system_instruction=full_system,
                 ),
             )
             raw = resp.text.strip()
@@ -59,12 +73,15 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
                 raw = re.sub(r"^```(?:json)?\s*", "", raw)
                 raw = re.sub(r"\s*```$", "", raw)
             raw = re.sub(r'\[\d+\]', '', raw)
-            return json.loads(raw)
+            parsed = json.loads(raw)
+            prompt_cache.set(MODEL, full_system, user_content, agent_name, parsed)
+            return parsed
         except json.JSONDecodeError as e:
             if attempt < MAX_ATTEMPTS - 1:
                 print(f"  [{agent_name}] JSON parse error, retry {attempt+1}/{MAX_ATTEMPTS}...")
                 time.sleep(15)
                 continue
+            _log_error(f"agent:{agent_name}", e)
             return {
                 "verdict": "ERROR",
                 "confidence": 0,
@@ -82,6 +99,7 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
                 print(f"  [{agent_name}] {err[:80]}, backoff {wait:.1f}s (attempt {attempt+1}/{MAX_ATTEMPTS})")
                 time.sleep(wait)
                 continue
+            _log_error(f"agent:{agent_name}", e)
             return {
                 "verdict": "ERROR",
                 "confidence": 0,

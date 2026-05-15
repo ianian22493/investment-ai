@@ -1210,6 +1210,39 @@ body.midnight-deep::after{ opacity:.18 !important; }
   </aside>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════════
+     Static SVG fragments — extracted into <template> tags so the parser
+     keeps them inert and JS can clone() instead of innerHTML-ing a long
+     string literal. Pattern: do this for SVGs that take NO parameters.
+     For parameterized SVGs (room shells, agent silhouettes), JS template
+     literals remain clearer because of natural value interpolation.
+     ═══════════════════════════════════════════════════════════════════ -->
+<template id="egg-candle-svg">
+  <svg viewBox="0 0 38 62" xmlns="http://www.w3.org/2000/svg">
+    <rect x="14" y="28" width="10" height="28" rx="1.2" fill="#e6d9b3"/>
+    <rect x="14" y="28" width="10" height="3" fill="#b9a875"/>
+    <line x1="19" y1="14" x2="19" y2="28" stroke="#3a2d18" stroke-width="1.2"/>
+    <g class="flame">
+      <ellipse cx="19" cy="14" rx="4.2" ry="7.5" fill="#ffb35a"/>
+      <ellipse cx="19" cy="15" rx="2.5" ry="5" fill="#ffe9b5"/>
+      <ellipse cx="19" cy="16" rx="1.1" ry="3" fill="#fff"/>
+    </g>
+  </svg>
+</template>
+<template id="egg-moon-svg">
+  <svg viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="moonGlow" cx=".4" cy=".4" r=".7">
+        <stop offset="0" stop-color="#fff8dc" stop-opacity=".95"/>
+        <stop offset="1" stop-color="#fff8dc" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <circle cx="27" cy="27" r="22" fill="url(#moonGlow)" opacity=".5"/>
+    <circle cx="27" cy="27" r="14" fill="#ece1b5"/>
+    <circle cx="33" cy="22" r="14" fill="#0d1422"/>
+  </svg>
+</template>
+
 <script>
 // ═══════════════════════════════════════════════════════════════════
 // AGENT PERSONAS
@@ -2383,7 +2416,7 @@ function buildLobbyRoom(verdict, vCol, regime, conf){
 // ═══════════════════════════════════════════════════════════════════
 // State
 // ═══════════════════════════════════════════════════════════════════
-let DATA = null, CANDS = null;
+let DATA = null, CANDS = null, LATEST_ERRORS = [];
 let activeRoom = null, activeBackdrop = null;
 
 // ═══════════════════════════════════════════════════════════════════
@@ -2448,10 +2481,18 @@ function renderSidebar(){
   const totalGauges = 10;
   const ageStatus = ageMin == null ? 'bad' : ageMin < 360 ? 'ok' : ageMin < 720 ? 'warn' : 'bad';
   const gapStatus = gaps === 0 ? 'ok' : gaps <= 2 ? 'warn' : 'bad';
+  // Recent errors — pull the newest entry (LATEST_ERRORS already reversed newest-first)
+  const errCount = LATEST_ERRORS.length;
+  const errStatus = errCount === 0 ? 'ok' : (LATEST_ERRORS[0].kind === 'error' ? 'bad' : 'warn');
+  const errLabel = errCount === 0
+    ? '無'
+    : `${errCount}筆 · ${(LATEST_ERRORS[0].stage || '?').slice(0, 18)}`;
+  const errTitle = LATEST_ERRORS.map(e => `${e.ts?.slice(11,16)||''} [${e.kind}] ${e.stage}: ${e.msg}`).join('\n');
   $('health-rows').innerHTML = `
     <div class="health-row"><span class="health-dot ${ageStatus}"></span><span class="health-name">DATA AGE</span><span class="health-val">${ageMin==null?'—':ageMin<60?ageMin+'m':Math.floor(ageMin/60)+'h '+(ageMin%60)+'m'}</span></div>
     <div class="health-row"><span class="health-dot ${gapStatus}"></span><span class="health-name">SIGNAL VECTOR</span><span class="health-val">${totalGauges-gaps}/${totalGauges} 可用</span></div>
     <div class="health-row"><span class="health-dot ${CANDS?'ok':'warn'}"></span><span class="health-name">CANDIDATE FEED</span><span class="health-val">${CANDS?(CANDS.candidates||[]).length+' 檔':'未載入'}</span></div>
+    <div class="health-row" title="${errTitle.replace(/"/g,'&quot;')}"><span class="health-dot ${errStatus}"></span><span class="health-name">RECENT ERRORS</span><span class="health-val">${errLabel}</span></div>
   `;
 
   // ───── TODAY'S BRIEFING ─────
@@ -3781,10 +3822,21 @@ async function load(){
 
   // Phase 2: fetch fresh data in background
   try {
-    const [r1, r2] = await Promise.all([
+    const [r1, r2, r3] = await Promise.all([
       fetch('data/analysis.json?t=' + Date.now()),
-      fetch('data/candidate_stocks.json?t=' + Date.now()).catch(() => null)
+      fetch('data/candidate_stocks.json?t=' + Date.now()).catch(() => null),
+      fetch('data/errors.log?t=' + Date.now()).catch(() => null),
     ]);
+    // Parse errors.log (JSONL) — keep newest 5 entries
+    LATEST_ERRORS = [];
+    if(r3 && r3.ok){
+      try {
+        const text = await r3.text();
+        LATEST_ERRORS = text.trim().split(/\r?\n/).filter(Boolean).slice(-5).map(l => {
+          try { return JSON.parse(l); } catch { return null; }
+        }).filter(Boolean).reverse();
+      } catch { LATEST_ERRORS = []; }
+    }
     if(!r1.ok) throw new Error(`analysis.json HTTP ${r1.status}`);
     const freshData = await r1.json();
     let freshCands = null;
@@ -4257,19 +4309,20 @@ function showTopLine(text, opts){
   }, opts.stay || 9000);
 }
 
-const CANDLE_SVG = `<svg viewBox="0 0 38 62" xmlns="http://www.w3.org/2000/svg">
-  <rect x="14" y="28" width="10" height="28" rx="1.2" fill="#e6d9b3"/>
-  <rect x="14" y="28" width="10" height="3" fill="#b9a875"/>
-  <line x1="19" y1="14" x2="19" y2="28" stroke="#3a2d18" stroke-width="1.2"/>
-  <g class="flame">
-    <ellipse cx="19" cy="14" rx="4.2" ry="7.5" fill="#ffb35a"/>
-    <ellipse cx="19" cy="15" rx="2.5" ry="5" fill="#ffe9b5"/>
-    <ellipse cx="19" cy="16" rx="1.1" ry="3" fill="#fff"/>
-  </g>
-</svg>`;
+function _cloneSvgTpl(id){
+  const tpl = document.getElementById(id);
+  return tpl ? tpl.content.cloneNode(true) : null;
+}
+
 function showCandle(){
   let el = document.querySelector('.egg-candle');
-  if(!el){ el = document.createElement('div'); el.className='egg-candle'; el.innerHTML = CANDLE_SVG; document.body.appendChild(el); }
+  if(!el){
+    el = document.createElement('div');
+    el.className = 'egg-candle';
+    const svg = _cloneSvgTpl('egg-candle-svg');
+    if(svg) el.appendChild(svg);
+    document.body.appendChild(el);
+  }
   requestAnimationFrame(() => el.classList.add('show'));
 }
 function hideCandle(){
@@ -4277,20 +4330,15 @@ function hideCandle(){
   if(el) el.classList.remove('show');
 }
 
-const MOON_SVG = `<svg viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="moonGlow" cx=".4" cy=".4" r=".7">
-      <stop offset="0" stop-color="#fff8dc" stop-opacity=".95"/>
-      <stop offset="1" stop-color="#fff8dc" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-  <circle cx="27" cy="27" r="22" fill="url(#moonGlow)" opacity=".5"/>
-  <circle cx="27" cy="27" r="14" fill="#ece1b5"/>
-  <circle cx="33" cy="22" r="14" fill="#0d1422"/>
-</svg>`;
 function showMoon(){
   let el = document.querySelector('.egg-moon');
-  if(!el){ el = document.createElement('div'); el.className='egg-moon'; el.innerHTML = MOON_SVG; document.body.appendChild(el); }
+  if(!el){
+    el = document.createElement('div');
+    el.className = 'egg-moon';
+    const svg = _cloneSvgTpl('egg-moon-svg');
+    if(svg) el.appendChild(svg);
+    document.body.appendChild(el);
+  }
   requestAnimationFrame(() => el.classList.add('show'));
 }
 function deepenMidnight(){ document.body.classList.add('midnight-deep'); }

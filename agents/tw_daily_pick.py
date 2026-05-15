@@ -181,9 +181,18 @@ def run(
 - 反方觀點必須提供
 """
 
-    import json, re, time, random
+    import json, re, time, random, sys, os
     system_with_schema = SYSTEM + "\n\n" + PICK_SCHEMA
     from .base import client, MODEL, RETRYABLE_TOKENS
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    import prompt_cache
+    from error_log import log_error as _log_error
+
+    cached = prompt_cache.get(MODEL, system_with_schema, user_content)
+    if cached is not None:
+        print("  [prompt-cache hit] tw_daily_pick")
+        return cached
+
     MAX_ATTEMPTS = 5
     for attempt in range(MAX_ATTEMPTS):
         try:
@@ -205,6 +214,7 @@ def run(
             # Ensure pick key exists
             if "pick" not in result:
                 result["pick"] = {"name": "—", "code": "—", "entry_zone": "—", "stop_loss": "—", "target": "—", "hold_days": "—"}
+            prompt_cache.set(MODEL, system_with_schema, user_content, "tw_daily_pick", result)
             return result
         except json.JSONDecodeError as e:
             return {
@@ -221,6 +231,7 @@ def run(
                 print(f"  [tw_daily_pick] {err[:80]}, backoff {wait:.1f}s (attempt {attempt+1}/{MAX_ATTEMPTS})")
                 time.sleep(wait)
                 continue
+            _log_error("agent:tw_daily_pick", e)
             return {
                 "verdict": "ERROR", "confidence": 0,
                 "summary": f"tw_daily_pick error: {e}",

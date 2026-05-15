@@ -258,9 +258,9 @@ Both runs are triggered externally by [cron-job.org](https://cron-job.org) — G
 | Time (Asia/Taipei) | Trigger | What Runs |
 |---|---|---|
 | **09:00** pre-market | cron-job.org | fetch_market_data + run_agents (Phase 4 skipped) |
-| **13:30** post-market | cron-job.org | fetch_market_data + run_agents (full pipeline + tw_daily_pick + reflection) |
+| **16:30** post-market | cron-job.org | fetch_market_data + run_agents (full pipeline + tw_daily_pick + reflection) |
 
-Note: TWSE institutional/breadth data only finalizes after market close (~14:30), so the 13:30 run picks up complete data.
+Note: TWSE post-market endpoints publish at staggered times — MI_INDEX (breadth) ≈ 13:30, BFI82U (institutional) ≈ 14:30, MI_MARGN (margin) ≈ 15:30. 16:30 catches all three on the same day. `fetch_market_data.py` also has a 7-day trading-day fallback per endpoint so weekends and holidays still produce a complete signal vector.
 
 ---
 
@@ -360,7 +360,7 @@ b. Create two jobs on cron-job.org, both pointing at:
 
 c. Schedule (Asia/Taipei):
    - **Pre-market** · 09:00 weekdays (Mon-Fri)
-   - **Post-market** · 13:30 weekdays — TWSE institutional/breadth data finalizes ~14:30, so this catches complete data
+   - **Post-market** · 16:30 weekdays — late enough to catch all TWSE post-market data (MI_INDEX, BFI82U, MI_MARGN publish between 13:30-15:30)
 
 ### 6. Customize your portfolio
 

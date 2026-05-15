@@ -9,6 +9,7 @@ from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 import yfinance as yf
 import urllib3
+from error_log import log_error, log_warning
 
 # TWSE 證交所 SSL 憑證鏈不完整（Missing Subject Key Identifier）→ 對 TWSE 請求關閉驗證。
 # 政府公開資料來源、且非機密路徑，可接受。
@@ -266,6 +267,7 @@ def _fetch_market_breadth_for_date(date_str: str) -> dict:
         }
     except Exception as e:
         print(f"  [WARN] MI_INDEX breadth: {e}")
+        log_warning("fetch:MI_INDEX", str(e)[:300])
         return {}
 
 
@@ -348,6 +350,7 @@ def _fetch_market_institutional_for_date(date_str: str) -> dict:
         }
     except Exception as e:
         print(f"  [WARN] BFI82U institutional: {e}")
+        log_warning("fetch:BFI82U", str(e)[:300])
         return {}
 
 
@@ -406,6 +409,7 @@ def _fetch_margin_balance_for_date(date_str: str) -> dict:
         }
     except Exception as e:
         print(f"  [WARN] MI_MARGN: {e}")
+        log_warning("fetch:MI_MARGN", str(e)[:300])
         return {}
 
 

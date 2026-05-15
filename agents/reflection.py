@@ -139,7 +139,15 @@ def run(
 
     from .base import client, MODEL, RETRYABLE_TOKENS
     from google.genai import types
-    import json, re, time, random
+    import json, re, time, random, sys, os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    import prompt_cache
+    from error_log import log_error as _log_error
+
+    cached = prompt_cache.get(MODEL, system_with_schema, user_content)
+    if cached is not None:
+        print("  [prompt-cache hit] reflection")
+        return cached
 
     MAX_ATTEMPTS = 5
     for attempt in range(MAX_ATTEMPTS):
@@ -157,7 +165,9 @@ def run(
                 if raw.startswith("json"):
                     raw = raw[4:]
             raw = re.sub(r'\[\d+\]', '', raw)
-            return json.loads(raw)
+            parsed = json.loads(raw)
+            prompt_cache.set(MODEL, system_with_schema, user_content, "reflection", parsed)
+            return parsed
         except json.JSONDecodeError as e:
             return {
                 "verdict": "策略需調整",
@@ -177,6 +187,7 @@ def run(
                 print(f"  [reflection] {err[:80]}, backoff {wait:.1f}s (attempt {attempt+1}/{MAX_ATTEMPTS})")
                 time.sleep(wait)
                 continue
+            _log_error("agent:reflection", e)
             return {
                 "verdict": "策略需調整",
                 "confidence": 0,
