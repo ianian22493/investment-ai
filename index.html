@@ -335,6 +335,10 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
    (CSS @keyframes on SVG <g> doesn't reliably animate transform on
    Chromium — see startBreathing() in JS) */
 
+/* When the AI PNG loads, hide the SVG silhouette body underneath.
+   Keep only .ag-halo for the identity color glow around the character. */
+.agent-v3.png-covered > *:not(.ag-halo){ display:none; }
+
 /* Status light per room (top-right of SVG, pulse) */
 .room-light{
   position:absolute; top:14px; right:14px; z-index:2;
@@ -1064,16 +1068,18 @@ const AGENT_RASTER_SIZE = 40;  // viewBox units — base size before per-call sc
 
 function agentImg({x, y, scale, role, facing}){
   scale = scale || 1;
-  const S = AGENT_RASTER_SIZE;  // base size; middle <g> applies the scale
+  const S = AGENT_RASTER_SIZE;
   const href = `${AI_BASE}${role}-${facing}.png`;
-  // Same 3-layer wrapping as agentSVGv3 so the PNG breathes in sync.
-  // Coordinates are relative to anchor (0,0) inside inner <g>.
-  return `<g transform="translate(${x},${y})"><g transform="scale(${scale})"><g class="agent-v3 ${role}">
+  // Same 3-layer wrapping as agentSVGv3 so PNG breathes in sync.
+  // png-wrap class distinguishes this <g> from the SVG silhouette sibling.
+  // On successful load, marks the SVG silhouette as png-covered → hides its body parts
+  // (keeps the halo for atmospheric identity glow around the AI character).
+  return `<g transform="translate(${x},${y})"><g transform="scale(${scale})"><g class="agent-v3 png-wrap ${role}">
     <image href="${href}"
       x="${-S/2}" y="${-S*0.55}"
       width="${S}" height="${S}"
       visibility="hidden"
-      onload="this.setAttribute('visibility','visible')"
+      onload="this.setAttribute('visibility','visible'); document.querySelectorAll('.agent-v3.${role}:not(.png-wrap)').forEach(el => el.classList.add('png-covered'));"
       preserveAspectRatio="xMidYMax meet"/>
   </g></g></g>`;
 }
