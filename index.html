@@ -663,6 +663,82 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
   .expanded{left:8px; right:8px; top:8px; bottom:8px; padding:18px 16px}
 }
 
+/* ═══ Patch Task 2 · Empty State (空手觀望) ═══════════════════════ */
+.empty-explain {
+  background: linear-gradient(135deg, rgba(13,21,33,.6), rgba(20,30,48,.4));
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.ex-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 12px; margin-bottom: 14px;
+  gap: 10px;
+}
+.ex-verdict {
+  font-size: 18px; font-weight: 800;
+  color: var(--text); letter-spacing: 1.5px;
+}
+.ex-stance {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px;
+  color: var(--yellow);
+  background: rgba(255,184,0,.08);
+  border: 1px solid rgba(255,184,0,.3);
+  border-radius: 3px; padding: 3px 8px;
+  white-space: nowrap;
+}
+.ex-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-bottom: 14px;
+}
+.ex-cell { background: var(--bg3); border-radius: 6px; padding: 10px 12px; }
+.ex-k {
+  font-size: 9px; letter-spacing: 1.5px;
+  color: var(--text3); font-weight: 700; margin-bottom: 4px;
+}
+.ex-v { font-size: 12px; font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; }
+.ex-v.warn { color: var(--yellow); }
+.ex-v.cool { color: var(--cyan); }
+.ex-bar { height: 4px; background: rgba(122,142,189,.1); border-radius: 2px; overflow: hidden; }
+.ex-bar > i { display: block; height: 100%; background: currentColor; opacity: .65; }
+.ex-reason {
+  font-size: 11px; color: var(--text2); line-height: 1.65;
+  padding: 10px 12px;
+  background: rgba(0,0,0,.2);
+  border-left: 2px solid var(--gold);
+  border-radius: 0 5px 5px 0;
+  margin-bottom: 12px;
+}
+.ex-reason b {
+  color: var(--gold); font-size: 9px; letter-spacing: 1px;
+  font-weight: 700; margin-right: 4px;
+}
+.ex-trigger { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.ex-trigger-row {
+  display: flex; align-items: baseline; gap: 8px;
+  font-size: 10px; color: var(--text3);
+}
+.tr-arr { color: var(--yellow); opacity: .65; }
+.tr-cond { color: var(--text2); flex: 1; }
+.ex-foot {
+  display: flex; justify-content: space-between;
+  font-size: 9px; letter-spacing: 1.5px; color: var(--text3);
+  padding-top: 10px; border-top: 1px dashed var(--border);
+}
+.ex-foot .live {
+  color: var(--cyan); position: relative; padding-left: 12px;
+}
+.ex-foot .live::before {
+  content: ''; position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--cyan); box-shadow: 0 0 4px var(--cyan);
+  animation: pulse 4.5s ease-in-out infinite;
+}
+
 /* ═══ Patch Task 4 · AUTO badge (top-bar) ═════════════════════════ */
 .auto-badge {
   display: inline-flex; align-items: center; gap: 6px;
@@ -883,6 +959,97 @@ function riskColor(level){
   return ({low:'var(--green)',moderate:'var(--text2)',elevated:'var(--yellow)',high:'var(--orange)',extreme:'var(--red)'})[level] || 'var(--text2)';
 }
 function urgencyClass(u){return u==='HIGH'?'u-high':u==='MED'?'u-med':'u-low'}
+
+// ═══ Patch Task 2 · Empty State helper (空手觀望 explainer) ═══════
+// Maps backend fields to the new empty-state UI. When pick has no
+// actual stock code, this renders a "we're being patient" panel
+// instead of a plain "今日無精選" line.
+function renderEmptyExplain(pick){
+  const regime = DATA.regime || {};
+  const cf = DATA.capital_flow || {};
+  const wm = (DATA.agents||{}).wealth_master || {};
+  const master = (DATA.agents||{}).master || {};
+  const cands = (CANDS && CANDS.candidates) || [];
+
+  const STANCE = {
+    defensive: 'DEFENSIVE STANCE',
+    offensive: 'OFFENSIVE STANCE',
+    neutral:   'NEUTRAL STANCE',
+    cautious:  'CAUTIOUS STANCE',
+  };
+  const stance = STANCE[cf.flow_direction] ||
+                 ((cf.flow_direction||'AWAITING').toUpperCase() + ' STANCE');
+
+  const RISK_SCORE = {low:20, moderate:50, elevated:70, high:85, extreme:95};
+  const regimeScore = RISK_SCORE[regime.risk_level] || 50;
+  const liqRisk = wm.liquidity_risk || wm.risk_level || 'moderate';
+  const riskScore = RISK_SCORE[liqRisk] || 50;
+
+  const triggers = (cf.override_flags || [])
+    .filter(f => !f.includes('STRUCTURAL_NOTE'))
+    .slice(0, 3)
+    .map(f => ({cond: f, note: ''}));
+
+  // Next pipeline tick (Asia/Taipei)
+  const now = new Date(new Date().toLocaleString('en-US', {timeZone:'Asia/Taipei'}));
+  const mins = now.getHours()*60 + now.getMinutes();
+  let nextMins;
+  if(mins < 9*60) nextMins = 9*60;
+  else if(mins < 13*60+30) nextMins = 13*60+30;
+  else nextMins = 24*60 + 9*60;
+  const diff = nextMins - mins;
+  const wrap = nextMins % (24*60);
+  const nh = String(Math.floor(wrap/60)).padStart(2,'0');
+  const nm = String(wrap%60).padStart(2,'0');
+  const nextTick = `${nh}:${nm}` + (diff>=60?` (${Math.floor(diff/60)}h${diff%60}m)`:` (${diff}m)`);
+
+  const reason = pick.summary || regime.regime_summary || master.summary || '系統評估目前環境不適合短線進場。';
+
+  // Friendly headline — never show raw ERROR
+  const headline = (!pick.verdict || pick.verdict === 'ERROR') ? '暫無建議'
+                 : pick.verdict;
+
+  return `
+    <div class="empty-explain">
+      <div class="ex-header">
+        <div class="ex-verdict">${headline}</div>
+        <div class="ex-stance">${stance}</div>
+      </div>
+
+      <div class="ex-grid">
+        <div class="ex-cell">
+          <div class="ex-k">REGIME</div>
+          <div class="ex-v warn">${(regime.market_regime||'—').toUpperCase()}</div>
+          <div class="ex-bar" style="color:var(--yellow)">
+            <i style="width:${regimeScore}%"></i>
+          </div>
+        </div>
+        <div class="ex-cell">
+          <div class="ex-k">PORTFOLIO RISK</div>
+          <div class="ex-v cool">${(liqRisk||'—').toUpperCase()}</div>
+          <div class="ex-bar" style="color:var(--cyan)">
+            <i style="width:${riskScore}%"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-reason">
+        <b>為什麼不出手 ·</b> ${clip(reason, 220)}
+      </div>
+
+      ${triggers.length ? `<div class="ex-trigger">
+        ${triggers.map(t => `<div class="ex-trigger-row">
+          <span class="tr-arr">→</span>
+          <span class="tr-cond">${t.cond}</span>
+        </div>`).join('')}
+      </div>` : ''}
+
+      <div class="ex-foot">
+        <span class="live">SCANNING ${cands.length||0} SYMBOLS</span>
+        <span>NEXT TICK · ${nextTick}</span>
+      </div>
+    </div>`;
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // ISO ROOM SVG TEMPLATES
@@ -2159,7 +2326,7 @@ function renderExec(target){
       </div>
     </div></div>`;
   } else {
-    pickHTML = `<div class="empty">今日無精選 · ${pick.verdict||'盤後分析尚未產出'}</div>`;
+    pickHTML = renderEmptyExplain(pick);
   }
 
   target.innerHTML = `
@@ -2260,7 +2427,7 @@ function renderTrading(target){
       </div>`:''}
     </div>`;
   } else {
-    pickHTML = `<div class="empty">今日無精選 · ${pick.verdict||''}<br><span style="font-size:10px">${clip(pick.summary||'',120)}</span></div>`;
+    pickHTML = renderEmptyExplain(pick);
   }
 
   const tmCol = verdictColor(tm.verdict);
