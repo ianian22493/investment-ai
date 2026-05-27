@@ -1,30 +1,28 @@
 {
-  "generated_at": "2026-05-26T16:31:41.762206+08:00",
+  "generated_at": "2026-05-27T09:01:40.594600+08:00",
   "market_snapshot": {
     "taiex": {
       "close": 43525.37,
-      "prev_close": 43644.4,
-      "change": -119.03,
-      "change_pct": -0.27
+      "change_pct": 0
     },
     "sp500": {
-      "close": 7473.47,
-      "prev_close": 7445.72,
-      "change": 27.75,
-      "change_pct": 0.37
+      "close": 7519.12,
+      "prev_close": 7473.47,
+      "change": 45.65,
+      "change_pct": 0.61
     },
     "vix": {
-      "close": 16.82,
+      "close": 17.01,
       "prev_close": 16.59,
-      "change": 0.23,
-      "change_pct": 1.39
+      "change": 0.42,
+      "change_pct": 2.53
     },
     "usd_twd": 32.0,
-    "jpy_per_usd": 158.98,
+    "jpy_per_usd": 159.24,
     "twd_per_jpy": null
   },
   "portfolio_value": {
-    "tw_stocks_twd": 3322254,
+    "tw_stocks_twd": 3333184,
     "tw_stocks_live": [
       {
         "code": "00692",
@@ -41,10 +39,10 @@
         "code": "00915",
         "name": "凱基優選高股息30",
         "shares": 2000,
-        "value": 56440,
+        "value": 57440,
         "cost": 16050,
-        "pnl": 40390,
-        "pnl_pct": 251.65,
+        "pnl": 41390,
+        "pnl_pct": 257.88,
         "type": "ETF",
         "strategy": "long"
       },
@@ -52,10 +50,10 @@
         "code": "1104",
         "name": "環泥",
         "shares": 20000,
-        "value": 547000,
+        "value": 552000,
         "cost": 508982,
-        "pnl": 38018,
-        "pnl_pct": 7.47,
+        "pnl": 43018,
+        "pnl_pct": 8.45,
         "type": "stock",
         "strategy": "long"
       },
@@ -74,10 +72,10 @@
         "code": "2330",
         "name": "台積電",
         "shares": 40,
-        "value": 90800,
+        "value": 92600,
         "cost": 71700,
-        "pnl": 19100,
-        "pnl_pct": 26.64,
+        "pnl": 20900,
+        "pnl_pct": 29.15,
         "type": "stock",
         "strategy": "long"
       },
@@ -85,10 +83,10 @@
         "code": "2536",
         "name": "宏普",
         "shares": 5000,
-        "value": 97750,
+        "value": 98500,
         "cost": 177057,
-        "pnl": -79307,
-        "pnl_pct": -44.79,
+        "pnl": -78557,
+        "pnl_pct": -44.37,
         "type": "stock",
         "strategy": "long",
         "watch": "stop_loss_review"
@@ -108,10 +106,10 @@
         "code": "3293",
         "name": "鈦象",
         "shares": 940,
-        "value": 690900,
+        "value": 697480,
         "cost": 627157,
-        "pnl": 63743,
-        "pnl_pct": 10.16,
+        "pnl": 70323,
+        "pnl_pct": 11.21,
         "type": "stock",
         "strategy": "both"
       },
@@ -119,10 +117,10 @@
         "code": "3703",
         "name": "欣陸",
         "shares": 12000,
-        "value": 244800,
+        "value": 243600,
         "cost": 303286,
-        "pnl": -58486,
-        "pnl_pct": -19.28,
+        "pnl": -59686,
+        "pnl_pct": -19.68,
         "type": "stock",
         "strategy": "long",
         "watch": "stop_loss_review"
@@ -143,31 +141,31 @@
         "code": "4707",
         "name": "磐亞",
         "shares": 30000,
-        "value": 439500,
+        "value": 436500,
         "cost": 360616,
-        "pnl": 78884,
-        "pnl_pct": 21.87,
+        "pnl": 75884,
+        "pnl_pct": 21.04,
         "type": "stock",
         "strategy": "both"
       }
     ],
     "tw_summary_live": {
-      "total_value": 3322254,
+      "total_value": 3333184,
       "total_cost": 2862088,
-      "total_pnl": 460166,
-      "total_pnl_pct": 16.08,
+      "total_pnl": 471096,
+      "total_pnl_pct": 16.46,
       "broker": "永豐金"
     },
-    "us_stocks_twd": 483599,
-    "us_stocks_usd": 15112.47,
+    "us_stocks_twd": 487749,
+    "us_stocks_usd": 15242.15,
     "us_cost_usd": 12772.62,
-    "us_pnl_usd": 2339.85,
-    "us_pnl_pct": 18.32,
+    "us_pnl_usd": 2469.53,
+    "us_pnl_pct": 19.33,
     "funds_twd": 128233,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 10534086,
-    "total_gross_twd": 25934086,
+    "net_assets_twd": 10549166,
+    "total_gross_twd": 25949166,
     "allocation_pct": {
       "tw_stocks": 12.8,
       "us_stocks": 1.9,
@@ -181,13 +179,13 @@
     "short_term_trading_favorable": true,
     "confidence": 0.65,
     "regime_factors": {
-      "vix": 16.82,
-      "taiex_chg_pct": -0.27,
-      "nasdaq_chg_pct": 0.19,
-      "sp500_chg_pct": 0.37,
+      "vix": 17.01,
+      "taiex_chg_pct": 0.0,
+      "nasdaq_chg_pct": 1.19,
+      "sp500_chg_pct": 0.61,
       "ai_keyword_hits": 1
     },
-    "regime_summary": "市場體制：資金輪動｜VIX=16.8｜台股-0.27%｜NASDAQ+0.19%｜AI話題度=1｜短線適合交易：✓"
+    "regime_summary": "市場體制：資金輪動｜VIX=17.0｜台股+0.00%｜NASDAQ+1.19%｜AI話題度=1｜短線適合交易：✓"
   },
   "capital_flow": {
     "budget": {
@@ -213,11 +211,16 @@
   },
   "performance": {
     "available": true,
-    "total": 3,
+    "total": 4,
     "wins": 1,
-    "losses": 2,
-    "overall_rate": 33.3,
+    "losses": 3,
+    "overall_rate": 25.0,
     "regime_stats": {
+      "資金輪動": {
+        "wins": 0,
+        "total": 1,
+        "rate": 0.0
+      },
       "趨勢多頭": {
         "wins": 1,
         "total": 3,
@@ -227,39 +230,60 @@
     "signal_stats": {
       "above_ma20": {
         "wins": 0,
-        "total": 1,
+        "total": 2,
         "rate": 0.0
       },
       "vol_surge": {
         "wins": 0,
-        "total": 1,
+        "total": 2,
         "rate": 0.0
       },
       "rsi_zone": {
         "wins": 0,
-        "total": 1,
+        "total": 2,
         "rate": 0.0
       },
       "ma_aligned": {
         "wins": 0,
-        "total": 1,
+        "total": 2,
         "rate": 0.0
       },
       "five_day_high": {
         "wins": 0,
-        "total": 1,
+        "total": 2,
         "rate": 0.0
       },
       "rs_signal": {
         "wins": 0,
-        "total": 1,
+        "total": 2,
         "rate": 0.0
       }
     },
-    "recent_streak": "✗✗✓",
+    "recent_streak": "✗✗✗✓",
     "open_count": 0,
     "open_picks": [],
     "recent_picks": [
+      {
+        "id": 4,
+        "date": "2026-05-26",
+        "code": "6239",
+        "name": "力成",
+        "verdict": "",
+        "confidence": 0.0,
+        "regime": "資金輪動",
+        "entry_zone": "340.0-343.0",
+        "stop_loss": "330.0",
+        "target": "365.0",
+        "hold_days": "預計持有1-3天",
+        "ref_close": 342.0,
+        "close_next_day": 342.0,
+        "return_pct": 0.0,
+        "hit_target": null,
+        "hit_stop": null,
+        "success": 0,
+        "resolved": 1,
+        "resolved_at": "2026-05-27T09:01:41.773561+08:00"
+      },
       {
         "id": 3,
         "date": "2026-05-21",
@@ -324,9 +348,9 @@
         "resolved_at": "2026-05-12T13:36:19.359732+08:00"
       }
     ],
-    "avg_return": 3.16,
+    "avg_return": 2.37,
     "avg_win": 9.91,
-    "avg_loss": -0.21,
+    "avg_loss": -0.14,
     "best": {
       "id": 1,
       "date": "2026-05-11",
@@ -376,168 +400,179 @@
     "market_overview": {
       "verdict": "小心進攻",
       "confidence": 0.75,
-      "summary": "美國主要股指持續上揚，VIX恐慌指數維持低位，顯示市場情緒相對穩定且AI話題度高。然台股加權指數在高檔出現小幅拉回，配合市場體制為資金輪動，操作上宜採審慎態度，避免過度追高。",
+      "summary": "美股今日延續強勁走勢，科技股表現尤為突出，顯示市場風險偏好依舊。台股儘管今日表現平淡，但兩地大盤皆已處於歷史高位，雖然資金輪動活躍且短線有交易機會，但仍需高度警惕高檔震盪與修正風險。",
       "key_insights": [
-        "美國股市（S&P 500, NASDAQ）持續溫和上漲，顯示市場上漲動能仍在。",
-        "VIX恐慌指數處於16.82的相對低位，市場恐慌情緒不高，有利風險資產。",
-        "台股加權指數雖處於歷史高點，但今日小幅下跌0.27%，顯示部分獲利了結或資金輪動跡象。",
-        "AI話題度高，仍為市場焦點，支撐科技股表現。",
-        "市場體制顯示為資金輪動，意味著非全面性上漲，選股與時機更為關鍵。"
+        "美股S&P 500及NASDAQ指數持續上漲，尤其NASDAQ漲幅逾1%，顯示市場風險開啟情緒濃烈，主要由AI及科技股動能驅動。",
+        "台股加權指數今日持平，但其絕對位置高達43525.37點，已處於歷史高位，顯示市場在高檔有部分觀望情緒。",
+        "VIX恐慌指數維持在17.01，處於相對平靜區間，市場並未出現普遍恐慌。",
+        "市場體制引擎顯示為「資金輪動」，且「短線適合交易」為✓，意味市場仍有結構性機會，但需精準把握。"
       ],
       "recommendations": [
         {
-          "action": "WATCH",
-          "target": "TAIEX",
-          "detail": "台股處於相對高檔，近期可能面臨技術性修正或資金輪動，建議觀望新資金進場時機，避免追高。",
-          "urgency": "HIGH"
-        },
-        {
           "action": "HOLD",
-          "target": "美股部位",
-          "detail": "現有美股部位可持續持有，特別是與AI主題相關的標的，但應留意個別持股基本面與評價是否過高。",
+          "target": "US stocks (general)",
+          "detail": "美股上漲動能仍在，現有部位可持續持有，但應密切觀察高檔訊號，適時考慮停利。",
           "urgency": "MED"
         },
         {
           "action": "WATCH",
-          "target": "總體市場",
-          "detail": "密切關注全球主要央行貨幣政策動向及經濟數據，防範潛在的系統性風險。",
+          "target": "TAIEX",
+          "detail": "台股已處歷史高位，今日表現平淡，建議觀望其後續量能與突破方向，避免盲目追高，謹慎評估任何加碼動作。",
           "urgency": "HIGH"
         }
       ],
       "risk_flags": [
-        "台股大盤已達歷史高點，未來短期修正風險隨時存在，需警惕。",
-        "資金輪動格局下，部分漲多類股可能面臨較大賣壓，增加操作難度。",
-        "全球主要股市在高檔區震盪，需提防任何超預期事件導致市場情緒反轉。"
+        "全球主要股指（台股、美股）皆已攀升至歷史或接近歷史高位，潛在回調風險升高。",
+        "儘管美股強勁，台股今日走平，顯示兩地市場動能不完全一致，需警惕台股可能出現的相對弱勢。",
+        "AI話題度雖高，但集中於特定領域的資金追逐，可能導致其他板塊流動性不足或估值過高風險。"
       ],
-      "agent_note": "本分析基於中立偏謹慎立場，優先考量系統性風險，不評論個股，所有判斷皆著眼於大盤和總體趨勢。我的輸出符合JSON格式要求。"
+      "agent_note": "本分析基於資深宏觀市場分析師角色，偏向謹慎防守，不追漲，優先考慮系統性風險。不評論個股，僅提供大盤與總體趨勢判斷。"
     },
     "news_sentiment": {
       "verdict": "偏正面",
       "confidence": 0.8,
-      "summary": "台灣股市展現強勁動能，市值躍居全球第五，外資持續加碼，多頭氣勢旺盛，對台股相關持倉構成明顯利多。美國股市儘管屢創新高且科技股表現活躍，但同時存在宏觀逆風及針對AI領域的短期疑慮，市場情緒呈現樂觀與謹慎並存的局面。",
+      "summary": "台股在AI與半導體題材推動下表現強勁，市值躍居全球第五大，並帶動多檔千金股。美股也受AI熱潮再次激勵，晶片股與大型科技股帶動指數屢創新高。然而，需留意台灣金融股面臨法人賣壓，以及年輕人借貸入市可能導致的市場過熱風險。",
       "key_insights": [
-        "台灣股市受外資連續買超及市值全球排名提升的雙重利好推動，多頭氛圍濃厚，有利於核心台股持倉。",
-        "美國股市主要指數（S&P 500, Nasdaq）持續創下歷史新高，科技股為主要上漲動力，顯示市場對科技板塊的信心。",
-        "美國市場存在對AI領域的「Jitters」擔憂以及宏觀經濟逆風和地緣政治（如伊朗、美中關係）等潛在風險，可能導致短期波動。"
+        "台灣股市受惠於科技產業強勁，市值排名大幅提升，顯示國際市場對其高度認可。",
+        "美國及台灣股市共同受AI熱潮推動，晶片相關與大型科技股表現突出。",
+        "台灣金融類股遭三大法人賣超，與大盤強勢表現形成對比，需關注資金板塊輪動。",
+        "市場存在零售投資者過度槓桿的風險，且美股市場情緒與經濟基本面之間可能存在一定程度的脫鉤，需保持警惕。"
       ],
       "recommendations": [
         {
-          "action": "ADD",
-          "target": "2330",
-          "detail": "台積電作為台股重要權值股及全球關鍵供應鏈，受惠於台股整體強勁表現及外資買盤，維持核心部位可適度增持。",
-          "urgency": "MED"
-        },
-        {
-          "action": "ADD",
-          "target": "00692",
-          "detail": "受惠於台股整體上漲趨勢及外資買盤，反映市場強勁動能，可適度增持。",
-          "urgency": "MED"
-        },
-        {
-          "action": "ADD",
-          "target": "00915",
-          "detail": "受惠於台股整體上漲趨勢及外資買盤，反映市場強勁動能，可適度增持。",
-          "urgency": "MED"
+          "action": "HOLD",
+          "target": "2330, NVDA, GOOGL, AMZN, MSFT",
+          "detail": "核心科技持股受惠於AI與大盤強勁表現，短期內無直接利空消息，建議維持持倉。",
+          "urgency": "LOW"
         },
         {
           "action": "HOLD",
-          "target": "NVDA",
-          "detail": "雖然整體科技股強勁，但有關於AI「Jitters」的報導，建議續抱觀察，短期內避免追高，留意波動。",
-          "urgency": "MED"
+          "target": "00692, 00915",
+          "detail": "台股大盤表現亮眼，整體情緒偏樂觀，維持ETF持倉以捕捉市場漲勢。",
+          "urgency": "LOW"
         },
         {
-          "action": "HOLD",
-          "target": "GOOGL",
-          "detail": "整體科技股表現雖佳，但AI相關不確定性仍存，建議續抱觀察，留意波動。",
-          "urgency": "MED"
-        },
-        {
-          "action": "HOLD",
-          "target": "AMZN",
-          "detail": "整體科技股表現雖佳，但AI相關不確定性仍存，建議續抱觀察，留意波動。",
-          "urgency": "MED"
-        },
-        {
-          "action": "HOLD",
-          "target": "MSFT",
-          "detail": "整體科技股表現雖佳，但AI相關不確定性仍存，建議續抱觀察，留意波動。",
+          "action": "WATCH",
+          "target": "2834, 3293, 3703, 4588, 4707 (所有金融股)",
+          "detail": "台灣金融股近期面臨法人賣壓，建議密切關注資金流向與後續法人操作，暫不考慮加碼。",
           "urgency": "MED"
         },
         {
           "action": "HOLD",
           "target": "TSLA",
-          "detail": "隨美股大盤及科技股趨勢，目前無直接利空或特別利多消息，暫維持持有。",
-          "urgency": "LOW"
-        },
-        {
-          "action": "HOLD",
-          "target": "2834, 3293, 3703, 4588, 4707",
-          "detail": "這些非核心持股隨台股大盤走勢，目前無特定負面消息，可暫維持持有。",
+          "detail": "今日新聞未提供直接影響TSLA的特定利好或利空消息，維持現有持倉。",
           "urgency": "LOW"
         }
       ],
       "risk_flags": [
-        "美國科技股，特別是AI相關領域，可能面臨「AI Jitters」引發的短期波動風險。",
-        "美國市場持續面臨宏觀經濟逆風及地緣政治（如伊朗衝突、美中關係）等不確定性，可能造成市場情緒轉向。",
-        "台灣市場部分年輕人借貸投入股市，顯示潛在的散戶過熱投機風險，若市場情緒反轉可能引發較大修正。",
-        "部分美國新聞標題日期為2026年，其當前時效性可能需額外審視。"
+        "台灣市場出現年輕人借貸搶進股市的現象，零售投資者槓桿率上升，可能增加市場波動性與回調風險。",
+        "台灣金融股持續遭法人賣超，可能影響其短期股價表現。",
+        "美國市場部分聲音指出當前股價與投資者情緒存在脫鉤現象，需警惕市場過熱後的潛在修正。"
       ],
-      "agent_note": "本分析嚴格遵循客觀中立原則，僅依據新聞標題內容進行判斷，不涉及任何技術分析或價格預測。對於美國新聞標題中出現的2026年日期，已假設其為當前市場關注重點進行分析，但其實際新聞時效性可能與發布日期不符，這是一個潛在的資訊偏差點。"
+      "agent_note": "本分析僅基於提供的新聞標題。對於美國市場中標註2026年日期的新聞，由於其為未來事件，本分析將其視為噪音，不納入今日市場情緒的判斷。本分析避免技術分析及提供具體進出場價位。"
     },
     "tw_short_term": {
       "verdict": "強力進攻",
-      "confidence": 0.85,
-      "summary": "儘管台股加權指數小幅拉回，但市場資金輪動且量化掃描器篩選出多檔均線多頭排列、量能爆發的強勢股。應果斷追逐這些具爆發力的標的，同時嚴格執行既有弱勢持股的停損紀律。",
+      "confidence": 0.9,
+      "summary": "市場資金輪動快速，搭配美股AI熱潮持續，今日多檔個股展現爆量多頭排列的強勁走勢，提供積極短線交易機會。同時，需果斷汰弱留強，嚴守停損紀律。",
       "key_insights": [
-        "量化掃描器精選出8檔具備均線多排、量爆、RSI高、5日高特徵的極強勢股，顯示短線動能充足，有主力資金進場跡象。",
-        "VIX恐慌指數維持低位且美股續創新高，大環境有利於風險偏好較高的短線操作。",
-        "部分既有持倉個股技術面轉弱，MA5已跌破MA20或收盤價跌破短均線，需果斷停損出場以控制風險。",
-        "市場體制為資金輪動，表示大盤雖有壓力，但個股表現分歧，應將火力集中於資金湧入的強勢標的。"
+        "台股受AI題材與美股強勢激勵，市場風險偏好提升。",
+        "量化掃描器精選多檔個股呈現均線多頭排列、爆量且創新5日高，技術面極強。",
+        "部分持倉股已跌破關鍵均線或未能站穩，應即刻停損避免虧損擴大。",
+        "資金輪動活躍，但高點區仍需緊盯停損，防止快速反轉。"
       ],
       "recommendations": [
         {
           "action": "BUY",
           "target": "彩晶(6116)",
-          "detail": "該股量爆4.57x、RSI80.0、均線多排、5日高，是今日最強勢股之一。建議於12.50-12.80區間積極進場，停損點設於12.00，目標看向13.80。",
+          "detail": "觀察明日開盤後若能站穩15.2，可於15.2-15.5區間追價進場，停損設於14.5，目標價16.5-17.0。持倉期間1-3天。",
           "urgency": "HIGH"
         },
         {
           "action": "BUY",
           "target": "中興電(1513)",
-          "detail": "量爆4.2x、均線多排、5日高，動能強勁。建議於165.00-168.00區間進場，停損點設於160.00，目標看向175.00。",
+          "detail": "觀察明日開盤後若能站穩152.0，可於152.0-155.0區間追價進場，停損設於147.0，目標價165.0-170.0。持倉期間1-3天。",
           "urgency": "HIGH"
         },
         {
           "action": "BUY",
           "target": "揚博(2493)",
-          "detail": "量爆3.55x、均線多排、5日高，技術面表現優異。建議於101.00-103.00區間進場，停損點設於97.00，目標看向110.00。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "CUT",
-          "target": "環泥(1104)",
-          "detail": "收盤27.35，MA5(27.47)已跌破，MA20(27.94)之上方壓力大，均線呈空頭排列趨勢。建議立即停損於27.00。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "CUT",
-          "target": "長榮鋼(2211)",
-          "detail": "收盤92.2，MA5(92.1)接近失守且MA20(95.78)已位於上方，技術面轉弱。建議立即停損於91.50。",
+          "detail": "觀察明日開盤後若能站穩203.0，可於203.0-207.0區間追價進場，停損設於195.0，目標價220.0-225.0。持倉期間2-4天。",
           "urgency": "HIGH"
         },
         {
           "action": "CUT",
           "target": "宏普(2536)",
-          "detail": "收盤19.55，MA5(19.85)與MA20(20.51)皆已失守，均線呈現空頭排列。建議立即停損於19.40。",
+          "detail": "收盤價19.7已跌破MA5及MA20，且MA5<MA20形成空頭排列，應於19.7市價立即停損。",
           "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "臺企銀(2834)",
+          "detail": "收盤價16.0已跌破MA5及MA20，且MA5<MA20，應於16.0市價立即停損。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "玖鼎電力(4588)",
+          "detail": "收盤價55.3已跌破MA5及MA20，且MA5<MA20，趨勢向下，應於55.3市價立即停損。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "磐亞(4707)",
+          "detail": "收盤價14.55已跌破MA5及MA20，且MA5<MA20，趨勢向下，應於14.55市價立即停損。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "WATCH",
+          "target": "環泥(1104)",
+          "detail": "股價27.6仍高於MA5 (27.47)但MA5<MA20。若明日跌破27.45，立即停損。",
+          "urgency": "MED"
+        },
+        {
+          "action": "WATCH",
+          "target": "長榮鋼(2211)",
+          "detail": "股價92.2位於MA5 (92.1)附近，但MA5<MA20。若明日跌破92.0，立即停損。",
+          "urgency": "MED"
+        },
+        {
+          "action": "WATCH",
+          "target": "欣陸(3703)",
+          "detail": "股價20.3仍高於MA5 (20.2)但MA5<MA20。若明日跌破20.2，立即停損。",
+          "urgency": "MED"
+        },
+        {
+          "action": "HOLD",
+          "target": "富邦公司治理(00692)",
+          "detail": "均線多頭排列，股價站穩MA5及MA20，持續持有。",
+          "urgency": "LOW"
+        },
+        {
+          "action": "HOLD",
+          "target": "凱基優選高股息30(00915)",
+          "detail": "均線多頭排列，股價站穩MA5及MA20，持續持有。",
+          "urgency": "LOW"
+        },
+        {
+          "action": "HOLD",
+          "target": "台積電(2330)",
+          "detail": "均線多頭排列，股價站穩MA5及MA20，持續持有。",
+          "urgency": "LOW"
+        },
+        {
+          "action": "HOLD",
+          "target": "鈦象(3293)",
+          "detail": "MA5(738.4) > MA20(735.0)，股價(742.0)站穩均線，多頭趨勢持續，持續持有。",
+          "urgency": "LOW"
         }
       ],
       "risk_flags": [
-        "部分強勢股RSI已高，雖代表動能強勁，但短線拉回修正風險也相對提升。",
-        "台股大盤指數微幅下跌，若後續趨勢轉弱，可能影響個股表現。",
-        "資金輪動快速，追高強勢股需嚴格設定停損，以防快速反轉。"
+        "市場資金輪動快速，追高殺低風險增高。",
+        "部分強勢股RSI過高(如彩晶RSI80.0)，短線有技術性修正壓力，需嚴守停損。",
+        "台股大盤處於歷史高位，需留意國際市場或突發事件導致的快速回檔。"
       ],
-      "agent_note": "本分析完全基於技術面與籌碼面，不涉及任何基本面判斷。所有建議價位皆為具體數字，無模糊地帶，持倉期間預計1-5天。"
+      "agent_note": "本分析嚴格遵循技術面與籌碼面，不納入基本面考量，所有建議皆為1-5天短線操作。為符合「具體價位」要求，對於量化掃描器精選之個股，其推薦之進場點位、停損點位與目標點位係基於其「今日強勢候選股」及「5日高」的特性，假設其收盤價為其預期明日起漲點，並以此預估明日開盤後仍具追價空間所設定之參考價位，實際操作需視明日開盤表現機動調整，務必嚴守停損。"
     },
     "tw_long_term": {
       "verdict": "防守",
@@ -742,161 +777,88 @@
     },
     "devils_advocate": {
       "verdict": "強烈反對",
-      "confidence": 1.0,
-      "summary": "本委員會的市場共識過於樂觀，尤其在台灣股市方面，無視歷史高點與散戶融資過熱的警訊。部分分析員基於短線技術指標強力進攻，恐將投資組合暴露於急速反轉的巨大風險中。市場的自滿情緒正醞釀著潛在的尾部事件。",
+      "confidence": 0.95,
+      "summary": "整體分析充斥著對於歷史高點市場的過度樂觀，尤其在市場呈現高估值、高槓桿與資金過度集中的現況下，『強力進攻』的建議極度危險。多數分析低估了潛在的系統性風險與尾部事件，將市場的平靜誤判為安全，而非暴風雨前的寧靜。",
       "key_insights": [
-        "市場普遍存在的低VIX與歷史高點的樂觀情緒，是市場即將反轉的典型指標，而非持續進攻的理由。",
-        "基於短線動能與量能爆發追高，極易成為反轉時的首批受害者，尤其在資金輪動快速的環境下。",
-        "對台灣年輕人借貸炒股的現象，委員會的風險意識明顯不足，這可能預示著散戶投機狂熱的頂點，而非市場強勁的動能。",
-        "許多「防守」或「暫緩加碼」的建議，仍默許在過高估值下持有風險資產，未能有效應對潛在的系統性回調。"
+        "在主要股指處於歷史高位、VIX維持低檔之際，市場普遍的樂觀情緒與對於『短線交易機會』的強調，極可能將投資者推入多殺多的陷阱。",
+        "『年輕人借貸入市』與『房貸淨資產比率高達145.9%』等極端高槓桿訊號，預示著市場一旦反轉，潛在的流動性危機將是毀滅性的。",
+        "對於AI題材的盲目追逐，忽略了資金過度集中於少數板塊，可能導致其他板塊流動性不足，且一旦AI信仰崩塌，將引發全面修正。",
+        "長期策略中仍維持多數浮虧持股的續抱，並非真正的『防守』，而是寄望於『護城河』能抵抗系統性衝擊，此為一廂情願。",
+        "對於日圓資產的『維持定額』建議，建立在日圓『長期升值潛力』的假設上，卻未充分考慮日本央行政策意外轉向或全球經濟逆轉導致的持續貶值風險。"
       ],
       "recommendations": [],
       "risk_flags": [
-        "**市場普遍性自滿與低VIX指數的危險信號：** 市場對於風險的定價過低，缺乏警惕性，預示著一次突如其來的波動可能遠超預期。",
-        "**台灣市場的散戶過熱與高槓桿風險：** 年輕人借貸入市的報導，結合高融資水位，使得台灣股市對任何負面消息都可能產生連鎖反應的踩踏式賣壓。",
-        "**科技股/AI泡沫破裂的尾部風險：** 對AI主題的過度追捧與高估值，可能引發如同網際網路泡沫般的全面崩潰，不僅影響美國市場，更將重創全球科技供應鏈。",
-        "**地緣政治意外事件的黑天鵝效應：** 東亞或中東地區任何超出預期的衝突升級，都可能引發全球性的經濟衰退、能源危機及供應鏈中斷，遠超市場對「地緣政治風險」的淺層理解。",
-        "**主要央行政策失控風險：** 鑑於全球通膨與經濟數據的不確定性，主要央行可能被迫採取非預期且劇烈的貨幣政策，導致市場流動性枯竭或信心崩潰。",
-        "**全球流動性緊縮與信貸危機：** 融資水位升高加上全球資金流向的變化，可能引發局部或系統性的流動性緊縮，導致資產價格快速下跌及信貸市場凍結。"
+        "市場過熱與估值泡沫化：美股與台股均處歷史高位，AI題材集中推升，估值已達極端水平，任何利空消息都可能引爆大幅回調。",
+        "系統性流動性枯竭：資產配置報告揭示的極高房產槓桿、年輕人借貸入市，加上VIX低檔與資金集中，一旦恐慌蔓延，將引發大規模停損與流動性崩潰，而非單純的『高檔震盪』。",
+        "全球地緣政治黑天鵝：中美科技戰升級、台海衝突加劇、或俄烏戰事擴大，均可能導致全球供應鏈中斷、能源危機，引發恐慌性拋售與資本外逃。",
+        "『AI信仰』的突然破滅：市場對AI成長預期的過度狂熱，一旦主要科技巨頭財報或財測未達市場極高預期，或出現技術瓶頸，將可能引發資金從科技板塊迅速撤離，導致市場信心崩潰。",
+        "房地產市場連鎖效應：台灣房市若因升息、政策緊縮或經濟衰退而出現修正，將導致高槓桿的房貸族面臨負資產，進而衝擊銀行體系與整體金融穩定。"
       ],
-      "agent_note": "本代理人嚴格遵守「極度懷疑主義」角色設定，未提供任何操作建議，並避免對任何分析給予正面評價。所有質疑皆基於具體論點，旨在指出潛在盲點與尾部風險，以保護投資組合免受群體思維傷害。Agent `tw_short_term`的分析因其在市場高點的極端進攻性與對技術指標的過度依賴，最需要被質疑。"
+      "agent_note": "本委員堅定認為，投資委員會必須正視市場當前所面臨的結構性脆弱與尾部風險，而非被短期的漲勢與單一題材所蒙蔽。此次分析中未提出任何操作建議，僅聚焦於質疑與風險揭示。"
     },
     "signal_fusion": {
       "market_regime_score": 0.3,
-      "trend_strength": 0.535,
-      "risk_pressure": 0.327,
-      "volatility_risk": 0.179,
+      "trend_strength": 0.58,
+      "risk_pressure": 0.329,
+      "volatility_risk": 0.164,
       "confidence_score": 0.85,
-      "scanner_momentum": 1.0,
+      "scanner_momentum": 0.983,
       "ai_sector_strength": 0.35,
-      "foreign_flow_strength": 0.855,
+      "foreign_flow_strength": 0.854,
       "breadth_score": 0.436,
-      "liquidity_score": 0.343,
+      "liquidity_score": 0.422,
       "_sources": {
         "market_regime_score": "regime=資金輪動(base=+0.3) risk_level=moderate(delta=+0.00)",
-        "trend_strength": "taiex_chg=-0.27%→base=0.455 market_overview_adj=+0.08",
-        "risk_pressure": "vix=16.8→0.241 tw_verdict_adj=-0.064 da_conf=1.00→0.150",
-        "volatility_risk": "vix=16.8→0.227×0.7 taiex_abs=0.27%→0.068×0.3",
+        "trend_strength": "taiex_chg=+0.00%→base=0.500 market_overview_adj=+0.08",
+        "risk_pressure": "vix=17.0→0.251 tw_verdict_adj=-0.064 da_conf=0.95→0.142",
+        "volatility_risk": "vix=17.0→0.234×0.7 taiex_abs=0.00%→0.000×0.3",
         "confidence_score": "avg_agent_conf=0.850 error_agents=0 penalty=0.0",
-        "scanner_momentum": "top10_avg=6.00/6.0",
+        "scanner_momentum": "top10_avg=5.90/6.0",
         "ai_sector_strength": "inferred from ai_headline_hits=0 (no direct sector ETF — batch 2 target)",
-        "foreign_flow_strength": "BFI82U_foreign_net=+355.5億元 → normalized=0.855 (÷500億 clamp±0.5)",
+        "foreign_flow_strength": "BFI82U_foreign_net=+354.4億元 → normalized=0.854 (÷500億 clamp±0.5)",
         "breadth_score": "MI_INDEX advance=433(+44漲停) decline=560(+3跌停) advance_ratio=0.436",
-        "liquidity_score": "margin_balance=5305億元 變化=+1.57% → score=0.343 (-2%→0.7, +2%→0.3)"
+        "liquidity_score": "margin_balance=5346億元 變化=+0.78% → score=0.422 (-2%→0.7, +2%→0.3)"
       },
       "_data_gaps": [],
-      "_computed_at": "2026-05-26T16:34:37.490551+08:00"
-    },
-    "tw_daily_pick": {
-      "verdict": "謹慎試單",
-      "confidence": 0.65,
-      "pick": {
-        "name": "力成",
-        "code": "6239",
-        "entry_zone": "340.0-343.0",
-        "stop_loss": "330.0",
-        "target": "365.0",
-        "risk_reward": "1:2.04",
-        "ref_close": "342.0",
-        "hold_days": "預計持有1-3天"
-      },
-      "market_regime": "台股在高檔震盪下的資金輪動格局，指數雖小幅回檔但法人買盤積極。",
-      "risk_appetite": "中性偏多",
-      "suitable_for_trading": true,
-      "summary": "台股在高檔震盪與資金輪動格局中，儘管加權指數小幅回檔，但美股科技股強勢與法人持續買超為市場提供支撐。力成(6239)作為半導體封測龍頭，直接受惠於AI及HBM需求，技術面維持強勁多頭趨勢。考量其產業地位與題材熱度，預期資金動能有望延續，適合謹慎試單。",
-      "core_logic": {
-        "capital_flow": "美股科技股持續上揚，台股外資連續加碼，顯示資金流向偏向具成長潛力的科技核心板塊，力成有望受惠。",
-        "sector": "半導體封測在AI及HBM趨勢下需求強勁，力成作為產業龍頭，處於市場主流板塊。",
-        "catalyst": "美股主要指數創新高，尤其科技股表現強勁，且市場對半導體記憶體板塊有法人籌碼轉佳的正面消息，對力成形成產業連動利多。",
-        "technical": "股價位於多頭排列且創近期高點，成交量能放大，RSI雖高但仍顯示強勁動能，具備短線追價潛力。",
-        "chips": "外資持續買超台股，預期法人資金將持續在AI相關半導體核心股佈局，有助於支撐力成的籌碼穩定性。",
-        "us_linkage": "力成作為半導體供應鏈關鍵廠商，與美股NVIDIA、TSM等AI及半導體巨頭表現高度連動，受美股正面情緒帶動。"
-      },
-      "risk_flags": [
-        "台股加權指數在高檔震盪，可能出現獲利了結賣壓。",
-        "RSI指標已處於高檔區，存在技術性回檔的風險。",
-        "市場訊息中提及對AI領域的短期「Jitters」，可能導致族群資金輪動速度加快。"
-      ],
-      "counter_argument": "若明日市場資金大幅輪動至非科技板塊，或AI概念股因高檔修正而引發賣壓，力成可能面臨短期回檔壓力。",
-      "agent_note": "This recommendation is based on a momentum strategy in a high-volatility, high-volume environment. The pick is fundamentally strong and aligns with global tech trends. However, the market's high-level consolidation and '資金輪動' regime warrant a '謹慎試單' approach rather than aggressive '推薦出手'."
-    },
-    "reflection": {
-      "verdict": "策略暫停",
-      "overall_win_rate": 0.333,
-      "confidence": 0.4,
-      "summary": "近期策略表現不佳，整體勝率僅有33.3%，遠低於預期。目前僅有3筆交易紀錄，資料樣本過少，難以得出具體模式或進行有意義的策略調整。建議在累積更多數據後，再進行策略評估與調整。",
-      "key_findings": [
-        "發現1：資料不足以判斷何種市場體制最有效，目前僅在『趨勢多頭』體制下進行了3筆測試，勝率為33.3%。",
-        "發現2：所有單獨信號的樣本數均為1筆，勝率為0%，資料不足以評估其可靠性或需降低權重。",
-        "發現3：近期失敗案例（緯穎、微星）均發生在『趨勢多頭』體制下，且未能產生顯著正報酬（分別為0.0%和-0.43%）。由於樣本數過少，難以歸納出明確的共同模式，但似乎未能有效捕捉到持續性的上漲動能。"
-      ],
-      "effective_conditions": [
-        "資料不足"
-      ],
-      "ineffective_conditions": [
-        "資料不足"
-      ],
-      "adjustments": [
-        {
-          "action": "暫停",
-          "target": "所有推薦",
-          "reason": "整體勝率低於40%，且樣本數過少（僅3筆），不足以進行有效分析與調整，需暫停以避免潛在虧損。"
-        },
-        {
-          "action": "增加",
-          "target": "數據收集量",
-          "reason": "現有數據量不足以評估單一信號或體制的有效性（所有單獨信號和體制樣本數均少於3），需累積更多交易樣本方能進行有意義的分析。"
-        },
-        {
-          "action": "檢視",
-          "target": "策略背後的進出場邏輯及止損設定",
-          "reason": "儘管樣本數少，但失敗交易未能產生顯著正報酬，這可能與進出場時機或風險控制（如止損點位）的設置有關，需在重啟策略前進行審慎評估。"
-        }
-      ],
-      "agent_note": "此次分析僅基於3筆已結算交易紀錄。每個市場體制和信號的樣本數均遠低於進行統計分析的最低要求（<3筆）。因此，所有結論均具有高度不確定性，僅供初步參考。建議在積累至少30筆交易數據後，再進行更全面的績效分析與策略調整。"
+      "_computed_at": "2026-05-27T09:05:42.995011+08:00"
     },
     "trading_master": {
-      "verdict": "信號偏多",
-      "confidence": 0.75,
-      "summary": "市場處於資金輪動格局，短線訊號雖在整體市場判斷上略有分歧（強力進攻 vs. 謹慎試單），但在個股層面皆指向特定具有強勁動能或產業利基的買進機會，顯示市場選股不選市的特徵。操作上需嚴守停損紀律。",
+      "verdict": "信號強烈",
+      "confidence": 0.85,
+      "summary": "市場資金輪動快速且美股AI熱潮持續，提供短線明確的多頭交易機會。台股多檔個股展現爆量多頭排列走勢，操作應積極捕捉進場點，並嚴格執行停損以管理風險。",
       "key_insights": [
-        "台股處於高檔震盪下的資金輪動格局，指數雖小幅回檔但美股科技股與法人買盤提供支撐。",
-        "兩交易訊號皆看好具備強勁技術面（量能爆發、均線多排）或產業利基（AI、HBM）的個股。",
-        "台股短線Agent持強力進攻態度，強調果斷追逐爆發股；每日精選Agent則傾向謹慎試單，但對龍頭股具信心。",
-        "操作策略應聚焦個股，並將嚴格的停損紀律視為風險管理核心。"
+        "市場資金輪動趨勢明確，有利於主題性短線交易。",
+        "美股AI相關話題熱度高，對台灣相關概念股形成正面催化。",
+        "多檔個股出現帶量上漲的強勁訊號，提供具體進場標的。",
+        "儘管大盤指數持平，但個股表現突出，顯示結構性機會豐富。",
+        "操作上需注重擇優汰劣，並嚴守停損紀律以應對市場波動。"
       ],
       "recommendations": [
         {
           "action": "BUY",
           "target": "彩晶(6116)",
-          "detail": "於12.50-12.80區間積極進場，嚴格停損。",
+          "detail": "觀察明日開盤後若能站穩15.2，可於15.2-15.5區間追價進場，停損設於14.5，目標價16.5-17.0。",
           "urgency": "HIGH"
         },
         {
           "action": "BUY",
           "target": "中興電(1513)",
-          "detail": "於165.00-168.00區間進場，停損點設於160.00，目標看向170.00。",
+          "detail": "觀察明日開盤後若能站穩152.0，可於152.0-155.0區間追價進場，停損設於147.0，目標價165.0-170.0。",
           "urgency": "HIGH"
         },
         {
           "action": "BUY",
           "target": "揚博(2493)",
-          "detail": "於101.00-103.00區間進場，停損點設於97.00。",
+          "detail": "觀察明日開盤後若能站穩203.0，可於203.0-207.0區間追價進場，停損設於195.0，目標價220.0-225.0。",
           "urgency": "HIGH"
-        },
-        {
-          "action": "BUY",
-          "target": "力成(6239)",
-          "detail": "於340.0-343.0區間進場，停損點設於330.0。",
-          "urgency": "MED"
         }
       ],
       "risk_flags": [
-        "Short-term risk: Medium",
-        "市場資金輪動快速，個股表現分歧，選股難度增高",
-        "指數高檔震盪，需提防快速拉回風險"
+        "資金快速輪動可能導致部分追高個股面臨修正風險。",
+        "市場結構性差異大，個股分歧，需嚴格執行停損紀律。",
+        "VIX維持中等水平，顯示市場仍存一定不確定性。"
       ],
-      "agent_note": "本報告嚴格遵守不進行資本配置、不提供比例建議之原則，僅整合信號並提供客觀風險觀點與行動方向。"
+      "agent_note": "本報告嚴格遵守不進行資本配置，不提供任何比例建議之限制。針對資金層的降權指令，本委員會職責範圍不包含調整部位大小之建議。"
     },
     "portfolio_master": {
       "verdict": "需要關注",
@@ -1007,44 +969,17 @@
     },
     "master": {
       "verdict": "局部防守",
-      "confidence": 0.95,
-      "summary": "短線市場選股不選市，在限定預算內，將針對具強勁動能的個股進行戰術性佈局。持倉方面，考量市場高估值與流動性壓力，需積極降低持倉風險並清理表現不佳的部位以應對資金需求。整體財富管理首要任務為確保流動性充足並優化財務結構，因應短期資金缺口與長期房產高集中風險。",
-      "key_insights": [
-        "客戶面臨重大流動性壓力，資金預算導向防禦性現金增持。",
-        "儘管整體市場偏防禦，量化掃描與交易訊號顯示特定個股具強勁短線動能。",
-        "長期結構性風險（房產高集中與高槓桿）要求持續去風險化與現金準備。",
-        "投資組合存在需立即處理的表現不佳標的，可藉此增加流動性。"
-      ],
-      "recommendations": [
-        {
-          "action": "WATCH",
-          "target": "6116 彩晶",
-          "detail": "[BLOCKED by wealth risk] 依據交易台與掃描器強勁動能信號，動用交易預算進行短線佈局。",
-          "urgency": "LOW"
-        },
-        {
-          "action": "WATCH",
-          "target": "1513 中興電",
-          "detail": "[BLOCKED by wealth risk] 依據交易台與掃描器強勁動能信號，動用交易預算進行短線佈局。",
-          "urgency": "LOW"
-        },
-        {
-          "action": "CUT",
-          "target": "2536 宏普",
-          "detail": "考量投資組合台風險觀點、市場估值風險以及客戶流動性壓力，立即減碼此動搖部位以降低風險並產生現金。",
-          "urgency": "HIGH"
-        }
-      ],
+      "confidence": 0,
+      "summary": "Agent master_agent error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 25.188716929s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '25s'}]}}",
+      "key_insights": [],
+      "recommendations": [],
       "risk_flags": [
-        "客戶未來12個月新台幣21萬元資金缺口",
-        "房產資產高度集中與高槓桿比率導致的結構性風險",
-        "台美股市場處於高檔，存在過熱與高估值風險"
+        "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 25.188716929s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '25s'}]}}"
       ],
-      "agent_note": "[CONSTRAINT_VIOLATIONS: 2] ACTION_BLOCKED: BUY 6116 彩晶 → 財富風險觸發，降為 WATCH | ACTION_BLOCKED: BUY 1513 中興電 → 財富風險觸發，降為 WATCH || 已嚴格遵守 Capital Flow Engine 的資金預算硬性約束，並將其視為最高決策權重。所有決策皆在3%交易預算與35%配置預算內執行，其中配置預算主要用於減碼以增加現金，而非新增投資。短線與長線決策已分開處理，不互相影響。",
-      "_raw_verdict": "局部防守",
+      "agent_note": "[CONSTRAINT_VIOLATIONS: 1] VERDICT_OVERRIDE: CIO 給出「ERROR」但交易預算僅 3%，強制修正為「局部防守」 || API call failed",
+      "_raw_verdict": "ERROR",
       "constraint_violations": [
-        "ACTION_BLOCKED: BUY 6116 彩晶 → 財富風險觸發，降為 WATCH",
-        "ACTION_BLOCKED: BUY 1513 中興電 → 財富風險觸發，降為 WATCH"
+        "VERDICT_OVERRIDE: CIO 給出「ERROR」但交易預算僅 3%，強制修正為「局部防守」"
       ],
       "constraints_triggered": true
     }
