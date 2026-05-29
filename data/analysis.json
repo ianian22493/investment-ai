@@ -1,9 +1,11 @@
 {
-  "generated_at": "2026-05-29T09:01:50.349282+08:00",
+  "generated_at": "2026-05-29T16:31:35.176157+08:00",
   "market_snapshot": {
     "taiex": {
-      "close": 43636.44,
-      "change_pct": 0
+      "close": 44732.94,
+      "prev_close": 43636.44,
+      "change": 1096.5,
+      "change_pct": 2.51
     },
     "sp500": {
       "close": 7563.63,
@@ -12,26 +14,26 @@
       "change_pct": 0.58
     },
     "vix": {
-      "close": 15.74,
-      "prev_close": 16.29,
-      "change": -0.55,
-      "change_pct": -3.38
+      "close": 15.82,
+      "prev_close": 15.74,
+      "change": 0.08,
+      "change_pct": 0.51
     },
     "usd_twd": 32.0,
     "jpy_per_usd": 159.49,
     "twd_per_jpy": null
   },
   "portfolio_value": {
-    "tw_stocks_twd": 3349646,
+    "tw_stocks_twd": 3423358,
     "tw_stocks_live": [
       {
         "code": "00692",
         "name": "富邦公司治理",
         "shares": 6699,
-        "value": 584488,
+        "value": 605925,
         "cost": 241000,
-        "pnl": 343488,
-        "pnl_pct": 142.53,
+        "pnl": 364925,
+        "pnl_pct": 151.42,
         "type": "ETF",
         "strategy": "long"
       },
@@ -39,10 +41,10 @@
         "code": "00915",
         "name": "凱基優選高股息30",
         "shares": 2000,
-        "value": 58520,
+        "value": 58120,
         "cost": 16050,
-        "pnl": 42470,
-        "pnl_pct": 264.61,
+        "pnl": 42070,
+        "pnl_pct": 262.12,
         "type": "ETF",
         "strategy": "long"
       },
@@ -50,10 +52,10 @@
         "code": "1104",
         "name": "環泥",
         "shares": 20000,
-        "value": 544000,
+        "value": 549000,
         "cost": 508982,
-        "pnl": 35018,
-        "pnl_pct": 6.88,
+        "pnl": 40018,
+        "pnl_pct": 7.86,
         "type": "stock",
         "strategy": "long"
       },
@@ -61,10 +63,10 @@
         "code": "2211",
         "name": "長榮鋼",
         "shares": 3100,
-        "value": 283650,
+        "value": 288920,
         "cost": 265380,
-        "pnl": 18270,
-        "pnl_pct": 6.88,
+        "pnl": 23540,
+        "pnl_pct": 8.87,
         "type": "stock",
         "strategy": "both"
       },
@@ -72,10 +74,10 @@
         "code": "2330",
         "name": "台積電",
         "shares": 40,
-        "value": 93800,
+        "value": 94200,
         "cost": 71700,
-        "pnl": 22100,
-        "pnl_pct": 30.82,
+        "pnl": 22500,
+        "pnl_pct": 31.38,
         "type": "stock",
         "strategy": "long"
       },
@@ -83,10 +85,10 @@
         "code": "2536",
         "name": "宏普",
         "shares": 5000,
-        "value": 99000,
+        "value": 97500,
         "cost": 177057,
-        "pnl": -78057,
-        "pnl_pct": -44.09,
+        "pnl": -79557,
+        "pnl_pct": -44.93,
         "type": "stock",
         "strategy": "long",
         "watch": "stop_loss_review"
@@ -95,10 +97,10 @@
         "code": "2834",
         "name": "臺企銀",
         "shares": 13000,
-        "value": 207350,
+        "value": 211250,
         "cost": 165731,
-        "pnl": 41619,
-        "pnl_pct": 25.11,
+        "pnl": 45519,
+        "pnl_pct": 27.47,
         "type": "stock",
         "strategy": "long"
       },
@@ -106,10 +108,10 @@
         "code": "3293",
         "name": "鈦象",
         "shares": 940,
-        "value": 712520,
+        "value": 708760,
         "cost": 627157,
-        "pnl": 85363,
-        "pnl_pct": 13.61,
+        "pnl": 81603,
+        "pnl_pct": 13.01,
         "type": "stock",
         "strategy": "both"
       },
@@ -117,10 +119,10 @@
         "code": "3703",
         "name": "欣陸",
         "shares": 12000,
-        "value": 241200,
+        "value": 242400,
         "cost": 303286,
-        "pnl": -62086,
-        "pnl_pct": -20.47,
+        "pnl": -60886,
+        "pnl_pct": -20.08,
         "type": "stock",
         "strategy": "long",
         "watch": "stop_loss_review"
@@ -129,10 +131,10 @@
         "code": "4588",
         "name": "玖鼎電力",
         "shares": 1388,
-        "value": 76618,
+        "value": 78283,
         "cost": 125129,
-        "pnl": -48511,
-        "pnl_pct": -38.77,
+        "pnl": -46846,
+        "pnl_pct": -37.44,
         "type": "stock",
         "strategy": "long",
         "watch": "stop_loss_review"
@@ -141,19 +143,19 @@
         "code": "4707",
         "name": "磐亞",
         "shares": 30000,
-        "value": 448500,
+        "value": 489000,
         "cost": 360616,
-        "pnl": 87884,
-        "pnl_pct": 24.37,
+        "pnl": 128384,
+        "pnl_pct": 35.6,
         "type": "stock",
         "strategy": "both"
       }
     ],
     "tw_summary_live": {
-      "total_value": 3349646,
+      "total_value": 3423358,
       "total_cost": 2862088,
-      "total_pnl": 487558,
-      "total_pnl_pct": 17.04,
+      "total_pnl": 561270,
+      "total_pnl_pct": 19.61,
       "broker": "永豐金"
     },
     "us_stocks_twd": 478026,
@@ -164,28 +166,28 @@
     "funds_twd": 128233,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 10555905,
-    "total_gross_twd": 25955905,
+    "net_assets_twd": 10629617,
+    "total_gross_twd": 26029617,
     "allocation_pct": {
-      "tw_stocks": 12.9,
+      "tw_stocks": 13.2,
       "us_stocks": 1.8,
       "funds": 0.5,
-      "real_estate": 84.8
+      "real_estate": 84.5
     }
   },
   "regime": {
-    "market_regime": "資金輪動",
-    "risk_level": "moderate",
+    "market_regime": "趨勢多頭",
+    "risk_level": "low",
     "short_term_trading_favorable": true,
-    "confidence": 0.65,
+    "confidence": 0.8,
     "regime_factors": {
-      "vix": 15.74,
-      "taiex_chg_pct": 0.0,
+      "vix": 15.82,
+      "taiex_chg_pct": 2.51,
       "nasdaq_chg_pct": 0.91,
       "sp500_chg_pct": 0.58,
       "ai_keyword_hits": 1
     },
-    "regime_summary": "市場體制：資金輪動｜VIX=15.7｜台股+0.00%｜NASDAQ+0.91%｜AI話題度=1｜短線適合交易：✓"
+    "regime_summary": "市場體制：趨勢多頭｜VIX=15.8｜台股+2.51%｜NASDAQ+0.91%｜AI話題度=1｜短線適合交易：✓"
   },
   "capital_flow": {
     "budget": {
@@ -441,37 +443,293 @@
   },
   "agents": {
     "market_overview": {
-      "verdict": "ERROR",
-      "confidence": 0,
-      "summary": "Agent market_overview error: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
-      "key_insights": [],
-      "recommendations": [],
-      "risk_flags": [
-        "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+      "verdict": "小心進攻",
+      "confidence": 0.8,
+      "summary": "今日市場呈現強勁風險開啟態勢，台股與美股主要指數皆大幅上漲並創下新高或接近高點，VIX指數維持低檔顯示市場情緒穩定。儘管動能強勁，鑑於大盤處於高位，操作上建議保持謹慎，不宜過度追高。",
+      "key_insights": [
+        "全球主要股指普遍大幅上漲，市場風險偏好顯著提升。",
+        "台股與美股指數皆位於歷史高位，顯示市場估值偏高，需警惕潛在修正風險。",
+        "VIX恐慌指數維持溫和水平，短期內市場情緒相對穩定，有利於短期多頭氛圍。",
+        "AI話題持續發酵，為市場提供主要推動力量。"
       ],
-      "agent_note": "API call failed"
+      "recommendations": [
+        {
+          "action": "HOLD",
+          "target": "整體持倉",
+          "detail": "在多頭趨勢中維持現有部位，並密切關注市場動態與流動性變化。",
+          "urgency": "MED"
+        },
+        {
+          "action": "WATCH",
+          "target": "新增投資",
+          "detail": "對於新增投資需極度審慎，考量高位風險，可利用技術性回調進行少量佈局，避免盲目追高。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "SET_STOP_LOSS",
+          "target": "所有多頭部位",
+          "detail": "為現有多頭部位設定嚴格的停損點與停利點，以保護資本，並為可能的回調做好準備。",
+          "urgency": "HIGH"
+        }
+      ],
+      "risk_flags": [
+        "主要股指位於歷史極高位，存在潛在的獲利了結與大幅修正風險。",
+        "市場情緒可能因過度樂觀而導致快速反轉。",
+        "匯率波動（如USD/JPY接近160）可能引發全球資本流動的重新評估。"
+      ],
+      "agent_note": "本分析基於提供的數據，並秉持謹慎防守與不追漲之原則。值得注意的是，提供的台股與美股大盤指數數值（如加權指數44732.94，S&P 500 7563.63，NASDAQ 26917.47）顯著高於一般歷史常態，已將此視為判斷市場處於極高位與潛在風險考量的重要依據。"
     },
     "news_sentiment": {
-      "verdict": "ERROR",
-      "confidence": 0,
-      "summary": "Agent news_sentiment error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 39.018678527s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '39s'}]}}",
-      "key_insights": [],
-      "recommendations": [],
-      "risk_flags": [
-        "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 39.018678527s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '39s'}]}}"
+      "verdict": "偏正面",
+      "confidence": 0.85,
+      "summary": "整體市場呈現強勁的偏多情緒，台股多項數據顯示量價齊揚，外資積極買超，美股企業獲利亦支撐盤勢。然而，地緣政治風險（如中東局勢）與市場過熱的警訊，為這波漲勢增添了潛在的短期波動風險。",
+      "key_insights": [
+        "台股表現極為強勢，伴隨歷史天量與外資巨額買超，顯示資金流入與強勁上漲動能。",
+        "美股受企業獲利支撐，AI相關題材持續為市場帶來動能，推動指數屢創新高。",
+        "地緣政治風險，特別是中東局勢與伊朗相關消息，對全球股市情緒具有高度敏感性，是短期內最需關注的潛在不確定因素。",
+        "市場過熱警訊浮現，部分專家提出「末升段」及「大洗盤」的可能性，需提防急遽修正風險。"
       ],
-      "agent_note": "API call failed"
+      "recommendations": [
+        {
+          "action": "HOLD",
+          "target": "台積電(2330)",
+          "detail": "台股主要動能，受外資青睞與整體市場樂觀情緒支撐，基本面良好。",
+          "urgency": "LOW"
+        },
+        {
+          "action": "HOLD",
+          "target": "00692, 00915",
+          "detail": "受益於台股整體強勁上漲趨勢，續抱可分享市場成長。",
+          "urgency": "LOW"
+        },
+        {
+          "action": "HOLD",
+          "target": "NVDA, MSFT, GOOGL, AMZN",
+          "detail": "受益於美股企業獲利與AI題材支撐，續抱核心部位。但需留意市場泡沫化警訊。",
+          "urgency": "LOW"
+        },
+        {
+          "action": "WATCH",
+          "target": "ALL",
+          "detail": "密切關注中東地緣政治發展，尤其與伊朗相關的新聞，其可能引發市場劇烈波動。同時，留意台股「末升段」的市場情緒變化。",
+          "urgency": "HIGH"
+        }
+      ],
+      "risk_flags": [
+        "中東地緣政治緊張可能導致市場快速回調（如伊朗相關突襲新聞所示的市場反應）。",
+        "台股歷史天量與急遽上漲後，可能面臨技術性修正或「大洗盤」的風險。",
+        "美股市場部分觀察點提出存在「泡沫化」與「熊市訊號被忽略」的警示，長期持倉者應保持警惕。"
+      ],
+      "agent_note": "本分析僅基於新聞標題，不涉及任何技術分析或K線判讀，亦不提供具體進出場價位。所有判斷均力求客觀中立，並聚焦於對現有持倉的直接影響與潛在風險。"
     },
     "tw_short_term": {
-      "verdict": "ERROR",
-      "confidence": 0,
-      "summary": "Agent tw_short_term error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 7.643596895s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '7s'}]}}",
-      "key_insights": [],
-      "recommendations": [],
-      "risk_flags": [
-        "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 7.643596895s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '7s'}]}}"
+      "verdict": "強力進攻",
+      "confidence": 0.9,
+      "summary": "台股今日呈現極為強勁的風險開啟態勢，加權指數大幅上漲，整體市場情緒樂觀。掃描器精選的多檔AI相關強勢股具備量價齊揚與均線多頭排列的技術優勢，是短線進攻的絕佳機會。建議積極汰弱留強，並鎖定有明確突破訊號的標的進場。",
+      "key_insights": [
+        "台股大盤處於明確多頭趨勢，且VIX指數低檔，市場信心充足。",
+        "量化掃描器篩選出多檔具備「量爆、均線多排、5日高」特徵的強勢股，顯示資金追逐動能。",
+        "持倉個股中，表現弱勢者應立即停損，將資金轉移至更具潛力的強勢股。",
+        "AI話題度維持高檔，相關概念股持續受到市場關注與買盤推動。"
       ],
-      "agent_note": "API call failed"
+      "recommendations": [
+        {
+          "action": "CUT",
+          "target": "1104",
+          "detail": "環泥技術面轉弱，股價跌破MA20且MA5位於MA20下方，建議立即停損。",
+          "entry_price": "N/A",
+          "stop_loss": 27.2,
+          "target_price": "N/A",
+          "holding_period": "1天",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "2211",
+          "detail": "長榮鋼技術面轉弱，股價跌破MA20且MA5位於MA20下方，建議立即停損。",
+          "entry_price": "N/A",
+          "stop_loss": 92.8,
+          "target_price": "N/A",
+          "holding_period": "1天",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "2536",
+          "detail": "宏普技術面轉弱，股價跌破MA20且MA5位於MA20下方，建議立即停損。",
+          "entry_price": "N/A",
+          "stop_loss": 19.4,
+          "target_price": "N/A",
+          "holding_period": "1天",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "3703",
+          "detail": "欣陸技術面轉弱，股價跌破MA20且MA5位於MA20下方，建議立即停損。",
+          "entry_price": "N/A",
+          "stop_loss": 20.1,
+          "target_price": "N/A",
+          "holding_period": "1天",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "4588",
+          "detail": "玖鼎電力技術面轉弱，股價跌破MA20且MA5位於MA20下方，建議立即停損。",
+          "entry_price": "N/A",
+          "stop_loss": 56.2,
+          "target_price": "N/A",
+          "holding_period": "1天",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "HOLD",
+          "target": "00692",
+          "detail": "富邦公司治理均線多頭排列，股價站穩MA20，持續持有觀察。",
+          "entry_price": "N/A",
+          "stop_loss": "N/A",
+          "target_price": "N/A",
+          "holding_period": "1-5天",
+          "urgency": "LOW"
+        },
+        {
+          "action": "HOLD",
+          "target": "00915",
+          "detail": "凱基優選高股息30均線多頭排列，股價站穩MA20，持續持有觀察。",
+          "entry_price": "N/A",
+          "stop_loss": "N/A",
+          "target_price": "N/A",
+          "holding_period": "1-5天",
+          "urgency": "LOW"
+        },
+        {
+          "action": "HOLD",
+          "target": "2330",
+          "detail": "台積電均線多頭排列，股價站穩MA20，持續持有觀察。",
+          "entry_price": "N/A",
+          "stop_loss": "N/A",
+          "target_price": "N/A",
+          "holding_period": "1-5天",
+          "urgency": "LOW"
+        },
+        {
+          "action": "HOLD",
+          "target": "2834",
+          "detail": "臺企銀均線多頭排列，股價站穩MA20，持續持有觀察。",
+          "entry_price": "N/A",
+          "stop_loss": "N/A",
+          "target_price": "N/A",
+          "holding_period": "1-5天",
+          "urgency": "LOW"
+        },
+        {
+          "action": "HOLD",
+          "target": "3293",
+          "detail": "鈦象均線多頭排列，股價站穩MA20，持續持有觀察。",
+          "entry_price": "N/A",
+          "stop_loss": "N/A",
+          "target_price": "N/A",
+          "holding_period": "1-5天",
+          "urgency": "LOW"
+        },
+        {
+          "action": "ADD",
+          "target": "4707",
+          "detail": "磐亞今日強勢漲停，量價齊揚，均線多頭排列，動能極強，建議加碼追價。",
+          "entry_price": 16.3,
+          "stop_loss": 15.8,
+          "target_price": 17.5,
+          "holding_period": "1-3天",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "BUY",
+          "target": "2324",
+          "detail": "仁寶量爆5.45x，均線多頭排列，創5日高，動能極強，建議追價進場。",
+          "entry_price": "參考今日收盤價",
+          "stop_loss": "今日收盤價 * 0.98",
+          "target_price": "今日收盤價 * 1.05",
+          "holding_period": "1-3天",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "BUY",
+          "target": "2356",
+          "detail": "英業達量爆2.93x，均線多頭排列，創5日高，動能強勁，建議追價進場。",
+          "entry_price": "參考今日收盤價",
+          "stop_loss": "今日收盤價 * 0.98",
+          "target_price": "今日收盤價 * 1.05",
+          "holding_period": "1-3天",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "BUY",
+          "target": "2317",
+          "detail": "鴻海量爆2.9x，均線多頭排列，創5日高，動能強勁，建議追價進場。",
+          "entry_price": "參考今日收盤價",
+          "stop_loss": "今日收盤價 * 0.98",
+          "target_price": "今日收盤價 * 1.05",
+          "holding_period": "1-3天",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "BUY",
+          "target": "8039",
+          "detail": "台虹量爆2.47x，均線多頭排列，創5日高，短線突破，建議積極進場。",
+          "entry_price": "參考今日收盤價",
+          "stop_loss": "今日收盤價 * 0.98",
+          "target_price": "今日收盤價 * 1.05",
+          "holding_period": "1-5天",
+          "urgency": "MED"
+        },
+        {
+          "action": "BUY",
+          "target": "8110",
+          "detail": "華東量爆2.45x，均線多頭排列，創5日高，短線突破，建議積極進場。",
+          "entry_price": "參考今日收盤價",
+          "stop_loss": "今日收盤價 * 0.98",
+          "target_price": "今日收盤價 * 1.05",
+          "holding_period": "1-5天",
+          "urgency": "MED"
+        },
+        {
+          "action": "BUY",
+          "target": "2357",
+          "detail": "華碩量爆2.26x，均線多頭排列，創5日高，短線突破，建議積極進場。",
+          "entry_price": "參考今日收盤價",
+          "stop_loss": "今日收盤價 * 0.98",
+          "target_price": "今日收盤價 * 1.05",
+          "holding_period": "1-5天",
+          "urgency": "MED"
+        },
+        {
+          "action": "BUY",
+          "target": "3231",
+          "detail": "緯創量爆2.21x，均線多頭排列，創5日高，短線突破，建議積極進場。",
+          "entry_price": "參考今日收盤價",
+          "stop_loss": "今日收盤價 * 0.98",
+          "target_price": "今日收盤價 * 1.05",
+          "holding_period": "1-5天",
+          "urgency": "MED"
+        },
+        {
+          "action": "BUY",
+          "target": "2495",
+          "detail": "普安量爆2.03x，均線多頭排列，創5日高，短線突破，建議積極進場。",
+          "entry_price": "參考今日收盤價",
+          "stop_loss": "今日收盤價 * 0.98",
+          "target_price": "今日收盤價 * 1.05",
+          "holding_period": "1-5天",
+          "urgency": "MED"
+        }
+      ],
+      "risk_flags": [
+        "大盤已處於相對高位，需留意潛在獲利了結賣壓。",
+        "部分持倉個股及量化掃描器精選個股缺乏當日法人籌碼數據，無法確認主力實質進場情況。",
+        "短線追價風險較高，務必嚴格執行停損紀律。"
+      ],
+      "agent_note": "本分析嚴格遵循技術面與籌碼面，不涉及基本面判斷。對於量化掃描器精選的強勢股，因原始數據未提供具體收盤價，故進場點位、停損點位與目標點位皆以「參考今日收盤價」為基礎進行公式化建議，以符合明確價位要求。"
     },
     "tw_long_term": {
       "verdict": "防守",
@@ -715,52 +973,193 @@
       "agent_note": "此分析完全基於偏執的風控視角，聚焦於潛在的最壞情況與系統性風險點，不提供任何市場樂觀預期或基於未實現收益的評估。"
     },
     "devils_advocate": {
-      "verdict": "ERROR",
-      "confidence": 0,
-      "summary": "Agent devils_advocate error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 35.481726424s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '35s'}]}}",
-      "key_insights": [],
-      "recommendations": [],
-      "risk_flags": [
-        "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 35.481726424s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '35s'}]}}"
+      "verdict": "強烈反對",
+      "confidence": 1.0,
+      "summary": "市場分析普遍瀰漫著極端樂觀的群體思維，對當前高位風險與潛在反轉視而不見。尤其在投資組合面臨嚴重的流動性枯竭及過度槓桿危機時，多數分析師仍提倡積極進攻，這是對風險的徹底漠視。",
+      "key_insights": [
+        "低VIX指數往往是市場過度自信而非真正穩定的訊號，預示著隨時可能出現的劇烈反轉。",
+        "技術面追價進攻策略，尤其在市場屢創新高之際，極易成為承接籌碼的最後一棒，完全忽略估值風險與基本面潛在變化。",
+        "資產配置分析中極端集中與超高槓桿的警告，被其他樂觀的短期操作建議所掩蓋，這是一個系統性的盲點。",
+        "所謂「長期趨勢」的護城河，在系統性流動性衝擊或經濟黑天鵝事件面前，可能毫無抵抗力，盲目續抱將面臨巨大回撤風險。"
       ],
-      "agent_note": "API call failed"
+      "recommendations": [
+        {
+          "action": "CUT",
+          "target": "房產槓桿",
+          "detail": "立即評估並大幅降低房產高槓桿，這是投資組合最脆弱且致命的環節，其他任何操作都應在此之前考量。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "SELL",
+          "target": "台股虧損部位",
+          "detail": "依據資產配置報告，應優先清算所有虧損且護城河不明顯的台股部位，以彌補即將到來的現金缺口並釋放流動性，而非僅依據技術面停損個別標的。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "WATCH",
+          "target": "所有短線追價標的 (如4707磐亞, 2324仁寶, 2356英業達等)",
+          "detail": "對所有短線基於量價齊揚與均線多頭排列的「強力進攻」建議，抱持極度懷疑。市場在高點時追逐這些被廣泛認可的「強勢股」，恰是承擔最高回調風險的時機，應避免成為市場情緒的犧牲品。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "WATCH",
+          "target": "Zscaler (ZS)",
+          "detail": "資安股ZS單日暴跌逾30%後，視為「加碼機會」實屬危險。未經深入探究其暴跌背後是否涉及基本面惡化或產業結構性問題，便盲目「承接落下的刀子」，是極高的潛在風險。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "WATCH",
+          "target": "日幣定額投資",
+          "detail": "雖然日幣匯率偏弱，但將其視為「有利累積點」並非沒有風險。日本央行政策不確定性與全球經濟衰退壓力可能導致日幣長期維持弱勢，甚至進一步探底，紀律性投資不應等同於無視匯率風險。",
+          "urgency": "MED"
+        }
+      ],
+      "risk_flags": [
+        "市場過度自信與群體思維，將低VIX誤讀為穩定，導致對潛在系統性風險的麻痺。",
+        "投資組合高槓桿與流動性枯竭，一旦房產價值受挫或現金流斷裂，將引發毀滅性後果。",
+        "地緣政治衝突（如中東）或國際貿易關係（如中美）意外升級，可能引發石油危機、供應鏈斷裂，並導致全球股市急速崩跌。",
+        "AI泡沫破裂或技術創新邊際效益遞減，導致科技巨頭估值修正，進而拖累整體市場。",
+        "央行貨幣政策意外轉向（如通膨捲土重來導致激進升息），將徹底顛覆當前市場的樂觀預期。",
+        "全球經濟硬著陸風險被低估，企業獲利不如預期，引發獲利修正潮。"
+      ],
+      "agent_note": "本分析嚴格遵循反對派委員的角色設定，僅負責質疑其他分析師的結論、指出盲點、提出尾部風險，並避免給出任何非質疑性的操作建議，確保投資組合免受群體思維影響。所提出的『建議』均為針對其他分析師提案的質疑或風險提示。"
     },
     "signal_fusion": {
-      "market_regime_score": 0.3,
-      "trend_strength": 0.5,
-      "risk_pressure": 0.262,
-      "volatility_risk": 0.134,
-      "confidence_score": 0.0,
-      "scanner_momentum": 0.883,
+      "market_regime_score": 0.9,
+      "trend_strength": 0.998,
+      "risk_pressure": 0.277,
+      "volatility_risk": 0.324,
+      "confidence_score": 0.887,
+      "scanner_momentum": 0.983,
       "ai_sector_strength": 0.35,
-      "foreign_flow_strength": 0.119,
-      "breadth_score": 0.408,
+      "foreign_flow_strength": 1.0,
+      "breadth_score": 0.799,
       "liquidity_score": 0.523,
       "_sources": {
-        "market_regime_score": "regime=資金輪動(base=+0.3) risk_level=moderate(delta=+0.00)",
-        "trend_strength": "taiex_chg=+0.00%→base=0.500 market_overview_adj=+0.00",
-        "risk_pressure": "vix=15.7→0.187 tw_verdict_adj=-0.000 da_conf=0.50→0.075",
-        "volatility_risk": "vix=15.7→0.191×0.7 taiex_abs=0.00%→0.000×0.3",
-        "confidence_score": "avg_agent_conf=0.000 error_agents=4 penalty=0.4",
-        "scanner_momentum": "top10_avg=5.30/6.0",
+        "market_regime_score": "regime=趨勢多頭(base=+0.8) risk_level=low(delta=+0.10)",
+        "trend_strength": "taiex_chg=+2.51%→base=0.918 market_overview_adj=+0.08",
+        "risk_pressure": "vix=15.8→0.191 tw_verdict_adj=-0.064 da_conf=1.00→0.150",
+        "volatility_risk": "vix=15.8→0.194×0.7 taiex_abs=2.51%→0.627×0.3",
+        "confidence_score": "avg_agent_conf=0.887 error_agents=0 penalty=0.0",
+        "scanner_momentum": "top10_avg=5.90/6.0",
         "ai_sector_strength": "inferred from ai_headline_hits=0 (no direct sector ETF — batch 2 target)",
-        "foreign_flow_strength": "BFI82U_foreign_net=-381.4億元 → normalized=0.119 (÷500億 clamp±0.5)",
-        "breadth_score": "MI_INDEX advance=408(+32漲停) decline=591(+5跌停) advance_ratio=0.408",
+        "foreign_flow_strength": "BFI82U_foreign_net=+803.6億元 → normalized=1.000 (÷500億 clamp±0.5)",
+        "breadth_score": "MI_INDEX advance=805(+42漲停) decline=202(+0跌停) advance_ratio=0.799",
         "liquidity_score": "margin_balance=5350億元 變化=-0.23% → score=0.523 (-2%→0.7, +2%→0.3)"
       },
       "_data_gaps": [],
-      "_computed_at": "2026-05-29T09:12:39.574019+08:00"
+      "_computed_at": "2026-05-29T16:34:27.950355+08:00"
+    },
+    "tw_daily_pick": {
+      "verdict": "推薦出手",
+      "confidence": 0.75,
+      "pick": {
+        "name": "鴻海",
+        "code": "2317",
+        "entry_zone": "286.0-290.0",
+        "stop_loss": "282.0",
+        "target": "303.0",
+        "risk_reward": "1:2.5",
+        "ref_close": "289.0",
+        "hold_days": "預計持有1-3天"
+      },
+      "market_regime": "指數巨量突破歷史新高，資金強力湧入主流科技股，但短線過熱風險增高。",
+      "risk_appetite": "偏多",
+      "suitable_for_trading": true,
+      "summary": "台股在歷史天量與外資巨額買超推動下，指數噴發創高，資金流向大型權值科技股態勢明確。鴻海作為AI伺服器與電動車重要供應商，受惠於主流趨勢與強勁法人買盤，技術面呈現多頭格局，RSI雖高但仍有空間。考量市場情緒極度偏多，搭配外資連續買超，隔日有望延續上漲動能。",
+      "core_logic": {
+        "capital_flow": "外資單日爆買803億，為史上第三大，顯示強勁機構資金流入大型權值股。",
+        "sector": "AI伺服器、PC相關族群為市場主流，鴻海位居要津。",
+        "catalyst": "美股科技股財報與AI趨勢提供基本面支撐，台股歷史天量顯示市場強勁追價意願。",
+        "technical": "鴻海股價帶量突破新高，均線多排，RSI雖高但整體多頭結構完整。",
+        "chips": "外資連續積極買超，籌碼穩定偏多。",
+        "us_linkage": "NASDAQ與S&P500創高，美股科技股的強勁表現為台股提供正向連動。"
+      },
+      "risk_flags": [
+        "台股指數短線急漲，爆出歷史天量，可能引發短線獲利了結賣壓。",
+        "整體市場情緒過熱，可能增加回檔修正風險。",
+        "地緣政治事件（如中東情勢）可能造成市場恐慌性賣壓。"
+      ],
+      "counter_argument": "市場指數與個股股價已處於高位，RSI偏高顯示超買，隔日可能因前日巨量而出現震盪洗盤，導致追高者被套。",
+      "agent_note": "本推薦基於當前市場前所未有的資金流入與強勁動能，即使整體市場處於高檔，但外資積極買盤與主流趨勢仍提供高勝率機會。歷史績效低落可能受限於樣本數與不同市場體制下的策略適應性。"
+    },
+    "reflection": {
+      "verdict": "策略暫停",
+      "overall_win_rate": 0.25,
+      "confidence": 0.2,
+      "summary": "近期策略表現不佳，整體勝率僅25%，遠低於預期。在有限的樣本中，推薦出現多筆失敗，顯示當前策略未能有效捕捉市場機會。所有體制與信號在目前數據下皆呈現低效或無效表現，亟需全面檢討與調整。",
+      "key_findings": [
+        "發現1：在有足夠樣本的體制中，「趨勢多頭」體制勝率為33.3% (1/3)，為表現相對較佳但仍不理想的體制。而「資金輪動」體制僅1筆樣本且為失敗，資料不足。",
+        "發現2：目前所有列出的信號 (above_ma20, vol_surge, rsi_zone, ma_aligned, five_day_high, rs_signal) 在各2次的推薦中皆顯示0%勝率，資料不足以判斷可靠性，且表現極差。",
+        "發現3：最近三筆失敗 (力成、緯穎、微星) 的共同模式是未能產生正向報酬，其中兩筆報酬為0%，一筆為負值，顯示策略選股或進場時機未能提供足夠的上漲動能。"
+      ],
+      "effective_conditions": [
+        "資料不足，未能識別出有效條件。"
+      ],
+      "ineffective_conditions": [
+        "所有個別信號 (above_ma20, vol_surge, rsi_zone, ma_aligned, five_day_high, rs_signal) 皆為0%勝率 (各2次，資料不足)。",
+        "資金輪動體制 (0%勝率，1次，資料不足)。"
+      ],
+      "adjustments": [
+        {
+          "action": "暫停",
+          "target": "所有目前使用的信號組合",
+          "reason": "所有信號在有限樣本中皆顯示0%勝率，未能有效識別上漲動能，需重新檢視其有效性與應用場景。"
+        },
+        {
+          "action": "重新評估",
+          "target": "「趨勢多頭」體制下的選股與進場邏輯",
+          "reason": "儘管此體制樣本數相對較多，但勝率僅33.3%，顯示其篩選條件可能存在缺陷或已不適用當前市場，無法持續產生正向報酬。"
+        },
+        {
+          "action": "暫停使用",
+          "target": "「資金輪動」體制",
+          "reason": "此體制僅有1筆樣本且為失敗，資料不足以評估其有效性，在整體策略表現不佳時應暫停，避免擴大風險並集中資源改善主要體制。"
+        }
+      ],
+      "agent_note": "分析基於4筆已結算之推薦記錄，時間範圍約為2026年5月上旬至下旬。部分體制與所有信號的樣本數均不足3筆，分析結果具有較高不確定性，但當前表現已顯示需全面檢討。"
     },
     "trading_master": {
-      "verdict": "ERROR",
-      "confidence": 0,
-      "summary": "Agent trading_master error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 6.937616097s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '6s'}]}}",
-      "key_insights": [],
-      "recommendations": [],
-      "risk_flags": [
-        "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 6.937616097s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '6s'}]}}"
+      "verdict": "信號強烈",
+      "confidence": 0.8,
+      "summary": "綜合信號顯示，市場處於強勁多頭趨勢，資金正加速湧入AI與科技類股，交易機會浮現。然而，短線市場存在過熱跡象，本委員會評估當前短線風險為中等。建議交易者積極管理現有部位並尋求新的突破機會。",
+      "key_insights": [
+        "市場整體呈強勁多頭趨勢，指數創新高，顯示資金動能充沛。",
+        "AI與大型科技權值股為當前資金主要流向，具備量價齊揚與技術面優勢。",
+        "有明確技術面轉弱的標的應果斷汰除，以優化部位。",
+        "短線市場存在過熱跡象，需留意潛在波動與回檔風險。"
       ],
-      "agent_note": "API call failed"
+      "recommendations": [
+        {
+          "action": "CUT",
+          "target": "1104",
+          "detail": "環泥技術面轉弱，股價跌破MA20且MA5位於MA20下方，建議立即停損。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "2211",
+          "detail": "長榮鋼技術面轉弱，股價跌破MA20且MA5位於MA20下方，建議立即停損。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "2536",
+          "detail": "宏普技術面轉弱，股價跌破MA20且MA5位於MA20下方，建議立即停損。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "BUY",
+          "target": "2317",
+          "detail": "鴻海受惠於AI伺服器與電動車主流趨勢，技術面呈現多頭格局，RSI雖高但仍有空間，建議於286.0-290.0區間進場，停損設於282.0。",
+          "urgency": "HIGH"
+        }
+      ],
+      "risk_flags": [
+        "短線過熱風險增高",
+        "大型權值股快速上漲後可能面臨獲利了結壓力"
+      ],
+      "agent_note": "本委員會嚴格遵守職責限制，僅提供信號整合與客觀風險觀點，不涉及任何資金配置比例或部位大小調整建議。對於『若資金層有降權指令，如何調整部位大小？』此類資本配置相關提問，本委員會不予回應。"
     },
     "portfolio_master": {
       "verdict": "需要關注",
@@ -871,19 +1270,43 @@
     },
     "master": {
       "verdict": "局部防守",
-      "confidence": 0,
-      "summary": "Agent master_agent error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 35.274512718s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '35s'}]}}",
-      "key_insights": [],
-      "recommendations": [],
+      "confidence": 0.9,
+      "summary": "短線市場雖有強勁動能，但考量整體流動性與未來資金需求，應優先減碼並增加現金儲備；中長線持倉則需審慎檢視高風險部位，以應對市場過熱及結構性風險；財富管理核心在於確保流動性充足與財務結構的健全。",
+      "key_insights": [
+        "Capital Flow Engine的防禦性資金流向與高現金要求，優先於市場的短期強勁信號。",
+        "客戶未來12個月的資金缺口及高房產集中度，使得流動性與結構性風險成為當前首要考量。",
+        "市場雖有強勁動能與特定板塊熱度，但整體已出現過熱與高估值風險跡象。",
+        "交易與持倉決策需嚴格遵守資金預算，並以風險降低和現金儲備為核心目標。"
+      ],
+      "recommendations": [
+        {
+          "action": "CUT",
+          "target": "1104",
+          "detail": "依Trading Desk建議，減碼特定持股以增加現金部位。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "2211",
+          "detail": "依Trading Desk建議，減碼特定持股以增加現金部位。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "REVIEW",
+          "target": "2536 宏普",
+          "detail": "依Portfolio Desk建議，重新評估宏普持倉論述，與Wealth Desk提及的房產集中風險結合檢討。",
+          "urgency": "HIGH"
+        }
+      ],
       "risk_flags": [
-        "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 35.274512718s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '35s'}]}}"
+        "未來12個月新台幣21萬元資金缺口帶來的流動性壓力。",
+        "整體財務結構房產高度集中與高槓桿比率的長期結構性風險。",
+        "台美股市場皆處於高檔，存在潛在過熱與高估值風險。"
       ],
-      "agent_note": "[CONSTRAINT_VIOLATIONS: 1] VERDICT_OVERRIDE: CIO 給出「ERROR」但交易預算僅 3%，強制修正為「局部防守」 || API call failed",
-      "_raw_verdict": "ERROR",
-      "constraint_violations": [
-        "VERDICT_OVERRIDE: CIO 給出「ERROR」但交易預算僅 3%，強制修正為「局部防守」"
-      ],
-      "constraints_triggered": true
+      "agent_note": "決策嚴格遵循Capital Flow Engine的預算與流向指令，優先處理流動性與結構性風險，並在硬性約束下整合各Desk的觀點。未更改資金分配比例，且未被單一Desk的『建議』直接引導，而是綜合所有資訊後仲裁。",
+      "_raw_verdict": "局部防守",
+      "constraint_violations": [],
+      "constraints_triggered": false
     }
   }
 }
