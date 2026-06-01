@@ -212,137 +212,57 @@
   },
   "performance": {
     "available": true,
-    "total": 2,
-    "wins": 1,
-    "losses": 1,
-    "overall_rate": 50.0,
+    "total": 6,
+    "wins": 4,
+    "losses": 2,
+    "overall_rate": 66.7,
     "regime_stats": {
       "趨勢多頭": {
-        "wins": 1,
-        "total": 2,
-        "rate": 50.0
+        "wins": 4,
+        "total": 5,
+        "rate": 80.0
+      },
+      "資金輪動": {
+        "wins": 0,
+        "total": 1,
+        "rate": 0.0
       }
     },
     "signal_stats": {
       "above_ma20": {
-        "wins": 0,
-        "total": 1,
-        "rate": 0.0
+        "wins": 1,
+        "total": 3,
+        "rate": 33.3
       },
       "vol_surge": {
-        "wins": 0,
-        "total": 1,
-        "rate": 0.0
+        "wins": 1,
+        "total": 3,
+        "rate": 33.3
       },
       "rsi_zone": {
-        "wins": 0,
-        "total": 1,
-        "rate": 0.0
+        "wins": 1,
+        "total": 3,
+        "rate": 33.3
       },
       "ma_aligned": {
-        "wins": 0,
-        "total": 1,
-        "rate": 0.0
+        "wins": 1,
+        "total": 3,
+        "rate": 33.3
       },
       "five_day_high": {
-        "wins": 0,
-        "total": 1,
-        "rate": 0.0
+        "wins": 1,
+        "total": 3,
+        "rate": 33.3
       },
       "rs_signal": {
-        "wins": 0,
-        "total": 1,
-        "rate": 0.0
+        "wins": 1,
+        "total": 3,
+        "rate": 33.3
       }
     },
-    "recent_streak": "✗✓",
-    "open_count": 4,
-    "open_picks": [
-      {
-        "id": 6,
-        "date": "2026-05-29",
-        "code": "2317",
-        "name": "鴻海",
-        "verdict": "",
-        "confidence": 0.0,
-        "regime": "趨勢多頭",
-        "entry_zone": "286.0-290.0",
-        "stop_loss": "282.0",
-        "target": "303.0",
-        "hold_days": "預計持有1-3天",
-        "ref_close": 289.0,
-        "close_next_day": null,
-        "return_pct": null,
-        "hit_target": null,
-        "hit_stop": null,
-        "success": null,
-        "resolved": 0,
-        "resolved_at": null
-      },
-      {
-        "id": 5,
-        "date": "2026-05-27",
-        "code": "6150",
-        "name": "撼訊",
-        "verdict": "",
-        "confidence": 0.0,
-        "regime": "趨勢多頭",
-        "entry_zone": "365.0-372.0 (視開盤動能與支撐確認)",
-        "stop_loss": "355.0",
-        "target": "390.0",
-        "hold_days": "預計持有1-3天",
-        "ref_close": null,
-        "close_next_day": null,
-        "return_pct": null,
-        "hit_target": null,
-        "hit_stop": null,
-        "success": null,
-        "resolved": 0,
-        "resolved_at": null
-      },
-      {
-        "id": 4,
-        "date": "2026-05-26",
-        "code": "6239",
-        "name": "力成",
-        "verdict": "",
-        "confidence": 0.0,
-        "regime": "資金輪動",
-        "entry_zone": "340.0-343.0",
-        "stop_loss": "330.0",
-        "target": "365.0",
-        "hold_days": "預計持有1-3天",
-        "ref_close": 342.0,
-        "close_next_day": null,
-        "return_pct": null,
-        "hit_target": null,
-        "hit_stop": null,
-        "success": null,
-        "resolved": 0,
-        "resolved_at": null
-      },
-      {
-        "id": 3,
-        "date": "2026-05-21",
-        "code": "6669",
-        "name": "緯穎",
-        "verdict": "",
-        "confidence": 0.0,
-        "regime": "趨勢多頭",
-        "entry_zone": "2730.0-2780.0",
-        "stop_loss": "2670.0",
-        "target": "2950.0",
-        "hold_days": "預計持有1-3天",
-        "ref_close": 5345.0,
-        "close_next_day": null,
-        "return_pct": null,
-        "hit_target": null,
-        "hit_stop": null,
-        "success": null,
-        "resolved": 0,
-        "resolved_at": null
-      }
-    ],
+    "recent_streak": "✓✓✗✓✗✓",
+    "open_count": 0,
+    "open_picks": [],
     "recent_picks": [
       {
         "id": 6,
@@ -357,13 +277,13 @@
         "target": "303.0",
         "hold_days": "預計持有1-3天",
         "ref_close": 289.0,
-        "close_next_day": null,
-        "return_pct": null,
+        "close_next_day": 293.5,
+        "return_pct": 1.557,
         "hit_target": null,
         "hit_stop": null,
-        "success": null,
-        "resolved": 0,
-        "resolved_at": null
+        "success": 1,
+        "resolved": 1,
+        "resolved_at": "2026-06-01T22:12:19.831770+08:00"
       },
       {
         "id": 5,
@@ -377,14 +297,14 @@
         "stop_loss": "355.0",
         "target": "390.0",
         "hold_days": "預計持有1-3天",
-        "ref_close": null,
-        "close_next_day": null,
-        "return_pct": null,
+        "ref_close": 66.8,
+        "close_next_day": 68.0,
+        "return_pct": 1.796,
         "hit_target": null,
         "hit_stop": null,
-        "success": null,
-        "resolved": 0,
-        "resolved_at": null
+        "success": 1,
+        "resolved": 1,
+        "resolved_at": "2026-06-01T22:13:20.140782+08:00"
       },
       {
         "id": 4,
@@ -399,13 +319,13 @@
         "target": "365.0",
         "hold_days": "預計持有1-3天",
         "ref_close": 342.0,
-        "close_next_day": null,
-        "return_pct": null,
+        "close_next_day": 340.5,
+        "return_pct": -0.439,
         "hit_target": null,
         "hit_stop": null,
-        "success": null,
-        "resolved": 0,
-        "resolved_at": null
+        "success": 0,
+        "resolved": 1,
+        "resolved_at": "2026-06-01T22:12:16.159747+08:00"
       },
       {
         "id": 3,
@@ -420,13 +340,13 @@
         "target": "2950.0",
         "hold_days": "預計持有1-3天",
         "ref_close": 5345.0,
-        "close_next_day": null,
-        "return_pct": null,
+        "close_next_day": 5525.0,
+        "return_pct": 3.368,
         "hit_target": null,
         "hit_stop": null,
-        "success": null,
-        "resolved": 0,
-        "resolved_at": null
+        "success": 1,
+        "resolved": 1,
+        "resolved_at": "2026-06-01T22:12:15.527619+08:00"
       },
       {
         "id": 2,
@@ -471,8 +391,8 @@
         "resolved_at": "2026-05-12T13:36:19.359732+08:00"
       }
     ],
-    "avg_return": 4.74,
-    "avg_win": 9.91,
+    "avg_return": 2.63,
+    "avg_win": 4.16,
     "avg_loss": -0.43,
     "best": {
       "id": 1,
@@ -496,25 +416,25 @@
       "resolved_at": "2026-05-12T13:36:19.359732+08:00"
     },
     "worst": {
-      "id": 2,
-      "date": "2026-05-14",
-      "code": "2377",
-      "name": "微星",
+      "id": 4,
+      "date": "2026-05-26",
+      "code": "6239",
+      "name": "力成",
       "verdict": "",
       "confidence": 0.0,
-      "regime": "趨勢多頭",
-      "entry_zone": "116.0-118.0",
-      "stop_loss": "113.0",
-      "target": "125.0",
+      "regime": "資金輪動",
+      "entry_zone": "340.0-343.0",
+      "stop_loss": "330.0",
+      "target": "365.0",
       "hold_days": "預計持有1-3天",
-      "ref_close": 117.5,
-      "close_next_day": 117.0,
-      "return_pct": -0.426,
+      "ref_close": 342.0,
+      "close_next_day": 340.5,
+      "return_pct": -0.439,
       "hit_target": null,
       "hit_stop": null,
       "success": 0,
       "resolved": 1,
-      "resolved_at": "2026-05-15T09:01:36.556097+08:00"
+      "resolved_at": "2026-06-01T22:12:16.159747+08:00"
     },
     "hit_target_count": 0,
     "hit_stop_count": 0

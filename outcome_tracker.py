@@ -5,6 +5,7 @@ Outcome Tracker
 """
 
 import os
+import re
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -12,6 +13,12 @@ import yfinance as yf
 
 import alpha_db
 import tw_stock_lookup
+
+# Sanity check: if AI's entry zone deviates more than this fraction from
+# the real reference close, treat the pick as a price hallucination and
+# refuse to save. Protects against the 緯穎(6669) case where AI gave
+# entry 2730-2780 while real price was ~5345 (49% deviation).
+ENTRY_SANITY_MAX_DEVIATION = 0.30
 
 TZ = ZoneInfo("Asia/Taipei")
 
@@ -28,26 +35,31 @@ def _prev_trading_day(date_str: str) -> str:
 def _fetch_close(code: str, date_str: str, strict: bool = False) -> float | None:
     """取得特定股票在特定日期的收盤價（使用 yfinance）。
     strict=True：當該日資料不存在 → 回 None（不 fallback 到最新收盤）。
-    這個模式給 resolve_pending 用，避免「次日收盤尚未公布時誤抓到推薦當日收盤」
-    導致 ref==exit、return=0% 的假結算（過去 3 筆 picks 都中這個 bug）。
+    period 30d 是為了支援 backfill。
+    自動嘗試 .TW（上市）和 .TWO（上櫃）兩種 suffix，因為 yfinance 區分兩者。
     """
-    ticker = f"{code}.TW"
-    try:
-        hist = yf.Ticker(ticker).history(period="10d", auto_adjust=True)
-        if hist.empty:
-            return None
-        # Convert index to date strings
-        hist.index = hist.index.tz_localize(None)
-        for ts, row in hist.iterrows():
-            if ts.strftime("%Y-%m-%d") == date_str:
-                return round(float(row["Close"]), 2)
-        if strict:
-            return None
-        # Fallback: return latest available close
-        return round(float(hist["Close"].iloc[-1]), 2)
-    except Exception as e:
-        print(f"[outcome_tracker] yfinance error for {code}: {e}")
+    for suffix in (".TW", ".TWO"):
+        try:
+            hist = yf.Ticker(code + suffix).history(period="30d", auto_adjust=True)
+            if hist.empty:
+                continue
+            hist.index = hist.index.tz_localize(None)
+            for ts, row in hist.iterrows():
+                if ts.strftime("%Y-%m-%d") == date_str:
+                    return round(float(row["Close"]), 2)
+            if not strict:
+                return round(float(hist["Close"].iloc[-1]), 2)
+        except Exception:
+            continue
+    if not strict:
         return None
+    return None
+
+
+def _parse_first_number(text: str):
+    """從字串裡抽出第一個浮點數（例如 "286.0-290.0" → 286.0）。"""
+    m = re.search(r"\d+(?:\.\d+)?", str(text or ""))
+    return float(m.group()) if m else None
 
 
 def save_today_pick(pick_output: dict, regime: dict, market_data: dict, candidates: list = None):
@@ -90,6 +102,21 @@ def save_today_pick(pick_output: dict, regime: dict, market_data: dict, candidat
         ref_close = tw_stocks[code].get("close")
     if not ref_close:
         ref_close = _fetch_close(code, today)
+
+    # SANITY CHECK · entry vs ref_close. If AI hallucinated a price that's
+    # >30% off the real close, refuse to save — that pick is unactionable
+    # (e.g. 6669 5/21: AI gave entry 2730-2780 while close was 5345).
+    if ref_close:
+        entry_est = _parse_first_number(pick.get("entry_zone", ""))
+        if entry_est:
+            dev = abs(entry_est - ref_close) / ref_close
+            if dev > ENTRY_SANITY_MAX_DEVIATION:
+                print(
+                    f"[outcome_tracker] ⚠ REJECT pick {code} ({pick.get('name')}): "
+                    f"AI entry {entry_est} 與實際收盤 {ref_close} 偏離 {dev*100:.1f}% "
+                    f"(>{ENTRY_SANITY_MAX_DEVIATION*100:.0f}%)，幾乎肯定是 AI 對股價的幻覺，不儲存。"
+                )
+                return
 
     row_id = alpha_db.save_pick(
         date=today,
