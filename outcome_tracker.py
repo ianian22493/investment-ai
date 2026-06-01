@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 import yfinance as yf
 
 import alpha_db
+import tw_stock_lookup
 
 TZ = ZoneInfo("Asia/Taipei")
 
@@ -24,8 +25,12 @@ def _prev_trading_day(date_str: str) -> str:
     return d.strftime("%Y-%m-%d")
 
 
-def _fetch_close(code: str, date_str: str) -> float | None:
-    """取得特定股票在特定日期的收盤價（使用 yfinance）。"""
+def _fetch_close(code: str, date_str: str, strict: bool = False) -> float | None:
+    """取得特定股票在特定日期的收盤價（使用 yfinance）。
+    strict=True：當該日資料不存在 → 回 None（不 fallback 到最新收盤）。
+    這個模式給 resolve_pending 用，避免「次日收盤尚未公布時誤抓到推薦當日收盤」
+    導致 ref==exit、return=0% 的假結算（過去 3 筆 picks 都中這個 bug）。
+    """
     ticker = f"{code}.TW"
     try:
         hist = yf.Ticker(ticker).history(period="10d", auto_adjust=True)
@@ -36,6 +41,8 @@ def _fetch_close(code: str, date_str: str) -> float | None:
         for ts, row in hist.iterrows():
             if ts.strftime("%Y-%m-%d") == date_str:
                 return round(float(row["Close"]), 2)
+        if strict:
+            return None
         # Fallback: return latest available close
         return round(float(hist["Close"].iloc[-1]), 2)
     except Exception as e:
@@ -58,6 +65,15 @@ def save_today_pick(pick_output: dict, regime: dict, market_data: dict, candidat
     if not code or code in ("—", "NONE") or "觀望" in verdict:
         print(f"[outcome_tracker] 今日空手觀望，不記錄推薦")
         return
+
+    # Validate AI's stock_name against canonical TWSE / TPEx lookup.
+    # AI sometimes hallucinates a name for the right code (e.g. 6150 → 撼訊
+    # was once mislabeled '勤誠'). If lookup disagrees, override + warn.
+    ai_name = pick.get("name", "")
+    canonical, corrected = tw_stock_lookup.validate_name(code, ai_name)
+    if corrected:
+        print(f"[outcome_tracker] ⚠ AI 把 {code} 取名為「{ai_name}」, 實際應為「{canonical}」— 已修正")
+        pick["name"] = canonical
 
     # 從 scanner candidates 找出該股的精確信號
     SIGNAL_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high", "rs_signal")
@@ -110,9 +126,9 @@ def resolve_pending(today_market_data: dict = None):
         if next_day > today:
             continue
 
-        close = _fetch_close(code, next_day)
+        close = _fetch_close(code, next_day, strict=True)
         if close is None:
-            print(f"[outcome_tracker] 無法取得 {code} 在 {next_day} 的收盤，跳過")
+            print(f"[outcome_tracker] {next_day} 收盤資料尚未公布或暫不可得（{code}），下次再試")
             continue
 
         alpha_db.resolve_pick(p["id"], close)

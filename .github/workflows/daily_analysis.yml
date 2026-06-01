@@ -53,6 +53,7 @@ jobs:
           [ -f data/llm_cache.json ] && git add data/llm_cache.json || true
           [ -f data/errors.log ] && git add data/errors.log || true
           [ -f data/signal_history.jsonl ] && git add data/signal_history.jsonl || true
+          [ -f data/tw_stock_names.json ] && git add data/tw_stock_names.json || true
           git diff --staged --quiet || git commit -m "chore: update analysis $(TZ='Asia/Taipei' date '+%Y-%m-%d %H:%M')"
           git push
 
