@@ -48,6 +48,9 @@ jobs:
           git config user.name  "Investment AI Bot"
           git config user.email "bot@investment-ai.local"
           git add data/analysis.json data/market_data.json data/candidate_stocks.json data/alpha.db data/agent_cache.json data/signal_vector.json
+          # New persistent artefacts (prompt cache hits across runs; error log for frontend DATA HEALTH)
+          [ -f data/llm_cache.json ] && git add data/llm_cache.json || true
+          [ -f data/errors.log ] && git add data/errors.log || true
           git diff --staged --quiet || git commit -m "chore: update analysis $(TZ='Asia/Taipei' date '+%Y-%m-%d %H:%M')"
           git push
 
