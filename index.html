@@ -4906,41 +4906,91 @@ async function* streamGemini(systemPrompt, userText, apiKey){
 }
 
 // ─── Per-agent system prompt ──────────────────────────────────
-// (Named COUNSEL_PERSONAS to avoid colliding with the AGENT_PERSONAS
-//  hardcode at the top of the script which uses long-keys + UI fields.)
-const COUNSEL_PERSONAS = {
-  cio: '你是 Yuzu Capital 的 CIO，整合各 desk 意見、最後拍板。風格：理性、簡潔、不情緒化、看大局。',
-  pm:  '你是 Portfolio Master，負責整體部位配置與長期穩健。風格：保守、講風險調整後報酬。',
-  da:  '你是 Devil\'s Advocate，專職唱反調、找漏洞。風格：質疑、追問、指出大家沒看到的下行風險。',
-  tm:  '你是 Trading Master，盤中短線交易專家。風格：果決、講動能、講進場時機。',
-  tw:  '你是 TW Analyst，台股技術面專家。風格：技術線型導向、講量價結構。',
-  wm:  '你是 Wealth Master，財富與流動性顧問。風格：謹慎、講現金流、看大趨勢。',
+// V2: don't feed the agent its OWN pre-baked summary — that causes parroting.
+// Instead, give it the other desks' verdicts as material to react to, plus
+// raw market data, and force it to reason from its persona.
+const COUNSEL_AGENT_BRIEFS = {
+  cio: {
+    identity: '你是 Yuzu Capital 的 CIO，最後拍板的人。看大局、找共識、解矛盾。',
+    extra:    (c) => `各 desk verdict: PM=${c.pmV} | DA=${c.daV} | TM=${c.tmV} | TW=${c.twV} | WM=${c.wmV}`,
+    task:     '綜合各 desk 意見回答使用者的問題。如果它們矛盾，你要選邊或調和，用一句話講清楚為什麼那樣選。',
+  },
+  pm: {
+    identity: '你是 Portfolio Master，看整體部位風險與風險調整後報酬。不管短線爽不爽。',
+    extra:    (c) => `DA 風控看法: ${c.daV} | 整體 verdict: ${c.masterV}`,
+    task:     '從部位配置與長期穩健角度回答。如果問題在問短線進出/停損價，承認「短線不在我管轄」並指向 TM。',
+  },
+  da: {
+    identity: '你是 Devil\'s Advocate，專門找問題、唱反調、戳破共識。不客氣。',
+    extra:    (c) => `TM 短線看法: ${c.tmV} | 今日 pick: ${c.pickInfo}`,
+    task:     '找這個決策可能失敗的具體情境。要刺、要找盲點、要指出大家還沒想到的下行風險。',
+  },
+  tm: {
+    identity: '你是 Trading Master，盤中短線交易專家。看動能、量價、進場時機。',
+    extra:    (c) => `今日 pick: ${c.pickInfo} | scanner_momentum=${c.scannerMomentum} breadth=${c.breadth}`,
+    task:     '從短線交易角度回答。具體講進場 / 停損 / 動能。不在你管轄（如：長線配置）→ 指向 PM。',
+  },
+  tw: {
+    identity: '你是 TW Analyst，台股技術面專家。看線型、量價結構、均線位置。',
+    extra:    (c) => `今日 pick: ${c.pickInfo} | breadth=${c.breadth}`,
+    task:     '從台股技術線型角度回答。具體講量價、均線、突破/跌破位置。',
+  },
+  wm: {
+    identity: '你是 Wealth Master，財富與流動性顧問。看現金流穩定、長期趨勢、避險。',
+    extra:    (c) => `liquidity=${c.liquidity} | cashflow=${c.cashflow}`,
+    task:     '從財富與流動性角度回答。看現金流穩定性、避險、長期趨勢，不講短線進出。',
+  },
 };
-function buildAgentSystemPrompt(agent, ctx){
-  const persona = COUNSEL_PERSONAS[agent] || '你是投資顧問。';
-  const a = (ctx.agents || {})[AGENT_DATA_KEYS[agent]] || {};
-  const regime = ctx.regime?.market_regime || '—';
-  const verdict = ctx.agents?.master?.verdict || '—';
-  const pick = ctx.agents?.tw_daily_pick?.pick;
+
+function buildCounselContext(ctx){
+  const a = ctx.agents || {};
+  const r = ctx.regime || {};
+  const sv = a.signal_fusion || {};
+  const pick = a.tw_daily_pick?.pick;
   const pickInfo = (pick && pick.code && pick.code !== '—')
-    ? `今日 pick: ${pick.name}(${pick.code}), entry ${pick.entry_zone}, stop ${pick.stop_loss}, target ${pick.target}`
-    : '今日 verdict: 空手觀望（無 pick）';
-  const myView = a.verdict ? `你自己今天的 verdict: ${a.verdict}` : '';
-  const mySummary = a.summary ? `你自己今天的 summary: ${String(a.summary).slice(0, 220)}` : '';
-  return `${persona}
+    ? `${pick.name}(${pick.code}) entry ${pick.entry_zone}, stop ${pick.stop_loss}, target ${pick.target}`
+    : '空手觀望（無 pick）';
+  const fmt = (v) => (typeof v === 'number' ? v.toFixed(2) : (v || '—'));
+  return {
+    regime:    r.market_regime || '—',
+    riskLevel: r.risk_level || '—',
+    masterV:   a.master?.verdict || '—',
+    pmV:       a.portfolio_master?.verdict || '—',
+    daV:       a.devils_advocate?.verdict || '—',
+    tmV:       a.trading_master?.verdict || '—',
+    twV:       a.tw_short_term?.verdict || '—',
+    wmV:       a.wealth_master?.verdict || '—',
+    pickInfo,
+    scannerMomentum: fmt(sv.scanner_momentum),
+    breadth:         fmt(sv.breadth_score),
+    liquidity:       a.wealth_master?.liquidity_risk || '—',
+    cashflow:        a.wealth_master?.cashflow_stability || '—',
+  };
+}
 
-回答這位投資人的問題：
-- 1-3 句話，繁體中文
-- 講具體（用今天的實際數字、verdict、pick），不要場面話
-- 不要寫 markdown、不要列點
+function buildAgentSystemPrompt(agent, ctx){
+  const c = buildCounselContext(ctx);
+  const brief = COUNSEL_AGENT_BRIEFS[agent] || COUNSEL_AGENT_BRIEFS.cio;
+  return `${brief.identity}
 
-今日 desk 共識：
-- regime: ${regime}
-- 整體 verdict: ${verdict}
-- ${pickInfo}
+【絕對禁止】
+- 不要把背景資料的字串原樣抄回來給使用者（例如不要寫「verdict: 局部防守」這種話）
+- 不要場面話、不要 markdown、不要列點、不要重複問題
+- 不要在開頭重述問題
 
-${myView}
-${mySummary}`;
+【背景資料 — 給你思考用，不是給你抄】
+- 市場 regime: ${c.regime}（risk_level: ${c.riskLevel}）
+- 大盤 verdict (CIO 已拍板): ${c.masterV}
+- ${brief.extra(c)}
+
+【你的工作】
+${brief.task}
+
+【回答格式】
+- 繁體中文，**1-3 句話**
+- 用具體數字 / 比例 / 名字支撐論點（不是抄背景字串）
+- 如果問題不在你管轄，承認「不在我管轄」並指向應負責的 desk
+- 如果資料不足以下判斷，直說「資料不足，建議等 ${c.regime === '—' ? '收盤資料' : '更多訊號'}」`;
 }
 
 // ─── Dispatcher ───────────────────────────────────────────────
