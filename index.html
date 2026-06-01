@@ -729,6 +729,37 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
 
   .floor{ padding:18px 16px 60px }
   .expanded{ left:8px; right:8px; top:8px; bottom:8px; padding:18px 16px }
+
+  /* Mobile snap hint — visible on mobile only, fades on first scroll */
+  .snap-hint{
+    position: absolute;
+    left: 0; right: 0; bottom: 18px;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    pointer-events: none;
+    font: 700 11px/1 "JetBrains Mono", monospace;
+    letter-spacing: 2.5px;
+    color: rgba(201, 168, 76, 0.78);
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    text-shadow: 0 0 12px rgba(201, 168, 76, 0.35);
+  }
+  .snap-hint.show{ opacity: 1; }
+  .snap-hint-arrows{
+    display: inline-block;
+    animation: snapHintPulse 1.8s ease-in-out infinite;
+  }
+  .snap-hint-arrows:first-child{ animation-direction: alternate-reverse; }
+  @keyframes snapHintPulse{
+    0%, 100%{ transform: translateX(0);   opacity: .6 }
+    50%     { transform: translateX(4px); opacity: 1 }
+  }
+}
+@media (min-width: 901px){
+  .snap-hint{ display: none !important; }
+}
+@media (prefers-reduced-motion: reduce){
+  .snap-hint-arrows{ animation: none !important; }
 }
 
 /* ═══ Patch Task 2 · Empty State (空手觀望) ═══════════════════════ */
@@ -1240,6 +1271,11 @@ body.midnight-deep::after{ opacity:.18 !important; }
       <div class="stage">
         <div class="stage-floor-grid"></div>
         <div class="iso-grid" id="iso-grid"></div>
+        <div class="snap-hint" id="snap-hint" aria-hidden="true">
+          <span class="snap-hint-arrows">‹ ‹ ‹</span>
+          <span class="snap-hint-label">滑動切換房間</span>
+          <span class="snap-hint-arrows">› › ›</span>
+        </div>
       </div>
     </div>
   </main>
@@ -4708,7 +4744,29 @@ function attachMobileSnap(){
     });
   }, { root: grid, threshold: [0.55, 0.85] });
   document.querySelectorAll('.room').forEach(r => io.observe(r));
+  setupSnapHint(grid);
   return io;
+}
+
+// First-run swipe hint for the mobile horizontal rail.
+// Fades out on first scroll/touch and remembers dismissal in localStorage.
+const SNAP_HINT_STORAGE = 'yuzu-snap-hint-dismissed';
+function setupSnapHint(grid){
+  const hint = document.getElementById('snap-hint');
+  if(!hint) return;
+  if(localStorage.getItem(SNAP_HINT_STORAGE) === '1') return;
+  // Show after a short pause so it doesn't fight with initial paint
+  setTimeout(() => hint.classList.add('show'), 450);
+  const dismiss = () => {
+    hint.classList.remove('show');
+    try { localStorage.setItem(SNAP_HINT_STORAGE, '1'); } catch {}
+    grid.removeEventListener('scroll', onScroll, { passive: true });
+    grid.removeEventListener('touchstart', dismiss, { passive: true });
+  };
+  let scrolled = 0;
+  const onScroll = () => { scrolled++; if(scrolled > 1) dismiss(); };
+  grid.addEventListener('scroll', onScroll, { passive: true });
+  grid.addEventListener('touchstart', dismiss, { passive: true });
 }
 let _mobileSnap = attachMobileSnap();
 
