@@ -1065,6 +1065,50 @@ body.midnight-deep::after{ opacity:.18 !important; }
 .counsel-pill.show{ display:block; }
 .counsel-pill:hover{ filter:brightness(1.15); }
 
+/* Suggested questions row (cold-start helper) */
+.counsel-suggestions{
+  display:flex; flex-wrap:wrap; gap:8px;
+  padding: 10px 14px 4px;
+  border-top: 1px dashed var(--border);
+  background: rgba(7,11,22,.3);
+}
+.counsel-suggestions.hidden{ display:none; }
+.counsel-suggestion{
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font: 11px/1.4 system-ui, sans-serif;
+  padding: 6px 12px; border-radius: 16px;
+  cursor: pointer;
+  transition: color .18s, border-color .18s, background .18s;
+}
+.counsel-suggestion:hover{
+  color: var(--gold); border-color: var(--gold);
+  background: rgba(201,168,76,.06);
+}
+
+/* Typing indicator dots (between agent-start and first token) */
+.thinking-dots{
+  display:inline-block; color: var(--text3);
+  letter-spacing: 2px; font-size: 14px;
+  animation: thinkingPulse 1.2s ease-in-out infinite;
+}
+@keyframes thinkingPulse{
+  0%,100%{ opacity:.35 }
+  50%    { opacity:1 }
+}
+
+/* Clear history link */
+.counsel-clear{
+  background: transparent; border: none; color: var(--text3);
+  font: 9px/1 "JetBrains Mono", monospace;
+  letter-spacing: 1.5px;
+  cursor: pointer; margin-right: 10px;
+  transition: color .18s;
+}
+.counsel-clear:hover{ color: var(--text2); }
+.counsel-clear.hidden{ display: none; }
+
 @media (max-width: 900px){
   .counsel-panel{ width:96vw; max-height:86vh; }
 }
@@ -4528,6 +4572,75 @@ function minimizeCounsel(){
   }, 200);
 }
 
+// ─── History persistence (localStorage, 24h TTL) ────────────────
+const COUNSEL_STORAGE_KEY = 'yuzu-counsel-history';
+const COUNSEL_TTL_MS = 24 * 60 * 60 * 1000;
+
+function saveCounselHistory(){
+  try {
+    localStorage.setItem(COUNSEL_STORAGE_KEY, JSON.stringify({
+      updated_at: Date.now(),
+      messages: counselHistory,
+    }));
+  } catch {}
+}
+function loadCounselHistory(){
+  try {
+    const raw = localStorage.getItem(COUNSEL_STORAGE_KEY);
+    if(!raw) return null;
+    const d = JSON.parse(raw);
+    if(!d || Date.now() - (d.updated_at||0) > COUNSEL_TTL_MS) return null;
+    return d.messages || null;
+  } catch { return null; }
+}
+function clearCounselHistory(){
+  try { localStorage.removeItem(COUNSEL_STORAGE_KEY); } catch {}
+  counselHistory = [];
+}
+
+// ─── Suggested questions (cold-start helper) ────────────────────
+function buildSuggestions(){
+  const out = ['今天該不該追？', '最大下行情境？', '市場 regime 現在如何？'];
+  const pick = window.DATA?.agents?.tw_daily_pick?.pick;
+  if(pick && pick.code && pick.code !== '—'){
+    out.push(`為什麼選 ${pick.name || pick.code}？`);
+  }
+  return out;
+}
+
+// ─── Static history renderer (no streaming animation) ───────────
+function renderHistoryToBody(body, messages){
+  body.innerHTML = '';
+  for(const m of messages){
+    if(m.role === 'user'){
+      const el = document.createElement('div');
+      el.className = 'counsel-msg user';
+      el.textContent = m.text;
+      body.appendChild(el);
+    } else if(m.role === 'agent'){
+      const card = (typeof AGENT_CARDS !== 'undefined') ? AGENT_CARDS[m.agent] : null;
+      const color = card?.color || '#7A8EBD';
+      const name = card?.name || (m.agent || '?').toUpperCase();
+      const el = document.createElement('div');
+      el.className = 'counsel-msg agent';
+      el.dataset.agent = m.agent;
+      el.innerHTML = `<span class="agent-tag" style="color:${color}; border:1px solid ${color}55">${name}</span>
+                      <div class="msg-text"></div>`;
+      const txt = el.querySelector('.msg-text');
+      txt.appendChild(document.createTextNode(m.text || ''));
+      for(const ref of (m.cites || [])){
+        const chip = document.createElement('span');
+        chip.className = 'cite';
+        chip.dataset.cite = ref;
+        chip.textContent = ref;
+        txt.appendChild(chip);
+        txt.appendChild(document.createTextNode(' '));
+      }
+      body.appendChild(el);
+    }
+  }
+}
+
 function buildCounselDOM(){
   const root = document.createElement('div');
   root.innerHTML = `
@@ -4540,17 +4653,18 @@ function buildCounselDOM(){
         </div>
         <div style="display:flex; align-items:center">
           <span class="counsel-mock-badge" title="No backend yet — replies are derived from analysis.json locally">MOCK</span>
+          <button class="counsel-clear hidden" title="Clear conversation">CLEAR</button>
           <button class="counsel-close">✕ CLOSE</button>
         </div>
       </div>
       <div class="counsel-body"></div>
+      <div class="counsel-suggestions"></div>
       <div class="counsel-input">
         <textarea rows="1" placeholder="例如：2536 為什麼還沒停損？" autocomplete="off"></textarea>
         <button class="counsel-send">↑ SEND</button>
       </div>
     </div>
   `;
-  // Pre-wire interactions before returning
   const frag = document.createDocumentFragment();
   while(root.firstChild) frag.appendChild(root.firstChild);
   const wrap = document.createElement('div');
@@ -4562,13 +4676,53 @@ function buildCounselDOM(){
   const ta = wrap.querySelector('textarea');
   const send = wrap.querySelector('.counsel-send');
   const body = wrap.querySelector('.counsel-body');
+  const suggestions = wrap.querySelector('.counsel-suggestions');
+  const clearBtn = wrap.querySelector('.counsel-clear');
 
-  // Greeting message
-  body.innerHTML = `
-    <div class="counsel-msg agent" data-agent="cio">
-      <span class="agent-tag" style="color:#C9A84C; border:1px solid rgba(201,168,76,.4)">CIO</span>
-      <div class="msg-text">早安。問我任何今天 desk 的判斷，或某檔股票該如何處理。我會把相關的 agents 拉進來一起回答。</div>
-    </div>`;
+  // Restore from localStorage if recent history exists
+  const persisted = loadCounselHistory();
+  if(persisted && persisted.length > 0){
+    counselHistory = persisted;
+    renderHistoryToBody(body, persisted);
+    clearBtn.classList.remove('hidden');
+    suggestions.classList.add('hidden');
+  } else {
+    // Fresh greeting + suggestions
+    body.innerHTML = `
+      <div class="counsel-msg agent" data-agent="cio">
+        <span class="agent-tag" style="color:#C9A84C; border:1px solid rgba(201,168,76,.4)">CIO</span>
+        <div class="msg-text">早安。問我任何今天 desk 的判斷，或某檔股票該如何處理。我會把相關的 agents 拉進來一起回答。</div>
+      </div>`;
+    const qs = buildSuggestions();
+    suggestions.innerHTML = qs.map(q =>
+      `<button class="counsel-suggestion">${q}</button>`
+    ).join('');
+  }
+
+  // Suggestion click → fill textarea + auto-send
+  suggestions.addEventListener('click', (e) => {
+    const btn = e.target.closest('.counsel-suggestion');
+    if(!btn) return;
+    ta.value = btn.textContent;
+    autoresize();
+    trySend();
+  });
+
+  // Clear → wipe history + restore greeting + suggestions
+  clearBtn.addEventListener('click', () => {
+    clearCounselHistory();
+    body.innerHTML = `
+      <div class="counsel-msg agent" data-agent="cio">
+        <span class="agent-tag" style="color:#C9A84C; border:1px solid rgba(201,168,76,.4)">CIO</span>
+        <div class="msg-text">早安。問我任何今天 desk 的判斷，或某檔股票該如何處理。我會把相關的 agents 拉進來一起回答。</div>
+      </div>`;
+    const qs = buildSuggestions();
+    suggestions.innerHTML = qs.map(q =>
+      `<button class="counsel-suggestion">${q}</button>`
+    ).join('');
+    suggestions.classList.remove('hidden');
+    clearBtn.classList.add('hidden');
+  });
 
   function autoresize(){
     ta.style.height = '36px';
@@ -4580,6 +4734,9 @@ function buildCounselDOM(){
     const q = ta.value.trim();
     if(!q || counselBusy) return;
     ta.value = ''; autoresize();
+    // Hide suggestions once user has asked anything this round
+    suggestions.classList.add('hidden');
+    clearBtn.classList.remove('hidden');
     submitQuestion(q, body);
   }
   send.addEventListener('click', trySend);
@@ -4594,47 +4751,49 @@ async function submitQuestion(question, body){
   counselBusy = true;
   document.querySelector('.counsel-send')?.setAttribute('disabled', 'true');
 
-  // User bubble
+  // User bubble + persist
   const userMsg = document.createElement('div');
   userMsg.className = 'counsel-msg user';
   userMsg.textContent = question;
   body.appendChild(userMsg);
   body.scrollTop = body.scrollHeight;
-
   counselHistory.push({ role:'user', text: question });
+  saveCounselHistory();
 
-  // Thinking marker
-  const thinking = document.createElement('div');
-  thinking.className = 'counsel-thinking';
-  thinking.textContent = '⋯ desk thinking ⋯';
-  body.appendChild(thinking);
-  body.scrollTop = body.scrollHeight;
-
+  // Holds the data we accumulate per agent so we can persist on completion
   let currentMsg = null;
+  let currentRecord = null;
+  let currentDotsEl = null;
 
   await askCounsel(question, {
     onAgent: (evt) => {
-      thinking.remove();
-      currentMsg = document.createElement('div');
-      currentMsg.className = 'counsel-msg agent';
-      currentMsg.dataset.agent = evt.agent;
       const card = (typeof AGENT_CARDS !== 'undefined') ? AGENT_CARDS[evt.agent] : null;
       const color = card?.color || '#7A8EBD';
       const name = card?.name || evt.agent.toUpperCase();
+      currentMsg = document.createElement('div');
+      currentMsg.className = 'counsel-msg agent';
+      currentMsg.dataset.agent = evt.agent;
       currentMsg.innerHTML = `
         <span class="agent-tag" style="color:${color}; border:1px solid ${color}55">${name}</span>
-        <div class="msg-text"></div>`;
+        <div class="msg-text"><span class="thinking-dots">⋯⋯⋯</span></div>`;
       body.appendChild(currentMsg);
+      currentDotsEl = currentMsg.querySelector('.thinking-dots');
+      currentRecord = { role:'agent', agent: evt.agent, text:'', cites: [] };
+      counselHistory.push(currentRecord);
       body.scrollTop = body.scrollHeight;
     },
     onToken: (evt) => {
       if(!currentMsg) return;
+      // First token removes the dots
+      if(currentDotsEl){ currentDotsEl.remove(); currentDotsEl = null; }
       const txt = currentMsg.querySelector('.msg-text');
       txt.insertAdjacentText('beforeend', evt.text);
+      if(currentRecord) currentRecord.text += evt.text;
       body.scrollTop = body.scrollHeight;
     },
     onCite: (evt) => {
       if(!currentMsg) return;
+      if(currentDotsEl){ currentDotsEl.remove(); currentDotsEl = null; }
       const txt = currentMsg.querySelector('.msg-text');
       const chip = document.createElement('span');
       chip.className = 'cite';
@@ -4642,13 +4801,16 @@ async function submitQuestion(question, body){
       chip.textContent = evt.ref;
       txt.appendChild(chip);
       txt.insertAdjacentText('beforeend', ' ');
+      if(currentRecord) currentRecord.cites.push(evt.ref);
     },
-    onDone: () => { /* finalize below */ },
+    onDone: () => {
+      saveCounselHistory();
+    },
   });
 
   counselBusy = false;
   document.querySelector('.counsel-send')?.removeAttribute('disabled');
-  counselHistory.push({ role:'assistant', text:'(streamed responses recorded)' });
+  saveCounselHistory();
 }
 
 // ═══ askCounsel — local mock streamer (no backend yet) ═══
