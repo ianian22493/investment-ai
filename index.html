@@ -822,6 +822,11 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
   background: var(--cyan); box-shadow: 0 0 5px var(--cyan);
   animation: pulse 4.5s ease-in-out infinite;
 }
+.auto-next {
+  color: rgba(0, 229, 255, 0.55);
+  font-weight: 600;
+  letter-spacing: 1.2px;
+}
 
 /* ═══ Reduced motion fallback (Patch ⓪) ═══════════════════════════ */
 @media (prefers-reduced-motion: reduce){
@@ -1222,7 +1227,7 @@ body.midnight-deep::after{ opacity:.18 !important; }
       </div>
       <div class="topbar-meta">
         <span class="auto-badge" id="autoBadge" hidden>
-          <span class="auto-dot"></span>AUTO · <span id="autoName">CINEMA</span>
+          <span class="auto-dot"></span>AUTO · <span id="autoName">CINEMA</span><span id="autoNext" class="auto-next"></span>
         </span>
         <div><span class="live-dot"></span><span id="ts">—</span></div>
       </div>
@@ -3498,7 +3503,12 @@ function renderSettings(target){
         <button class="preset-btn" data-preset="auto" style="flex:1;min-width:90px;background:${isAuto?'var(--bg4)':'var(--bg3)'};border:1px solid ${isAuto?'var(--cyan)':'var(--border2)'};color:${isAuto?'var(--cyan)':'var(--text2)'};padding:12px 14px;border-radius:6px;font-family:inherit;font-size:11px;letter-spacing:1.5px;cursor:pointer;text-align:center">AUTO</button>
       </div>
       <div style="font-size:10px;color:var(--text3);line-height:1.7" id="preset-desc">
-        ${isAuto ? `按時段自動切換 · 目前 <b style="color:var(--cyan)">${(cur.preset||'terminal').toUpperCase()}</b><br>06:00 TERMINAL · 13:30 CINEMA · 22:00 MIDNIGHT (Asia/Taipei)` : (PRESETS.find(p => p.key === curPreset)?.desc || '')}
+        ${isAuto ? (() => {
+          const n = nextScheduledSwitch();
+          return `按時段自動切換 · 目前 <b style="color:var(--cyan)">${(cur.preset||'terminal').toUpperCase()}</b><br>
+            下一次切換 → <b style="color:var(--cyan)">${n.preset.toUpperCase()}</b> 於 ${n.wraps?'隔日 ':''}${n.time} (Asia/Taipei)<br>
+            <span style="color:var(--text3);font-size:9px">時段：06:00 TERMINAL · 13:30 CINEMA · 22:00 MIDNIGHT</span>`;
+        })() : (PRESETS.find(p => p.key === curPreset)?.desc || '')}
       </div>
     </div>
 
@@ -3677,14 +3687,34 @@ function scheduleNextSwitch(){
   }, msUntil);
 }
 
+// Compute next scheduled switch, returns { mins, h, m, preset, label }.
+// `label` formats as "→ MIDNIGHT 22:00" or "→ TERMINAL 隔日 06:00" if wrapping past midnight.
+function nextScheduledSwitch(){
+  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+  const mins = now.getHours() * 60 + now.getMinutes();
+  let next = SCHEDULE.find(p => p.h * 60 + p.m > mins);
+  let wraps = false;
+  if(!next){ next = SCHEDULE[0]; wraps = true; }
+  const pad = (n) => String(n).padStart(2, '0');
+  const time = `${pad(next.h)}:${pad(next.m)}`;
+  const label = `→ ${next.preset.toUpperCase()} ${wraps ? '隔日 ' : ''}${time}`;
+  return { ...next, wraps, time, label };
+}
+
 function updateAutoBadge(){
   const s = JSON.parse(localStorage.getItem('yuzu-settings') || '{}');
   const badge = document.getElementById('autoBadge');
   const nameEl = document.getElementById('autoName');
+  const nextEl = document.getElementById('autoNext');
   if(!badge) return;
   if(s.mode === 'auto'){
     badge.hidden = false;
     if(nameEl) nameEl.textContent = (s.preset || 'terminal').toUpperCase();
+    if(nextEl){
+      const n = nextScheduledSwitch();
+      nextEl.textContent = ' ' + n.label;
+      nextEl.title = `下一次自動切換到 ${n.preset.toUpperCase()} 於 ${n.wraps ? '隔日 ' : ''}${n.time}`;
+    }
   } else {
     badge.hidden = true;
   }
