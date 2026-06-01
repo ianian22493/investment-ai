@@ -335,6 +335,29 @@ def run_all():
     sv_path = os.path.join(DATA_DIR, "signal_vector.json")
     save_json(outputs.get("signal_fusion", {}), sv_path)
 
+    # Append to signal_history.jsonl — last 120 entries (~60 trading days × 2 runs)
+    # Only the 10 numeric dims, no _sources/_data_gaps bloat.
+    sv = outputs.get("signal_fusion", {})
+    numeric_dims = {k: v for k, v in sv.items() if not k.startswith("_") and isinstance(v, (int, float))}
+    hist_path = os.path.join(DATA_DIR, "signal_history.jsonl")
+    hist_entry = {
+        "ts":     datetime.now(TZ).isoformat(timespec="seconds"),
+        "regime": regime.get("market_regime") if regime else None,
+        "vector": numeric_dims,
+    }
+    try:
+        lines = []
+        if os.path.exists(hist_path):
+            with open(hist_path, encoding="utf-8") as f:
+                lines = f.readlines()
+        lines.append(json.dumps(hist_entry, ensure_ascii=False) + "\n")
+        if len(lines) > 120:
+            lines = lines[-120:]
+        with open(hist_path, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+    except Exception as e:
+        print(f"  [WARN] signal_history append: {e}")
+
     elapsed = (datetime.now(TZ) - t0).total_seconds()
     print(f"\n{'='*60}")
     print(f"Complete in {elapsed:.1f}s → data/analysis.json")

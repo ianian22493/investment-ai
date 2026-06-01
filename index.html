@@ -630,6 +630,16 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
 .bar-fill{height:100%; border-radius:3px}
 .bar-value{font-size:16px; font-weight:800; line-height:1}
 .gauge-source{font-size:9px; color:var(--text3); margin-top:5px; line-height:1.4}
+.spark{ width:100%; height:22px; display:block; margin:6px 0 2px }
+.spark-row{
+  display:flex; align-items:center; gap:6px;
+  font:600 8px/1 "JetBrains Mono", monospace;
+  color: var(--text3); letter-spacing:1px;
+  margin-top:4px;
+}
+.spark-row .spark{ flex:1; height:18px; margin:0 }
+.spark-row .spark-label{ flex:0 0 auto; opacity:.8 }
+.spark-row .spark-empty{ flex:1; color:var(--text3); opacity:.5; font-style:italic; font-size:9px; letter-spacing:0 }
 .na-label{font-size:14px; font-weight:700; color:var(--text3); padding:8px 0 4px}
 
 .metrics-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px}
@@ -2471,7 +2481,7 @@ function buildLobbyRoom(verdict, vCol, regime, conf){
 // ═══════════════════════════════════════════════════════════════════
 // State
 // ═══════════════════════════════════════════════════════════════════
-let DATA = null, CANDS = null, LATEST_ERRORS = [];
+let DATA = null, CANDS = null, LATEST_ERRORS = [], SIGNAL_HISTORY = [];
 let activeRoom = null, activeBackdrop = null;
 
 // ═══════════════════════════════════════════════════════════════════
@@ -2660,6 +2670,50 @@ function barGaugeHTML(v, c){
   const pct = Math.round(Math.max(0, Math.min(1, v)) * 100);
   return `<div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${c}"></div></div>`+
          `<div class="bar-value" style="color:${c}">${v.toFixed(2)}</div>`;
+}
+
+// Mini SVG sparkline for last N values of a signal dimension.
+// Values are clamped to [0, 1] for non-arc, or [-1, 1] for arc-type.
+// Empty / single-point series renders an empty line at midpoint.
+function sparklineSVG(values, color, opts){
+  opts = opts || {};
+  const w = opts.w || 110, h = opts.h || 22;
+  const lo = opts.lo != null ? opts.lo : 0;
+  const hi = opts.hi != null ? opts.hi : 1;
+  const range = hi - lo;
+  if(!values || values.length === 0){
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"></svg>`;
+  }
+  if(values.length === 1){
+    const y = h - ((values[0] - lo) / range) * h;
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <circle cx="${w-2}" cy="${y.toFixed(1)}" r="1.5" fill="${color}"/>
+    </svg>`;
+  }
+  const stepX = w / (values.length - 1);
+  const pts = values.map((v, i) => {
+    const x = (i * stepX).toFixed(1);
+    const y = (h - ((v - lo) / range) * h).toFixed(1);
+    return `${x},${y}`;
+  }).join(' ');
+  // Last point dot for emphasis
+  const last = values[values.length - 1];
+  const lastX = (w - 0.5).toFixed(1);
+  const lastY = (h - ((last - lo) / range) * h).toFixed(1);
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+    <circle cx="${lastX}" cy="${lastY}" r="1.6" fill="${color}"/>
+  </svg>`;
+}
+
+// Pull the history series for a signal key from SIGNAL_HISTORY global.
+// Returns up to last `n` values, in chronological order.
+function sparkSeries(key, n){
+  n = n || 30;
+  return (SIGNAL_HISTORY || [])
+    .map(e => e?.vector?.[key])
+    .filter(v => typeof v === 'number')
+    .slice(-n);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -3282,15 +3336,31 @@ function renderSignalMatrix(target){
           </div>`;
         }
         let visual;
+        let sparkColor;
         if(g.type === 'arc'){
-          visual = arcGaugeSVG(v, g.colorFn(v));
+          sparkColor = g.colorFn(v);
+          visual = arcGaugeSVG(v, sparkColor);
         } else {
-          const c = g.colorFn ? g.colorFn(v) : sigCol(v, g.inverted);
-          visual = barGaugeHTML(v, c);
+          sparkColor = g.colorFn ? g.colorFn(v) : sigCol(v, g.inverted);
+          visual = barGaugeHTML(v, sparkColor);
         }
+        // 30-day trend sparkline. Range is [-1,1] for arc gauges, [0,1] for bars.
+        const series = sparkSeries(g.key, 30);
+        const sparkOpts = g.type === 'arc' ? {lo:-1, hi:1} : {lo:0, hi:1};
+        const sparkBlock = series.length > 1
+          ? `<div class="spark-row">
+              <span class="spark-label">30d</span>
+              ${sparklineSVG(series, sparkColor, sparkOpts)}
+              <span class="spark-label" title="oldest → newest">${series.length}pt</span>
+            </div>`
+          : `<div class="spark-row">
+              <span class="spark-label">30d</span>
+              <span class="spark-empty">尚無歷史 (累積中)</span>
+            </div>`;
         return `<div class="gauge-card">
           <div class="gauge-label">${g.label}</div>
           ${visual}
+          ${sparkBlock}
           <div class="gauge-source"><b>SOURCE</b><br>${sources[g.key]||g.desc}</div>
         </div>`;
       }).join('')}
@@ -3877,10 +3947,11 @@ async function load(){
 
   // Phase 2: fetch fresh data in background
   try {
-    const [r1, r2, r3] = await Promise.all([
+    const [r1, r2, r3, r4] = await Promise.all([
       fetch('data/analysis.json?t=' + Date.now()),
       fetch('data/candidate_stocks.json?t=' + Date.now()).catch(() => null),
       fetch('data/errors.log?t=' + Date.now()).catch(() => null),
+      fetch('data/signal_history.jsonl?t=' + Date.now()).catch(() => null),
     ]);
     // Parse errors.log (JSONL) — keep newest 5 entries
     LATEST_ERRORS = [];
@@ -3891,6 +3962,16 @@ async function load(){
           try { return JSON.parse(l); } catch { return null; }
         }).filter(Boolean).reverse();
       } catch { LATEST_ERRORS = []; }
+    }
+    // Parse signal_history.jsonl — keep last 60 entries (~30 trading days × 2 runs)
+    SIGNAL_HISTORY = [];
+    if(r4 && r4.ok){
+      try {
+        const text = await r4.text();
+        SIGNAL_HISTORY = text.trim().split(/\r?\n/).filter(Boolean).slice(-60).map(l => {
+          try { return JSON.parse(l); } catch { return null; }
+        }).filter(Boolean);
+      } catch { SIGNAL_HISTORY = []; }
     }
     if(!r1.ok) throw new Error(`analysis.json HTTP ${r1.status}`);
     const freshData = await r1.json();
