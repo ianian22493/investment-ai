@@ -1020,18 +1020,30 @@ body.demo-mode .sidebar-right{
 body.midnight-deep{ filter: saturate(.5) brightness(.78) hue-rotate(-10deg) !important; }
 body.midnight-deep::after{ opacity:.18 !important; }
 
-/* ─── Corridor walker (Task 1) ─── */
+/* ─── Corridor walker (Task 1) — mini humanoid silhouette ─── */
 #walker{
   position:absolute; top:0; left:0;
-  width:10px; height:10px; border-radius:50%;
-  background: var(--walker-color, #C9A84C);
-  box-shadow: 0 0 12px 2px var(--walker-color, #C9A84C),
-              0 0 28px var(--walker-color, #C9A84C);
+  width:18px; height:24px;
+  color: var(--walker-color, #C9A84C);  /* SVG inherits via currentColor */
   pointer-events:none; display:none; z-index:50;
   opacity:.92;
-  offset-anchor:center;
-  offset-rotate: 0deg;
+  offset-anchor: 50% 95%;                /* feet pinned to the path */
+  offset-rotate: 0deg;                   /* stay upright */
+  filter:
+    drop-shadow(0 0 4px var(--walker-color, #C9A84C))
+    drop-shadow(0 0 12px var(--walker-color, #C9A84C));
+  transition: filter .3s ease;
 }
+#walker svg{ display:block; width:100%; height:100%; }
+#walker .w-head{ fill:currentColor; }
+#walker .w-body{ fill:currentColor; }
+#walker .w-core{ fill:#fff; opacity:.45; }
+/* Subtle in-place wobble while walking — gives the figure life */
+@keyframes walker-bob {
+  0%,100% { transform:translateY(0); }
+  50%     { transform:translateY(-1.2px); }
+}
+#walker.walking svg { animation: walker-bob .6s ease-in-out infinite; }
 .room.ghosting .agent-v3{
   opacity:.18 !important;
   transition: opacity .9s ease;
@@ -4665,6 +4677,14 @@ function ensureWalker(){
   if(!grid) return null;
   dot = document.createElement('div');
   dot.id = 'walker';
+  // Mini humanoid silhouette — head (circle) + body (rounded rect) +
+  // subtle white core highlight on the head. currentColor inherits the
+  // agent's color from #walker { color: var(--walker-color) }.
+  dot.innerHTML = `<svg viewBox="0 0 18 24" xmlns="http://www.w3.org/2000/svg">
+    <rect class="w-body" x="3" y="9" width="12" height="13" rx="4.5"/>
+    <circle class="w-head" cx="9" cy="5" r="3.5"/>
+    <circle class="w-core" cx="9" cy="4.2" r="1.2"/>
+  </svg>`;
   grid.appendChild(dot);
   return dot;
 }
@@ -4694,6 +4714,7 @@ function startWalk(agent){
   dot.style.offsetDistance = '0%';
   dot.style.setProperty('--walker-color', w.color);
   dot.style.display = 'block';
+  dot.classList.add('walking');  // triggers in-place bob animation on the silhouette
   dot.animate(
     [{ offsetDistance:'0%' }, { offsetDistance:'100%' }],
     { duration:w.dur, easing:w.ease, fill:'forwards' }
@@ -4715,7 +4736,10 @@ function arriveAndReturn(agent){
 function finishWalk(agent){
   const w = WALKS[agent];
   const dot = document.getElementById('walker');
-  if(dot) dot.style.display = 'none';
+  if(dot){
+    dot.style.display = 'none';
+    dot.classList.remove('walking');  // stop the bob animation
+  }
   document.querySelector(`.room[data-room="${w.from}"]`)?.classList.remove('ghosting');
   walkState.active = null;
   walkState.lastEnd = performance.now();
