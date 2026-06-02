@@ -762,81 +762,101 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
   .snap-hint-arrows{ animation: none !important; }
 }
 
-/* ═══ Patch Task 2 · Empty State (空手觀望) ═══════════════════════ */
+/* ═══ TASK 2 (Round 2) · EMPTY STATE · Variant B Explanatory ═══════
+ * Spec: design_handoff_round2/round2/task2-empty-state.html
+ * "我們在等，不是壞了。" — regime + risk + reason + reactivation triggers
+ * Variant B (recommended). Uses fixed design tokens; do not customise.
+ * Applied via renderEmptyExplain(pick, scope) in JS below.
+ */
 .empty-explain {
-  background: linear-gradient(135deg, rgba(13,21,33,.6), rgba(20,30,48,.4));
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 18px;
-  position: relative;
-  overflow: hidden;
+  padding: 14px 0 6px;
 }
 .ex-header {
   display: flex; align-items: baseline; justify-content: space-between;
-  border-bottom: 1px dashed var(--border);
-  padding-bottom: 12px; margin-bottom: 14px;
+  margin-bottom: 14px;
   gap: 10px;
 }
 .ex-verdict {
-  font-size: 18px; font-weight: 800;
-  color: var(--text); letter-spacing: 1.5px;
+  font-size: 24px; font-weight: 900; letter-spacing: 3px;
+  color: var(--text);
 }
 .ex-stance {
-  font-size: 9px; font-weight: 700; letter-spacing: 2px;
-  color: var(--yellow);
-  background: rgba(255,184,0,.08);
-  border: 1px solid rgba(255,184,0,.3);
-  border-radius: 3px; padding: 3px 8px;
+  font-size: 9px; letter-spacing: 2px;
+  color: var(--text3);
+  padding: 3px 8px;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
   white-space: nowrap;
 }
 .ex-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
   margin-bottom: 14px;
 }
-.ex-cell { background: var(--bg3); border-radius: 6px; padding: 10px 12px; }
-.ex-k {
-  font-size: 9px; letter-spacing: 1.5px;
-  color: var(--text3); font-weight: 700; margin-bottom: 4px;
+.ex-cell {
+  background: rgba(122,142,189,.04);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 8px 10px 10px;
 }
-.ex-v { font-size: 12px; font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; }
+.ex-k {
+  font-size: 8px; color: var(--text3); letter-spacing: 1.5px;
+  margin-bottom: 3px;
+}
+.ex-v { font-size: 13px; font-weight: 800; letter-spacing: .5px; }
 .ex-v.warn { color: var(--yellow); }
 .ex-v.cool { color: var(--cyan); }
-.ex-bar { height: 4px; background: rgba(122,142,189,.1); border-radius: 2px; overflow: hidden; }
-.ex-bar > i { display: block; height: 100%; background: currentColor; opacity: .65; }
+.ex-bar {
+  margin-top: 5px; height: 3px; border-radius: 2px;
+  background: var(--bg);
+  overflow: hidden; position: relative;
+}
+.ex-bar > i {
+  position: absolute; top: 0; bottom: 0; left: 0;
+  background: currentColor; border-radius: 2px;
+  box-shadow: 0 0 6px currentColor;
+}
 .ex-reason {
   font-size: 11px; color: var(--text2); line-height: 1.65;
-  padding: 10px 12px;
-  background: rgba(0,0,0,.2);
+  padding: 9px 11px;
+  background: rgba(201,168,76,.04);
   border-left: 2px solid var(--gold);
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 4px 4px 0;
   margin-bottom: 12px;
 }
-.ex-reason b {
-  color: var(--gold); font-size: 9px; letter-spacing: 1px;
-  font-weight: 700; margin-right: 4px;
-}
-.ex-trigger { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.ex-reason b { color: var(--gold); font-weight: 700; }
+.ex-trigger { display: flex; flex-direction: column; gap: 6px; }
 .ex-trigger-row {
-  display: flex; align-items: baseline; gap: 8px;
-  font-size: 10px; color: var(--text3);
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; color: var(--text2); line-height: 1.5;
 }
-.tr-arr { color: var(--yellow); opacity: .65; }
-.tr-cond { color: var(--text2); flex: 1; }
+.tr-arr { color: var(--text3); font-family: monospace; flex-shrink: 0; }
+.tr-cond { color: var(--text); font-weight: 700; }
+.tr-note { color: var(--text3); font-size: 9px; }
 .ex-foot {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
   display: flex; justify-content: space-between;
-  font-size: 9px; letter-spacing: 1.5px; color: var(--text3);
-  padding-top: 10px; border-top: 1px dashed var(--border);
+  font-size: 9px; color: var(--text3); letter-spacing: 1.5px;
 }
-.ex-foot .live {
-  color: var(--cyan); position: relative; padding-left: 12px;
-}
+.ex-foot .live { color: var(--cyan); }
 .ex-foot .live::before {
-  content: ''; position: absolute; left: 0; top: 50%;
-  transform: translateY(-50%);
+  content: ''; display: inline-block;
   width: 5px; height: 5px; border-radius: 50%;
   background: var(--cyan); box-shadow: 0 0 4px var(--cyan);
+  margin-right: 6px;
   animation: pulse 4.5s ease-in-out infinite;
 }
+/* Scope variants — auto-applied via container size context */
+.empty-explain.scope-exec .ex-reason { display: none; }
+.empty-explain.scope-exec .ex-trigger > .ex-trigger-row:nth-child(n+3) { display: none; }
+.empty-explain.scope-sidebar .ex-grid { grid-template-columns: 1fr; }
+.empty-explain.scope-sidebar .ex-verdict { font-size: 20px; letter-spacing: 2px; }
+.empty-explain.scope-sidebar .ex-reason {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: block;
+}
+.empty-explain.scope-sidebar .ex-trigger > .ex-trigger-row:nth-child(n+2) { display: none; }
 
 /* ═══ Patch Task 4 · AUTO badge (top-bar) ═════════════════════════ */
 .auto-badge {
@@ -1382,56 +1402,77 @@ function riskColor(level){
 function urgencyClass(u){return u==='HIGH'?'u-high':u==='MED'?'u-med':'u-low'}
 
 // ═══ Patch Task 2 · Empty State helper (空手觀望 explainer) ═══════
-// Maps backend fields to the new empty-state UI. When pick has no
-// actual stock code, this renders a "we're being patient" panel
-// instead of a plain "今日無精選" line.
-function renderEmptyExplain(pick){
+// Task 2 (Round 2) · Empty State — Variant B Explanatory
+// Renders the "patient, not broken" panel when daily pick is 空手觀望.
+// scope = 'trading' (full) | 'exec' (folded, no reason) | 'sidebar' (compact).
+function renderEmptyExplain(pick, scope){
+  scope = scope || 'trading';
   const regime = DATA.regime || {};
-  const cf = DATA.capital_flow || {};
-  const wm = (DATA.agents||{}).wealth_master || {};
+  const cf     = DATA.capital_flow || {};
+  const wm     = (DATA.agents||{}).wealth_master || {};
   const master = (DATA.agents||{}).master || {};
-  const cands = (CANDS && CANDS.candidates) || [];
+  const cands  = (CANDS && CANDS.candidates) || [];
 
+  // Stance — prefer backend-provided regime.stance (Round 2 contract),
+  // fall back to capital_flow.flow_direction mapping
   const STANCE = {
     defensive: 'DEFENSIVE STANCE',
     offensive: 'OFFENSIVE STANCE',
     neutral:   'NEUTRAL STANCE',
     cautious:  'CAUTIOUS STANCE',
   };
-  const stance = STANCE[cf.flow_direction] ||
-                 ((cf.flow_direction||'AWAITING').toUpperCase() + ' STANCE');
+  const stance = regime.stance
+              || STANCE[cf.flow_direction]
+              || ((cf.flow_direction||'AWAITING').toUpperCase() + ' STANCE');
 
+  // Regime + risk scores (prefer Round 2 contract, fall back to derived)
   const RISK_SCORE = {low:20, moderate:50, elevated:70, high:85, extreme:95};
-  const regimeScore = RISK_SCORE[regime.risk_level] || 50;
-  const liqRisk = wm.liquidity_risk || wm.risk_level || 'moderate';
-  const riskScore = RISK_SCORE[liqRisk] || 50;
+  const regimeLabel = regime.label || (regime.market_regime||'—').toUpperCase();
+  const regimeScore = (regime.score != null) ? regime.score : (RISK_SCORE[regime.risk_level] || 50);
+  const liqRisk     = wm.liquidity_risk || wm.risk_level || 'moderate';
+  const riskLabel   = (DATA.risk && DATA.risk.label) || liqRisk.toUpperCase();
+  const riskScore   = (DATA.risk && DATA.risk.score != null) ? DATA.risk.score : (RISK_SCORE[liqRisk] || 50);
 
-  const triggers = (cf.override_flags || [])
-    .filter(f => !f.includes('STRUCTURAL_NOTE'))
-    .slice(0, 3)
-    .map(f => ({cond: f, note: ''}));
+  // Triggers — prefer Round 2 regime.triggers[] (cond + note),
+  // fall back to capital_flow override flags (legacy)
+  let triggers;
+  if(Array.isArray(regime.triggers) && regime.triggers.length){
+    triggers = regime.triggers.slice(0, 3);
+  } else {
+    triggers = (cf.override_flags || [])
+      .filter(f => !f.includes('STRUCTURAL_NOTE'))
+      .slice(0, 3)
+      .map(f => ({cond: f, note: ''}));
+  }
 
-  // Next pipeline tick (Asia/Taipei)
+  // Next pipeline tick (Asia/Taipei) — 08:30 morning / 16:30 evening cron
   const now = new Date(new Date().toLocaleString('en-US', {timeZone:'Asia/Taipei'}));
   const mins = now.getHours()*60 + now.getMinutes();
   let nextMins;
-  if(mins < 9*60) nextMins = 9*60;
-  else if(mins < 13*60+30) nextMins = 13*60+30;
-  else nextMins = 24*60 + 9*60;
+  if(mins < 8*60+30) nextMins = 8*60+30;
+  else if(mins < 16*60+30) nextMins = 16*60+30;
+  else nextMins = 24*60 + 8*60+30;
   const diff = nextMins - mins;
   const wrap = nextMins % (24*60);
   const nh = String(Math.floor(wrap/60)).padStart(2,'0');
   const nm = String(wrap%60).padStart(2,'0');
   const nextTick = `${nh}:${nm}` + (diff>=60?` (${Math.floor(diff/60)}h${diff%60}m)`:` (${diff}m)`);
 
-  const reason = pick.summary || regime.regime_summary || master.summary || '系統評估目前環境不適合短線進場。';
+  const reason = regime.reason
+              || pick.summary
+              || regime.regime_summary
+              || master.summary
+              || '系統評估目前環境不適合短線進場。';
 
-  // Friendly headline — never show raw ERROR
-  const headline = (!pick.verdict || pick.verdict === 'ERROR') ? '暫無建議'
-                 : pick.verdict;
+  // Friendly headline — never show raw ERROR or empty
+  const headline = (!pick.verdict || pick.verdict === 'ERROR') ? '空手' : pick.verdict;
+
+  // Symbols scanned count — combine scanner candidates + portfolio holdings
+  // for a more accurate "活著" signal (TASK 2 spec: "alive evidence")
+  const scanCount = cands.length || 0;
 
   return `
-    <div class="empty-explain">
+    <div class="empty-explain scope-${scope}">
       <div class="ex-header">
         <div class="ex-verdict">${headline}</div>
         <div class="ex-stance">${stance}</div>
@@ -1440,33 +1481,34 @@ function renderEmptyExplain(pick){
       <div class="ex-grid">
         <div class="ex-cell">
           <div class="ex-k">REGIME</div>
-          <div class="ex-v warn">${(regime.market_regime||'—').toUpperCase()}</div>
+          <div class="ex-v warn">${regimeLabel}</div>
           <div class="ex-bar" style="color:var(--yellow)">
-            <i style="width:${regimeScore}%"></i>
+            <i style="width:${Math.min(100, regimeScore)}%"></i>
           </div>
         </div>
         <div class="ex-cell">
           <div class="ex-k">PORTFOLIO RISK</div>
-          <div class="ex-v cool">${(liqRisk||'—').toUpperCase()}</div>
+          <div class="ex-v cool">${riskLabel.toUpperCase()}</div>
           <div class="ex-bar" style="color:var(--cyan)">
-            <i style="width:${riskScore}%"></i>
+            <i style="width:${Math.min(100, riskScore)}%"></i>
           </div>
         </div>
       </div>
 
       <div class="ex-reason">
-        <b>為什麼不出手 ·</b> ${clip(reason, 220)}
+        <b>為什麼不出手 ·</b> ${clip(reason, scope === 'sidebar' ? 80 : 220)}
       </div>
 
       ${triggers.length ? `<div class="ex-trigger">
         ${triggers.map(t => `<div class="ex-trigger-row">
           <span class="tr-arr">→</span>
-          <span class="tr-cond">${t.cond}</span>
+          <span class="tr-cond">${t.cond || t}</span>
+          ${t.note ? `<span class="tr-note">${t.note}</span>` : ''}
         </div>`).join('')}
       </div>` : ''}
 
       <div class="ex-foot">
-        <span class="live">SCANNING ${cands.length||0} SYMBOLS</span>
+        <span class="live">SCANNING ${scanCount.toLocaleString()} SYMBOLS</span>
         <span>NEXT TICK · ${nextTick}</span>
       </div>
     </div>`;
@@ -2812,7 +2854,7 @@ function renderExec(target){
       </div>
     </div></div>`;
   } else {
-    pickHTML = renderEmptyExplain(pick);
+    pickHTML = renderEmptyExplain(pick, 'exec');
   }
 
   target.innerHTML = `
@@ -2914,7 +2956,7 @@ function renderTrading(target){
       </div>`:''}
     </div>`;
   } else {
-    pickHTML = renderEmptyExplain(pick);
+    pickHTML = renderEmptyExplain(pick, 'trading');
   }
 
   const tmCol = verdictColor(tm.verdict);
