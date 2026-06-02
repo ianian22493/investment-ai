@@ -1,6 +1,23 @@
-# Pinned to versions verified in the last successful CI run (2026-06-02).
-# Lock-major prevents google-genai 2.x→3.x or pandas 3.x→4.x breaking the pipeline
-# without notice. Bump these intentionally; don't let pip resolver choose.
+# ┌──────────────────────────────────────────────────────────────────────┐
+# │  DEPENDENCY STRATEGY: range-lock by major version (semver-aware)     │
+# │                                                                       │
+# │  >=A.B,<C means:                                                      │
+# │    ✅ Auto-pickup bug-fix (A.B.x) and minor (A.x) versions           │
+# │    ❌ Block major bumps (would require code review)                  │
+# │                                                                       │
+# │  When to revise these bounds (every ~6 months OR when an Action       │
+# │  fails with ImportError / AttributeError):                            │
+# │    1. Locally: pip install --upgrade <pkg>                            │
+# │    2. Run: python -c "import <pkg>; print(<pkg>.__version__)"        │
+# │    3. Bump the lower bound in this file to that new known-good version│
+# │    4. If a NEW major (e.g. google-genai 3.0) is out, check changelog  │
+# │       before bumping the upper bound                                  │
+# │                                                                       │
+# │  If a build fails: revert to last working commit; the >= bound forces│
+# │  pip to pick the latest working version in the current major series.  │
+# └──────────────────────────────────────────────────────────────────────┘
+# Verified in last successful CI run: 2026-06-02
+
 google-genai>=2.7,<3.0
 yfinance>=1.4,<2.0
 pandas>=3.0,<4.0
