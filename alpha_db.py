@@ -39,14 +39,35 @@ def init_db():
             verdict         TEXT,                   -- 推薦出手 / 謹慎試單 / 空手觀望
             confidence      REAL,
             ref_close       REAL,                   -- 推薦當日收盤（參考基準）
-            close_next_day  REAL,                   -- 次日收盤（結算後填入）
-            return_pct      REAL,                   -- (close_next_day - ref_close) / ref_close
-            hit_target      INTEGER,                -- 1=達目標 0=未達 NULL=未結算
-            hit_stop        INTEGER,                -- 1=觸停損
-            success         INTEGER,                -- 1=成功(>0) 0=失敗 NULL=未結算
+            close_next_day  REAL,                   -- 次日收盤（舊欄位，保留向後相容）
+            return_pct      REAL,                   -- (exit_close - ref) / ref，新版以 exit_close 計
+            hit_target      INTEGER,                -- 1=持有期間 high 觸目標
+            hit_stop        INTEGER,                -- 1=持有期間 low 觸停損
+            success         INTEGER,                -- 1=return_pct>0
             resolved        INTEGER DEFAULT 0,
             resolved_at     TEXT
         );
+        -- v2 columns (full hold-period tracking, added 2026-06-02)
+        -- ALTER TABLE doesn't IF NOT EXISTS in SQLite, so we try/except below.
+        """)
+        # Forward-compat migrations: add new columns if they don't exist yet.
+        existing = {r["name"] for r in conn.execute("PRAGMA table_info(picks)")}
+        new_columns = [
+            ("exit_close",       "REAL"),    # 退場日收盤
+            ("exit_date",        "TEXT"),    # 退場日期
+            ("exit_reason",      "TEXT"),    # 'stop' / 'target' / 'time' / 'pending'
+            ("max_close",        "REAL"),    # 持有期間最高收盤
+            ("min_close",        "REAL"),    # 持有期間最低收盤
+            ("max_high",         "REAL"),    # 持有期間最高 high（看是否真的觸目標）
+            ("min_low",          "REAL"),    # 持有期間最低 low（看是否真的觸停損）
+            ("max_gain_pct",     "REAL"),    # (max_close - ref) / ref
+            ("max_drawdown_pct", "REAL"),    # (min_close - ref) / ref
+            ("hold_days_actual", "INTEGER"), # 實際交易日數
+        ]
+        for name, kind in new_columns:
+            if name not in existing:
+                conn.execute(f"ALTER TABLE picks ADD COLUMN {name} {kind}")
+        conn.executescript("""
 
         CREATE TABLE IF NOT EXISTS reflections (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -120,7 +141,9 @@ def save_pick(
 
 
 def resolve_pick(pick_id: int, close_next_day: float):
-    """Fill in outcome for a pick after next-day close is known."""
+    """Backward-compat shim — call resolve_pick_full when possible.
+    Falls back to old next-day-only logic if only close_next_day is known.
+    """
     with get_conn() as conn:
         row = conn.execute(
             "SELECT ref_close FROM picks WHERE id=?", (pick_id,)
@@ -143,6 +166,69 @@ def resolve_pick(pick_id: int, close_next_day: float):
         """, (
             close_next_day, ret_pct, success,
             datetime.now(TZ).isoformat(), pick_id,
+        ))
+
+
+def resolve_pick_full(
+    pick_id: int,
+    exit_close: float,
+    exit_date: str,
+    exit_reason: str,
+    max_close: float,
+    min_close: float,
+    max_high: float,
+    min_low: float,
+    hit_target: int,
+    hit_stop: int,
+    hold_days_actual: int,
+    pending: bool = False,
+):
+    """Resolve a pick with full hold-period stats.
+    pending=True writes interim stats (max/min so far) but keeps resolved=0
+    so the next cron can update again. Used while the hold window is still open.
+    """
+    with get_conn() as conn:
+        row = conn.execute(
+            "SELECT ref_close FROM picks WHERE id=?", (pick_id,)
+        ).fetchone()
+        if not row:
+            return
+        ref = row["ref_close"]
+
+        return_pct = None
+        max_gain_pct = None
+        max_drawdown_pct = None
+        success = None
+        if ref and ref > 0:
+            if exit_close is not None:
+                return_pct = round((exit_close - ref) / ref * 100, 3)
+                success = 1 if return_pct > 0 else 0
+            # Use high/low (intraday peaks) — "最高/最低瞬間"
+            # 這樣 max_gain_pct 一定 >= return_pct（沒有「漲過頭錯過」是 OK 的）
+            if max_high is not None:
+                max_gain_pct = round((max_high - ref) / ref * 100, 3)
+            if min_low is not None:
+                max_drawdown_pct = round((min_low - ref) / ref * 100, 3)
+
+        conn.execute("""
+            UPDATE picks SET
+              close_next_day=COALESCE(close_next_day, ?),  -- preserve old value if set
+              exit_close=?, exit_date=?, exit_reason=?,
+              max_close=?, min_close=?, max_high=?, min_low=?,
+              max_gain_pct=?, max_drawdown_pct=?,
+              hit_target=?, hit_stop=?, hold_days_actual=?,
+              return_pct=?, success=?,
+              resolved=?, resolved_at=?
+            WHERE id=?
+        """, (
+            exit_close,  # for close_next_day COALESCE
+            exit_close, exit_date, exit_reason,
+            max_close, min_close, max_high, min_low,
+            max_gain_pct, max_drawdown_pct,
+            hit_target, hit_stop, hold_days_actual,
+            return_pct, success,
+            0 if pending else 1, datetime.now(TZ).isoformat(),
+            pick_id,
         ))
 
 
@@ -271,7 +357,16 @@ def get_performance_stats(days: int = 30) -> dict:
             "success": p.get("success"),
             "resolved": p.get("resolved"),
             "resolved_at": p.get("resolved_at"),
+            # v2 hold-period fields
+            "exit_close":       p.get("exit_close"),
+            "exit_date":        p.get("exit_date"),
+            "exit_reason":      p.get("exit_reason"),
+            "max_gain_pct":     p.get("max_gain_pct"),
+            "max_drawdown_pct": p.get("max_drawdown_pct"),
+            "hold_days_actual": p.get("hold_days_actual"),
         }
+
+    watch = get_watch_stats(days)
 
     return {
         "available": True,
@@ -292,6 +387,46 @@ def get_performance_stats(days: int = 30) -> dict:
         "worst": _trim(worst_pick) if worst_pick else None,
         "hit_target_count": hit_target,
         "hit_stop_count": hit_stop,
+        # v2: discipline stats
+        "watch_days":     watch["watch_days"],
+        "analysis_days":  watch["analysis_days"],
+        "pick_days":      watch["pick_days"],
+        "watch_rate":     watch["watch_rate"],
+    }
+
+
+def get_watch_stats(days: int = 30) -> dict:
+    """近 N 天空手率。
+    Logic:
+      - analysis_days = system_decisions 表中近 N 天的不同日期數（系統有分析過的日子）
+      - pick_days = picks 表中近 N 天非 NONE 的紀錄數（系統有出手的日子）
+      - watch_days = analysis_days - pick_days（空手觀望的日子）
+    """
+    init_db()
+    cutoff = (date.today() - timedelta(days=days)).isoformat()
+    with get_conn() as conn:
+        exists = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='system_decisions'"
+        ).fetchone()
+        if not exists:
+            return {"available": False, "analysis_days": 0, "pick_days": 0, "watch_days": 0, "watch_rate": 0}
+        analysis_days = conn.execute(
+            "SELECT COUNT(DISTINCT date) FROM system_decisions WHERE date >= ?",
+            (cutoff,),
+        ).fetchone()[0]
+        pick_days = conn.execute(
+            "SELECT COUNT(*) FROM picks WHERE stock_code != 'NONE' AND date >= ?",
+            (cutoff,),
+        ).fetchone()[0]
+
+    watch_days = max(0, analysis_days - pick_days)
+    return {
+        "available": True,
+        "period_days": days,
+        "analysis_days": analysis_days,
+        "pick_days": pick_days,
+        "watch_days": watch_days,
+        "watch_rate": round(watch_days / max(analysis_days, 1) * 100, 1),
     }
 
 

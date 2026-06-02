@@ -56,6 +56,56 @@ def _fetch_close(code: str, date_str: str, strict: bool = False) -> float | None
     return None
 
 
+def _fetch_ohlc_range(code: str, start_date: str, end_date: str) -> list[dict]:
+    """取得 [start_date, end_date] 區間內所有交易日的 OHLC。
+    自動嘗試 .TW / .TWO。回 list[{date, open, high, low, close}]。
+    """
+    for suffix in (".TW", ".TWO"):
+        try:
+            hist = yf.Ticker(code + suffix).history(period="60d", auto_adjust=True)
+            if hist.empty:
+                continue
+            hist.index = hist.index.tz_localize(None)
+            rows = []
+            for ts, r in hist.iterrows():
+                d = ts.strftime("%Y-%m-%d")
+                if start_date <= d <= end_date:
+                    rows.append({
+                        "date":  d,
+                        "open":  round(float(r["Open"]),  2),
+                        "high":  round(float(r["High"]),  2),
+                        "low":   round(float(r["Low"]),   2),
+                        "close": round(float(r["Close"]), 2),
+                    })
+            if rows:
+                return rows
+        except Exception:
+            continue
+    return []
+
+
+def _parse_hold_days_max(text: str) -> int:
+    """從 hold_days 字串抽出最大天數。
+    "5-10 天" → 10 | "7" → 7 | "持有 3-5 個交易日" → 5
+    預設 5（保守，因為若 entry 後完全無動靜，5 天內應有結論）。
+    """
+    nums = re.findall(r"\d+", str(text or ""))
+    if not nums:
+        return 5
+    return max(int(n) for n in nums)
+
+
+def _n_trading_days_after(start_date: str, n: int) -> str:
+    """從 start_date 起算第 n 個交易日（近似，不排國定假日）。"""
+    d = datetime.strptime(start_date, "%Y-%m-%d")
+    count = 0
+    while count < n:
+        d += timedelta(days=1)
+        if d.weekday() < 5:
+            count += 1
+    return d.strftime("%Y-%m-%d")
+
+
 def _parse_first_number(text: str):
     """從字串裡抽出第一個浮點數（例如 "286.0-290.0" → 286.0）。"""
     m = re.search(r"\d+(?:\.\d+)?", str(text or ""))
@@ -130,10 +180,112 @@ def save_today_pick(pick_output: dict, regime: dict, market_data: dict, candidat
           f"信號=[{sig_str}] 參考收盤={ref_close} → DB id={row_id}")
 
 
+def _sanitize_stop_target(
+    ref_close: float, stop_loss: float | None, target: float | None
+) -> tuple[float | None, float | None]:
+    """如果 AI 寫的 stop/target 跟 ref_close 不合理，回 None（忽略該閾值）。
+    Logic:
+      - stop_loss 必須在 ref_close 的 60%~99% 之間（停損是低於進場價）
+      - target 必須在 ref_close 的 101%~200% 之間（目標是高於進場價）
+    超出這個範圍 = AI 對股價有幻覺（如 6150 ref=66 但 target=390）。
+    """
+    if stop_loss is not None:
+        if stop_loss >= ref_close * 1.0 or stop_loss < ref_close * 0.5:
+            stop_loss = None
+    if target is not None:
+        if target <= ref_close * 1.0 or target > ref_close * 2.0:
+            target = None
+    return stop_loss, target
+
+
+def _walk_hold_period(
+    code: str,
+    pick_date: str,
+    ref_close: float,
+    stop_loss: float | None,
+    target: float | None,
+    hold_days_max: int,
+    today: str,
+) -> dict | None:
+    """遍歷推薦日之後 [1, hold_days_max] 個交易日的 OHLC，回傳結算用統計。
+    若資料不足（連次日 OHLC 都沒有），回 None。
+    """
+    # AI 偶爾會在 stop/target 寫出跟 ref 完全不同數量級的值（幻覺）。
+    # 這裡 sanity check 後，若不合理就退到 time-based 結算（不假裝觸停損 / 目標）。
+    stop_loss, target = _sanitize_stop_target(ref_close, stop_loss, target)
+
+    start = _next_trading_day(pick_date)
+    end = _n_trading_days_after(pick_date, hold_days_max)
+    check_until = min(end, today)
+    rows = _fetch_ohlc_range(code, start, check_until)
+    if not rows:
+        return None
+
+    max_high = max((r["high"] for r in rows), default=ref_close)
+    min_low  = min((r["low"]  for r in rows), default=ref_close)
+    max_close = max((r["close"] for r in rows), default=ref_close)
+    min_close = min((r["close"] for r in rows), default=ref_close)
+
+    exit_close = None
+    exit_date  = None
+    exit_reason = None
+    hit_target = 0
+    hit_stop   = 0
+
+    for r in rows:
+        # 同日同時觸停損 & 目標 — 保守假設先觸停損（更悲觀）
+        if stop_loss is not None and r["low"] <= stop_loss:
+            exit_close = stop_loss     # 假設於停損價成交
+            exit_date  = r["date"]
+            exit_reason = "stop"
+            hit_stop = 1
+            break
+        if target is not None and r["high"] >= target:
+            exit_close = target        # 假設於目標價成交
+            exit_date  = r["date"]
+            exit_reason = "target"
+            hit_target = 1
+            break
+
+    pending = False
+    if exit_reason is None:
+        # 沒觸停損也沒到目標
+        if rows[-1]["date"] >= end or check_until >= end:
+            # 持有窗已過完 — 用最後收盤結算
+            exit_close = rows[-1]["close"]
+            exit_date  = rows[-1]["date"]
+            exit_reason = "time"
+        else:
+            # 持有窗還沒結束 — 標 pending，下次再看
+            exit_close = rows[-1]["close"]
+            exit_date  = rows[-1]["date"]
+            exit_reason = "pending"
+            pending = True
+
+    hold_days_actual = len(rows) if exit_reason in ("time", "pending") else (
+        next((i + 1 for i, r in enumerate(rows) if r["date"] == exit_date), len(rows))
+    )
+
+    return {
+        "exit_close":  exit_close,
+        "exit_date":   exit_date,
+        "exit_reason": exit_reason,
+        "max_close":   max_close,
+        "min_close":   min_close,
+        "max_high":    max_high,
+        "min_low":     min_low,
+        "hit_target":  hit_target,
+        "hit_stop":    hit_stop,
+        "hold_days_actual": hold_days_actual,
+        "pending":     pending,
+    }
+
+
 def resolve_pending(today_market_data: dict = None):
     """
-    結算所有未完成的推薦：用次日實際收盤填入結果。
-    在每次 run_agents.py 開始時呼叫。
+    結算所有未完成的推薦。
+    新版邏輯：遍歷整個 hold_days 期間，記錄 max/min/觸停損/觸目標。
+    持有窗未結束的 pick 標為 pending（resolved=0，但會記錄當前 max/min）。
     """
     pending = alpha_db.get_unresolved_picks()
     if not pending:
@@ -141,32 +293,61 @@ def resolve_pending(today_market_data: dict = None):
 
     today = datetime.now(TZ).strftime("%Y-%m-%d")
     resolved_count = 0
+    pending_count = 0
 
     for p in pending:
         pick_date = p["date"]
-        code = p["stock_code"]
-
-        # 找「推薦日的隔一個交易日」
-        next_day = _next_trading_day(pick_date)
-
-        # 如果隔天還沒到，跳過
-        if next_day > today:
+        code      = p["stock_code"]
+        ref       = p["ref_close"]
+        if not ref:
             continue
 
-        close = _fetch_close(code, next_day, strict=True)
-        if close is None:
-            print(f"[outcome_tracker] {next_day} 收盤資料尚未公布或暫不可得（{code}），下次再試")
+        # Skip if pick was made today — too early to resolve
+        if pick_date >= today:
             continue
 
-        alpha_db.resolve_pick(p["id"], close)
-        ret = round((close - p["ref_close"]) / p["ref_close"] * 100, 2) if p["ref_close"] else None
-        result_str = f"+{ret}% ✓" if (ret and ret > 0) else f"{ret}% ✗"
-        print(f"[outcome_tracker] 結算 {pick_date} 推薦 {code}: "
-              f"參考={p['ref_close']} → 次日={close} ({result_str})")
-        resolved_count += 1
+        stop_loss = _parse_first_number(p.get("stop_loss"))
+        target    = _parse_first_number(p.get("target"))
+        hold_max  = _parse_hold_days_max(p.get("hold_days"))
 
-    if resolved_count:
-        print(f"[outcome_tracker] 共結算 {resolved_count} 筆")
+        result = _walk_hold_period(code, pick_date, ref, stop_loss, target, hold_max, today)
+        if result is None:
+            print(f"[outcome_tracker] {pick_date} {code} 持有期間 OHLC 暫不可得，下次再試")
+            continue
+
+        alpha_db.resolve_pick_full(
+            pick_id=p["id"],
+            exit_close=result["exit_close"],
+            exit_date=result["exit_date"],
+            exit_reason=result["exit_reason"],
+            max_close=result["max_close"],
+            min_close=result["min_close"],
+            max_high=result["max_high"],
+            min_low=result["min_low"],
+            hit_target=result["hit_target"],
+            hit_stop=result["hit_stop"],
+            hold_days_actual=result["hold_days_actual"],
+            pending=result["pending"],
+        )
+
+        if result["pending"]:
+            ret = (result["exit_close"] - ref) / ref * 100
+            mg  = (result["max_close"] - ref) / ref * 100
+            md  = (result["min_close"] - ref) / ref * 100
+            print(f"[outcome_tracker] ◯ pending {pick_date} {code}: "
+                  f"當前 {ret:+.2f}% (max {mg:+.2f}% / dd {md:+.2f}%) "
+                  f"D+{result['hold_days_actual']}/{hold_max}")
+            pending_count += 1
+        else:
+            ret = (result["exit_close"] - ref) / ref * 100
+            mark = "✓" if ret > 0 else "✗"
+            print(f"[outcome_tracker] {mark} {pick_date} {code}: "
+                  f"{result['exit_reason']} @ {result['exit_close']} ({ret:+.2f}%) "
+                  f"D+{result['hold_days_actual']}")
+            resolved_count += 1
+
+    if resolved_count or pending_count:
+        print(f"[outcome_tracker] 結算 {resolved_count} 筆 / 仍開倉 {pending_count} 筆")
 
 
 def _next_trading_day(date_str: str) -> str:

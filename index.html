@@ -3213,28 +3213,69 @@ function getActionedMap(){
   try { return JSON.parse(localStorage.getItem(ACTIONED_STORAGE) || '{}'); }
   catch { return {}; }
 }
-function getActioned(p){ return getActionedMap()[pickId(p)] || null; }
-function setActioned(p, state){
+// Storage schema v2: each entry is now an object {state, entry} (entry = actual fill price).
+// Legacy v1 entries were plain strings ('followed' | 'skipped'); we normalize on read.
+function getActionedRecord(p){
+  const raw = getActionedMap()[pickId(p)];
+  if(!raw) return null;
+  if(typeof raw === 'string') return { state: raw, entry: null };  // legacy v1
+  return raw;
+}
+function getActioned(p){ return getActionedRecord(p)?.state || null; }
+function getActionedEntry(p){
+  const v = getActionedRecord(p)?.entry;
+  return (typeof v === 'number' && v > 0) ? v : null;
+}
+function setActioned(p, { state, entry } = {}){
   const map = getActionedMap();
-  if(state) map[pickId(p)] = state;
-  else delete map[pickId(p)];
+  const id = pickId(p);
+  const cur = getActionedRecord(p) || {};
+  const next = {
+    state: state !== undefined ? state : cur.state,
+    entry: entry !== undefined ? entry : cur.entry,
+  };
+  // Drop the entry entirely if both fields blank
+  if(!next.state && next.entry == null){
+    delete map[id];
+  } else {
+    map[id] = next;
+  }
   try { localStorage.setItem(ACTIONED_STORAGE, JSON.stringify(map)); } catch {}
 }
 function cycleActioned(p){
   const cur = getActioned(p);
   const next = cur === null ? 'followed' : cur === 'followed' ? 'skipped' : null;
-  setActioned(p, next);
+  setActioned(p, { state: next });
   return next;
 }
+function setActualEntry(p, entry){
+  setActioned(p, { entry: (entry && entry > 0) ? entry : null });
+}
+// Per-pick return: use user's actual entry when available, else fall back to ref_close
+function personalReturnPct(p){
+  const myEntry = getActionedEntry(p);
+  const exit = p.exit_close ?? p.close_next_day;
+  if(myEntry && exit){
+    return (exit - myEntry) / myEntry * 100;
+  }
+  return p.return_pct;
+}
 // Stats for picks user actually marked as 'followed'
+// Now uses personal entry price when set → reflects what *you* actually made.
 function computeYourStats(recentPicks){
   const followed = (recentPicks || []).filter(p => getActioned(p) === 'followed' && p.resolved === 1);
   if(followed.length === 0) return null;
-  const wins = followed.filter(p => p.return_pct > 0).length;
-  const losses = followed.filter(p => p.return_pct <= 0).length;
+  const enriched = followed.map(p => ({ p, ret: personalReturnPct(p) }));
+  const wins = enriched.filter(e => e.ret > 0).length;
+  const losses = enriched.filter(e => e.ret <= 0).length;
   const rate = Math.round(wins / followed.length * 100);
-  const avgReturn = followed.reduce((s, p) => s + (p.return_pct || 0), 0) / followed.length;
-  return { total: followed.length, wins, losses, rate, avg_return: +avgReturn.toFixed(2) };
+  const avgReturn = enriched.reduce((s, e) => s + (e.ret || 0), 0) / followed.length;
+  const hasPersonalEntry = enriched.filter(e => getActionedEntry(e.p) != null).length;
+  return {
+    total: followed.length, wins, losses, rate,
+    avg_return: +avgReturn.toFixed(2),
+    with_actual_entry: hasPersonalEntry,
+  };
 }
 
 // Shared performance/picks panel — used by ARCHIVE room + DECISION LOG system
@@ -3258,9 +3299,20 @@ function renderPerformancePanel(perf){
   const topRegime = sortedRegimes[0];
   const streak = perf.recent_streak || '—';
 
-  // Headline metric row — 4 cards
-  let statsHTML = `<div class="stat-grid">
+  // Discipline (空手率) — sit-out rate, complementary to win rate
+  const wr = perf.watch_rate;
+  // A "good" discipline range is roughly 30~70% — too low = 亂出手, too high = 從不出手
+  const wrCol = (wr >= 30 && wr <= 70) ? 'var(--green)'
+              : (wr > 70) ? 'var(--yellow)'
+              : (wr < 20 && perf.analysis_days > 5) ? 'var(--red)' : 'var(--text2)';
+  const wrSub = perf.analysis_days
+    ? `${perf.pick_days||0} 出手 / ${perf.analysis_days||0} 分析日`
+    : '—';
+
+  // Headline metric row — 5 cards
+  let statsHTML = `<div class="stat-grid" style="grid-template-columns:repeat(5, minmax(0,1fr))">
     <div class="stat-card"><div class="stat-label">AI 勝率</div><div class="stat-value" style="color:${c}">${r}%</div><div class="stat-sub">${perf.wins||0}W / ${perf.losses||0}L · 已結算</div></div>
+    <div class="stat-card" title="近 30 天空手日數 / 分析日數 ＝ 系統的選股嚴格度。理想範圍 30-70%，太低=亂出手，太高=過度保守。"><div class="stat-label">空手率</div><div class="stat-value" style="color:${wrCol}">${wr!=null?wr+'%':'—'}</div><div class="stat-sub">${wrSub}</div></div>
     <div class="stat-card"><div class="stat-label">持倉</div><div class="stat-value" style="color:var(--gold)">${perf.open_count||0}</div><div class="stat-sub">追蹤中</div></div>
     <div class="stat-card"><div class="stat-label">平均報酬</div><div class="stat-value" style="font-size:18px;color:${perf.avg_return>0?'var(--green)':perf.avg_return<0?'var(--red)':'var(--text2)'}">${perf.avg_return!=null?(perf.avg_return>0?'+':'')+perf.avg_return+'%':'—'}</div><div class="stat-sub">每筆已結算</div></div>
     <div class="stat-card"><div class="stat-label">連續</div><div class="stat-value" style="font-size:16px;letter-spacing:2px">${streak}</div><div class="stat-sub">最近 ${streak.replace(/[^✓✗]/g,'').length || '—'} 筆</div></div>
@@ -3273,6 +3325,11 @@ function renderPerformancePanel(perf){
     const delta = yourStats.rate - r;
     const dColor = delta>0?'var(--green)':delta<0?'var(--red)':'var(--text2)';
     const dSign = delta>0?'+':'';
+    const entryNote = yourStats.with_actual_entry === yourStats.total
+      ? `<span style="color:var(--green)">✓ 全部用你的實際 entry 價</span>`
+      : yourStats.with_actual_entry > 0
+        ? `<span style="color:var(--text3)">${yourStats.with_actual_entry}/${yourStats.total} 用實際 entry，其餘用 ref</span>`
+        : `<span style="color:var(--text3)">未填實際 entry，用 ref 試算</span>`;
     statsHTML += `<div class="card" style="margin-top:10px;border-left:2px solid var(--gold);padding:10px 12px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px">
         <div>
@@ -3280,6 +3337,7 @@ function renderPerformancePanel(perf){
           <div style="font-size:11px;color:var(--text2);line-height:1.6">
             ${yourStats.total} 筆已結算 · ${yourStats.wins}W / ${yourStats.losses}L · 平均報酬 ${yourStats.avg_return>0?'+':''}${yourStats.avg_return}%
           </div>
+          <div style="font-size:9px;margin-top:4px">${entryNote}</div>
         </div>
         <div style="text-align:right">
           <div style="font:800 26px/1 system-ui;color:${yc}">${yourStats.rate}%</div>
@@ -3376,12 +3434,50 @@ function renderPerformancePanel(perf){
           const isOpen = p.resolved !== 1;
           const c = isOpen ? 'var(--gold)' : ret==null ? 'var(--text3)' : ret>0 ? 'var(--green)' : 'var(--red)';
           const status = isOpen ? '⋯ OPEN' : (ret>0 ? '✓' : '✗');
+          // v2 hold-period details
+          const exitReason = p.exit_reason;
+          const reasonLabel = exitReason === 'target' ? '🎯 觸目標'
+                            : exitReason === 'stop'   ? '🛑 觸停損'
+                            : exitReason === 'time'   ? '⏱ 時間到'
+                            : exitReason === 'pending'? '◯ 持倉中'
+                            : '';
+          const reasonColor = exitReason === 'target' ? 'var(--green)'
+                            : exitReason === 'stop'   ? 'var(--red)'
+                            : 'var(--text3)';
+          const days = p.hold_days_actual;
+          const peakStr = (p.max_gain_pct != null && !isOpen)
+            ? `<span style="color:var(--green)">峰${p.max_gain_pct>0?'+':''}${p.max_gain_pct.toFixed(1)}%</span>` : '';
+          const troughStr = (p.max_drawdown_pct != null && !isOpen)
+            ? `<span style="color:var(--red)">谷${p.max_drawdown_pct>0?'+':''}${p.max_drawdown_pct.toFixed(1)}%</span>` : '';
+          const subLine = (reasonLabel || days || peakStr || troughStr)
+            ? `<div style="font-size:9px;color:var(--text3);margin-top:2px">
+                ${reasonLabel?`<span style="color:${reasonColor}">${reasonLabel}</span>`:''}${days?` · D+${days}`:''}<br>
+                ${peakStr} ${troughStr}
+              </div>` : '';
           const act = getActioned(p);
+          const myEntry = getActionedEntry(p);
           const actSym  = act === 'followed' ? '✓' : act === 'skipped' ? '✗' : '☐';
           const actCol  = act === 'followed' ? 'var(--green)' : act === 'skipped' ? 'var(--red)' : 'var(--text3)';
           const actTitle = act === 'followed' ? '已照做（點擊改為 沒做）'
                          : act === 'skipped'  ? '沒做（點擊清除）'
                          :                       '未標記（點擊：照做）';
+          // Personal return calc — only show if state=followed AND actual entry set AND resolved
+          const showPersonalRet = act === 'followed' && myEntry && !isOpen && (p.exit_close ?? p.close_next_day);
+          const personalRet = showPersonalRet
+            ? (((p.exit_close ?? p.close_next_day) - myEntry) / myEntry * 100)
+            : null;
+          const personalRetStr = personalRet != null
+            ? `<span style="color:${personalRet>0?'var(--green)':'var(--red)'};font-weight:700">${personalRet>0?'+':''}${personalRet.toFixed(2)}%</span> · 你的`
+            : '';
+          // Entry input — only show when state=followed
+          const entryInputHTML = act === 'followed' ? `
+            <div style="margin-top:4px">
+              <input type="number" step="0.01" class="actual-entry-input" data-pick="${pickId(p)}"
+                     value="${myEntry || ''}" placeholder="實際 entry"
+                     title="填入你實際進場價（個人化勝率）"
+                     style="width:75px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text);font:600 10px 'JetBrains Mono',monospace;border-radius:3px;padding:2px 4px;text-align:right">
+              ${personalRetStr ? `<div style="font-size:9px;margin-top:2px">${personalRetStr}</div>` : ''}
+            </div>` : '';
           return `<tr style="${isOpen?'background:rgba(201,168,76,.04)':''}">
             <td><span style="color:var(--text3);font-size:10px">${(p.date||'').slice(5)}</span></td>
             <td><span class="hold-code">${p.code||'—'}</span> <span style="color:var(--text2);font-size:10px">${p.name||''}</span></td>
@@ -3390,9 +3486,13 @@ function renderPerformancePanel(perf){
               <span style="color:var(--cyan)">${clip(p.entry_zone||'—', 18)}</span><br>
               <span style="color:var(--red)">${clip(p.stop_loss||'—', 12)}</span> / <span style="color:var(--green)">${clip(p.target||'—', 12)}</span>
             </td>
-            <td style="text-align:right;color:${c};font-weight:700">${status}${ret!=null?' '+(ret>0?'+':'')+ret.toFixed(2)+'%':''}</td>
-            <td style="text-align:center">
+            <td style="text-align:right;color:${c};font-weight:700">
+              ${status}${ret!=null?' '+(ret>0?'+':'')+ret.toFixed(2)+'%':''}
+              ${subLine}
+            </td>
+            <td style="text-align:center;vertical-align:top;padding-top:8px">
               <button class="action-toggle" data-pick="${pickId(p)}" title="${actTitle}" style="background:transparent;border:1px solid ${actCol};color:${actCol};border-radius:3px;font:700 12px/1 'JetBrains Mono',monospace;width:24px;height:24px;cursor:pointer;padding:0">${actSym}</button>
+              ${entryInputHTML}
             </td>
           </tr>`;
         }).join('')}</tbody>
@@ -3424,8 +3524,31 @@ document.addEventListener('click', (e) => {
   const root = btn.closest('.perf-panel-root');
   if(root && DATA?.performance){
     const newHTML = renderPerformancePanel(DATA.performance);
-    // newHTML contains the outer wrapper too; replace root's outerHTML
     root.outerHTML = newHTML;
+  }
+});
+
+// Actual-entry input — save on blur or Enter, then re-render so personal stats refresh
+document.addEventListener('change', (e) => {
+  const inp = e.target.closest && e.target.closest('.actual-entry-input');
+  if(!inp) return;
+  const id = inp.dataset.pick;
+  const recentPicks = (DATA?.performance?.recent_picks) || [];
+  const target = recentPicks.find(p => pickId(p) === id);
+  if(!target) return;
+  const v = parseFloat(inp.value);
+  setActualEntry(target, isFinite(v) && v > 0 ? v : null);
+  const root = inp.closest('.perf-panel-root');
+  if(root && DATA?.performance){
+    const newHTML = renderPerformancePanel(DATA.performance);
+    root.outerHTML = newHTML;
+  }
+});
+// Keep Enter from submitting any parent form / collapsing the row
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter' && e.target.classList?.contains('actual-entry-input')){
+    e.preventDefault();
+    e.target.blur();  // triggers change above
   }
 });
 
