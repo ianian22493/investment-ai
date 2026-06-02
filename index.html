@@ -307,8 +307,10 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
   pointer-events:none;
   user-select:none;
 }
-.room-bg.loaded { opacity:1; }
+.room-bg.loaded { opacity:.82; }   /* slight transparency so agent silhouettes pop forward */
 .room-bg.bg-failed { display:none; }
+/* When user hovers a room, lift the PNG to full opacity — invites closer look. */
+.room:hover .room-bg.loaded { opacity:1; transition: opacity .35s ease; }
 
 /* SVG layer floats above PNG */
 .room > svg { position:relative; z-index:2; }
