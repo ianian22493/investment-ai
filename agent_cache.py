@@ -1,7 +1,40 @@
 """
-Agent Output Cache
-快取慢速 agent 的輸出，避免每天重複消耗 quota。
-TTL 以「天」計，到期才重新呼叫 LLM。
+Agent Output Cache (agent_cache.json) — TTL by AGENT NAME in DAYS.
+
+This is one of TWO cache layers in the project. They cover different scenarios:
+
+  agent_cache.py  ─ THIS FILE
+    Key:        agent name (e.g. "tw_long_term")
+    TTL:        days (3-7, per agent)
+    Purpose:    Long-running agents whose view doesn't change daily
+                (long-term portfolio, macro views, asset allocation).
+                Saves LLM calls when re-running multiple times per week.
+    Storage:    data/agent_cache.json
+
+  prompt_cache.py
+    Key:        sha256(model + system_prompt + user_content)
+    TTL:        hours (default 24)
+    Purpose:    1) Catch identical re-calls within 24h (rare in production
+                   but useful for dev iteration + retry-after-failure).
+                2) Stale fallback when Gemini quota is exhausted —
+                   get_latest_for_agent(name, 48h) returns whatever
+                   recent response we have, marked _degraded=true.
+    Storage:    data/llm_cache.json
+
+In a normal run order:
+  agent.run() → agent_cache.get_or_run(name, fn)
+    ↓ (cache miss or no TTL set)
+    fn() → base.call_claude(system, user, name)
+       ↓
+       prompt_cache.get(hash)  ← layer 2 cache check
+       ↓ (miss)
+       Gemini API call (with key rotation)
+       ↓ (success)
+       prompt_cache.set(hash, response) ← store for layer 2
+       ↓
+    return parsed response
+  ↓
+  agent_cache.set(name, response) ← store for layer 1 (if TTL > 0)
 """
 
 import json

@@ -103,11 +103,13 @@ Structure:
 """
 
 
-def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
+def call_claude(system_prompt: str, user_content: str, agent_name: str, custom_schema: bool = False) -> dict:
     """Call Gemini API and parse JSON response. Retries on transient errors (429/503/5xx).
     Prompt-hash cache layer in front — skips API call if identical prompt was seen
-    within the last 24h. Cache complementary to agent_cache.py (agent-level TTL)."""
-    full_system = system_prompt + "\n\n" + RESPONSE_SCHEMA
+    within the last 24h. Cache complementary to agent_cache.py (agent-level TTL).
+    custom_schema=True: caller already embedded its own JSON schema in system_prompt;
+                       don't append the default RESPONSE_SCHEMA. (Used by reflection.)"""
+    full_system = system_prompt if custom_schema else (system_prompt + "\n\n" + RESPONSE_SCHEMA)
     cached = prompt_cache.get(MODEL, full_system, user_content)
     if cached is not None:
         print(f"  [prompt-cache hit] {agent_name}")

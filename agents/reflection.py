@@ -39,6 +39,7 @@ REFLECTION_SCHEMA = """
   ],
   "effective_conditions": ["有效條件1", "有效條件2"],
   "ineffective_conditions": ["失效條件1", "失效條件2"],
+  "watch_discipline": "對空手率的評語：是不是太愛出手？太保守？或剛好？(1-2 句)",
   "adjustments": [
     {
       "action": "增加/降低/暫停",
@@ -80,6 +81,15 @@ def run(
     lines.append(f"【近期績效摘要（{stats['total']}筆已結算）】")
     lines.append(f"整體勝率：{stats['wins']}/{stats['total']} = {stats['overall_rate']}%")
     lines.append(f"近期走勢：{stats.get('recent_streak', 'N/A')}")
+
+    # 空手率 — discipline metric (added 2026-06-02)
+    if stats.get("analysis_days"):
+        lines.append(
+            f"\n【選股紀律】\n"
+            f"分析日 {stats['analysis_days']} 天 / 出手 {stats['pick_days']} 天 / 空手 {stats['watch_days']} 天 = "
+            f"空手率 {stats['watch_rate']}%\n"
+            f"  健康範圍 30-70%。<20% 可能亂出手，>70% 可能過度保守。"
+        )
 
     regime_stats = stats.get("regime_stats", {})
     if regime_stats:
@@ -130,71 +140,14 @@ def run(
 1. 目前策略在哪種市場體制下最有效？
 2. 哪些信號組合最可靠？哪些需要降低依賴？
 3. 最近的失敗案例有什麼共同模式？
-4. 給出 2-3 個具體調整建議，讓下次推薦更精準
+4. **選股紀律**：空手率是否健康？太多/太少出手代表什麼？
+5. 給出 2-3 個具體調整建議，讓下次推薦更精準
 
 注意：如果某個體制或信號的樣本數 < 3，請明確標注「樣本不足」。
 """
 
+    # Delegate to call_claude — inherits multi-key rotation, prompt cache,
+    # error log, and quota-degradation fallback. custom_schema=True tells
+    # base.py we already embedded our own REFLECTION_SCHEMA.
     system_with_schema = SYSTEM + "\n\n" + REFLECTION_SCHEMA
-
-    from .base import client, MODEL, RETRYABLE_TOKENS
-    from google.genai import types
-    import json, re, time, random, sys, os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    import prompt_cache
-    from error_log import log_error as _log_error
-
-    cached = prompt_cache.get(MODEL, system_with_schema, user_content)
-    if cached is not None:
-        print("  [prompt-cache hit] reflection")
-        return cached
-
-    MAX_ATTEMPTS = 5
-    for attempt in range(MAX_ATTEMPTS):
-        try:
-            resp = client.models.generate_content(
-                model=MODEL,
-                contents=user_content,
-                config=types.GenerateContentConfig(
-                    system_instruction=system_with_schema,
-                ),
-            )
-            raw = resp.text.strip()
-            if raw.startswith("```"):
-                raw = raw.split("```")[1]
-                if raw.startswith("json"):
-                    raw = raw[4:]
-            raw = re.sub(r'\[\d+\]', '', raw)
-            parsed = json.loads(raw)
-            prompt_cache.set(MODEL, system_with_schema, user_content, "reflection", parsed)
-            return parsed
-        except json.JSONDecodeError as e:
-            return {
-                "verdict": "策略需調整",
-                "confidence": 0,
-                "summary": f"Reflection JSON parse error: {e}",
-                "key_findings": [],
-                "effective_conditions": [],
-                "ineffective_conditions": [],
-                "adjustments": [],
-                "agent_note": "parse error",
-            }
-        except Exception as e:
-            err = str(e)
-            retryable = any(tok in err for tok in RETRYABLE_TOKENS)
-            if retryable and attempt < MAX_ATTEMPTS - 1:
-                wait = min(60, 10 * (2 ** attempt)) + random.uniform(0, 3)
-                print(f"  [reflection] {err[:80]}, backoff {wait:.1f}s (attempt {attempt+1}/{MAX_ATTEMPTS})")
-                time.sleep(wait)
-                continue
-            _log_error("agent:reflection", e)
-            return {
-                "verdict": "策略需調整",
-                "confidence": 0,
-                "summary": f"Reflection error: {e}",
-                "key_findings": [],
-                "effective_conditions": [],
-                "ineffective_conditions": [],
-                "adjustments": [],
-                "agent_note": "API call failed",
-            }
+    return call_claude(system_with_schema, user_content, "reflection", custom_schema=True)

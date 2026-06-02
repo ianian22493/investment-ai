@@ -66,3 +66,24 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/ianian22493/investment-ai/pages/builds"
+
+      # ─ Optional: Discord notification on failure ──────────────────────────
+      # Set up: create a webhook in your Discord server (Settings → Integrations
+      # → Webhooks → New Webhook), copy URL, add as DISCORD_WEBHOOK_URL secret.
+      # If not configured, this step is silently skipped.
+      - name: Discord — notify on failure
+        if: failure() && env.WEBHOOK != ''
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -s -H "Content-Type: application/json" -X POST "$WEBHOOK" -d @- <<EOF
+          {
+            "username": "Investment AI",
+            "embeds": [{
+              "title": "❌ Daily analysis failed",
+              "description": "Run ${GITHUB_RUN_NUMBER} on \`${GITHUB_REF_NAME}\` failed at $(TZ='Asia/Taipei' date '+%Y-%m-%d %H:%M').",
+              "url": "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}",
+              "color": 15158332
+            }]
+          }
+          EOF

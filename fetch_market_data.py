@@ -606,16 +606,35 @@ def compute_portfolio_value(portfolio: dict, tw_prices: dict, us_prices: dict, u
     tw_pnl_pct = round(tw_pnl_total / tw_cost_total * 100, 2) if tw_cost_total else 0
 
     # US stocks
-    us_val_usd = sum(
-        s["shares"] * us_prices.get(s["ticker"], {}).get("close", 0)
-        for s in portfolio["us_stocks"]
-    )
+    # Per-US-stock live PnL (mirrors tw_stocks_live)
+    us_stocks_live = []
+    us_val_usd = 0
+    us_cost_usd = 0
+    for s in portfolio["us_stocks"]:
+        ticker = s["ticker"]
+        shares = s["shares"]
+        avg_cost = s.get("avg_cost_usd", 0)
+        close = us_prices.get(ticker, {}).get("close")
+        change_pct = us_prices.get(ticker, {}).get("change_pct")
+        value_usd = round(shares * close, 2) if close else None
+        cost = round(shares * avg_cost, 2)
+        pnl_usd = round(value_usd - cost, 2) if value_usd is not None and cost else None
+        pnl_pct = round(pnl_usd / cost * 100, 2) if (cost and pnl_usd is not None) else None
+        us_stocks_live.append({
+            "ticker":     ticker,
+            "name":       s.get("name", ticker),
+            "shares":     shares,
+            "avg_cost":   round(avg_cost, 2),
+            "close":      close,
+            "value_usd":  value_usd,
+            "cost_usd":   cost,
+            "pnl_usd":    pnl_usd,
+            "pnl_pct":    pnl_pct,
+            "change_pct": change_pct,
+        })
+        if value_usd is not None: us_val_usd += value_usd
+        us_cost_usd += cost
     us_val_twd = round(us_val_usd * (usd_twd or 32), 0)
-
-    us_cost_usd = sum(
-        s.get("avg_cost_usd", 0) * s["shares"]
-        for s in portfolio["us_stocks"]
-    )
     us_pnl_usd = round(us_val_usd - us_cost_usd, 2) if us_cost_usd else None
     us_pnl_pct = round(us_pnl_usd / us_cost_usd * 100, 2) if (us_cost_usd and us_pnl_usd is not None) else None
 
@@ -635,6 +654,7 @@ def compute_portfolio_value(portfolio: dict, tw_prices: dict, us_prices: dict, u
         },
         "us_stocks_twd": int(us_val_twd),
         "us_stocks_usd": round(us_val_usd, 2),
+        "us_stocks_live": us_stocks_live,
         "us_cost_usd": round(us_cost_usd, 2) if us_cost_usd else None,
         "us_pnl_usd": us_pnl_usd,
         "us_pnl_pct": us_pnl_pct,
