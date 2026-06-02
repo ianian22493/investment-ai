@@ -292,6 +292,42 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
 }
 .room:hover svg{filter:brightness(1.08)}
 
+/* ═══ TASK 8 (Round 2) · Hybrid SVG + PNG rooms ═══════════════════════
+ * PNG dollhouse backgrounds (layer 1) + existing SVG agents (layer 2).
+ * Spec: design_handoff_round2/round2/task8-hybrid-rooms.html
+ */
+.room-bg {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  object-position:center 40%;
+  z-index:1;
+  opacity:0;
+  transition:opacity .6s ease, filter 1.2s cubic-bezier(.45,.05,.55,.95);
+  pointer-events:none;
+  user-select:none;
+}
+.room-bg.loaded { opacity:1; }
+.room-bg.bg-failed { display:none; }
+
+/* SVG layer floats above PNG */
+.room > svg { position:relative; z-index:2; }
+
+/* When PNG is showing, suppress the SVG floor grid lines + flat floor
+   polygon — the PNG provides those naturally and they'd otherwise show
+   on top of the dollhouse rendering. */
+.room.has-bg .iso-floor-line { display:none; }
+.room.has-bg svg [fill="url(#floor-grad)"] { opacity:0; }
+
+/* Atmosphere presets — same shape as body.preset-* on root */
+body.preset-terminal .room-bg { filter:saturate(1.05) brightness(1.08) contrast(1.02); }
+body.preset-cinema   .room-bg { filter:saturate(.92) sepia(.08) contrast(1.05); }
+body.preset-midnight .room-bg { filter:saturate(.6)  brightness(.78) hue-rotate(-8deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .room-bg { transition:none; }
+}
+
 /* SVG class palette (used across all room SVGs) */
 .iso-floor{fill:#0D1626}
 .iso-floor-line{stroke:rgba(122,142,189,.06); stroke-width:.5; fill:none}
@@ -2619,14 +2655,16 @@ function renderOffice(){
   const pickName = pick.pick?.name || null;
 
   const grid = $('iso-grid');
+  // Task 8: each room SVG is wrapped with a PNG dollhouse background.
+  // Lobby uses the 'corridor' PNG (it's the central connector visually).
   grid.innerHTML = `
-    <div class="room r-exec" data-room="exec">${buildExecRoom(v, vCol, regime.market_regime)}</div>
-    <div class="room r-lobby">${buildLobbyRoom(v, vCol, regime.market_regime, conf)}</div>
-    <div class="room r-research" data-room="research">${buildResearchRoom(score)}</div>
-    <div class="room r-risk" data-room="risk">${buildRiskRoom(triggerCount, cf.flow_direction)}</div>
-    <div class="room r-wealth" data-room="wealth">${buildWealthRoom(liquidity, cashflow)}</div>
-    <div class="room r-trading" data-room="trading">${buildTradingRoom(pickCode||'—', pickName||'', pick.verdict, verdictColor(pick.verdict))}</div>
-    <div class="room r-archive" data-room="archive">${buildArchiveRoom(perf.total||0, perf.overall_rate||0, !!perf.available)}</div>
+    <div class="room r-exec" data-room="exec">${wrapRoom('exec', buildExecRoom(v, vCol, regime.market_regime))}</div>
+    <div class="room r-lobby">${wrapRoom('corridor', buildLobbyRoom(v, vCol, regime.market_regime, conf))}</div>
+    <div class="room r-research" data-room="research">${wrapRoom('research', buildResearchRoom(score))}</div>
+    <div class="room r-risk" data-room="risk">${wrapRoom('risk', buildRiskRoom(triggerCount, cf.flow_direction))}</div>
+    <div class="room r-wealth" data-room="wealth">${wrapRoom('wealth', buildWealthRoom(liquidity, cashflow))}</div>
+    <div class="room r-trading" data-room="trading">${wrapRoom('trading', buildTradingRoom(pickCode||'—', pickName||'', pick.verdict, verdictColor(pick.verdict)))}</div>
+    <div class="room r-archive" data-room="archive">${wrapRoom('archive', buildArchiveRoom(perf.total||0, perf.overall_rate||0, !!perf.available))}</div>
   `;
 
   // Wire room clicks (lobby has no data-room → ignored)
@@ -3970,6 +4008,67 @@ function currentScheduledPreset(){
   return active;
 }
 
+// ═══ TASK 8 · Hybrid room PNG layer ═════════════════════════════════
+// Maps room keys to PNG filenames. Lobby in the grid is rendered with
+// the corridor PNG (the central connector visual).
+const TASK8_ROOMS = ['exec','trading','research','wealth','risk','archive','corridor'];
+
+// Rooms that have an atmosphere-specific PNG override.
+// Empty for now — base + CSS filter is sufficient. Register a room here
+// when you generate e.g. rooms/risk_midnight.png and want it to swap in.
+const ROOM_OVERRIDES = { /* risk: ['midnight'], exec: ['midnight'] */ };
+
+// Wrap a room's SVG markup with an <img class="room-bg"> background.
+// roomKey is the PNG filename stem (not always equal to data-room — lobby uses 'corridor').
+function wrapRoom(roomKey, svgString){
+  return `<img class="room-bg" alt="" loading="lazy"
+              src="rooms/${roomKey}_base.png"
+              onload="this.classList.add('loaded'); this.parentElement.classList.add('has-bg')"
+              onerror="this.classList.add('bg-failed'); this.parentElement.classList.remove('has-bg')">
+          ${svgString}`;
+}
+
+// Get current preset name from body class (set by applyPreset).
+function currentPreset(){
+  const c = document.body.classList;
+  if(c.contains('preset-terminal')) return 'terminal';
+  if(c.contains('preset-cinema'))   return 'cinema';
+  if(c.contains('preset-midnight')) return 'midnight';
+  return 'cinema'; // default
+}
+
+// Swap room PNG to atmosphere-specific override when available, else
+// keep base + let CSS filter handle the look. Preloads target src to
+// avoid white flash, falls back to base if override 404s.
+function syncRoomBackgrounds(preset){
+  document.querySelectorAll('.room-bg').forEach(img => {
+    const room = img.closest('.room');
+    if(!room) return;
+    // Determine which roomKey this room is (data-room OR r-lobby → corridor)
+    const dataRoom = room.dataset.room;
+    const isLobby  = room.classList.contains('r-lobby');
+    const roomKey = isLobby ? 'corridor' : dataRoom;
+    if(!roomKey) return;
+
+    const hasOverride = (ROOM_OVERRIDES[roomKey] || []).includes(preset);
+    const want = hasOverride
+      ? `rooms/${roomKey}_${preset}.png`
+      : `rooms/${roomKey}_base.png`;
+    const currentSrc = img.getAttribute('src') || '';
+    if(currentSrc.endsWith(want)) return;
+
+    const pre = new Image();
+    pre.onload  = () => { img.src = want; };
+    pre.onerror = () => { img.src = `rooms/${roomKey}_base.png`; };
+    pre.src = want;
+  });
+}
+
+// Preload all base PNGs at startup so the first paint isn't blank.
+(function preloadBase(){
+  TASK8_ROOMS.forEach(r => { const i = new Image(); i.src = `rooms/${r}_base.png`; });
+})();
+
 function applyPreset(name, source = 'manual'){
   const dur = source === 'auto' ? 12000 : 0;  // 12s crossfade on auto, instant on manual
   document.body.style.transition = `filter ${dur}ms cubic-bezier(.45,.05,.55,.95)`;
@@ -3981,6 +4080,7 @@ function applyPreset(name, source = 'manual'){
   localStorage.setItem('yuzu-settings', JSON.stringify(s));
   applySettings();
   updateAutoBadge();
+  syncRoomBackgrounds(name);  // Task 8 — sync PNG overrides when preset changes
 }
 
 function scheduleNextSwitch(){
