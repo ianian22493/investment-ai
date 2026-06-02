@@ -365,7 +365,12 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
   font-size:10px; color:var(--text2);
 }
 .char-tip.show{ opacity:1; transform:translateY(0) }
-.char-tip-title{ font-size:11px; font-weight:800; letter-spacing:1.2px; margin-bottom:2px }
+/* TASK 5 (Round 2) · Detailed-tone hover card — values per spec §D */
+.char-tip-title{
+  font-size:10px; font-weight:800; letter-spacing:1.5px;
+  color:var(--ag-color, var(--gold));
+  margin-bottom:3px;
+}
 .char-tip-role{
   font-size:9px; color:var(--text3); letter-spacing:.5px;
   margin-bottom:8px; padding-bottom:7px;
@@ -373,22 +378,43 @@ body.preset-cinema .canvas::before  { background: radial-gradient(ellipse 70% 60
 }
 .char-tip .verd-line{
   display:flex; justify-content:space-between; align-items:baseline;
-  font-size:11px; margin-bottom:5px;
+  margin-bottom:8px;
 }
-.char-tip .verd{ color:var(--text); font-weight:700 }
-.char-tip .conf{ font-size:9px; color:var(--text3); letter-spacing:.5px }
+.char-tip .verd{
+  font-size:18px; font-weight:900; letter-spacing:2px;
+  color:var(--text);
+}
+.char-tip .conf{
+  font-size:10px; color:var(--text3); letter-spacing:1px;
+}
+.char-tip .conf b{
+  color:var(--ag-color, var(--gold));
+  font-weight:800; font-size:14px;
+}
 .char-tip .ct-bar{
-  height:3px; background:rgba(122,142,189,.12);
+  height:3px; background:var(--bg);
   border-radius:2px; overflow:hidden; margin-bottom:9px;
 }
-.char-tip .ct-bar > i{ display:block; height:100%; opacity:.85 }
-.char-tip .ct-rows{ display:flex; flex-direction:column; gap:3px; margin-bottom:9px }
-.char-tip .ct-row{ display:flex; justify-content:space-between; font-size:9px }
-.char-tip .ct-row .k{ color:var(--text3); letter-spacing:1px }
-.char-tip .ct-row .v{ color:var(--text2) }
+.char-tip .ct-bar > i{
+  display:block; height:100%;
+  background:var(--ag-color, var(--gold));
+  box-shadow:0 0 5px var(--ag-color, var(--gold));
+}
+.char-tip .ct-rows{
+  display:flex; flex-direction:column; gap:3px;
+  font-size:9.5px;
+  margin-bottom:9px;
+}
+.char-tip .ct-row{ display:flex; gap:8px; }
+.char-tip .ct-row .k{
+  color:var(--text3); letter-spacing:1px;
+  min-width:48px;
+}
+.char-tip .ct-row .v{ color:var(--text); font-weight:700; }
 .char-tip .ct-cta{
   display:flex; justify-content:space-between; align-items:center;
   font-size:9px; font-weight:700; letter-spacing:1.5px;
+  color:var(--ag-color, var(--gold));
   padding-top:7px; border-top:1px dashed var(--border2);
 }
 
