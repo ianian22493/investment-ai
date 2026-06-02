@@ -128,17 +128,25 @@ def compute(
     #    Source: avg of key agent confidence scores, -0.10 per ERROR agent
     # ──────────────────────────────────────────────────────────────────────────
     key_agents = ["market_overview", "news_sentiment", "tw_short_term", "devils_advocate"]
-    confs, errors = [], 0
+    confs, errors, degraded = [], 0, 0
     for k in key_agents:
         a = outputs.get(k, {})
-        if a.get("verdict") == "ERROR":
+        # Hard error (no cache, no fallback) — penalize heavily
+        if a.get("verdict") in ("ERROR", "—") or not a.get("verdict"):
             errors += 1
+            continue
+        # Degraded (live failed → reusing stale cache). Confidence still
+        # usable but worth flagging — half penalty.
+        if a.get("_degraded"):
+            degraded += 1
+            confs.append(_safe(a.get("confidence"), 0.5) * 0.7)
         else:
             confs.append(_safe(a.get("confidence"), 0.5))
     avg_conf = sum(confs) / max(1, len(confs))
-    confidence_score = _clamp(avg_conf - errors * 0.10)
+    confidence_score = _clamp(avg_conf - errors * 0.10 - degraded * 0.05)
     sources["confidence_score"] = (
-        f"avg_agent_conf={avg_conf:.3f} error_agents={errors} penalty={errors*0.10:.1f}"
+        f"avg_agent_conf={avg_conf:.3f} error_agents={errors} "
+        f"degraded={degraded} penalty={errors*0.10 + degraded*0.05:.2f}"
     )
 
     # ──────────────────────────────────────────────────────────────────────────

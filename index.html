@@ -2972,8 +2972,9 @@ function renderTrading(target){
       ? (master._degraded_reason || 'Gemini 今日配額已滿。')
       : master.summary;
     const cioBadge = cioDegraded ? ' <span style="color:#ffb400;font-size:9px">⚠ DEGRADED</span>' : '';
+    const cioConfStr = cioDegraded ? '—' : (master.confidence||0).toFixed(2);
     chatMsgs.push(`<div class="chat-msg cio">
-      <div><div class="chat-author cio">CIO DECISION${cioBadge}</div><div class="chat-author-role">${master.verdict||''} · ${(master.confidence||0).toFixed(2)}</div></div>
+      <div><div class="chat-author cio">CIO DECISION${cioBadge}</div><div class="chat-author-role">${master.verdict||''} · ${cioConfStr}</div></div>
       <div class="chat-text">${clip(cioText, 280)}</div>
     </div>`);
   }

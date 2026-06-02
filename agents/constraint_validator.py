@@ -60,6 +60,15 @@ def validate(
     output = dict(master_output)
     output["_raw_verdict"] = master_output.get("verdict", "")  # preserve for logging
 
+    # If master is degraded/errored, don't fabricate a verdict via budget
+    # caps — that misleads the user into thinking we have an opinion.
+    # Just pass through with an annotation; front-end already shows the
+    # DEGRADED badge.
+    if master_output.get("_degraded") or master_output.get("verdict") in ("ERROR", "—", "", None):
+        output["constraint_violations"] = []
+        output["constraints_triggered"] = False
+        return output
+
     budget = capital_flow.get("budget", {})
     trading_pct = budget.get("trading", 0.30)
     wealth_risk_triggered = capital_flow.get("wealth_risk_triggered", False)
