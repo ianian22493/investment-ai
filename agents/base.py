@@ -18,13 +18,19 @@ from error_log import log_error as _log_error
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 MODEL = "gemini-2.5-flash"
 
-# Errors worth retrying — covers quota (429), Gemini overload (503/UNAVAILABLE),
-# upstream transient failures (500/502/504), and network blips.
+# Transient errors worth retrying many times — Gemini overload, network blips.
+# These typically resolve within seconds.
 RETRYABLE_TOKENS = (
-    "429", "503", "500", "502", "504",
-    "UNAVAILABLE", "RESOURCE_EXHAUSTED", "INTERNAL", "DEADLINE_EXCEEDED",
+    "503", "500", "502", "504",
+    "UNAVAILABLE", "INTERNAL", "DEADLINE_EXCEEDED",
     "ConnectionError", "Timeout", "TimeoutError",
 )
+
+# Quota-exhaustion tokens — daily limit hit. Retries within the same run will
+# almost always also hit 429 (free-tier resets at midnight Pacific). So we
+# only attempt ONCE more (in case it's a rate-limit blip), then bail to
+# stale-cache fallback. Burning all 5 retries here was eating our quota.
+QUOTA_TOKENS = ("429", "RESOURCE_EXHAUSTED")
 
 RESPONSE_SCHEMA = """
 Your response MUST be valid JSON only. No markdown, no explanation outside JSON.
@@ -93,19 +99,48 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
             }
         except Exception as e:
             err = str(e)
-            retryable = any(tok in err for tok in RETRYABLE_TOKENS)
-            if retryable and attempt < MAX_ATTEMPTS - 1:
+            is_quota = any(tok in err for tok in QUOTA_TOKENS)
+            is_transient = any(tok in err for tok in RETRYABLE_TOKENS)
+            # Quota: 1 quick retry, then bail. Transient: full exponential back-off.
+            if is_quota and attempt < 1:
+                wait = 8 + random.uniform(0, 3)
+                print(f"  [{agent_name}] quota signal, retry once in {wait:.1f}s")
+                time.sleep(wait)
+                continue
+            if is_transient and not is_quota and attempt < MAX_ATTEMPTS - 1:
                 wait = min(60, 10 * (2 ** attempt)) + random.uniform(0, 3)
                 print(f"  [{agent_name}] {err[:80]}, backoff {wait:.1f}s (attempt {attempt+1}/{MAX_ATTEMPTS})")
                 time.sleep(wait)
                 continue
             _log_error(f"agent:{agent_name}", e)
+            # ── Graceful degradation: try to reuse a recent cached response ──
+            # If quota is exhausted, the most recent response for this agent
+            # (within 48h) is still better than ERROR + raw 429 stacktrace.
+            stale = prompt_cache.get_latest_for_agent(agent_name, max_age_hours=48)
+            if stale is not None:
+                resp = dict(stale["response"])
+                resp["_degraded"] = True
+                resp["_degraded_reason"] = (
+                    "Gemini 配額已滿，顯示前次分析" if is_quota
+                    else "API 暫無回應，顯示前次分析"
+                )
+                resp["_degraded_from"] = stale["stored_at"]
+                print(f"  [{agent_name}] ⚠ degraded → reusing cached response from {stale['stored_at']}")
+                return resp
+            # No cache to fall back to — return a friendly placeholder
+            friendly = (
+                "Gemini 今日配額已滿，目前無新分析（明日 00:00 PT 重置）。"
+                if is_quota
+                else f"AI 服務暫時無法回應：{err[:120]}"
+            )
             return {
-                "verdict": "ERROR",
+                "verdict": "—",
                 "confidence": 0,
-                "summary": f"Agent {agent_name} error: {e}",
+                "summary": friendly,
                 "key_insights": [],
                 "recommendations": [],
-                "risk_flags": [err],
-                "agent_note": "API call failed",
+                "risk_flags": ["AI 分析不可用"],
+                "agent_note": "API call failed; no fallback cache available",
+                "_degraded": True,
+                "_degraded_reason": friendly,
             }

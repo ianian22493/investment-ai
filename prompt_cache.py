@@ -84,3 +84,29 @@ def set(model: str, system: str, user: str, agent: str, response: dict):
         "stored_at": datetime.now(TZ).isoformat(timespec="seconds"),
     }
     _save(cache)
+
+
+def get_latest_for_agent(agent_name: str, max_age_hours: int = 48):
+    """Find the newest cached response for THIS agent regardless of input hash.
+    Used as graceful fallback when live API call fails (e.g. quota exhausted).
+    Returns the response dict, or None if no usable entry exists.
+    """
+    cache = _load()
+    cutoff = datetime.now(TZ) - timedelta(hours=max_age_hours)
+    best = None
+    best_ts = None
+    for entry in cache.values():
+        if entry.get("agent") != agent_name:
+            continue
+        try:
+            ts = datetime.fromisoformat(entry["stored_at"])
+        except Exception:
+            continue
+        if ts < cutoff:
+            continue
+        if best_ts is None or ts > best_ts:
+            best_ts = ts
+            best = entry
+    if best is None:
+        return None
+    return {"response": best["response"], "stored_at": best["stored_at"]}

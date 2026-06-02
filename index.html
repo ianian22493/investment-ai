@@ -2773,6 +2773,16 @@ function renderExec(target){
   const flags = (cf.override_flags || []).filter(f => !f.includes('STRUCTURAL_NOTE'));
   const v = master.verdict || '—';
   const vCol = verdictColor(v);
+  // Sanitize raw API error strings that leaked into summary (older quota-fail behaviour).
+  // Today's fix makes base.py return clean fallback, but old analysis.json files
+  // committed before this fix may still have raw 429 traces.
+  const _rawErr = /^Agent .* error: |RESOURCE_EXHAUSTED|generativelanguage\.googleapis\.com/.test(master.summary||'');
+  const masterDegraded = !!master._degraded || _rawErr;
+  const masterSummary = masterDegraded
+    ? (master._degraded_reason || 'Gemini 今日配額已滿，目前顯示為降級模式 — 訊號矩陣與規則引擎仍正常。')
+    : (master.summary || '');
+  const degradedBadge = masterDegraded
+    ? `<div style="display:inline-block;padding:2px 8px;border-radius:4px;background:rgba(255,180,0,.15);color:#ffb400;font-size:10px;font-weight:700;letter-spacing:0.5px;margin-bottom:6px">⚠ DEGRADED ${master._degraded_from ? '· '+master._degraded_from.slice(11,16) : ''}</div>` : '';
 
   const budget = cf.budget || {};
   const tp = Math.round((budget.trading || 0) * 100);
@@ -2810,7 +2820,8 @@ function renderExec(target){
       <div>
         <div class="card-title">TODAY'S VERDICT</div>
         <div style="font-size:36px;font-weight:900;color:${vCol};text-shadow:0 0 24px ${vCol};letter-spacing:1px;margin:6px 0;line-height:1">${v}</div>
-        <div style="font-size:11px;color:var(--text2);max-width:560px;line-height:1.7">${master.summary||''}</div>
+        ${degradedBadge}
+        <div style="font-size:11px;color:${masterDegraded?'#ffb400':'var(--text2)'};max-width:560px;line-height:1.7">${masterSummary}</div>
         ${constraintHTML}
       </div>
       <div>
@@ -2954,9 +2965,16 @@ function renderTrading(target){
     </div>`);
   }
   if(master.summary){
+    // Reuse the sanitized summary computed in the verdict block above
+    const cioRawErr = /^Agent .* error: |RESOURCE_EXHAUSTED|generativelanguage\.googleapis\.com/.test(master.summary||'');
+    const cioDegraded = !!master._degraded || cioRawErr;
+    const cioText = cioDegraded
+      ? (master._degraded_reason || 'Gemini 今日配額已滿。')
+      : master.summary;
+    const cioBadge = cioDegraded ? ' <span style="color:#ffb400;font-size:9px">⚠ DEGRADED</span>' : '';
     chatMsgs.push(`<div class="chat-msg cio">
-      <div><div class="chat-author cio">CIO DECISION</div><div class="chat-author-role">${master.verdict||''} · ${(master.confidence||0).toFixed(2)}</div></div>
-      <div class="chat-text">${clip(master.summary, 280)}</div>
+      <div><div class="chat-author cio">CIO DECISION${cioBadge}</div><div class="chat-author-role">${master.verdict||''} · ${(master.confidence||0).toFixed(2)}</div></div>
+      <div class="chat-text">${clip(cioText, 280)}</div>
     </div>`);
   }
 
