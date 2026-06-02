@@ -96,6 +96,12 @@ def run_all():
         print(f"  [scanner] {len(candidates)} candidates loaded")
 
     print(agent_cache.status_summary())
+    # Show how many Gemini keys are loaded — confirms key rotation is wired up
+    try:
+        from agents.base import keys_status
+        print(f"  [api keys] {keys_status()}")
+    except Exception:
+        pass
 
     outputs = {}
 

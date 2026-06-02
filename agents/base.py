@@ -15,8 +15,57 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import prompt_cache
 from error_log import log_error as _log_error
 
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 MODEL = "gemini-2.5-flash"
+
+# ── Multi-key rotation (stay within 20 RPD free-tier per project) ───────────
+# Reads up to 4 env vars: GEMINI_API_KEY, GEMINI_API_KEY_2, _3, _4.
+# Each successful call rotates to the next key (round-robin).
+# When a key 429s, we mark it dead for this run and skip it on retry.
+_API_KEYS: list[str] = []
+for _var in ("GEMINI_API_KEY", "GEMINI_API_KEY_2", "GEMINI_API_KEY_3", "GEMINI_API_KEY_4"):
+    _v = (os.environ.get(_var) or "").strip()
+    if _v:
+        _API_KEYS.append(_v)
+
+if not _API_KEYS:
+    raise RuntimeError(
+        "No Gemini API keys found. Set GEMINI_API_KEY (and optionally "
+        "GEMINI_API_KEY_2/_3/_4 for higher daily quota via key rotation)."
+    )
+
+_CLIENTS = [genai.Client(api_key=k) for k in _API_KEYS]
+_DEAD_KEYS: set[int] = set()      # indices that hit 429 this run
+_next_key_idx = 0                 # cursor for round-robin
+
+# Single-key compat handle (still imported by some places — leave alive)
+client = _CLIENTS[0]
+
+
+def _pick_client() -> tuple[object, int]:
+    """Return (client, idx) for the next available key. Round-robin across
+    keys that haven't 429'd this run."""
+    global _next_key_idx
+    n = len(_CLIENTS)
+    alive = [i for i in range(n) if i not in _DEAD_KEYS]
+    if not alive:
+        # All dead — return first key anyway; caller will hit quota fallback path
+        return _CLIENTS[0], 0
+    # Find next alive key starting from _next_key_idx
+    for _ in range(n):
+        if _next_key_idx not in _DEAD_KEYS:
+            idx = _next_key_idx
+            _next_key_idx = (_next_key_idx + 1) % n
+            return _CLIENTS[idx], idx
+        _next_key_idx = (_next_key_idx + 1) % n
+    return _CLIENTS[alive[0]], alive[0]
+
+
+def keys_status() -> str:
+    """For logging."""
+    parts = []
+    for i in range(len(_CLIENTS)):
+        parts.append(f"key{i+1}:{'✗' if i in _DEAD_KEYS else '✓'}")
+    return f"[{len(_API_KEYS)} keys] {' '.join(parts)}"
 
 # Transient errors worth retrying many times — Gemini overload, network blips.
 # These typically resolve within seconds.
@@ -65,9 +114,11 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
         return cached
 
     MAX_ATTEMPTS = 5
+    last_key_idx = None
     for attempt in range(MAX_ATTEMPTS):
+        active_client, last_key_idx = _pick_client()
         try:
-            resp = client.models.generate_content(
+            resp = active_client.models.generate_content(
                 model=MODEL,
                 contents=user_content,
                 config=types.GenerateContentConfig(
@@ -101,12 +152,21 @@ def call_claude(system_prompt: str, user_content: str, agent_name: str) -> dict:
             err = str(e)
             is_quota = any(tok in err for tok in QUOTA_TOKENS)
             is_transient = any(tok in err for tok in RETRYABLE_TOKENS)
-            # Quota: 1 quick retry, then bail. Transient: full exponential back-off.
-            if is_quota and attempt < 1:
-                wait = 8 + random.uniform(0, 3)
-                print(f"  [{agent_name}] quota signal, retry once in {wait:.1f}s")
-                time.sleep(wait)
-                continue
+            # ── Multi-key handling: when one key 429s, mark it dead and
+            # immediately try the next key (no sleep needed).
+            if is_quota:
+                _DEAD_KEYS.add(last_key_idx)
+                alive = [i for i in range(len(_CLIENTS)) if i not in _DEAD_KEYS]
+                if alive and attempt < MAX_ATTEMPTS - 1:
+                    print(f"  [{agent_name}] key{last_key_idx+1} 429 — swap to key{alive[0]+1} ({keys_status()})")
+                    continue
+                # All keys dead: 1 quick retry in case it's a rate-limit blip
+                if attempt < 1:
+                    wait = 8 + random.uniform(0, 3)
+                    print(f"  [{agent_name}] all keys exhausted, retry once in {wait:.1f}s")
+                    time.sleep(wait)
+                    _DEAD_KEYS.clear()  # let them try again
+                    continue
             if is_transient and not is_quota and attempt < MAX_ATTEMPTS - 1:
                 wait = min(60, 10 * (2 ** attempt)) + random.uniform(0, 3)
                 print(f"  [{agent_name}] {err[:80]}, backoff {wait:.1f}s (attempt {attempt+1}/{MAX_ATTEMPTS})")

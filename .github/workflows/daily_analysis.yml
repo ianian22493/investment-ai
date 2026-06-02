@@ -40,7 +40,10 @@ jobs:
       - name: Run investment agents
         run: python run_agents.py
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
+          # Optional second key (round-robin to double free-tier 20 RPD → 40 RPD).
+          # Set this secret in repo settings if/when you have a second key.
+          GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
           PYTHONUNBUFFERED: "1"
 
       - name: Commit and push analysis
