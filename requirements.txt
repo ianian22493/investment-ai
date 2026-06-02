@@ -1,6 +1,9 @@
-google-genai>=1.0.0
-yfinance>=0.2.38
-pandas>=2.0.0
-requests>=2.31.0
-shioaji>=1.1.0
-feedparser>=6.0.0
+# Pinned to versions verified in the last successful CI run (2026-06-02).
+# Lock-major prevents google-genai 2.x→3.x or pandas 3.x→4.x breaking the pipeline
+# without notice. Bump these intentionally; don't let pip resolver choose.
+google-genai>=2.7,<3.0
+yfinance>=1.4,<2.0
+pandas>=3.0,<4.0
+requests>=2.34,<3.0
+shioaji>=1.5,<2.0
+feedparser>=6.0,<7.0

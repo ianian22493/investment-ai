@@ -25,6 +25,20 @@ TW_CODES = ["00692", "00915", "1104", "2211", "2330", "2536", "2834", "3293", "3
 US_TICKERS = ["AMZN", "CELH", "GOOGL", "MELI", "MSFT", "NVDA", "ONDS", "RBRK", "S", "SOUN", "TSLA", "ZS"]
 INDEX_TICKERS = {"taiex": "^TWII", "sp500": "^GSPC", "nasdaq": "^IXIC", "vix": "^VIX"}
 
+# AI/semi sector basket — proxy for signal_fusion.ai_sector_strength.
+# Mix of large-cap AI plays (台積電/聯發科) and AI-server/散熱 mid-caps that
+# react more sensitively to AI demand cycles. ETF 00891 included as
+# a broad confirmation signal.
+AI_SECTOR_BASKET = [
+    "2330",   # 台積電  — AI chip fabricator
+    "2454",   # 聯發科  — AI SoC
+    "3017",   # 奇鋐    — AI server 散熱
+    "3653",   # 健策    — AI server 散熱
+    "6669",   # 緯穎    — AI server ODM
+    "3661",   # 世芯-KY — ASIC
+    "00891",  # 中信關鍵半導體 ETF
+]
+
 
 def fetch_twse_index() -> dict:
     """TAIEX and major index data via yfinance."""
@@ -163,6 +177,48 @@ def fetch_us_stocks() -> dict:
             print(f"  [WARN] US {ticker}: {e}")
             result[ticker] = {}
     return result
+
+
+def fetch_ai_sector_momentum() -> dict:
+    """Compute AI/semi sector momentum from a basket of TW AI stocks + ETF.
+    Used by signal_fusion to compute ai_sector_strength as a real number
+    instead of the previous news-keyword inference (batch 2 target).
+
+    Returns:
+      {
+        "constituents": {"2330": {"close": .., "change_pct": ..}, ...},
+        "avg_change_pct": +1.23,   # mean daily change of available members
+        "median_change_pct": +0.88,
+        "count": 6                 # how many members had valid data
+      }
+    """
+    members = {}
+    changes = []
+    for code in AI_SECTOR_BASKET:
+        ticker = f"{code}.TW" if not code.startswith("00") else f"{code}.TW"
+        try:
+            t = yf.Ticker(ticker)
+            hist = t.history(period="5d")
+            if len(hist) >= 2:
+                prev, curr = float(hist["Close"].iloc[-2]), float(hist["Close"].iloc[-1])
+                chg_pct = round((curr - prev) / prev * 100, 2)
+                members[code] = {"close": round(curr, 2), "change_pct": chg_pct}
+                changes.append(chg_pct)
+        except Exception as e:
+            print(f"  [WARN] AI basket {code}: {e}")
+
+    if not changes:
+        return {"constituents": {}, "avg_change_pct": None, "median_change_pct": None, "count": 0}
+
+    avg = round(sum(changes) / len(changes), 3)
+    med = round(sorted(changes)[len(changes) // 2], 3)
+    print(f"  [AI sector] {len(changes)}/{len(AI_SECTOR_BASKET)} members, avg {avg:+.2f}% median {med:+.2f}%")
+    return {
+        "constituents":      members,
+        "avg_change_pct":    avg,
+        "median_change_pct": med,
+        "count":             len(changes),
+    }
 
 
 def fetch_tw_institutional(date_str: str = None) -> dict:
@@ -632,6 +688,9 @@ def run():
     print("  JPY rate...")
     jpy = fetch_jpy_rate()
 
+    print("  AI sector basket momentum...")
+    ai_sector = fetch_ai_sector_momentum()
+
     print("  news headlines...")
     news = fetch_news()
 
@@ -658,6 +717,7 @@ def run():
         "breadth": breadth,
         "institutional_market": institutional_market,
         "margin_balance": margin_balance,
+        "ai_sector": ai_sector,
         "news": news,
     }
 

@@ -3347,6 +3347,45 @@ function renderPerformancePanel(perf){
     </div>`;
   }
 
+  // Win-rate trend over time (cumulative, oldest → newest)
+  const resolvedChrono = (perf.recent_picks || [])
+    .filter(p => p.resolved === 1 && p.return_pct != null)
+    .slice().reverse();  // recent_picks is DESC; reverse to chronological
+  if(resolvedChrono.length >= 3){
+    // Rolling 5-pick win rate (or all-history cumulative if <5)
+    const rolling = [];
+    const WINDOW = Math.min(5, resolvedChrono.length);
+    for(let i = 0; i < resolvedChrono.length; i++){
+      const start = Math.max(0, i - WINDOW + 1);
+      const slice = resolvedChrono.slice(start, i + 1);
+      const wins = slice.filter(p => p.return_pct > 0).length;
+      rolling.push(wins / slice.length);
+    }
+    const sparkColor = rolling[rolling.length-1] >= 0.55 ? 'var(--green)'
+                     : rolling[rolling.length-1] >= 0.45 ? 'var(--yellow)' : 'var(--red)';
+    const trendDir = rolling.length >= 2
+      ? (rolling[rolling.length-1] > rolling[Math.max(0, rolling.length-3)] ? '↗' : rolling[rolling.length-1] < rolling[Math.max(0, rolling.length-3)] ? '↘' : '→')
+      : '→';
+    statsHTML += `<div class="card" style="margin-top:10px">
+      <div class="card-title">WIN-RATE TREND · 滾動 ${WINDOW} 筆勝率</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+        <div style="flex:1">
+          ${sparklineSVG(rolling, sparkColor, {lo:0, hi:1, w:280, h:36})}
+        </div>
+        <div style="text-align:right">
+          <div style="font:800 20px/1 system-ui;color:${sparkColor}">${trendDir}</div>
+          <div style="font:600 9px/1 'JetBrains Mono',monospace;color:var(--text3);margin-top:3px">${resolvedChrono.length} 筆</div>
+        </div>
+      </div>
+      <div style="font-size:9px;color:var(--text3);margin-top:6px;line-height:1.5">
+        最舊 → 最新。每點代表「截至該筆，最近 ${WINDOW} 筆的勝率」。
+        ${rolling[0]!=null && rolling[rolling.length-1]!=null
+          ? `起點 ${Math.round(rolling[0]*100)}% → 現況 ${Math.round(rolling[rolling.length-1]*100)}%`
+          : ''}
+      </div>
+    </div>`;
+  }
+
   // Win/Loss breakdown
   if(perf.avg_win !== null || perf.avg_loss !== null){
     statsHTML += `<div class="card" style="margin-top:10px">
@@ -5092,6 +5131,23 @@ function buildCounselDOM(){
   const clearBtn = wrap.querySelector('.counsel-clear');
   refreshCounselBadge(wrap);
 
+  // Clear button — wipes localStorage + resets to greeting + suggestions
+  clearBtn.addEventListener('click', () => {
+    if(counselHistory.length > 0 && !confirm('清除目前對話歷史？這個動作無法復原。')) return;
+    clearCounselHistory();
+    clearBtn.classList.add('hidden');
+    body.innerHTML = `
+      <div class="counsel-msg agent" data-agent="cio">
+        <span class="agent-tag" style="color:#C9A84C; border:1px solid rgba(201,168,76,.4)">CIO</span>
+        <div class="msg-text">已清空。問我任何今天 desk 的判斷，或某檔股票該如何處理。</div>
+      </div>`;
+    const qs = buildSuggestions();
+    suggestions.innerHTML = qs.map(q =>
+      `<button class="counsel-suggestion">${q}</button>`
+    ).join('');
+    suggestions.classList.remove('hidden');
+  });
+
   // Restore from localStorage if recent history exists
   const persisted = loadCounselHistory();
   if(persisted && persisted.length > 0){
@@ -5172,6 +5228,8 @@ async function submitQuestion(question, body){
   body.scrollTop = body.scrollHeight;
   counselHistory.push({ role:'user', text: question });
   saveCounselHistory();
+  // Reveal CLEAR button now that there's something to clear
+  document.querySelector('.counsel-clear')?.classList.remove('hidden');
 
   // Holds the data we accumulate per agent so we can persist on completion
   let currentMsg = null;

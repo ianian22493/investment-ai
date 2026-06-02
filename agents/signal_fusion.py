@@ -171,21 +171,40 @@ def compute(
 
     # ──────────────────────────────────────────────────────────────────────────
     # 7. ai_sector_strength  (0.0 ~ 1.0)
-    #    Source: inferred from regime_factors.ai_hits (no direct sector ETF data)
+    #    Primary source: TW AI basket avg daily change% (2330, 2454, 3017,
+    #    3653, 6669, 3661 + ETF 00891). Normalized: +3% → 0.85, 0% → 0.50,
+    #    -3% → 0.15. Linear within ±3%, clamped outside.
+    #    Fallback: when basket data unavailable (weekend / fetch failure),
+    #    fall back to the legacy ai_hits keyword inference.
     # ──────────────────────────────────────────────────────────────────────────
-    ai_hits = int(_safe(regime.get("regime_factors", {}).get("ai_hits"), 0))
-    if ai_hits >= 5:
-        ai_sector_strength = 0.85
-    elif ai_hits >= 3:
-        ai_sector_strength = 0.70
-    elif ai_hits >= 1:
-        ai_sector_strength = 0.55
+    ai_sector = market_data.get("ai_sector", {})
+    avg_chg = ai_sector.get("avg_change_pct")
+    if avg_chg is not None and ai_sector.get("count", 0) >= 3:
+        # ±3% maps to ±0.35 from 0.50 baseline; clamped 0.05–0.95
+        ai_sector_strength = _clamp(0.5 + avg_chg / 8.57, 0.05, 0.95)
+        # Add a light boost for confirmation: keyword hits agree with price action
+        ai_hits = int(_safe(regime.get("regime_factors", {}).get("ai_hits"), 0))
+        if avg_chg > 0 and ai_hits >= 3:
+            ai_sector_strength = _clamp(ai_sector_strength + 0.05, 0.05, 0.95)
+        sources["ai_sector_strength"] = (
+            f"basket {ai_sector['count']}檔 avg={avg_chg:+.2f}% → "
+            f"{ai_sector_strength:.2f}" + (f" (+0.05 news boost)" if avg_chg > 0 and ai_hits >= 3 else "")
+        )
     else:
-        ai_sector_strength = 0.35
-    sources["ai_sector_strength"] = (
-        f"inferred from ai_headline_hits={ai_hits} "
-        f"(no direct sector ETF — batch 2 target)"
-    )
+        # Fallback (no basket data): old keyword inference
+        ai_hits = int(_safe(regime.get("regime_factors", {}).get("ai_hits"), 0))
+        if ai_hits >= 5:
+            ai_sector_strength = 0.80
+        elif ai_hits >= 3:
+            ai_sector_strength = 0.65
+        elif ai_hits >= 1:
+            ai_sector_strength = 0.55
+        else:
+            ai_sector_strength = 0.40
+        sources["ai_sector_strength"] = (
+            f"basket data unavailable → fallback news_hits={ai_hits}"
+        )
+        data_gaps.append("ai_sector_strength")
 
     # ──────────────────────────────────────────────────────────────────────────
     # 8. foreign_flow_strength  (0.0 ~ 1.0)
