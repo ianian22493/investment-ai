@@ -1,52 +1,197 @@
 {
-  "_comment": "Static portfolio snapshot — update manually when holdings change",
-  "_updated": "2026-05-08",
-
+  "_comment": "Static portfolio snapshot — update manually when holdings change | 2026-06-03: 賣出 2536/4588/4707 (實現 +105313)",
+  "_updated": "2026-06-03",
   "personal_finance": {
-    "cash_savings_twd": 300000,
+    "cash_savings_twd": 1065043,
     "monthly_income_twd": 110000,
     "investment_style": "aggressive",
     "_style_note": "aggressive=高交易比例低現金 / moderate=均衡 / conservative=低交易高現金",
     "_note": "現金存款和月薪，影響現金流壓力評估"
   },
-
   "tw_stocks": [
-    { "code": "00692", "name": "富邦公司治理",    "shares": 6699,  "value": 558387,  "cost": 241000,  "pnl": 317389, "pnl_pct": 131.70, "type": "ETF",  "strategy": "long" },
-    { "code": "00915", "name": "凱基優選高股息30","shares": 2000,  "value": 51418,   "cost": 16050,   "pnl": 35368,  "pnl_pct": 220.36, "type": "ETF",  "strategy": "long" },
-    { "code": "1104",  "name": "環泥",            "shares": 20000, "value": 563522,  "cost": 508982,  "pnl": 54540,  "pnl_pct": 10.72,  "type": "stock","strategy": "long" },
-    { "code": "2211",  "name": "長榮鋼",          "shares": 3100,  "value": 304619,  "cost": 265380,  "pnl": 39239,  "pnl_pct": 14.79,  "type": "stock","strategy": "both" },
-    { "code": "2330",  "name": "台積電",          "shares": 40,    "value": 89604,   "cost": 71700,   "pnl": 17904,  "pnl_pct": 24.97,  "type": "stock","strategy": "long" },
-    { "code": "2536",  "name": "宏普",            "shares": 5000,  "value": 101550,  "cost": 177057,  "pnl": -75507, "pnl_pct": -42.65, "type": "stock","strategy": "long", "watch": "stop_loss_review" },
-    { "code": "2834",  "name": "臺企銀",          "shares": 13000, "value": 209679,  "cost": 165731,  "pnl": 43948,  "pnl_pct": 26.52,  "type": "stock","strategy": "long" },
-    { "code": "3293",  "name": "鈦象",            "shares": 940,   "value": 684193,  "cost": 627157,  "pnl": 57036,  "pnl_pct": 9.09,   "type": "stock","strategy": "both" },
-    { "code": "3703",  "name": "欣陸",            "shares": 12000, "value": 245520,  "cost": 303286,  "pnl": -57766, "pnl_pct": -19.05, "type": "stock","strategy": "long", "watch": "stop_loss_review" },
-    { "code": "4588",  "name": "玖鼎電力",        "shares": 1388,  "value": 83192,   "cost": 125129,  "pnl": -41937, "pnl_pct": -33.52, "type": "stock","strategy": "long", "watch": "stop_loss_review" },
-    { "code": "4707",  "name": "磐亞",            "shares": 30000, "value": 452521,  "cost": 360616,  "pnl": 91905,  "pnl_pct": 25.49,  "type": "stock","strategy": "both" }
+    {
+      "code": "00692",
+      "name": "富邦公司治理",
+      "shares": 6699,
+      "value": 558387,
+      "cost": 241000,
+      "pnl": 317389,
+      "pnl_pct": 131.7,
+      "type": "ETF",
+      "strategy": "long"
+    },
+    {
+      "code": "00915",
+      "name": "凱基優選高股息30",
+      "shares": 2000,
+      "value": 51418,
+      "cost": 16050,
+      "pnl": 35368,
+      "pnl_pct": 220.36,
+      "type": "ETF",
+      "strategy": "long"
+    },
+    {
+      "code": "1104",
+      "name": "環泥",
+      "shares": 20000,
+      "value": 563522,
+      "cost": 508982,
+      "pnl": 54540,
+      "pnl_pct": 10.72,
+      "type": "stock",
+      "strategy": "long"
+    },
+    {
+      "code": "2211",
+      "name": "長榮鋼",
+      "shares": 3100,
+      "value": 304619,
+      "cost": 265380,
+      "pnl": 39239,
+      "pnl_pct": 14.79,
+      "type": "stock",
+      "strategy": "both"
+    },
+    {
+      "code": "2330",
+      "name": "台積電",
+      "shares": 40,
+      "value": 89604,
+      "cost": 71700,
+      "pnl": 17904,
+      "pnl_pct": 24.97,
+      "type": "stock",
+      "strategy": "long"
+    },
+    {
+      "code": "2834",
+      "name": "臺企銀",
+      "shares": 13000,
+      "value": 209679,
+      "cost": 165731,
+      "pnl": 43948,
+      "pnl_pct": 26.52,
+      "type": "stock",
+      "strategy": "long"
+    },
+    {
+      "code": "3293",
+      "name": "鈦象",
+      "shares": 940,
+      "value": 684193,
+      "cost": 627157,
+      "pnl": 57036,
+      "pnl_pct": 9.09,
+      "type": "stock",
+      "strategy": "both"
+    },
+    {
+      "code": "3703",
+      "name": "欣陸",
+      "shares": 12000,
+      "value": 245520,
+      "cost": 303286,
+      "pnl": -57766,
+      "pnl_pct": -19.05,
+      "type": "stock",
+      "strategy": "long",
+      "watch": "stop_loss_review"
+    }
   ],
-
   "tw_summary": {
-    "total_value": 3344205,
-    "total_cost": 2862086,
-    "total_pnl": 482119,
-    "total_pnl_pct": 16.85,
+    "total_value": 2706942,
+    "total_cost": 2199286,
+    "total_pnl": 507656,
+    "total_pnl_pct": 23.08,
     "broker": "永豐金"
   },
-
   "us_stocks": [
-    { "ticker": "AMZN",  "name": "Amazon",        "shares": 2,        "avg_cost_usd": 201.50,    "strategy": "long" },
-    { "ticker": "CELH",  "name": "Celsius",        "shares": 6,        "avg_cost_usd": 33.68333,  "strategy": "long" },
-    { "ticker": "GOOGL", "name": "Alphabet",       "shares": 6.00049,  "avg_cost_usd": 287.33487, "strategy": "long" },
-    { "ticker": "MELI",  "name": "MercadoLibre",   "shares": 1,        "avg_cost_usd": 1650.00,   "strategy": "long" },
-    { "ticker": "MSFT",  "name": "Microsoft",      "shares": 5,        "avg_cost_usd": 377.00,    "strategy": "long" },
-    { "ticker": "NVDA",  "name": "Nvidia",         "shares": 4.00006,  "avg_cost_usd": 172.49991, "strategy": "long" },
-    { "ticker": "ONDS",  "name": "Ondas Holdings", "shares": 10,       "avg_cost_usd": 8.89,      "strategy": "long" },
-    { "ticker": "RBRK",  "name": "Rubrik",         "shares": 9,        "avg_cost_usd": 47.05556,  "strategy": "long" },
-    { "ticker": "S",     "name": "SentinelOne",    "shares": 1,        "avg_cost_usd": 12.00,     "strategy": "long" },
-    { "ticker": "SOUN",  "name": "SoundHound AI",  "shares": 10,       "avg_cost_usd": 6.33,      "strategy": "long" },
-    { "ticker": "TSLA",  "name": "Tesla",          "shares": 11,       "avg_cost_usd": 370.54545, "strategy": "long" },
-    { "ticker": "ZS",    "name": "Zscaler",        "shares": 11,       "avg_cost_usd": 141.33273, "strategy": "long" }
+    {
+      "ticker": "AMZN",
+      "name": "Amazon",
+      "shares": 2,
+      "avg_cost_usd": 201.5,
+      "strategy": "long"
+    },
+    {
+      "ticker": "CELH",
+      "name": "Celsius",
+      "shares": 6,
+      "avg_cost_usd": 33.68333,
+      "strategy": "long"
+    },
+    {
+      "ticker": "GOOGL",
+      "name": "Alphabet",
+      "shares": 6.00049,
+      "avg_cost_usd": 287.33487,
+      "strategy": "long"
+    },
+    {
+      "ticker": "MELI",
+      "name": "MercadoLibre",
+      "shares": 1,
+      "avg_cost_usd": 1650.0,
+      "strategy": "long"
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "shares": 5,
+      "avg_cost_usd": 377.0,
+      "strategy": "long"
+    },
+    {
+      "ticker": "NVDA",
+      "name": "Nvidia",
+      "shares": 4.00006,
+      "avg_cost_usd": 172.49991,
+      "strategy": "long"
+    },
+    {
+      "ticker": "ONDS",
+      "name": "Ondas Holdings",
+      "shares": 10,
+      "avg_cost_usd": 8.89,
+      "strategy": "long"
+    },
+    {
+      "ticker": "RBRK",
+      "name": "Rubrik",
+      "shares": 9,
+      "avg_cost_usd": 47.05556,
+      "strategy": "long"
+    },
+    {
+      "ticker": "S",
+      "name": "SentinelOne",
+      "shares": 1,
+      "avg_cost_usd": 12.0,
+      "strategy": "long"
+    },
+    {
+      "ticker": "SOUN",
+      "name": "SoundHound AI",
+      "shares": 10,
+      "avg_cost_usd": 6.33,
+      "strategy": "long"
+    },
+    {
+      "ticker": "TSLA",
+      "name": "Tesla",
+      "shares": 11,
+      "avg_cost_usd": 370.54545,
+      "strategy": "long"
+    },
+    {
+      "ticker": "ZS",
+      "name": "Zscaler",
+      "shares": 11,
+      "avg_cost_usd": 141.33273,
+      "strategy": "long"
+    }
   ],
-
   "funds": [
     {
       "name": "瀚亞日本動力股票基金AJ（日圓）",
@@ -63,14 +208,12 @@
       "monthly_dca_jpy": 15000
     }
   ],
-
   "funds_summary": {
     "total_value_twd": 128233,
     "total_cost_twd": 115754,
     "total_return_pct": 10.78,
     "total_monthly_dca_jpy": 75000
   },
-
   "real_estate": {
     "name": "久泰宸品 B2-13F",
     "location": "新北市板橋區",
@@ -85,10 +228,30 @@
     "personal_share_pct": 0.5,
     "_share_note": "夫妻各付一半，payment_schedule 為全額，計算時乘 0.5",
     "payment_schedule": [
-      { "name": "外牆裝修完工款", "date": "2026-07-01", "amount": 660000,  "category": "mortgage" },
-      { "name": "竣工款",         "date": "2026-10-01", "amount": 880000,  "category": "mortgage" },
-      { "name": "裝潢費用",       "date": "2027-01-01", "amount": 1200000, "category": "renovation" },
-      { "name": "家具費用",       "date": "2027-03-01", "amount": 920000,  "category": "furniture" }
+      {
+        "name": "外牆裝修完工款",
+        "date": "2026-07-01",
+        "amount": 660000,
+        "category": "mortgage"
+      },
+      {
+        "name": "竣工款",
+        "date": "2026-10-01",
+        "amount": 880000,
+        "category": "mortgage"
+      },
+      {
+        "name": "裝潢費用",
+        "date": "2027-01-01",
+        "amount": 1200000,
+        "category": "renovation"
+      },
+      {
+        "name": "家具費用",
+        "date": "2027-03-01",
+        "amount": 920000,
+        "category": "furniture"
+      }
     ]
   }
 }
