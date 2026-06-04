@@ -1,30 +1,26 @@
 {
   "market_regime_score": 0.0,
-  "trend_strength": 0.83,
-  "risk_pressure": 0.29,
-  "volatility_risk": 0.29,
-  "confidence_score": 0.863,
-  "scanner_momentum": 0.967,
-  "ai_sector_strength": 0.66,
-  "foreign_flow_strength": 0.5,
-  "breadth_score": 0.5,
-  "liquidity_score": 0.5,
+  "trend_strength": 0.5,
+  "risk_pressure": 0.281,
+  "volatility_risk": 0.141,
+  "confidence_score": 0.787,
+  "scanner_momentum": 1.0,
+  "ai_sector_strength": 0.95,
+  "foreign_flow_strength": 0.934,
+  "breadth_score": 0.722,
+  "liquidity_score": 0.475,
   "_sources": {
     "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
-    "trend_strength": "taiex_chg=+1.98%→base=0.830 market_overview_adj=+0.00",
-    "risk_pressure": "vix=16.1→0.204 tw_verdict_adj=-0.064 da_conf=1.00→0.150",
-    "volatility_risk": "vix=16.1→0.203×0.7 taiex_abs=1.98%→0.495×0.3",
-    "confidence_score": "avg_agent_conf=0.863 error_agents=0 degraded=0 penalty=0.00",
-    "scanner_momentum": "top10_avg=5.80/6.0",
-    "ai_sector_strength": "basket 7檔 avg=+1.37% → 0.66",
-    "foreign_flow_strength": "BFI82U data unavailable (盤中/假日) → 0.50 neutral",
-    "breadth_score": "MI_INDEX data unavailable → 0.50 neutral",
-    "liquidity_score": "margin balance unavailable → 0.50 neutral"
+    "trend_strength": "taiex_chg=+0.00%→base=0.500 market_overview_adj=+0.00",
+    "risk_pressure": "vix=16.1→0.203 tw_verdict_adj=-0.064 da_conf=0.95→0.142",
+    "volatility_risk": "vix=16.1→0.202×0.7 taiex_abs=0.00%→0.000×0.3",
+    "confidence_score": "avg_agent_conf=0.787 error_agents=0 degraded=0 penalty=0.00",
+    "scanner_momentum": "top10_avg=6.00/6.0",
+    "ai_sector_strength": "basket 7檔 avg=+nan% → 0.95",
+    "foreign_flow_strength": "BFI82U_foreign_net=+434.0億元 → normalized=0.934 (÷500億 clamp±0.5)",
+    "breadth_score": "MI_INDEX advance=751(+57漲停) decline=289(+1跌停) advance_ratio=0.722",
+    "liquidity_score": "margin_balance=5684億元 變化=+0.25% → score=0.475 (-2%→0.7, +2%→0.3)"
   },
-  "_data_gaps": [
-    "foreign_flow_strength",
-    "breadth_score",
-    "liquidity_score"
-  ],
-  "_computed_at": "2026-06-03T16:37:43.449962+08:00"
+  "_data_gaps": [],
+  "_computed_at": "2026-06-04T08:34:35.799484+08:00"
 }
