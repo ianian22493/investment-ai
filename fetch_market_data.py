@@ -559,6 +559,24 @@ def fetch_usd_twd() -> float | None:
         return None
 
 
+def _safe_close(val):
+    """Return val only if it's a usable positive number — guards against
+    NaN (yfinance occasionally returns this when a ticker is delisted /
+    temporarily un-fetchable). NaN is float-truthy in Python so a naive
+    `if close:` doesn't catch it."""
+    if val is None:
+        return None
+    try:
+        f = float(val)
+        if f != f:           # NaN check (NaN != NaN)
+            return None
+        if f <= 0:
+            return None
+        return f
+    except (TypeError, ValueError):
+        return None
+
+
 def compute_portfolio_value(portfolio: dict, tw_prices: dict, us_prices: dict, usd_twd: float, tw_positions: list = None) -> dict:
     """Compute current total portfolio value in TWD with dynamic P&L.
     tw_positions: live positions from Shioaji; if provided, overrides portfolio["tw_stocks"] shares/cost.
@@ -573,7 +591,7 @@ def compute_portfolio_value(portfolio: dict, tw_prices: dict, us_prices: dict, u
         for p in tw_positions:
             code = p["code"]
             meta = portfolio_meta.get(code, {})
-            close = tw_prices.get(code, {}).get("close")
+            close = _safe_close(tw_prices.get(code, {}).get("close"))
             cost = round(p["shares"] * p["avg_cost"])
             dyn_value = round(p["shares"] * close) if close else cost
             dyn_pnl = dyn_value - cost
@@ -593,7 +611,7 @@ def compute_portfolio_value(portfolio: dict, tw_prices: dict, us_prices: dict, u
     else:
         # Fallback: use static portfolio.json data
         for s in portfolio["tw_stocks"]:
-            close = tw_prices.get(s["code"], {}).get("close")
+            close = _safe_close(tw_prices.get(s["code"], {}).get("close"))
             dyn_value = round(s["shares"] * close) if close else s["value"]
             cost = s.get("cost", dyn_value)
             dyn_pnl = dyn_value - cost
@@ -614,8 +632,9 @@ def compute_portfolio_value(portfolio: dict, tw_prices: dict, us_prices: dict, u
         ticker = s["ticker"]
         shares = s["shares"]
         avg_cost = s.get("avg_cost_usd", 0)
-        close = us_prices.get(ticker, {}).get("close")
-        change_pct = us_prices.get(ticker, {}).get("change_pct")
+        close = _safe_close(us_prices.get(ticker, {}).get("close"))   # NaN-safe
+        change_raw = us_prices.get(ticker, {}).get("change_pct")
+        change_pct = change_raw if (change_raw is not None and change_raw == change_raw) else None
         value_usd = round(shares * close, 2) if close else None
         cost = round(shares * avg_cost, 2)
         pnl_usd = round(value_usd - cost, 2) if value_usd is not None and cost else None
