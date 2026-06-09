@@ -288,47 +288,19 @@
   },
   "wealth_master": {
     "output": {
-      "verdict": "危險",
-      "confidence": 1.0,
-      "summary": "客戶未來12個月面臨 NT$210,000 的現金流缺口，需動用投資資產以支應必要支出。資產高度集中於預售屋且槓桿比率偏高，導致整體財務結構脆弱，流動性壓力顯著。",
-      "key_insights": [
-        "未來12個月的預期現金流（存款+薪資）不足以覆蓋必要支出，存在 NT$210,000 的實質性缺口，需啟動投資資產變現機制。",
-        "資產配置高度集中於低流動性房產（佔總資產84.3%），且房貸對淨資產比率過高（144.1%），顯示長期結構性風險偏高。",
-        "雖然預售屋本身為結構性因素，但由於現金流不足，導致短期流動性風險已升至高點。",
-        "日幣基金雖有其市場表現考量，但鑒於整體流動性需求，其變現能力及匯率波動風險應納入評估範圍。"
-      ],
-      "recommendations": [
-        {
-          "action": "WATCH",
-          "target": "可流動投資資產",
-          "detail": "監測可流動投資資產組合，以備應對未來12個月現金流缺口，提供資本流動引擎決策所需資訊。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "WATCH",
-          "target": "整體財務槓桿與資產集中度",
-          "detail": "持續監控高槓桿與房產集中度帶來的結構性風險，為長期財務規劃提供參考。",
-          "urgency": "MED"
-        }
-      ],
+      "verdict": "—",
+      "confidence": 0,
+      "summary": "AI 服務暫時無法回應：503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+      "key_insights": [],
+      "recommendations": [],
       "risk_flags": [
-        "預計未來12個月現金流不足，需動用投資部位",
-        "資產高度集中於預售屋，流動性較低",
-        "高槓桿比率使淨資產對市場波動較為敏感"
+        "AI 分析不可用"
       ],
-      "agent_note": "已確認輸出僅為風險評估與事實描述，不包含資金分配指令或對其他部門的直接干預。本評估專為 Capital Flow Engine 提供風險訊號。",
-      "structural_risk": "high",
-      "liquidity_risk": "high",
-      "cashflow_stability": "tight",
-      "risk_level": "high",
-      "cash_crunch_risk": true,
-      "upcoming_obligations": [
-        "2026-07 外牆款 66萬",
-        "2026-10 竣工款 88萬"
-      ],
-      "leverage_health": "危險"
+      "agent_note": "API call failed; no fallback cache available",
+      "_degraded": true,
+      "_degraded_reason": "AI 服務暫時無法回應：503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
     },
-    "cached_at": "2026-06-02T08:38:21.683329+08:00",
+    "cached_at": "2026-06-09T16:42:17.736090+08:00",
     "ttl_days": 7
   }
 }
