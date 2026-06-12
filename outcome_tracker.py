@@ -349,6 +349,42 @@ def resolve_pending(today_market_data: dict = None):
     if resolved_count or pending_count:
         print(f"[outcome_tracker] 結算 {resolved_count} 筆 / 仍開倉 {pending_count} 筆")
 
+    # Also resolve watch_log entries (scanner top1 of past 觀望 days)
+    _resolve_pending_watch_log(today)
+
+
+def _resolve_pending_watch_log(today: str):
+    """For each unresolved watch_log entry that's ≥5 trading days old,
+    look at its scanner_top1's price action over those 5 days. Classify
+    as missed/avoided/flat. This is what Reflection uses to detect bias.
+    """
+    pending = alpha_db.get_unresolved_watch_log()
+    if not pending:
+        return
+    resolved_n = 0
+    for w in pending:
+        wd = w["date"]
+        code = w["scanner_top_code"]
+        ref = w["ref_close"]
+        if not ref:
+            continue
+        # Need 5 trading days after wd
+        end = _n_trading_days_after(wd, 5)
+        if end > today:
+            continue   # not yet 5 trading days
+        start = _next_trading_day(wd)
+        rows = _fetch_ohlc_range(code, start, end)
+        if not rows:
+            continue
+        max_high = max(r["high"] for r in rows)
+        min_low  = min(r["low"]  for r in rows)
+        max_gain = (max_high - ref) / ref * 100
+        max_dd   = (min_low  - ref) / ref * 100
+        alpha_db.resolve_watch_log(wd, round(max_gain, 2), round(max_dd, 2))
+        resolved_n += 1
+    if resolved_n:
+        print(f"[outcome_tracker] 觀望日 5 日結算 {resolved_n} 筆")
+
 
 def _next_trading_day(date_str: str) -> str:
     """取得下一個交易日（近似，未排除台灣國定假日）。"""

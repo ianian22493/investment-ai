@@ -398,6 +398,128 @@ def get_performance_stats(days: int = 30) -> dict:
     }
 
 
+def log_watch_day(date: str, scanner_top: dict, regime_name: str, reason: str):
+    """記錄一個觀望日，連同 scanner top1 候選，供日後判斷
+    「系統觀望時錯失了多少」。每天最多 1 筆（IGNORE 重複）。
+    scanner_top: 候選 dict from candidate_stocks.json (code/name/score/...)
+    """
+    init_db()
+    code = scanner_top.get("code") if scanner_top else None
+    if not code:
+        return
+    with get_conn() as conn:
+        # Ensure schema
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS watch_log (
+                date              TEXT PRIMARY KEY,
+                scanner_top_code  TEXT,
+                scanner_top_name  TEXT,
+                scanner_top_score INTEGER,
+                ref_close         REAL,
+                regime            TEXT,
+                watch_reason      TEXT,
+                max_gain_pct      REAL,    -- highest %gain in next 5 trading days
+                max_dd_pct        REAL,    -- worst %drawdown in next 5 trading days
+                outcome           TEXT,    -- 'missed' (>+3%) / 'avoided' (<-3%) / 'flat'
+                resolved          INTEGER DEFAULT 0,
+                resolved_at       TEXT,
+                created_at        TEXT
+            )
+        """)
+        conn.execute("""
+            INSERT OR IGNORE INTO watch_log
+              (date, scanner_top_code, scanner_top_name, scanner_top_score,
+               ref_close, regime, watch_reason, created_at)
+            VALUES (?,?,?,?,?,?,?,?)
+        """, (
+            date, code, scanner_top.get("name"), scanner_top.get("score"),
+            scanner_top.get("close"), regime_name, reason[:300] if reason else "",
+            datetime.now(TZ).isoformat(),
+        ))
+
+
+def get_unresolved_watch_log() -> list[dict]:
+    """取得尚未結算的觀望日紀錄。供 outcome_tracker 回填 5 日績效。"""
+    init_db()
+    with get_conn() as conn:
+        exists = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='watch_log'"
+        ).fetchone()
+        if not exists:
+            return []
+        rows = conn.execute(
+            "SELECT * FROM watch_log WHERE resolved=0 ORDER BY date ASC"
+        ).fetchall()
+        return [dict(r) for r in rows]
+
+
+def resolve_watch_log(date: str, max_gain_pct: float, max_dd_pct: float):
+    """填入觀望日 scanner top1 的 5 日 max/min 變化 + 分類 outcome。"""
+    if max_gain_pct >= 3.0:
+        outcome = "missed"      # 錯失：5 日內最高漲幅 ≥ +3%
+    elif max_dd_pct <= -3.0:
+        outcome = "avoided"     # 避開：5 日內最深跌幅 ≤ -3%
+    else:
+        outcome = "flat"        # 平淡：兩邊都沒突破 3%
+    init_db()
+    with get_conn() as conn:
+        conn.execute("""
+            UPDATE watch_log SET
+              max_gain_pct=?, max_dd_pct=?, outcome=?,
+              resolved=1, resolved_at=?
+            WHERE date=?
+        """, (
+            max_gain_pct, max_dd_pct, outcome,
+            datetime.now(TZ).isoformat(), date,
+        ))
+
+
+def get_watch_outcomes_summary(days: int = 60) -> dict:
+    """彙整近 N 天觀望日的結果：錯失 vs 避開 vs 平淡。
+    幫助判斷系統的選股保守度是否合理。
+    """
+    init_db()
+    cutoff = (date.today() - timedelta(days=days)).isoformat()
+    with get_conn() as conn:
+        exists = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='watch_log'"
+        ).fetchone()
+        if not exists:
+            return {"available": False}
+        rows = conn.execute(
+            "SELECT * FROM watch_log WHERE date >= ? AND resolved=1",
+            (cutoff,),
+        ).fetchall()
+    if not rows:
+        return {"available": False, "total": 0}
+    rows = [dict(r) for r in rows]
+    missed   = [r for r in rows if r["outcome"] == "missed"]
+    avoided  = [r for r in rows if r["outcome"] == "avoided"]
+    flat     = [r for r in rows if r["outcome"] == "flat"]
+    total = len(rows)
+    avg_missed_gain = (sum(r["max_gain_pct"] or 0 for r in missed) / len(missed)) if missed else 0
+    avg_avoided_dd  = (sum(r["max_dd_pct"] or 0 for r in avoided) / len(avoided)) if avoided else 0
+    # Diagnostic: if missed substantially outweighs avoided, system is overcautious
+    bias = None
+    if total >= 5:
+        if len(missed) > len(avoided) * 1.5:
+            bias = "overcautious"      # 系統過度保守，錯失多於避開
+        elif len(avoided) > len(missed) * 1.5:
+            bias = "well-calibrated"   # 觀望時多半避開了跌
+    return {
+        "available": True,
+        "period_days": days,
+        "total": total,
+        "missed":      len(missed),
+        "avoided":     len(avoided),
+        "flat":        len(flat),
+        "missed_rate": round(len(missed) / total * 100, 1),
+        "avg_missed_gain": round(avg_missed_gain, 2),
+        "avg_avoided_dd":  round(avg_avoided_dd, 2),
+        "bias":        bias,
+    }
+
+
 def get_watch_streak() -> int:
     """連續空手天數：從最新的盤後 analysis day 倒推，數連續沒 pick 的天數。
     回 0 表示最新的盤後 cron 有出 pick。

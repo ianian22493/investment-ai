@@ -108,6 +108,35 @@ def _add_micro_pick_if_warranted(outputs: dict, candidates: list, regime: dict, 
     print(f"    [micro-pick] {top.get('name','?')}({top['code']}) score={top.get('score')} 試單 {trial_size_pct}%")
 
 
+def _log_watch_day_if_applicable(outputs: dict, candidates: list, regime: dict, t0):
+    """Record watch days for retrospective analysis. We log when the
+    system explicitly says 觀望 / 空手, regardless of whether a micro_pick
+    was added — both states are 'system not buying'.
+    """
+    pick = outputs.get("tw_daily_pick", {})
+    main_code = (pick.get("pick") or {}).get("code")
+    verdict = pick.get("verdict") or ""
+    is_watch = (
+        not main_code or main_code in ("—", "NONE", "")
+        or "觀望" in verdict or "空手" in verdict
+    )
+    if not is_watch:
+        return
+    if not candidates:
+        return
+    top = candidates[0]
+    if not top.get("code"):
+        return
+    reason = pick.get("summary", "") or pick.get("agent_note", "")
+    alpha_db.log_watch_day(
+        date=t0.strftime("%Y-%m-%d"),
+        scanner_top=top,
+        regime_name=regime.get("market_regime", ""),
+        reason=reason,
+    )
+    print(f"    [watch_log] 記錄觀望日 · scanner top1: {top.get('name','?')}({top['code']}) score={top.get('score')}")
+
+
 def run_all():
     t0 = datetime.now(TZ)
     print(f"\n{'='*60}")
@@ -268,6 +297,13 @@ def run_all():
         # main pick (which stays 空手); presents an "observation trade"
         # to the user as a sidecar. No extra LLM call.
         _add_micro_pick_if_warranted(outputs, candidates, regime, market_data)
+
+        # ── Watch-day logging — when system says 觀望 but scanner has a
+        # top candidate, record it. outcome_tracker will fill in the
+        # 5-day max/min later, so reflection can learn whether the
+        # system's caution was warranted (avoided drops) or costly
+        # (missed rallies).
+        _log_watch_day_if_applicable(outputs, candidates, regime, t0)
 
         _sleep("tw_daily_pick")
 

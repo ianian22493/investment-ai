@@ -91,6 +91,25 @@ def run(
             f"  健康範圍 30-70%。<20% 可能亂出手，>70% 可能過度保守。"
         )
 
+    # Watch-day outcomes — did caution save us or cost us? (added 2026-06-12)
+    try:
+        import sys, os
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        import alpha_db as _adb
+        wo = _adb.get_watch_outcomes_summary(60)
+        if wo.get("available") and wo.get("total", 0) > 0:
+            lines.append(
+                f"\n【觀望 vs 錯失】（近 60 天，scanner top1 後 5 日績效）\n"
+                f"  總觀望日 {wo['total']} · "
+                f"錯失 {wo['missed']} 次（5日內 ≥+3%，平均 +{wo['avg_missed_gain']}%）· "
+                f"避開 {wo['avoided']} 次（5日內 ≤-3%，平均 {wo['avg_avoided_dd']}%）· "
+                f"平淡 {wo['flat']} 次\n"
+                f"  錯失率 {wo['missed_rate']}%"
+                + (f" → {wo['bias']}" if wo.get('bias') else "")
+            )
+    except Exception as e:
+        pass  # watch_log might not exist on first run
+
     regime_stats = stats.get("regime_stats", {})
     if regime_stats:
         lines.append("\n【各體制成績】")
@@ -141,7 +160,8 @@ def run(
 2. 哪些信號組合最可靠？哪些需要降低依賴？
 3. 最近的失敗案例有什麼共同模式？
 4. **選股紀律**：空手率是否健康？太多/太少出手代表什麼？
-5. 給出 2-3 個具體調整建議，讓下次推薦更精準
+5. **觀望品質**：如果有【觀望 vs 錯失】數據，判斷系統是「過度保守」（錯失 >> 避開）還是「校準良好」（避開 >> 錯失）。
+6. 給出 2-3 個具體調整建議，讓下次推薦更精準
 
 注意：如果某個體制或信號的樣本數 < 3，請明確標注「樣本不足」。
 """
