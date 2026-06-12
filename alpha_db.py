@@ -367,6 +367,7 @@ def get_performance_stats(days: int = 30) -> dict:
         }
 
     watch = get_watch_stats(days)
+    watch_streak = get_watch_streak()
 
     return {
         "available": True,
@@ -392,7 +393,41 @@ def get_performance_stats(days: int = 30) -> dict:
         "analysis_days":  watch["analysis_days"],
         "pick_days":      watch["pick_days"],
         "watch_rate":     watch["watch_rate"],
+        # Consecutive days without a pick (NEW 2026-06-12)
+        "watch_streak":   watch_streak,
     }
+
+
+def get_watch_streak() -> int:
+    """連續空手天數：從最新的盤後 analysis day 倒推，數連續沒 pick 的天數。
+    回 0 表示最新的盤後 cron 有出 pick。
+    回 N 表示已連續 N 天沒推薦（可能系統過度保守）。
+    """
+    init_db()
+    with get_conn() as conn:
+        exists = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='system_decisions'"
+        ).fetchone()
+        if not exists:
+            return 0
+        # All analysis dates with at least one pick
+        pick_dates = {
+            r["date"] for r in conn.execute(
+                "SELECT DISTINCT date FROM picks WHERE stock_code != 'NONE'"
+            )
+        }
+        # All analysis dates (post-market gets the pick decision; pre-market doesn't)
+        all_dates = [
+            r["date"] for r in conn.execute(
+                "SELECT DISTINCT date FROM system_decisions ORDER BY date DESC"
+            )
+        ]
+    streak = 0
+    for d in all_dates:
+        if d in pick_dates:
+            break
+        streak += 1
+    return streak
 
 
 def get_watch_stats(days: int = 30) -> dict:

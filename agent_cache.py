@@ -37,6 +37,7 @@ In a normal run order:
   agent_cache.set(name, response) ← store for layer 1 (if TTL > 0)
 """
 
+import hashlib
 import json
 import os
 from datetime import datetime, timedelta
@@ -45,9 +46,14 @@ from zoneinfo import ZoneInfo
 TZ = ZoneInfo("Asia/Taipei")
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 CACHE_PATH = os.path.join(DATA_DIR, "agent_cache.json")
+PORTFOLIO_PATH = os.path.join(DATA_DIR, "portfolio.json")
 
 # ── TTL 設定（天）────────────────────────────────────────────────────────────
 # None = 永不快取（每次都重新跑）
+# TTLs were shortened 2026-06-12 after we found that 7-day caches on the
+# wealth cluster survived a portfolio.json edit (cash 300K → 1.06M) and
+# kept the system locked at "局部防守" for 7 days even though the
+# real cash position had changed. New TTLs + portfolio-hash invalidation.
 TTL: dict[str, int | None] = {
     # Trading Desk — 每天都要跑
     "market_overview":  None,
@@ -59,16 +65,31 @@ TTL: dict[str, int | None] = {
     "reflection":       None,
     "master_agent":     None,
 
-    # Portfolio Desk — 每 3 天更新一次
+    # Portfolio Desk
     "us_portfolio":     3,
 
-    # 慢速 agents — 每週更新一次（5 個交易日）
+    # 慢速 agents — TTL 縮短，並對 wealth_cluster 加 portfolio hash 偵測
     "tw_long_term":     5,
-    "fx_fund":          5,
-    "asset_allocation": 7,
-    "portfolio_master": 5,
-    "wealth_master":    7,
+    "fx_fund":          3,    # was 5
+    "asset_allocation": 3,    # was 7
+    "portfolio_master": 3,    # was 5
+    "wealth_master":    3,    # was 7 — most impacted by stale cash
 }
+
+# Wealth cluster agents read directly from portfolio.json (cash / shares /
+# real_estate payment schedule). When portfolio.json changes, their cache
+# must be invalidated regardless of TTL. We track a sha256 hash of the
+# file at set() time and compare on get().
+WEALTH_CLUSTER = {"wealth_master", "asset_allocation", "portfolio_master", "fx_fund"}
+
+
+def _portfolio_hash() -> str | None:
+    """Short hash of portfolio.json content. Returns None if file missing."""
+    try:
+        with open(PORTFOLIO_PATH, "rb") as f:
+            return hashlib.sha256(f.read()).hexdigest()[:12]
+    except Exception:
+        return None
 
 
 def _load_cache() -> dict:
@@ -88,7 +109,7 @@ def _save_cache(cache: dict):
 
 
 def is_fresh(agent_name: str) -> bool:
-    """是否有未過期的快取。"""
+    """是否有未過期的快取。對 WEALTH_CLUSTER 額外檢查 portfolio.json 是否改過。"""
     ttl = TTL.get(agent_name)
     if ttl is None:
         return False   # 永不快取，每次都跑
@@ -100,7 +121,17 @@ def is_fresh(agent_name: str) -> bool:
 
     cached_at = datetime.fromisoformat(entry["cached_at"])
     expires_at = cached_at + timedelta(days=ttl)
-    return datetime.now(TZ) < expires_at
+    if datetime.now(TZ) >= expires_at:
+        return False
+
+    # Portfolio-hash invalidation: wealth-cluster agents become stale the
+    # moment portfolio.json changes, regardless of TTL.
+    if agent_name in WEALTH_CLUSTER:
+        cur_hash = _portfolio_hash()
+        cached_hash = entry.get("portfolio_hash")
+        if cur_hash and cached_hash and cur_hash != cached_hash:
+            return False
+    return True
 
 
 def get(agent_name: str) -> dict | None:
@@ -113,17 +144,20 @@ def get(agent_name: str) -> dict | None:
 
 
 def set(agent_name: str, output: dict):
-    """儲存 agent 輸出到快取。"""
+    """儲存 agent 輸出到快取。對 WEALTH_CLUSTER 一起記下當時 portfolio hash。"""
     ttl = TTL.get(agent_name)
     if ttl is None:
         return   # 不快取這個 agent
 
     cache = _load_cache()
-    cache[agent_name] = {
+    entry = {
         "output":    output,
         "cached_at": datetime.now(TZ).isoformat(),
         "ttl_days":  ttl,
     }
+    if agent_name in WEALTH_CLUSTER:
+        entry["portfolio_hash"] = _portfolio_hash()
+    cache[agent_name] = entry
     _save_cache(cache)
 
 

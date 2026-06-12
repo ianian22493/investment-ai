@@ -2935,7 +2935,16 @@ function renderExec(target){
     pickHTML = renderEmptyExplain(pick, 'exec');
   }
 
+  // Watch streak warning — when system has been 空手 for ≥5 consecutive days
+  const watchStreak = DATA.performance?.watch_streak || 0;
+  const streakWarning = watchStreak >= 5 ? `
+    <div style="margin:0 0 12px 0;padding:10px 14px;background:rgba(255,180,0,.08);border-left:3px solid var(--yellow);border-radius:0 5px 5px 0;font-size:11px;color:var(--text2);line-height:1.6">
+      <b style="color:var(--yellow)">⚠ ${watchStreak} 連續 ${watchStreak} 天系統選擇觀望</b><br>
+      系統可能過度保守，或市場確實沒有清晰訊號。可考慮：(1) 檢查 capital_flow 規則是否被觸發，(2) 看下方「微倉試單建議」(若有)，或 (3) 用「強制執行」自選一檔。
+    </div>` : '';
+
   target.innerHTML = `
+    ${streakWarning}
     <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start">
       <div>
         <div class="card-title">TODAY'S VERDICT</div>
