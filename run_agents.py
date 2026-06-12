@@ -48,6 +48,66 @@ def load_candidates() -> list:
         return []
 
 
+def _add_micro_pick_if_warranted(outputs: dict, candidates: list, regime: dict, market_data: dict):
+    """When tw_daily_pick says 空手 BUT scanner has a high-confidence
+    candidate AND trading budget is decent AND regime isn't catastrophic,
+    attach a 'micro_pick' object to outputs['tw_daily_pick'] as an
+    advisory trial position. The main verdict still says 空手.
+
+    Gates (all must be true):
+      - main pick is empty/空手
+      - trading budget >= 15%
+      - top scanner candidate score >= 5 (max is 6-7)
+      - regime not in panic set
+    """
+    pick = outputs.get("tw_daily_pick", {})
+    main_code = (pick.get("pick") or {}).get("code")
+    verdict = pick.get("verdict") or ""
+    is_empty = (
+        not main_code
+        or main_code in ("—", "NONE", "")
+        or "觀望" in verdict
+        or "空手" in verdict
+    )
+    if not is_empty:
+        return
+
+    cf = outputs.get("capital_flow", {})
+    trading_budget = cf.get("budget", {}).get("trading", 0)
+    if trading_budget < 0.15:
+        return  # Genuine defense — don't push a trial position
+
+    if not candidates or candidates[0].get("score", 0) < 5:
+        return  # No scanner conviction
+
+    regime_name = regime.get("market_regime", "")
+    if regime_name in ("恐慌盤", "空頭賣壓"):
+        return  # Skip during outright crash
+
+    top = candidates[0]
+    SIG_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high", "rs_signal")
+    signals = [k for k in SIG_KEYS if top.get(k)]
+    ref_close = (market_data.get("tw_stocks", {}).get(top["code"], {}) or {}).get("close")
+    # Suggest 30% of trading budget as the trial size (= ~3-15% of total portfolio)
+    trial_size_pct = round(trading_budget * 0.30 * 100, 1)
+
+    outputs["tw_daily_pick"]["micro_pick"] = {
+        "code":     top["code"],
+        "name":     top.get("name", "?"),
+        "score":    top.get("score"),
+        "signals":  signals,
+        "ref_close": ref_close,
+        "size_pct_of_total": trial_size_pct,
+        "rationale": (
+            f"系統整體 verdict 偏保守，但 scanner 對 {top.get('name','?')}({top['code']}) "
+            f"給 score={top.get('score')}（信號 {len(signals)} 個）。"
+            f"可考慮以總部位 {trial_size_pct}% 試單，"
+            f"並用 ref_close × 0.94 當停損、× 1.10 當目標。"
+        ),
+    }
+    print(f"    [micro-pick] {top.get('name','?')}({top['code']}) score={top.get('score')} 試單 {trial_size_pct}%")
+
+
 def run_all():
     t0 = datetime.now(TZ)
     print(f"\n{'='*60}")
@@ -202,6 +262,13 @@ def run_all():
         pick = outputs["tw_daily_pick"]
         print(f"    → {pick.get('verdict')} | {pick.get('pick',{}).get('name','?')}({pick.get('pick',{}).get('code','?')})")
         outcome_tracker.save_today_pick(pick, regime, market_data, candidates=candidates)
+
+        # ── Micro-position trial — additive suggestion when system 空手
+        # 觀望 but scanner sees strong candidates. Doesn't override the
+        # main pick (which stays 空手); presents an "observation trade"
+        # to the user as a sidecar. No extra LLM call.
+        _add_micro_pick_if_warranted(outputs, candidates, regime, market_data)
+
         _sleep("tw_daily_pick")
 
         print("  reflection...")

@@ -2939,8 +2939,41 @@ function renderExec(target){
   const watchStreak = DATA.performance?.watch_streak || 0;
   const streakWarning = watchStreak >= 5 ? `
     <div style="margin:0 0 12px 0;padding:10px 14px;background:rgba(255,180,0,.08);border-left:3px solid var(--yellow);border-radius:0 5px 5px 0;font-size:11px;color:var(--text2);line-height:1.6">
-      <b style="color:var(--yellow)">⚠ ${watchStreak} 連續 ${watchStreak} 天系統選擇觀望</b><br>
+      <b style="color:var(--yellow)">⚠ 連續 ${watchStreak} 天系統選擇觀望</b><br>
       系統可能過度保守，或市場確實沒有清晰訊號。可考慮：(1) 檢查 capital_flow 規則是否被觸發，(2) 看下方「微倉試單建議」(若有)，或 (3) 用「強制執行」自選一檔。
+    </div>` : '';
+
+  // Micro-pick sidecar — when system 空手 but scanner has conviction
+  const mp = pick.micro_pick;
+  const microPickHTML = mp ? `
+    <div style="margin:14px 0 0 0;padding:12px 14px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.3);border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+        <span style="font:700 9px/1 'JetBrains Mono',monospace;letter-spacing:1.5px;color:var(--cyan)">⊕ MICRO TRIAL · 微倉試單建議</span>
+        <span style="font-size:9px;color:var(--text3)">系統整體保守，但 scanner 有信心</span>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <div>
+          <div style="font:900 20px/1 'JetBrains Mono',monospace;color:var(--text)">${mp.code}</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:3px">${mp.name||'—'}</div>
+        </div>
+        <div style="flex:1;font-size:10px;color:var(--text2);line-height:1.5">
+          score <b style="color:var(--cyan)">${mp.score}</b> · 信號 ${(mp.signals||[]).length} 個 ·
+          參考價 <b style="color:var(--text)">${mp.ref_close ?? '—'}</b><br>
+          建議倉位 <b style="color:var(--cyan)">${mp.size_pct_of_total}% 總資產</b>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text3);line-height:1.65;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)">${mp.rationale||''}</div>
+    </div>` : '';
+
+  // Force-pick button — show whenever there's no AI pick and we have candidates
+  const _main_code = pick.pick?.code;
+  const _main_pick_present = _main_code && _main_code !== '—' && _main_code !== 'NONE';
+  const forcePickBtn = !_main_pick_present && (CANDS && (CANDS.candidates||[]).length > 0) ? `
+    <div style="margin-top:14px;text-align:right">
+      <button id="force-pick-btn"
+              style="background:transparent;border:1px solid var(--yellow);color:var(--yellow);padding:6px 14px;border-radius:3px;font:700 10px 'JetBrains Mono',monospace;letter-spacing:1.5px;cursor:pointer">
+        我想出手 · FORCE PICK →
+      </button>
     </div>` : '';
 
   target.innerHTML = `
@@ -2976,6 +3009,8 @@ function renderExec(target){
 
     <div class="section-label">TODAY'S PICK</div>
     ${pickHTML}
+    ${microPickHTML}
+    ${forcePickBtn}
 
     <div class="section-label">TOP 3 ACTIONS</div>
     ${recs.length
@@ -3702,9 +3737,84 @@ function renderPerformancePanel(perf){
   </div>`;
 }
 
+// ─── Force-pick modal — let user override AI 空手 with their own choice ───
+// Surfaces top 5 scanner candidates with score + signals + close. User picks
+// one → saved to localStorage 'forced-picks' for personal tracking. No real
+// trade execution — this is informational/journaling, not order placement.
+function openForcePickModal(){
+  const cands = (CANDS?.candidates || []).slice(0, 5);
+  if(!cands.length) return;
+  const SIG_LABELS = {breakout_ma20:'突破20MA', above_ma20:'過20MA', vol_surge:'量增', rsi_zone:'RSI甜蜜區', ma_aligned:'均線多頭', five_day_high:'5日新高', rs_signal:'RS強勢'};
+  const md = DATA.market_snapshot || {};
+  const stocks = DATA.tw_stocks_data || {};   // not always present, optional
+  const overlay = document.createElement('div');
+  overlay.id = 'force-pick-modal';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;max-width:640px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6)">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:baseline">
+        <div>
+          <div style="font:700 9px/1 'JetBrains Mono',monospace;letter-spacing:2px;color:var(--yellow);margin-bottom:4px">⚡ FORCE PICK · 你來選</div>
+          <div style="font-size:11px;color:var(--text2)">系統觀望中，這 5 檔是 scanner 評分最高的候選。點選一檔記錄為「我的選擇」。</div>
+        </div>
+        <button id="force-pick-close" style="background:transparent;border:1px solid var(--border);color:var(--text2);width:26px;height:26px;border-radius:3px;cursor:pointer">✕</button>
+      </div>
+      <div style="padding:8px">
+        ${cands.map((c, i) => {
+          const sigs = Object.keys(SIG_LABELS).filter(k => c[k]).map(k => SIG_LABELS[k]);
+          return `<div class="force-pick-row" data-code="${c.code}" data-name="${c.name||''}" style="padding:12px 14px;border-radius:5px;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;border:1px solid transparent">
+            <div>
+              <div style="font:900 18px/1 'JetBrains Mono',monospace;color:var(--text)">${c.code}</div>
+              <div style="font-size:10px;color:var(--text2);margin-top:3px">${c.name||'—'}</div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text2);line-height:1.5">${sigs.join(' · ')||'—'}</div>
+              <div style="font-size:9px;color:var(--text3);margin-top:3px">score ${c.score} · 收盤 ${c.close ?? '—'}</div>
+            </div>
+            <div style="font:700 9px 'JetBrains Mono',monospace;color:var(--yellow);letter-spacing:1.5px">選 →</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="padding:10px 18px;border-top:1px dashed var(--border);font-size:9px;color:var(--text3);line-height:1.5">
+        提醒：這只記錄到 localStorage 供你 review，不會真的下單，也不會回寫到 alpha.db 影響 AI 學習。停損 = 參考價 × 0.94，目標 = × 1.10（你可自訂）。
+      </div>
+    </div>`;
+  // Row hover
+  overlay.querySelectorAll('.force-pick-row').forEach(r => {
+    r.addEventListener('mouseenter', () => { r.style.background = 'rgba(255,180,0,.08)'; r.style.borderColor = 'var(--yellow)'; });
+    r.addEventListener('mouseleave', () => { r.style.background = 'transparent'; r.style.borderColor = 'transparent'; });
+  });
+  document.body.appendChild(overlay);
+}
+function closeForcePickModal(){ document.getElementById('force-pick-modal')?.remove(); }
+function saveForcedPick(code, name){
+  try {
+    const cur = JSON.parse(localStorage.getItem('forced-picks') || '[]');
+    cur.unshift({
+      date: new Date().toISOString().slice(0,10),
+      code, name,
+      saved_at: new Date().toISOString(),
+    });
+    localStorage.setItem('forced-picks', JSON.stringify(cur.slice(0, 50)));   // cap 50
+  } catch {}
+}
+
 // Delegated click handler for action-toggle — cycles state + re-renders
 // the closest .perf-panel-root so AI vs YOUR stats stay in sync.
 document.addEventListener('click', (e) => {
+  // Force-pick button / modal interaction
+  if(e.target.id === 'force-pick-btn'){ openForcePickModal(); return; }
+  if(e.target.id === 'force-pick-close' || e.target.id === 'force-pick-modal'){
+    closeForcePickModal(); return;
+  }
+  const row = e.target.closest && e.target.closest('.force-pick-row');
+  if(row){
+    saveForcedPick(row.dataset.code, row.dataset.name);
+    closeForcePickModal();
+    alert(`已記錄你的選擇：${row.dataset.code} ${row.dataset.name}\\n可在 ARCHIVE → PICK HISTORY 看到 (標 ⚡ FORCED)`);
+    return;
+  }
+
   const btn = e.target.closest && e.target.closest('.action-toggle');
   if(!btn) return;
   const id = btn.dataset.pick;
