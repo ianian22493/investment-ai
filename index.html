@@ -3727,14 +3727,48 @@ function renderPerformancePanel(perf){
       </table>`;
   }
 
+  // Forced picks — user-overrides recorded via the "我想出手" button.
+  // Stored in localStorage only; doesn't feed AI learning.
+  const forced = (typeof getForcedPicks === 'function' ? getForcedPicks() : []);
+  let forcedHTML = '';
+  if(forced.length){
+    forcedHTML = `<div class="section-label">⚡ 我的強制選股 · ${forced.length} 筆</div>
+      <div class="card" style="border-left:2px solid var(--yellow);padding:12px 14px">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5">
+          系統觀望時你自己挑的候選。僅供個人紀錄，未進入 AI 學習資料。
+          <button id="clear-forced-picks" style="float:right;background:transparent;border:1px solid var(--border);color:var(--text3);font:600 9px 'JetBrains Mono',monospace;padding:2px 8px;border-radius:3px;cursor:pointer">CLEAR ALL</button>
+        </div>
+        <table class="hold-table">
+          <thead><tr><th>日期</th><th>代號</th><th>名稱</th><th style="text-align:right">記錄時間</th></tr></thead>
+          <tbody>${forced.map(f => `<tr>
+            <td><span style="color:var(--text3);font-size:10px">${escapeHTML((f.date||'').slice(5))}</span></td>
+            <td><span class="hold-code">${escapeHTML(f.code)}</span></td>
+            <td style="font-size:10px;color:var(--text2)">${escapeHTML(f.name||'—')}</td>
+            <td style="text-align:right;color:var(--text3);font-size:9px">${escapeHTML((f.saved_at||'').slice(11,16))}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+  }
+
   return `<div class="perf-panel-root">
     <div class="section-label">PERFORMANCE STATS</div>
     ${statsHTML}
     ${bestWorstHTML}
     ${openHTML}
     ${regimeHTML}
+    ${forcedHTML}
     ${pickListHTML}
   </div>`;
+}
+
+// ─── HTML escape helper — guards against script injection in candidate
+// names. Even though FinMind / TWSE sources are trusted, escaping inline
+// data is cheap and removes a class of risk.
+function escapeHTML(s){
+  if(s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 // ─── Force-pick modal — let user override AI 空手 with their own choice ───
@@ -3745,8 +3779,6 @@ function openForcePickModal(){
   const cands = (CANDS?.candidates || []).slice(0, 5);
   if(!cands.length) return;
   const SIG_LABELS = {breakout_ma20:'突破20MA', above_ma20:'過20MA', vol_surge:'量增', rsi_zone:'RSI甜蜜區', ma_aligned:'均線多頭', five_day_high:'5日新高', rs_signal:'RS強勢'};
-  const md = DATA.market_snapshot || {};
-  const stocks = DATA.tw_stocks_data || {};   // not always present, optional
   const overlay = document.createElement('div');
   overlay.id = 'force-pick-modal';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px';
@@ -3762,14 +3794,18 @@ function openForcePickModal(){
       <div style="padding:8px">
         ${cands.map((c, i) => {
           const sigs = Object.keys(SIG_LABELS).filter(k => c[k]).map(k => SIG_LABELS[k]);
-          return `<div class="force-pick-row" data-code="${c.code}" data-name="${c.name||''}" style="padding:12px 14px;border-radius:5px;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;border:1px solid transparent">
+          const code = escapeHTML(c.code);
+          const name = escapeHTML(c.name || '—');
+          const score = escapeHTML(c.score);
+          const close = c.close != null ? escapeHTML(c.close) : '—';
+          return `<div class="force-pick-row" data-code="${code}" data-name="${name}" style="padding:12px 14px;border-radius:5px;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;border:1px solid transparent">
             <div>
-              <div style="font:900 18px/1 'JetBrains Mono',monospace;color:var(--text)">${c.code}</div>
-              <div style="font-size:10px;color:var(--text2);margin-top:3px">${c.name||'—'}</div>
+              <div style="font:900 18px/1 'JetBrains Mono',monospace;color:var(--text)">${code}</div>
+              <div style="font-size:10px;color:var(--text2);margin-top:3px">${name}</div>
             </div>
             <div>
-              <div style="font-size:10px;color:var(--text2);line-height:1.5">${sigs.join(' · ')||'—'}</div>
-              <div style="font-size:9px;color:var(--text3);margin-top:3px">score ${c.score} · 收盤 ${c.close ?? '—'}</div>
+              <div style="font-size:10px;color:var(--text2);line-height:1.5">${escapeHTML(sigs.join(' · ')||'—')}</div>
+              <div style="font-size:9px;color:var(--text3);margin-top:3px">score ${score} · 收盤 ${close}</div>
             </div>
             <div style="font:700 9px 'JetBrains Mono',monospace;color:var(--yellow);letter-spacing:1.5px">選 →</div>
           </div>`;
@@ -3798,6 +3834,10 @@ function saveForcedPick(code, name){
     localStorage.setItem('forced-picks', JSON.stringify(cur.slice(0, 50)));   // cap 50
   } catch {}
 }
+function getForcedPicks(){
+  try { return JSON.parse(localStorage.getItem('forced-picks') || '[]'); }
+  catch { return []; }
+}
 
 // Delegated click handler for action-toggle — cycles state + re-renders
 // the closest .perf-panel-root so AI vs YOUR stats stay in sync.
@@ -3807,11 +3847,27 @@ document.addEventListener('click', (e) => {
   if(e.target.id === 'force-pick-close' || e.target.id === 'force-pick-modal'){
     closeForcePickModal(); return;
   }
+  // Clear all forced picks
+  if(e.target.id === 'clear-forced-picks'){
+    if(!confirm('清除所有強制選股紀錄？無法復原。')) return;
+    try { localStorage.removeItem('forced-picks'); } catch {}
+    const panel = e.target.closest('.perf-panel-root');
+    if(panel && DATA?.performance){
+      panel.outerHTML = renderPerformancePanel(DATA.performance);
+    }
+    return;
+  }
   const row = e.target.closest && e.target.closest('.force-pick-row');
   if(row){
     saveForcedPick(row.dataset.code, row.dataset.name);
     closeForcePickModal();
-    alert(`已記錄你的選擇：${row.dataset.code} ${row.dataset.name}\\n可在 ARCHIVE → PICK HISTORY 看到 (標 ⚡ FORCED)`);
+    alert(`已記錄你的選擇：${row.dataset.code} ${row.dataset.name}\\n可在 ARCHIVE → 我的強制選股 區塊看到歷史紀錄。`);
+    // Re-render ARCHIVE perf panel if it's currently in DOM, so the new
+    // entry appears without a page reload
+    const panel = document.querySelector('.perf-panel-root');
+    if(panel && DATA?.performance){
+      panel.outerHTML = renderPerformancePanel(DATA.performance);
+    }
     return;
   }
 

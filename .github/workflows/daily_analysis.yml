@@ -25,6 +25,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Smoke tests
+        run: python -m tests.smoke
+        env:
+          PYTHONUNBUFFERED: "1"
+
       - name: Fetch market data
         run: python fetch_market_data.py
         env:

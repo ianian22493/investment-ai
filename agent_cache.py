@@ -83,11 +83,24 @@ TTL: dict[str, int | None] = {
 WEALTH_CLUSTER = {"wealth_master", "asset_allocation", "portfolio_master", "fx_fund"}
 
 
+_PF_HASH_CACHE: str | None = None
+
 def _portfolio_hash() -> str | None:
-    """Short hash of portfolio.json content. Returns None if file missing."""
+    """Short hash of portfolio.json content. Memoized per-process to avoid
+    re-reading the file on every is_fresh() call (12+ agents × per cron).
+    Returns None if file missing or unreadable.
+
+    Assumes portfolio.json doesn't change mid-run — safe for GH Actions
+    cron context. Reset _PF_HASH_CACHE manually if you need to force a
+    re-read in a long-running process (we don't have one).
+    """
+    global _PF_HASH_CACHE
+    if _PF_HASH_CACHE is not None:
+        return _PF_HASH_CACHE
     try:
         with open(PORTFOLIO_PATH, "rb") as f:
-            return hashlib.sha256(f.read()).hexdigest()[:12]
+            _PF_HASH_CACHE = hashlib.sha256(f.read()).hexdigest()[:12]
+        return _PF_HASH_CACHE
     except Exception:
         return None
 
@@ -129,6 +142,11 @@ def is_fresh(agent_name: str) -> bool:
     if agent_name in WEALTH_CLUSTER:
         cur_hash = _portfolio_hash()
         cached_hash = entry.get("portfolio_hash")
+        # Force-refresh legacy entries that pre-date the portfolio_hash
+        # feature (cached_hash absent). Without this, the invalidation
+        # never fires for entries cached before 2026-06-12.
+        if cur_hash and not cached_hash:
+            return False
         if cur_hash and cached_hash and cur_hash != cached_hash:
             return False
     return True

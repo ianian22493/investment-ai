@@ -108,7 +108,13 @@ def run(
                 + (f" → {wo['bias']}" if wo.get('bias') else "")
             )
     except Exception as e:
-        pass  # watch_log might not exist on first run
+        # Don't fail reflection if watch_log table is missing or DB is locked,
+        # but log it — we want to know if this fails consistently.
+        try:
+            from error_log import log_warning
+            log_warning("agent:reflection", f"watch_outcomes_summary unavailable: {e}")
+        except Exception:
+            pass
 
     regime_stats = stats.get("regime_stats", {})
     if regime_stats:

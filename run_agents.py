@@ -48,17 +48,15 @@ def load_candidates() -> list:
         return []
 
 
-def _add_micro_pick_if_warranted(outputs: dict, candidates: list, regime: dict, market_data: dict):
-    """When tw_daily_pick says 空手 BUT scanner has a high-confidence
-    candidate AND trading budget is decent AND regime isn't catastrophic,
-    attach a 'micro_pick' object to outputs['tw_daily_pick'] as an
-    advisory trial position. The main verdict still says 空手.
-
-    Gates (all must be true):
+def _maybe_attach_micro_pick(outputs: dict, candidates: list, regime: dict, market_data: dict):
+    """⚠ MUTATES `outputs`. Attaches `micro_pick` key to outputs['tw_daily_pick']
+    when ALL gates pass:
       - main pick is empty/空手
       - trading budget >= 15%
       - top scanner candidate score >= 5 (max is 6-7)
       - regime not in panic set
+
+    The main verdict still says 空手 — this is purely advisory sidecar.
     """
     pick = outputs.get("tw_daily_pick", {})
     main_code = (pick.get("pick") or {}).get("code")
@@ -108,10 +106,10 @@ def _add_micro_pick_if_warranted(outputs: dict, candidates: list, regime: dict, 
     print(f"    [micro-pick] {top.get('name','?')}({top['code']}) score={top.get('score')} 試單 {trial_size_pct}%")
 
 
-def _log_watch_day_if_applicable(outputs: dict, candidates: list, regime: dict, t0):
-    """Record watch days for retrospective analysis. We log when the
-    system explicitly says 觀望 / 空手, regardless of whether a micro_pick
-    was added — both states are 'system not buying'.
+def _maybe_log_watch_day(outputs: dict, candidates: list, regime: dict, t0):
+    """⚠ WRITES to alpha.db.watch_log. Records the day's scanner top1
+    when the system chose to sit out — outcome_tracker later resolves
+    the 5-day max/min so reflection can audit missed vs avoided.
     """
     pick = outputs.get("tw_daily_pick", {})
     main_code = (pick.get("pick") or {}).get("code")
@@ -295,15 +293,15 @@ def run_all():
         # ── Micro-position trial — additive suggestion when system 空手
         # 觀望 but scanner sees strong candidates. Doesn't override the
         # main pick (which stays 空手); presents an "observation trade"
-        # to the user as a sidecar. No extra LLM call.
-        _add_micro_pick_if_warranted(outputs, candidates, regime, market_data)
+        # to the user as a sidecar. No extra LLM call. Mutates outputs.
+        _maybe_attach_micro_pick(outputs, candidates, regime, market_data)
 
         # ── Watch-day logging — when system says 觀望 but scanner has a
         # top candidate, record it. outcome_tracker will fill in the
         # 5-day max/min later, so reflection can learn whether the
         # system's caution was warranted (avoided drops) or costly
-        # (missed rallies).
-        _log_watch_day_if_applicable(outputs, candidates, regime, t0)
+        # (missed rallies). Writes to alpha.db.watch_log.
+        _maybe_log_watch_day(outputs, candidates, regime, t0)
 
         _sleep("tw_daily_pick")
 

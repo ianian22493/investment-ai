@@ -474,12 +474,22 @@ def resolve_watch_log(date: str, max_gain_pct: float, max_dd_pct: float):
         ))
 
 
+# Tunable thresholds for bias classification in get_watch_outcomes_summary.
+# After ~30 resolved watch_log samples, revisit these — the 1.5× ratio is
+# a starting guess. Lower if you want the system to flag overcautious
+# behaviour sooner.
+MISSED_AVOIDED_RATIO_BIAS = 1.5  # missed > avoided × this → overcautious
+MIN_SAMPLES_FOR_BIAS      = 5    # don't classify with too few samples
+
+
 def get_watch_outcomes_summary(days: int = 60) -> dict:
     """彙整近 N 天觀望日的結果：錯失 vs 避開 vs 平淡。
     幫助判斷系統的選股保守度是否合理。
     """
     init_db()
-    cutoff = (date.today() - timedelta(days=days)).isoformat()
+    # Use Asia/Taipei TZ for cutoff (GH Actions runs in UTC; without TZ
+    # this would slip 1 day during early-UTC hours and cut off recent data)
+    cutoff = (datetime.now(TZ).date() - timedelta(days=days)).isoformat()
     with get_conn() as conn:
         exists = conn.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='watch_log'"
@@ -501,10 +511,10 @@ def get_watch_outcomes_summary(days: int = 60) -> dict:
     avg_avoided_dd  = (sum(r["max_dd_pct"] or 0 for r in avoided) / len(avoided)) if avoided else 0
     # Diagnostic: if missed substantially outweighs avoided, system is overcautious
     bias = None
-    if total >= 5:
-        if len(missed) > len(avoided) * 1.5:
+    if total >= MIN_SAMPLES_FOR_BIAS:
+        if len(missed) > len(avoided) * MISSED_AVOIDED_RATIO_BIAS:
             bias = "overcautious"      # 系統過度保守，錯失多於避開
-        elif len(avoided) > len(missed) * 1.5:
+        elif len(avoided) > len(missed) * MISSED_AVOIDED_RATIO_BIAS:
             bias = "well-calibrated"   # 觀望時多半避開了跌
     return {
         "available": True,
