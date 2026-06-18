@@ -48,12 +48,21 @@ def load_candidates() -> list:
         return []
 
 
+# Trial-pick gating thresholds — surfaces at this trading budget level,
+# regardless of master's 觀望 verdict. Lowered 2026-06-18 from 0.15 → 0.05
+# because Capital Flow was locking trading at 5% during pre-payment windows
+# and the user was getting zero recommendations for 14+ days even when
+# scanner had high-conviction candidates.
+MICRO_PICK_MIN_TRADING_BUDGET = 0.05    # was 0.15
+MICRO_PICK_MIN_SCANNER_SCORE  = 5       # scanner score on 0-7 scale
+MICRO_PICK_SIZE_RATIO         = 0.30    # 30% of trading budget = trial size
+
 def _maybe_attach_micro_pick(outputs: dict, candidates: list, regime: dict, market_data: dict):
     """⚠ MUTATES `outputs`. Attaches `micro_pick` key to outputs['tw_daily_pick']
     when ALL gates pass:
       - main pick is empty/空手
-      - trading budget >= 15%
-      - top scanner candidate score >= 5 (max is 6-7)
+      - trading budget >= MICRO_PICK_MIN_TRADING_BUDGET (5%)
+      - top scanner candidate score >= MICRO_PICK_MIN_SCANNER_SCORE (5)
       - regime not in panic set
 
     The main verdict still says 空手 — this is purely advisory sidecar.
@@ -72,10 +81,10 @@ def _maybe_attach_micro_pick(outputs: dict, candidates: list, regime: dict, mark
 
     cf = outputs.get("capital_flow", {})
     trading_budget = cf.get("budget", {}).get("trading", 0)
-    if trading_budget < 0.15:
-        return  # Genuine defense — don't push a trial position
+    if trading_budget < MICRO_PICK_MIN_TRADING_BUDGET:
+        return  # System fully locked (e.g. 0%) — respect that
 
-    if not candidates or candidates[0].get("score", 0) < 5:
+    if not candidates or candidates[0].get("score", 0) < MICRO_PICK_MIN_SCANNER_SCORE:
         return  # No scanner conviction
 
     regime_name = regime.get("market_regime", "")
@@ -86,8 +95,8 @@ def _maybe_attach_micro_pick(outputs: dict, candidates: list, regime: dict, mark
     SIG_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high", "rs_signal")
     signals = [k for k in SIG_KEYS if top.get(k)]
     ref_close = (market_data.get("tw_stocks", {}).get(top["code"], {}) or {}).get("close")
-    # Suggest 30% of trading budget as the trial size (= ~3-15% of total portfolio)
-    trial_size_pct = round(trading_budget * 0.30 * 100, 1)
+    # Trial size = % of trading budget × portfolio. At 5% trading × 30% ratio = 1.5% total.
+    trial_size_pct = round(trading_budget * MICRO_PICK_SIZE_RATIO * 100, 1)
 
     outputs["tw_daily_pick"]["micro_pick"] = {
         "code":     top["code"],

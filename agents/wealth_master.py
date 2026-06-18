@@ -50,6 +50,19 @@ WEALTH_SCHEMA = """
 - structural_risk 高（房子佔比大）不代表 liquidity_risk 高
 - risk_level 必須等於 liquidity_risk（Capital Flow Engine 用這個欄位）
 - 只有現金流真的缺口才給 liquidity_risk=high/extreme
+
+【cash_crunch_risk 嚴格定義 — 不要憑直覺】
+這個欄位由 capital_flow.py 用來判斷是否要鎖死 trading 預算。判斷錯
+會讓系統連續 N 天空手且錯失機會。請按以下硬性規則：
+
+  cash_gap = 未來12個月需求 - (現金 + 12個月薪資)
+
+  cash_gap <= 0       → cash_crunch_risk = false（薪資+現金可覆蓋）
+  cash_gap > 0 但 <= 30%×可用資金 → cash_crunch_risk = false（小缺口，可動用部分投資不算 crunch）
+  cash_gap > 30%×可用資金 → cash_crunch_risk = true（真正壓力）
+
+注意：cash_gap 是上方輸入區塊已經算好的數字。若是負數，**禁止**因為「房產款 1.83M
+看起來很大」就給 cash_crunch_risk=true。看 cash_gap 的正負，不看絕對金額大小。
 """
 
 
@@ -104,13 +117,30 @@ def run(
     for flag in asset_allocation.get("risk_flags", [])[:3]:
         lines.append(f"  ⚠️ {flag}")
 
+    # Compute cash_crunch_risk deterministically — don't let LLM guess
+    # this. The 30% threshold means "needs to liquidate < 30% of liquid
+    # investments to plug the gap" = not a crunch.
+    investable_estimate = cash_available_12m  # cash + 1y salary as base
+    if cash_gap <= 0:
+        cash_crunch_status = "false（cash_gap <= 0，薪資+存款已可覆蓋全部）"
+    elif cash_gap <= 0.30 * investable_estimate:
+        cash_crunch_status = f"false（cash_gap ${cash_gap:,} 僅 {cash_gap/investable_estimate*100:.1f}% 可用資金，<30% 閾值）"
+    else:
+        cash_crunch_status = f"true（cash_gap ${cash_gap:,} 超過 30% 可用資金）"
+
     user_content = "\n".join(lines) + f"""
+
+【cash_crunch_risk 必須這樣判（規則已預算好，請照填）】
+本期 cash_gap = NT${cash_gap:,}
+本期 可用資金 = NT${investable_estimate:,}
+依規則 → cash_crunch_risk 應該 = {cash_crunch_status}
 
 作為 Wealth Desk 主管，根據以上原始數字評估：
 1. 未來12個月現金流：薪資+存款 NT${cash_available_12m:,} vs 需求 NT${next_12m_obligations:,}，實際壓力如何？
 2. 可投資流動資產（台股+美股+基金）的健康度如何？
 3. 日幣資產的匯率風險？
 4. 給出 risk_level（基於流動性和現金流，而非房產占比）
+5. cash_crunch_risk 必須照上方規則計算，不要憑直覺判斷
 
 注意：房產占比高是預售屋購置的結構性現象，不是系統性財務危機。
 只有當現金流真正無法覆蓋義務、或投資資產有系統性問題時，才給 high/extreme。
