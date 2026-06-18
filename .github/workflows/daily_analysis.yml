@@ -71,7 +71,26 @@ jobs:
           [ -f data/signal_history.jsonl ] && git add data/signal_history.jsonl || true
           [ -f data/tw_stock_names.json ] && git add data/tw_stock_names.json || true
           git diff --staged --quiet || git commit -m "chore: update analysis $(TZ='Asia/Taipei' date '+%Y-%m-%d %H:%M')"
-          git push
+          # Push with retry — if remote moved during this 5-min cron run
+          # (e.g. user pushed a fix), pull --rebase and push again.
+          # Loop 3 times to handle the rare case where remote keeps moving.
+          for attempt in 1 2 3; do
+            if git push 2>&1; then
+              echo "✓ Push succeeded on attempt $attempt"
+              break
+            fi
+            echo "Push attempt $attempt rejected — rebasing on origin/main and retrying..."
+            git pull --rebase --no-edit origin main || {
+              echo "✗ Rebase failed (conflict?); aborting"
+              git rebase --abort 2>/dev/null || true
+              exit 1
+            }
+            if [ "$attempt" = "3" ]; then
+              echo "✗ Push failed after 3 attempts"
+              exit 1
+            fi
+            sleep 5
+          done
 
       - name: Trigger GitHub Pages rebuild
         run: |
