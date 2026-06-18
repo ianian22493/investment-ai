@@ -181,60 +181,14 @@ def run(
 - 反方觀點必須提供
 """
 
-    import json, re, time, random, sys, os
+    # Delegate to call_claude — inherits multi-key rotation, prompt cache,
+    # error log, and quota-degradation fallback. custom_schema=True tells
+    # base.py the schema is already embedded in system_with_schema below.
     system_with_schema = SYSTEM + "\n\n" + PICK_SCHEMA
-    from .base import client, MODEL, RETRYABLE_TOKENS
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    import prompt_cache
-    from error_log import log_error as _log_error
-
-    cached = prompt_cache.get(MODEL, system_with_schema, user_content)
-    if cached is not None:
-        print("  [prompt-cache hit] tw_daily_pick")
-        return cached
-
-    MAX_ATTEMPTS = 5
-    for attempt in range(MAX_ATTEMPTS):
-        try:
-            from google.genai import types
-            resp = client.models.generate_content(
-                model=MODEL,
-                contents=user_content,
-                config=types.GenerateContentConfig(
-                    system_instruction=system_with_schema,
-                ),
-            )
-            raw = resp.text.strip()
-            if raw.startswith("```"):
-                raw = raw.split("```")[1]
-                if raw.startswith("json"):
-                    raw = raw[4:]
-            raw = re.sub(r'\[\d+\]', '', raw)
-            result = json.loads(raw)
-            # Ensure pick key exists
-            if "pick" not in result:
-                result["pick"] = {"name": "—", "code": "—", "entry_zone": "—", "stop_loss": "—", "target": "—", "hold_days": "—"}
-            prompt_cache.set(MODEL, system_with_schema, user_content, "tw_daily_pick", result)
-            return result
-        except json.JSONDecodeError as e:
-            return {
-                "verdict": "ERROR", "confidence": 0,
-                "summary": f"tw_daily_pick JSON parse error: {e}",
-                "pick": {"name": "—", "code": "—", "entry_zone": "—", "stop_loss": "—", "target": "—", "risk_reward": "—", "ref_close": "—", "hold_days": "—"},
-                "risk_flags": ["解析失敗"], "agent_note": "parse error",
-            }
-        except Exception as e:
-            err = str(e)
-            retryable = any(tok in err for tok in RETRYABLE_TOKENS)
-            if retryable and attempt < MAX_ATTEMPTS - 1:
-                wait = min(60, 10 * (2 ** attempt)) + random.uniform(0, 3)
-                print(f"  [tw_daily_pick] {err[:80]}, backoff {wait:.1f}s (attempt {attempt+1}/{MAX_ATTEMPTS})")
-                time.sleep(wait)
-                continue
-            _log_error("agent:tw_daily_pick", e)
-            return {
-                "verdict": "ERROR", "confidence": 0,
-                "summary": f"tw_daily_pick error: {e}",
-                "pick": {"name": "—", "code": "—", "entry_zone": "—", "stop_loss": "—", "target": "—", "risk_reward": "—", "ref_close": "—", "hold_days": "—"},
-                "risk_flags": [err], "agent_note": "API call failed",
-            }
+    result = call_claude(system_with_schema, user_content, "tw_daily_pick", custom_schema=True)
+    # Ensure pick key exists even on degraded/error paths
+    if "pick" not in result:
+        result["pick"] = {"name": "—", "code": "—", "entry_zone": "—",
+                          "stop_loss": "—", "target": "—",
+                          "risk_reward": "—", "ref_close": "—", "hold_days": "—"}
+    return result

@@ -149,4 +149,29 @@ def run(
     # Merge schema into system
     system_with_schema = SYSTEM + "\n\n額外輸出欄位：\n" + WEALTH_SCHEMA
     from .base import call_claude as _call
-    return _call(system_with_schema, user_content, "wealth_master")
+    result = _call(system_with_schema, user_content, "wealth_master")
+
+    # ── HARD POST-PROCESS: override cash_crunch_risk with deterministic
+    # rule. LLM was repeatedly giving cash_crunch_risk=True even with
+    # cash_gap = -555K (clear surplus) because 1.83M of obligations
+    # "looks scary". Math is math — bypass the LLM on this field entirely.
+    if cash_gap <= 0:
+        rule_says = False
+    elif cash_gap <= 0.30 * cash_available_12m:
+        rule_says = False  # small gap, manageable by partial liquidation
+    else:
+        rule_says = True
+
+    llm_said = result.get("cash_crunch_risk")
+    if llm_said != rule_says:
+        print(f"  [wealth_master] cash_crunch_risk override: "
+              f"LLM said {llm_said}, rule says {rule_says} "
+              f"(cash_gap={cash_gap:,} vs {cash_available_12m:,} available)")
+        result["cash_crunch_risk"] = rule_says
+        # Append a note so the audit trail is visible in agent_note
+        existing = result.get("agent_note", "") or ""
+        result["agent_note"] = (
+            f"[cash_crunch_risk overridden to {rule_says} by deterministic rule] "
+            + existing
+        )
+    return result
