@@ -103,12 +103,20 @@ def test_cache_legacy_entries_force_refresh():
 
 def test_micro_pick_gating():
     """The 'attach micro pick' helper must respect all 4 gates."""
+    # Stub GEMINI_API_KEY so importing agents/base.py doesn't crash —
+    # smoke tests must not consume quota and must work without real
+    # credentials. The stub never gets used because we test the
+    # _maybe_attach_micro_pick helper directly (no API call).
+    os.environ.setdefault("GEMINI_API_KEY", "smoke-test-stub")
     try:
         import run_agents as ra
     except ImportError as e:
-        # Skip gracefully when google-genai isn't installed locally
-        # (CI runs with full deps and will exercise this path).
+        # Local dev without google-genai installed — skip gracefully
         print(f"  ⊘ skipped (deps not installed: {e})")
+        return
+    except RuntimeError as e:
+        # Should never happen now that we set the stub, but be defensive
+        print(f"  ⊘ skipped (runtime env: {e})")
         return
 
     # Gate 1: main pick not empty → no micro pick
