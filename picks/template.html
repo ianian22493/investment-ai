@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{name}} {{code}} · Yuzu Picks</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&family=Noto+Serif+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="picks.css">
+</head>
+<body>
+
+<!--
+  ════════════════════════════════════════════════════════════════════
+  PICK DAY TEMPLATE · Yuzu Capital /picks/
+  Data contract: inject the pick JSON into the <script id="pick-data"> tag
+  below (replace the {{DATA_JSON}} token). If left unreplaced, the page
+  renders with SAMPLE data so it works as a standalone mockup.
+  Every field has a fallback — missing fields never crash the page.
+  ════════════════════════════════════════════════════════════════════
+-->
+<script id="pick-data" type="application/json">{{DATA_JSON}}</script>
+
+<div class="page">
+
+  <!-- Dashboard continuity band -->
+  <div class="return-band">
+    <a class="rb-back" href="../index.html">← DASHBOARD</a>
+    <span class="rb-logo"><img src="../favicon.svg" alt="">YUZU CAPITAL</span>
+    <span class="rb-meta" id="rb-date">—</span>
+  </div>
+
+  <!-- 1 · HERO -->
+  <header class="hero">
+    <div class="hero-date" id="hero-date"></div>
+    <div class="hero-verdict" id="hero-verdict">—</div>
+    <p class="hero-sub" id="hero-sub"></p>
+  </header>
+
+  <!-- 2 · STOCK CARD -->
+  <section class="sec" style="border-bottom:none; padding-bottom:14px">
+    <div class="stock-card">
+      <div class="stock-id">
+        <span class="stock-code" id="stock-code">—</span>
+        <span class="stock-name" id="stock-name">—</span>
+      </div>
+      <div class="stock-verdict-wrap">
+        <div class="stock-verdict" id="stock-verdict">—</div>
+        <div class="conf-bar"><i id="conf-fill" style="width:0%"></i></div>
+        <div class="stock-conf" id="stock-conf">conf —</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · KEY NUMBERS -->
+  <section class="sec" style="border-bottom:none; padding-top:14px">
+    <div class="keynums">
+      <div class="keynum entry">
+        <div class="kn-label">Entry</div>
+        <div class="kn-val" id="kn-entry">—</div>
+        <div class="kn-sub" id="kn-entry-sub">進場區</div>
+      </div>
+      <div class="keynum stop">
+        <div class="kn-label">Stop</div>
+        <div class="kn-val" id="kn-stop">—</div>
+        <div class="kn-sub">停損</div>
+      </div>
+      <div class="keynum target">
+        <div class="kn-label">Target</div>
+        <div class="kn-val" id="kn-target">—</div>
+        <div class="kn-sub" id="kn-rr">目標</div>
+      </div>
+      <div class="keynum hold">
+        <div class="kn-label">Hold</div>
+        <div class="kn-val" id="kn-hold">—</div>
+        <div class="kn-sub">天</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · CHART -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">04</span> 走勢圖 · CHART</div>
+    <div class="chart-wrap">
+      <div class="tradingview-widget-container">
+        <div id="tv-chart"></div>
+        <div class="chart-fallback" id="chart-fallback">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+            <path d="M3 17l5-6 4 4 5-8 4 5"/><path d="M3 21h18"/>
+          </svg>
+          <div>TradingView 走勢圖<br><span id="chart-fallback-sym">—</span></div>
+          <div style="font-size:10px; opacity:.6">（需連線載入 · 離線時顯示此區）</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · DEEP ANALYSIS -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">05</span> 深度分析 · ANALYSIS</div>
+    <div id="analysis"></div>
+  </section>
+
+  <!-- 6 · DEVIL'S ADVOCATE -->
+  <section class="sec" id="devil-sec">
+    <div class="sec-label"><span class="sec-no">06</span> 反方論述 · DEVIL'S ADVOCATE</div>
+    <div class="devil">
+      <div class="devil-head">
+        <span class="devil-who">⚔ DA · 反對派</span>
+        <span class="devil-verdict" id="devil-verdict">—</span>
+      </div>
+      <p class="devil-summary" id="devil-summary"></p>
+      <div class="devil-args" id="devil-args"></div>
+    </div>
+  </section>
+
+  <!-- 7 · RISK SCENARIOS -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">07</span> 風險劇本 · IF → THEN</div>
+    <p class="prose" style="font-size:14.5px; color:var(--ink2); margin-bottom:16px">
+      像臨床的決策規則 —— 看到什麼狀況，就做什麼動作。盤中照表操課，不臨場猶豫。
+    </p>
+    <div class="risk-list" id="risk-list"></div>
+  </section>
+
+  <!-- 8 · EXECUTION CHECKLIST -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">08</span> 執行清單 · CHECKLIST</div>
+    <div class="check-progress">
+      <span id="check-count">0 / 0</span>
+      <span class="cp-bar"><i id="check-bar" style="width:0%"></i></span>
+      <button class="check-reset" id="check-reset">重置</button>
+    </div>
+    <div class="checklist" id="checklist"></div>
+  </section>
+
+  <!-- FOOTER NAV -->
+  <nav class="foot-nav">
+    <a class="home" href="../index.html">← DASHBOARD</a>
+    <span class="fn-spacer"></span>
+    <a href="#" id="prev-pick">← 前一筆</a>
+    <a href="index.html">月曆</a>
+    <a href="#" id="next-pick">下一筆 →</a>
+  </nav>
+
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   SAMPLE DATA — used when {{DATA_JSON}} is left unreplaced (mockup mode)
+   ════════════════════════════════════════════════════════════════ */
+const SAMPLE = {
+  date: "2026-06-19",
+  regime: "中性偏多",
+  risk_level: "中",
+  trading_budget: "NT$ 80,000",
+  code: "2317", name: "鴻海",
+  verdict: "進攻", confidence: 0.85,
+  entry_zone: "286–290", stop_loss: "282",
+  target: "303", hold_days: "5–10",
+  ref_close: 289.0, risk_reward: "3.2",
+  context_paragraph: "今日台股 regime 為中性偏多，加權指數站回月線，外資由連續賣超轉為小幅買超，市場情緒從謹慎轉為觀望。AI 伺服器與散熱類股出現資金輪動跡象，但整體量能尚未放大，屬於「可以小量試單、不宜重壓」的盤勢。在這個 regime 下，系統的交易預算控制在 8 萬，單一部位不超過總資金的 4%。",
+  why_this_stock: "鴻海是這波 AI 伺服器代工的核心受惠者，且本益比相對同業仍偏低。相較於股價已大漲的散熱股，鴻海的風險報酬比更乾淨——下檔有月線與前低雙重支撐，上檔則有法人目標價空間。在十幾檔候選中，它是「故事好、技術面剛突破、但還沒漲完」的少數標的。",
+  entry_rationale: "286–290 是這兩天的盤整區上緣，今日收 289 剛好站上。建議在 286–290 之間進場，若開盤跳空過高（>293）則放棄追，等回測。",
+  stop_rationale: "282 是前一波低點與月線的交會處。跌破代表這次突破失敗，必須無條件停損，不凹單。以 289 進場計算，停損約 -2.4%。",
+  target_rationale: "303 是去年高點的頸線壓力，也是法人最近一致上調的目標價區。風險報酬比 3.2，符合系統「報酬至少是風險 2.5 倍才出手」的門檻。",
+  hold_rationale: "這是波段而非當沖，預計持有 5–10 個交易日。若 3 日內未表態（量縮價平），可考慮提前出場換股。",
+  devils_advocate: {
+    verdict: "謹慎反對",
+    summary: "我承認故事好，但時機有疑慮。這個位置是「突破當天追高」，而突破常有假突破。",
+    counter_arguments: [
+      "今日量能只有 5 日均量的 1.05 倍，突破缺乏量能背書，假突破機率不低。",
+      "外資雖轉買超，但金額僅 12 億，相對大盤盤面屬於雜訊等級，不足以構成趨勢確認。",
+      "鴻海權值股屬性，容易被大盤拖累——若加權指數回檔，個股技術面再好也難獨善其身。"
+    ]
+  },
+  risk_scenarios: [
+    { trigger: "若開盤跌破 282", action: "立刻停損出場", severity: "stop", rationale: "前波低點與月線交會，跌破代表突破失敗，紀律性停損。" },
+    { trigger: "若開盤量未達 5 日均量 1.2x", action: "不進場、續觀察", severity: "hold", rationale: "突破需要量能背書，量不到寧可錯過也不冒假突破風險。" },
+    { trigger: "若跳空開高 >293", action: "放棄追高、等回測", severity: "hold", rationale: "進場成本墊高會破壞風險報酬比，等回到 286–290 再說。" },
+    { trigger: "若盤中放量站上 295", action: "可加碼至滿倉", severity: "go", rationale: "量價齊揚確認趨勢，是這次劇本中唯一加碼條件。" },
+    { trigger: "若收盤跌回 285 以下", action: "隔日減半部位", severity: "hold", rationale: "收盤破進場區下緣代表多方力竭，先降低曝險。" }
+  ],
+  execution_checklist: [
+    { time: "盤前", action: "確認 286–290 在開盤跳空合理範圍內，未跳空過高" },
+    { time: "09:00", action: "觀察開盤量能與第一根 K 棒方向" },
+    { time: "09:30", action: "若量達 5 日均量 1.2x 且價在 286–290 → 進場" },
+    { time: "盤中", action: "設好 282 停損單，放著不動" },
+    { time: "收盤", action: "若收 285 以下 → 記錄，準備隔日減半" }
+  ]
+};
+
+/* ════════════════════════════════════════════════════════════════
+   LOAD DATA — JSON injection or SAMPLE fallback
+   ════════════════════════════════════════════════════════════════ */
+let DATA;
+try {
+  const raw = document.getElementById('pick-data').textContent.trim();
+  DATA = (raw && !raw.startsWith('{{')) ? JSON.parse(raw) : SAMPLE;
+} catch(e){ DATA = SAMPLE; }
+
+const f = (v, dflt='—') => (v === undefined || v === null || v === '') ? dflt : v;
+
+/* ── Date formatting ── */
+const WD = ['日','一','二','三','四','五','六'];
+function fmtDate(iso){
+  if(!iso) return {full:'—', wd:'', mono:'—'};
+  const d = new Date(iso + 'T00:00:00');
+  if(isNaN(d)) return {full:iso, wd:'', mono:iso};
+  return {
+    full: `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`,
+    wd: `星期${WD[d.getDay()]}`,
+    mono: iso.replace(/-/g,' · ')
+  };
+}
+
+/* ════════════════ RENDER ════════════════ */
+const dt = fmtDate(DATA.date);
+document.getElementById('rb-date').textContent = dt.mono;
+
+document.getElementById('hero-date').innerHTML = `
+  <span>${dt.full}</span>
+  <span class="weekday">${dt.wd}</span>
+`;
+document.getElementById('hero-verdict').textContent = f(DATA.verdict, '進攻');
+
+const heroChips = `
+  <span class="hero-chiprow" style="margin-top:14px">
+    <span class="chip regime"><span class="dot"></span>REGIME · ${f(DATA.regime)}</span>
+    <span class="chip risk"><span class="dot"></span>風險 · ${f(DATA.risk_level)}</span>
+    <span class="chip budget"><span class="dot"></span>預算 · ${f(DATA.trading_budget)}</span>
+  </span>`;
+document.getElementById('hero-sub').innerHTML =
+  `今天系統決定<span class="accent"> 出手</span>。以下是完整的進場劇本與風險控制。` + heroChips;
+
+/* Stock card */
+document.getElementById('stock-code').textContent = f(DATA.code);
+document.getElementById('stock-name').textContent = f(DATA.name);
+document.getElementById('stock-verdict').textContent = f(DATA.verdict);
+const conf = Math.round((DATA.confidence || 0) * 100);
+document.getElementById('conf-fill').style.width = conf + '%';
+document.getElementById('stock-conf').textContent = `信心 · ${conf}%`;
+
+/* Key numbers */
+document.getElementById('kn-entry').textContent = f(DATA.entry_zone);
+document.getElementById('kn-entry-sub').textContent = DATA.ref_close ? `收 ${DATA.ref_close}` : '進場區';
+document.getElementById('kn-stop').textContent = f(DATA.stop_loss);
+document.getElementById('kn-target').textContent = f(DATA.target);
+document.getElementById('kn-rr').textContent = DATA.risk_reward ? `R:R ${DATA.risk_reward}` : '目標';
+document.getElementById('kn-hold').textContent = f(DATA.hold_days);
+
+/* Chart */
+document.getElementById('chart-fallback-sym').textContent = `${f(DATA.name)} ${f(DATA.code)} · TPE`;
+(function loadTV(){
+  if(!DATA.code) return;
+  const s = document.createElement('script');
+  s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
+  s.async = true;
+  s.innerHTML = JSON.stringify({
+    symbols: [[`${DATA.name} ${DATA.code}`, `TPE:${DATA.code}`]],
+    width: "100%", height: "380", locale: "zh_TW",
+    colorTheme: "light", isTransparent: true,
+    showVolume: true, fontFamily: "JetBrains Mono"
+  });
+  s.onload = () => { const fb = document.getElementById('chart-fallback'); if(fb) fb.style.display='none'; };
+  document.getElementById('tv-chart').appendChild(s);
+  // hide fallback if widget renders an iframe
+  setTimeout(()=>{
+    if(document.querySelector('#tv-chart iframe')){
+      const fb = document.getElementById('chart-fallback'); if(fb) fb.style.display='none';
+    }
+  }, 2500);
+})();
+
+/* Deep analysis */
+const ANALYSIS = [
+  ['脈絡', DATA.context_paragraph],
+  ['為什麼是這檔', DATA.why_this_stock],
+  ['進場依據', DATA.entry_rationale],
+  ['停損依據', DATA.stop_rationale],
+  ['目標與持有', [DATA.target_rationale, DATA.hold_rationale].filter(Boolean).join(' ')]
+];
+document.getElementById('analysis').innerHTML = ANALYSIS.map(([title, body], i) => body ? `
+  <div class="analysis-block">
+    <div class="ab-head"><span class="ab-num">${i+1}</span><span class="ab-title">${title}</span></div>
+    <div class="ab-body${i===0?' lead-cap':''}"><p>${body}</p></div>
+  </div>` : '').join('') || '<p class="empty-field">尚無分析內容。</p>';
+
+/* Devil's advocate */
+const da = DATA.devils_advocate || {};
+if(da.summary || (da.counter_arguments||[]).length){
+  document.getElementById('devil-verdict').textContent = f(da.verdict, '反對');
+  document.getElementById('devil-summary').textContent = f(da.summary, '');
+  document.getElementById('devil-args').innerHTML =
+    (da.counter_arguments||[]).map(a => `<div class="devil-arg">${a}</div>`).join('');
+} else {
+  document.getElementById('devil-sec').style.display = 'none';
+}
+
+/* Risk scenarios */
+const SEV_ICON = {
+  stop: '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
+  hold: '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r=".6" fill="currentColor"/></svg>',
+  go:   '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>'
+};
+document.getElementById('risk-list').innerHTML =
+  (DATA.risk_scenarios||[]).map(r => {
+    const sev = r.severity || 'hold';
+    return `
+    <div class="risk-card sev-${sev}">
+      <div class="risk-trigger">${SEV_ICON[sev]||SEV_ICON.hold}<span>${f(r.trigger)}</span></div>
+      <div class="risk-action"><span class="ra-arrow">→</span><span class="ra-text">${f(r.action)}</span></div>
+      ${r.rationale ? `<div class="risk-rationale">${r.rationale}</div>` : ''}
+    </div>`;
+  }).join('') || '<p class="empty-field">無風險劇本。</p>';
+
+/* Execution checklist · checkboxes persist in localStorage */
+const CHECK_KEY = 'yuzu-check-' + f(DATA.date, 'x') + '-' + f(DATA.code, 'x');
+let checkState = {};
+try { checkState = JSON.parse(localStorage.getItem(CHECK_KEY) || '{}'); } catch(e){}
+
+const checklist = DATA.execution_checklist || [];
+function renderChecklist(){
+  const host = document.getElementById('checklist');
+  host.innerHTML = checklist.map((c, i) => `
+    <div class="check-item ${checkState[i] ? 'done' : ''}" data-idx="${i}">
+      <div class="check-box" role="checkbox" aria-checked="${!!checkState[i]}" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+      </div>
+      <div class="check-body">
+        <div class="check-time">${f(c.time)}</div>
+        <div class="check-action">${f(c.action)}</div>
+      </div>
+    </div>`).join('') || '<p class="empty-field">無執行清單。</p>';
+  updateProgress();
+  host.querySelectorAll('.check-item').forEach(item => {
+    const toggle = () => {
+      const idx = item.dataset.idx;
+      checkState[idx] = !checkState[idx];
+      localStorage.setItem(CHECK_KEY, JSON.stringify(checkState));
+      item.classList.toggle('done', checkState[idx]);
+      item.querySelector('.check-box').setAttribute('aria-checked', !!checkState[idx]);
+      updateProgress();
+    };
+    item.querySelector('.check-box').addEventListener('click', toggle);
+    item.querySelector('.check-box').addEventListener('keydown', e => {
+      if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); toggle(); }
+    });
+  });
+}
+function updateProgress(){
+  const total = checklist.length;
+  const done = Object.values(checkState).filter(Boolean).length;
+  document.getElementById('check-count').textContent = `${done} / ${total}`;
+  document.getElementById('check-bar').style.width = total ? (done/total*100)+'%' : '0%';
+}
+document.getElementById('check-reset').addEventListener('click', () => {
+  checkState = {};
+  localStorage.removeItem(CHECK_KEY);
+  renderChecklist();
+});
+renderChecklist();
+
+/* Prev/next nav (wired by generator; demo = disabled) */
+if(DATA.prev_date) document.getElementById('prev-pick').href = DATA.prev_date + '.html';
+else document.getElementById('prev-pick').style.opacity = '.35';
+if(DATA.next_date) document.getElementById('next-pick').href = DATA.next_date + '.html';
+else document.getElementById('next-pick').style.opacity = '.35';
+</script>
+
+</body>
+</html>

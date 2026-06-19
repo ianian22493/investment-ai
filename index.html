@@ -3011,6 +3011,28 @@ function renderExec(target){
     ${pickHTML}
     ${microPickHTML}
     ${forcePickBtn}
+    <!-- Task 9 · 連結到獨立 pick 頁（深讀層） -->
+    <div style="margin-top:14px;text-align:right">
+      <a href="picks/${(DATA.generated_at||'').slice(0,10)}.html"
+         style="display:inline-flex;align-items:center;gap:6px;
+                font:700 11px 'JetBrains Mono',monospace;letter-spacing:1.5px;
+                color:var(--gold);text-decoration:none;padding:8px 14px;
+                border:1px solid var(--gold);border-radius:4px;
+                transition:background .15s, color .15s"
+         onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'"
+         onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">
+        📖 READ FULL ANALYSIS  →
+      </a>
+      <a href="picks/index.html"
+         style="display:inline-flex;align-items:center;
+                font:600 10px 'JetBrains Mono',monospace;letter-spacing:1.2px;
+                color:var(--text3);text-decoration:none;padding:8px 12px;margin-left:6px;
+                transition:color .15s"
+         onmouseover="this.style.color='var(--text2)'"
+         onmouseout="this.style.color='var(--text3)'">
+        歷史 ↗
+      </a>
+    </div>
 
     <div class="section-label">TOP 3 ACTIONS</div>
     ${recs.length

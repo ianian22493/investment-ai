@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Picks 紀錄 · Yuzu Capital</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&family=Noto+Serif+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="picks.css">
+<style>
+/* ═══ INDEX-SPECIFIC ═══════════════════════════════════════════ */
+.index-head{
+  padding:32px 0 22px; border-bottom:1px solid var(--line); margin-bottom:22px;
+}
+.index-title{font-size:clamp(30px,7vw,42px); font-weight:900; letter-spacing:-.5px; color:var(--ink); margin-bottom:8px}
+.index-sub{font-size:15px; color:var(--ink2)}
+
+/* control bar */
+.ctrl-bar{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px; margin-bottom:20px; flex-wrap:wrap;
+}
+.month-nav{display:flex; align-items:center; gap:14px}
+.month-nav button{
+  font-family:var(--mono); font-size:18px;
+  width:34px; height:34px; border-radius:50%;
+  border:1px solid var(--line2); background:var(--paper2); color:var(--ink);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:border-color .15s, background .15s;
+}
+.month-nav button:hover{border-color:var(--gold); color:var(--gold)}
+.month-nav .month-label{font-family:var(--mono); font-size:15px; letter-spacing:1px; font-weight:600; min-width:130px; text-align:center}
+
+.view-toggle{display:inline-flex; background:var(--paper3); border-radius:22px; padding:3px; border:1px solid var(--line)}
+.view-toggle button{
+  font-family:var(--mono); font-size:11px; letter-spacing:1.5px; font-weight:600;
+  padding:7px 16px; border-radius:18px; border:none; background:none; color:var(--ink2);
+  cursor:pointer; transition:background .18s, color .18s;
+}
+.view-toggle button.active{background:var(--paper2); color:var(--gold); box-shadow:var(--shadow-card)}
+
+/* legend */
+.legend{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:18px; font-family:var(--mono); font-size:11px; color:var(--ink2)}
+.legend span{display:inline-flex; align-items:center; gap:7px}
+.legend .ld{width:9px; height:9px; border-radius:50%}
+.ld.win{background:var(--target)}
+.ld.loss{background:var(--stop)}
+.ld.watch{background:var(--ink3)}
+.ld.none{background:transparent; border:1px solid var(--line2)}
+
+/* ═══ CALENDAR ═══ */
+.cal{
+  display:grid; grid-template-columns:repeat(7, 1fr);
+  gap:6px;
+}
+.cal-wd{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:1.5px;
+  color:var(--ink3); text-align:center; padding:6px 0;
+}
+.cal-cell{
+  aspect-ratio:1/1;
+  background:var(--paper2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:7px 8px;
+  position:relative;
+  display:flex; flex-direction:column;
+  cursor:default;
+  transition:transform .14s, box-shadow .14s, border-color .14s;
+  text-decoration:none; color:inherit;
+}
+.cal-cell.empty{background:transparent; border-color:transparent}
+.cal-cell.has{cursor:pointer}
+.cal-cell.has:hover{transform:translateY(-2px); box-shadow:var(--shadow); border-color:var(--gold)}
+.cal-day{font-family:var(--mono); font-size:12px; color:var(--ink2); font-weight:600}
+.cal-cell.today .cal-day{color:var(--gold)}
+.cal-cell.today{border-color:var(--gold)}
+.cal-dot{
+  position:absolute; right:8px; top:8px;
+  width:9px; height:9px; border-radius:50%;
+}
+.cal-dot.win{background:var(--target); box-shadow:0 0 0 3px var(--target-soft)}
+.cal-dot.loss{background:var(--stop); box-shadow:0 0 0 3px var(--stop-soft)}
+.cal-dot.watch{background:var(--ink3)}
+.cal-result{
+  margin-top:auto;
+  font-family:var(--mono); font-size:11px; font-weight:700;
+}
+.cal-result.win{color:var(--target)}
+.cal-result.loss{color:var(--stop)}
+.cal-code{font-family:var(--mono); font-size:10px; color:var(--ink3); margin-top:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+
+/* hover tooltip */
+.cal-tip{
+  position:fixed; z-index:60;
+  background:var(--navy); color:#DDE5F5;
+  font-family:var(--mono); font-size:11px; letter-spacing:.5px;
+  padding:8px 11px; border-radius:8px;
+  box-shadow:0 8px 28px rgba(0,0,0,.3);
+  pointer-events:none; opacity:0; transform:translateY(4px);
+  transition:opacity .15s, transform .15s;
+  white-space:nowrap;
+  border:1px solid rgba(201,168,76,.3);
+}
+.cal-tip.show{opacity:1; transform:translateY(0)}
+.cal-tip .tip-res{font-weight:700}
+.cal-tip .tip-res.win{color:#5FCf9b}
+.cal-tip .tip-res.loss{color:#FF7A84}
+.cal-tip .tip-res.watch{color:#9AA8C8}
+
+/* ═══ LIST VIEW ═══ */
+.list-view{display:none}
+.list-view.active{display:block}
+.cal.hidden{display:none}
+
+.list-filters{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap}
+.filter-pill{
+  font-family:var(--mono); font-size:11px; letter-spacing:1px;
+  padding:6px 14px; border-radius:20px;
+  border:1px solid var(--line2); background:var(--paper2); color:var(--ink2);
+  cursor:pointer; transition:all .15s;
+}
+.filter-pill.active{border-color:var(--gold); color:var(--gold); background:var(--gold-soft)}
+
+.pick-table{width:100%; border-collapse:collapse; font-size:14px}
+.pick-table thead th{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--ink3); text-align:left; padding:10px 12px; border-bottom:2px solid var(--line2); font-weight:600;
+}
+.pick-table tbody tr{
+  border-bottom:1px solid var(--line); cursor:pointer; transition:background .14s;
+}
+.pick-table tbody tr:hover{background:var(--paper2)}
+.pick-table td{padding:13px 12px; vertical-align:middle}
+.pt-date{font-family:var(--mono); font-size:12.5px; color:var(--ink2); white-space:nowrap}
+.pt-stock b{font-size:15px; color:var(--ink)}
+.pt-stock .pt-code{font-family:var(--mono); font-size:12px; color:var(--ink3); margin-right:6px}
+.pt-verdict{font-family:var(--serif); font-weight:800}
+.pt-verdict.attack{color:var(--gold)}
+.pt-verdict.watch{color:var(--ink3)}
+.pt-result{font-family:var(--mono); font-weight:700; text-align:right; white-space:nowrap}
+.pt-result.win{color:var(--target)}
+.pt-result.loss{color:var(--stop)}
+.pt-result.pending{color:var(--ink3)}
+.pt-result.watch{color:var(--ink3)}
+
+.list-empty{text-align:center; padding:50px 20px; color:var(--ink3); font-style:italic}
+
+/* summary stats */
+.stat-strip{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:22px;
+}
+.stat{
+  background:var(--paper2); border:1px solid var(--line); border-radius:var(--radius-sm);
+  padding:14px 16px; text-align:center;
+}
+.stat .s-val{font-family:var(--mono); font-size:24px; font-weight:700; color:var(--ink)}
+.stat .s-val.win{color:var(--target)}
+.stat .s-lbl{font-family:var(--mono); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink3); margin-top:5px}
+
+@media (max-width:640px){
+  .stat-strip{grid-template-columns:repeat(2,1fr)}
+  .cal{gap:4px}
+  .cal-cell{padding:5px 6px; border-radius:8px}
+  .cal-result, .cal-code{display:none}  /* compact: dot only on mobile */
+  .cal-dot{position:static; margin-top:auto; align-self:flex-start}
+  .pick-table td{padding:11px 8px}
+  .pt-stock .pt-code{display:block; margin:0 0 2px}
+}
+</style>
+</head>
+<body>
+
+<div class="page" style="max-width:840px">
+
+  <div class="return-band">
+    <a class="rb-back" href="../index.html">← DASHBOARD</a>
+    <span class="rb-logo"><img src="../favicon.svg" alt="">YUZU CAPITAL</span>
+    <span class="rb-meta">PICKS · 紀錄</span>
+  </div>
+
+  <header class="index-head">
+    <div class="index-title">Picks 紀錄</div>
+    <div class="index-sub">每天的決定，與後來的結果。點任一天回顧當日完整分析。</div>
+  </header>
+
+  <!-- summary -->
+  <div class="stat-strip" id="stat-strip"></div>
+
+  <!-- controls -->
+  <div class="ctrl-bar">
+    <div class="month-nav">
+      <button id="prevMonth" aria-label="上個月">‹</button>
+      <span class="month-label" id="monthLabel">—</span>
+      <button id="nextMonth" aria-label="下個月">›</button>
+    </div>
+    <div class="view-toggle">
+      <button id="vCal" class="active">月曆</button>
+      <button id="vList">列表</button>
+    </div>
+  </div>
+
+  <!-- legend -->
+  <div class="legend">
+    <span><span class="ld win"></span>獲利出場</span>
+    <span><span class="ld loss"></span>停損出場</span>
+    <span><span class="ld watch"></span>觀望</span>
+    <span><span class="ld none"></span>無資料</span>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="cal" id="calendar"></div>
+
+  <!-- LIST -->
+  <div class="list-view" id="listView">
+    <div class="list-filters">
+      <button class="filter-pill active" data-filter="all">全部</button>
+      <button class="filter-pill" data-filter="win">獲利</button>
+      <button class="filter-pill" data-filter="loss">停損</button>
+      <button class="filter-pill" data-filter="watch">觀望</button>
+    </div>
+    <table class="pick-table">
+      <thead>
+        <tr><th>日期</th><th>標的</th><th>判斷</th><th style="text-align:right">結果</th></tr>
+      </thead>
+      <tbody id="listBody"></tbody>
+    </table>
+    <div class="list-empty" id="listEmpty" style="display:none">這個篩選沒有紀錄。</div>
+  </div>
+
+  <nav class="foot-nav">
+    <a class="home" href="../index.html">← DASHBOARD</a>
+    <span class="fn-spacer"></span>
+    <span style="font-family:var(--mono); font-size:11px; color:var(--ink3)">YUZU CAPITAL · PICKS</span>
+  </nav>
+
+</div>
+
+<div class="cal-tip" id="calTip"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   PICKS INDEX DATA
+   Generator injects the full picks array into {{PICKS_JSON}}.
+   Each entry: { date, type:'pick'|'watch', code, name, verdict,
+                 result:'win'|'loss'|'pending'|null, pnl:'+4.8%'|null }
+   Unreplaced → SAMPLE below (current + recent months).
+   ════════════════════════════════════════════════════════════════ */
+const SAMPLE_PICKS = [
+  { date:"2026-06-19", type:"pick",  code:"2317", name:"鴻海",   verdict:"進攻", result:"pending", pnl:null },
+  { date:"2026-06-18", type:"pick",  code:"3034", name:"聯詠",   verdict:"進攻", result:"win",  pnl:"+3.1%" },
+  { date:"2026-06-17", type:"watch", code:null,   name:null,     verdict:"觀望", result:null,    pnl:null },
+  { date:"2026-06-16", type:"pick",  code:"2454", name:"聯發科", verdict:"進攻", result:"win",  pnl:"+5.2%" },
+  { date:"2026-06-13", type:"pick",  code:"3037", name:"欣興",   verdict:"進攻", result:"loss", pnl:"−2.4%" },
+  { date:"2026-06-12", type:"watch", code:null,   name:null,     verdict:"觀望", result:null,    pnl:null },
+  { date:"2026-06-11", type:"pick",  code:"2382", name:"廣達",   verdict:"進攻", result:"win",  pnl:"+6.8%" },
+  { date:"2026-06-10", type:"pick",  code:"2308", name:"台達電", verdict:"進攻", result:"win",  pnl:"+2.2%" },
+  { date:"2026-06-09", type:"watch", code:null,   name:null,     verdict:"觀望", result:null,    pnl:null },
+  { date:"2026-06-06", type:"pick",  code:"3017", name:"奇鋐",   verdict:"進攻", result:"loss", pnl:"−3.6%" },
+  { date:"2026-06-05", type:"pick",  code:"2330", name:"台積電", verdict:"進攻", result:"win",  pnl:"+1.9%" },
+  { date:"2026-06-04", type:"watch", code:null,   name:null,     verdict:"觀望", result:null,    pnl:null },
+  { date:"2026-06-03", type:"pick",  code:"2603", name:"長榮",   verdict:"進攻", result:"win",  pnl:"+4.1%" },
+  { date:"2026-06-02", type:"pick",  code:"6505", name:"台塑化", verdict:"進攻", result:"loss", pnl:"−1.8%" },
+  // May
+  { date:"2026-05-30", type:"pick",  code:"2412", name:"中華電", verdict:"進攻", result:"win",  pnl:"+0.9%" },
+  { date:"2026-05-29", type:"watch", code:null,   name:null,     verdict:"觀望", result:null,    pnl:null },
+  { date:"2026-05-28", type:"pick",  code:"2891", name:"中信金", verdict:"進攻", result:"win",  pnl:"+2.7%" }
+];
+
+let PICKS;
+try {
+  const raw = `{{PICKS_JSON}}`;
+  PICKS = (raw && !raw.startsWith('{{')) ? JSON.parse(raw) : SAMPLE_PICKS;
+} catch(e){ PICKS = SAMPLE_PICKS; }
+
+const byDate = {};
+PICKS.forEach(p => byDate[p.date] = p);
+
+/* current view month — start at most recent pick's month */
+let viewYear, viewMonth;
+(function initMonth(){
+  const latest = PICKS.map(p=>p.date).sort().pop() || '2026-06-01';
+  const d = new Date(latest + 'T00:00:00');
+  viewYear = d.getFullYear(); viewMonth = d.getMonth();
+})();
+
+const todayISO = new Date().toISOString().slice(0,10);
+const WD = ['日','一','二','三','四','五','六'];
+
+/* ─── Calendar render ─── */
+function renderCalendar(){
+  document.getElementById('monthLabel').textContent = `${viewYear} · ${String(viewMonth+1).padStart(2,'0')}`;
+  const cal = document.getElementById('calendar');
+  cal.innerHTML = WD.map(w => `<div class="cal-wd">${w}</div>`).join('');
+
+  const first = new Date(viewYear, viewMonth, 1);
+  const startPad = first.getDay();
+  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+
+  for(let i=0; i<startPad; i++){
+    cal.insertAdjacentHTML('beforeend', '<div class="cal-cell empty"></div>');
+  }
+  for(let day=1; day<=daysInMonth; day++){
+    const iso = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const p = byDate[iso];
+    const isToday = iso === todayISO;
+    if(!p){
+      cal.insertAdjacentHTML('beforeend',
+        `<div class="cal-cell ${isToday?'today':''}"><span class="cal-day">${day}</span></div>`);
+      continue;
+    }
+    let dotClass = 'watch', resHTML = '';
+    if(p.type === 'watch'){ dotClass = 'watch'; }
+    else if(p.result === 'win'){ dotClass='win'; resHTML = `<div class="cal-result win">${p.pnl||'WIN'}</div>`; }
+    else if(p.result === 'loss'){ dotClass='loss'; resHTML = `<div class="cal-result loss">${p.pnl||'LOSS'}</div>`; }
+    else { dotClass='watch'; resHTML = `<div class="cal-result" style="color:var(--ink3)">…</div>`; }
+
+    const codeLine = p.code ? `<div class="cal-code">${p.code}</div>` : '<div class="cal-code">觀望</div>';
+    cal.insertAdjacentHTML('beforeend', `
+      <a class="cal-cell has ${isToday?'today':''}" href="${iso}.html"
+         data-iso="${iso}" data-name="${p.name||'觀望'}" data-code="${p.code||''}"
+         data-res="${p.result||(p.type==='watch'?'watch':'pending')}" data-pnl="${p.pnl||''}">
+        <span class="cal-day">${day}</span>
+        <span class="cal-dot ${dotClass}"></span>
+        ${resHTML}${codeLine}
+      </a>`);
+  }
+  wireTips();
+}
+
+/* ─── Hover tooltips ─── */
+const tip = document.getElementById('calTip');
+function wireTips(){
+  document.querySelectorAll('.cal-cell.has').forEach(cell => {
+    cell.addEventListener('pointerenter', e => {
+      const name = cell.dataset.name, code = cell.dataset.code;
+      const res = cell.dataset.res, pnl = cell.dataset.pnl;
+      let resTxt = '觀望', resCls = 'watch';
+      if(res === 'win'){ resTxt = pnl || '獲利'; resCls='win'; }
+      else if(res === 'loss'){ resTxt = pnl || '停損'; resCls='loss'; }
+      else if(res === 'pending'){ resTxt = '進行中'; resCls='watch'; }
+      tip.innerHTML = code
+        ? `${code} ${name} · <span class="tip-res ${resCls}">${resTxt}</span>`
+        : `<span class="tip-res watch">今日觀望</span>`;
+      const r = cell.getBoundingClientRect();
+      tip.style.left = Math.min(r.left, window.innerWidth - 180) + 'px';
+      tip.style.top = (r.top - 40) + 'px';
+      tip.classList.add('show');
+    });
+    cell.addEventListener('pointerleave', () => tip.classList.remove('show'));
+  });
+}
+
+/* ─── List render ─── */
+let listFilter = 'all';
+function renderList(){
+  const body = document.getElementById('listBody');
+  const rows = PICKS
+    .slice().sort((a,b) => b.date.localeCompare(a.date))
+    .filter(p => {
+      if(listFilter === 'all') return true;
+      if(listFilter === 'watch') return p.type === 'watch';
+      return p.result === listFilter;
+    });
+  document.getElementById('listEmpty').style.display = rows.length ? 'none' : 'block';
+  body.innerHTML = rows.map(p => {
+    const d = new Date(p.date+'T00:00:00');
+    const dateStr = `${p.date.slice(5).replace('-','/')} 週${WD[d.getDay()]}`;
+    let resCls = 'watch', resTxt = '—';
+    if(p.type==='watch'){ resTxt='觀望'; resCls='watch'; }
+    else if(p.result==='win'){ resTxt=p.pnl||'獲利'; resCls='win'; }
+    else if(p.result==='loss'){ resTxt=p.pnl||'停損'; resCls='loss'; }
+    else { resTxt='進行中'; resCls='pending'; }
+    const stock = p.code
+      ? `<span class="pt-code">${p.code}</span><b>${p.name}</b>`
+      : `<span style="color:var(--ink3)">—</span>`;
+    const vCls = p.type==='watch' ? 'watch' : 'attack';
+    return `<tr onclick="location.href='${p.date}.html'">
+      <td class="pt-date">${dateStr}</td>
+      <td class="pt-stock">${stock}</td>
+      <td><span class="pt-verdict ${vCls}">${p.verdict||'—'}</span></td>
+      <td class="pt-result ${resCls}">${resTxt}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ─── Stats ─── */
+function renderStats(){
+  const picks = PICKS.filter(p => p.type === 'pick');
+  const settled = picks.filter(p => p.result === 'win' || p.result === 'loss');
+  const wins = picks.filter(p => p.result === 'win').length;
+  const winRate = settled.length ? Math.round(wins/settled.length*100) : 0;
+  const watches = PICKS.filter(p => p.type === 'watch').length;
+  document.getElementById('stat-strip').innerHTML = `
+    <div class="stat"><div class="s-val">${PICKS.length}</div><div class="s-lbl">總紀錄</div></div>
+    <div class="stat"><div class="s-val">${picks.length}</div><div class="s-lbl">出手</div></div>
+    <div class="stat"><div class="s-val win">${winRate}%</div><div class="s-lbl">勝率</div></div>
+    <div class="stat"><div class="s-val">${watches}</div><div class="s-lbl">觀望</div></div>`;
+}
+
+/* ─── Wiring ─── */
+document.getElementById('prevMonth').onclick = () => { viewMonth--; if(viewMonth<0){viewMonth=11; viewYear--;} renderCalendar(); };
+document.getElementById('nextMonth').onclick = () => { viewMonth++; if(viewMonth>11){viewMonth=0; viewYear++;} renderCalendar(); };
+
+document.getElementById('vCal').onclick = () => {
+  document.getElementById('vCal').classList.add('active');
+  document.getElementById('vList').classList.remove('active');
+  document.getElementById('calendar').classList.remove('hidden');
+  document.querySelector('.ctrl-bar .month-nav').style.visibility = 'visible';
+  document.querySelector('.legend').style.display = 'flex';
+  document.getElementById('listView').classList.remove('active');
+};
+document.getElementById('vList').onclick = () => {
+  document.getElementById('vList').classList.add('active');
+  document.getElementById('vCal').classList.remove('active');
+  document.getElementById('calendar').classList.add('hidden');
+  document.querySelector('.ctrl-bar .month-nav').style.visibility = 'hidden';
+  document.querySelector('.legend').style.display = 'none';
+  document.getElementById('listView').classList.add('active');
+  renderList();
+};
+document.querySelectorAll('.filter-pill').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.filter-pill').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    listFilter = b.dataset.filter;
+    renderList();
+  };
+});
+
+renderStats();
+renderCalendar();
+</script>
+
+</body>
+</html>

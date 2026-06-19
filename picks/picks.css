@@ -1,0 +1,543 @@
+/* ═══════════════════════════════════════════════════════════════════
+   YUZU CAPITAL · /picks/ — Daily Note design system
+   Warm clinician's-journal aesthetic · light, readable, mobile-first
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* Paper / ink */
+  --paper:#F6F1E7;        /* warm cream base */
+  --paper2:#FCFAF4;       /* card surface */
+  --paper3:#EFE8D8;       /* sunken / hover */
+  --ink:#2A2520;          /* warm near-black */
+  --ink2:#6E6557;         /* muted body */
+  --ink3:#A89C88;         /* faint / captions */
+  --line:#E2DAC8;         /* hairlines */
+  --line2:#D2C7B0;        /* stronger rule */
+
+  /* Semantic — verdict colors kept, deepened for light bg */
+  --gold:#9A7B2E;         /* verdict (deep gold on cream) */
+  --gold-bright:#C9A84C;  /* original — used on dark bands only */
+  --stop:#B23B2E;         /* red · stop loss */
+  --target:#3F7A3A;       /* warm olive-green · target (warmed to match cream) */
+  --system:#0F6F86;       /* teal · system state */
+  --warn:#B5852A;         /* amber · caution */
+
+  /* Soft tints */
+  --gold-soft:#F2E9D2;
+  --stop-soft:#F6E4DF;
+  --target-soft:#E7EEDC;
+  --system-soft:#DCEDF0;
+
+  /* Dashboard continuity */
+  --navy:#0D1521;
+  --navy2:#060B17;
+
+  --radius:14px;
+  --radius-sm:9px;
+  --shadow:0 1px 2px rgba(60,48,28,.04), 0 8px 28px rgba(60,48,28,.06);
+  --shadow-card:0 1px 2px rgba(60,48,28,.05), 0 4px 16px rgba(60,48,28,.05);
+
+  --serif:"Noto Serif TC", "Songti TC", Georgia, "Times New Roman", serif;
+  --sans:"Noto Sans TC", -apple-system, "Helvetica Neue", sans-serif;
+  --mono:"JetBrains Mono", "Fira Code", "SF Mono", ui-monospace, monospace;
+}
+
+*{box-sizing:border-box; margin:0; padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:16px;
+  line-height:1.78;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  /* subtle paper texture */
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(201,168,76,.04), transparent 30%),
+    radial-gradient(circle at 88% 92%, rgba(15,111,134,.025), transparent 35%);
+}
+
+/* Faint paper grain */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:1;
+  opacity:.4; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 .55 0 0 0 0 .48 0 0 0 0 .36 0 0 0 .035 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+a{color:var(--gold); text-decoration:none}
+a:hover{text-decoration:underline; text-underline-offset:3px}
+
+.mono{font-family:var(--mono)}
+.sans{font-family:var(--sans)}
+
+/* ═══ PAGE SHELL ═════════════════════════════════════════════════ */
+.page{
+  position:relative; z-index:2;
+  max-width:720px;
+  margin:0 auto;
+  padding:0 22px 80px;
+}
+
+/* Dashboard continuity band — navy strip at very top */
+.return-band{
+  background:linear-gradient(180deg, var(--navy2), var(--navy));
+  color:#C9D2E8;
+  margin:0 -22px 0;
+  padding:11px 22px;
+  display:flex; align-items:center; justify-content:space-between;
+  font-family:var(--mono);
+  font-size:11px; letter-spacing:1.2px;
+  position:sticky; top:0; z-index:40;
+  border-bottom:1px solid rgba(201,168,76,.18);
+}
+.return-band .rb-back{
+  color:var(--gold-bright); display:inline-flex; align-items:center; gap:7px;
+  font-weight:700;
+}
+.return-band .rb-back:hover{opacity:.8; text-decoration:none}
+.return-band .rb-logo{display:flex; align-items:center; gap:8px}
+.return-band .rb-logo img{width:18px; height:18px}
+.return-band .rb-meta{color:#5C6B8C; letter-spacing:1.5px}
+
+/* ═══ HERO ═══════════════════════════════════════════════════════ */
+.hero{
+  padding:52px 0 40px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:8px;
+}
+.hero-date{
+  font-family:var(--mono);
+  font-size:12px; letter-spacing:3px; color:var(--ink3);
+  text-transform:uppercase;
+  margin-bottom:26px;
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.hero-date .weekday{color:var(--gold)}
+.hero-chiprow{display:flex; gap:8px; flex-wrap:wrap}
+.chip{
+  font-family:var(--mono);
+  font-size:10.5px; letter-spacing:1px; font-weight:600;
+  padding:4px 10px; border-radius:20px;
+  background:var(--paper2); border:1px solid var(--line2);
+  color:var(--ink2);
+  display:inline-flex; align-items:center; gap:6px;
+}
+.chip .dot{width:6px; height:6px; border-radius:50%; background:currentColor}
+.chip.regime{color:var(--warn)}
+.chip.risk{color:var(--system)}
+.chip.budget{color:var(--ink2)}
+.chip.gold{color:var(--gold)}
+
+.hero-verdict{
+  font-family:var(--serif);
+  font-weight:900;
+  font-size:clamp(40px, 11vw, 62px);
+  line-height:1.04;
+  letter-spacing:-1px;
+  color:var(--gold);
+  margin:28px 0 16px;
+}
+.hero-verdict.watch{color:var(--ink2)}
+.hero-sub{
+  font-size:16px; color:var(--ink2);
+  max-width:560px;
+  line-height:1.8;
+}
+.hero-sub .accent{color:var(--ink); font-weight:600}
+
+/* ═══ SECTION ════════════════════════════════════════════════════ */
+.sec{padding:26px 0; border-bottom:1px solid var(--line)}
+.sec:last-of-type{border-bottom:none}
+.sec-label{
+  font-family:var(--mono);
+  font-size:10.5px; letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--ink3);
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:16px;
+}
+.sec-label .sec-no{
+  color:var(--gold); font-weight:700;
+}
+.sec-label::after{
+  content:""; flex:1; height:6px;
+  /* hand-drawn-ish dotted rule — softer than a hard line, journal feel */
+  background-image:radial-gradient(circle, var(--line2) 1px, transparent 1.3px);
+  background-size:7px 6px; background-repeat:repeat-x; background-position:left center;
+  opacity:.8;
+}
+.sec-h{
+  font-size:22px; font-weight:800; letter-spacing:-.3px;
+  color:var(--ink); margin-bottom:10px; line-height:1.3;
+}
+.prose{font-size:16px; line-height:1.85; color:var(--ink)}
+.prose p + p{margin-top:14px}
+.prose .lead{font-size:17px}
+/* journal touch: drop-cap on the opening analysis paragraph */
+.ab-body.lead-cap > p:first-child::first-letter,
+.prose.lead-cap > p:first-child::first-letter{
+  float:left; font-family:var(--serif); font-weight:900;
+  font-size:3.1em; line-height:.82; color:var(--gold);
+  padding:4px 10px 0 0; margin-top:2px;
+}
+
+/* ═══ STOCK CARD ═════════════════════════════════════════════════ */
+.stock-card{
+  background:var(--paper2);
+  border:1px solid var(--line2);
+  border-radius:var(--radius);
+  padding:22px 24px;
+  box-shadow:var(--shadow-card);
+  display:flex; align-items:center; justify-content:space-between;
+  gap:18px; flex-wrap:wrap;
+}
+.stock-id{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+.stock-code{
+  font-family:var(--mono);
+  font-size:34px; font-weight:700; letter-spacing:1px;
+  color:var(--ink);
+}
+.stock-name{
+  font-size:24px; font-weight:800; color:var(--ink);
+}
+.stock-verdict-wrap{text-align:right}
+.stock-verdict{
+  font-family:var(--serif);
+  font-size:30px; font-weight:900; color:var(--gold);
+  line-height:1;
+}
+.stock-conf{
+  font-family:var(--mono);
+  font-size:12px; color:var(--ink3); letter-spacing:1px; margin-top:6px;
+}
+.conf-bar{
+  width:120px; height:5px; border-radius:3px;
+  background:var(--paper3); overflow:hidden; margin-top:7px; margin-left:auto;
+}
+.conf-bar > i{display:block; height:100%; background:var(--gold); border-radius:3px}
+
+/* ═══ KEY NUMBERS (2×2 on mobile) ════════════════════════════════ */
+.keynums{
+  display:grid;
+  grid-template-columns:1.35fr 1fr 1fr 1fr;   /* ENTRY weighted — it's the one Yuzu must remember */
+  gap:10px;
+  align-items:stretch;
+}
+.keynum{
+  background:var(--paper2);
+  border:1px solid var(--line);
+  border-top:2px solid var(--kc, var(--ink3));
+  border-radius:var(--radius-sm);
+  padding:14px 14px 16px;
+  box-shadow:var(--shadow-card);
+  position:relative;
+}
+/* ENTRY — the hero number: bigger, soft gold wash, left accent bar */
+.keynum.entry{
+  background:linear-gradient(180deg, var(--gold-soft), var(--paper2) 70%);
+  border-top-width:3px;
+  box-shadow:var(--shadow-card), inset 0 0 0 1px rgba(154,123,46,.12);
+}
+.keynum.entry .kn-label{color:var(--gold)}
+.keynum.entry .kn-val{font-size:30px}
+.keynum.entry::after{
+  content:"今日進場"; position:absolute; right:12px; top:13px;
+  font-family:var(--mono); font-size:8.5px; letter-spacing:1px;
+  color:var(--gold); opacity:.55;
+}
+.keynum .kn-label{
+  font-family:var(--mono);
+  font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--ink3); margin-bottom:8px;
+}
+.keynum .kn-val{
+  font-family:var(--mono);
+  font-size:26px; font-weight:700; letter-spacing:.5px;
+  color:var(--kc, var(--ink));
+  line-height:1;
+}
+.keynum .kn-sub{
+  font-family:var(--mono);
+  font-size:10.5px; color:var(--ink3); margin-top:7px; letter-spacing:.5px;
+}
+.keynum.entry{--kc:var(--gold)}
+.keynum.stop{--kc:var(--stop)}
+.keynum.target{--kc:var(--target)}
+.keynum.hold{--kc:var(--ink)}
+
+/* ═══ CHART ══════════════════════════════════════════════════════ */
+.chart-wrap{
+  background:var(--paper2);
+  border:1px solid var(--line2);
+  border-radius:var(--radius);
+  padding:8px;
+  box-shadow:var(--shadow-card);
+  overflow:hidden;
+}
+.chart-fallback{
+  height:380px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:10px;
+  color:var(--ink3); font-family:var(--mono); font-size:12px;
+  text-align:center; padding:20px;
+}
+.chart-fallback svg{opacity:.5}
+
+/* ═══ DEEP ANALYSIS (sub-blocks) ═════════════════════════════════ */
+.analysis-block{margin-bottom:22px}
+.analysis-block:last-child{margin-bottom:0}
+.ab-head{
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:8px;
+}
+.ab-num{
+  font-family:var(--mono);
+  width:24px; height:24px; flex-shrink:0;
+  border-radius:50%;
+  background:var(--gold-soft); color:var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700;
+}
+.ab-title{
+  font-size:16px; font-weight:800; color:var(--ink); letter-spacing:.2px;
+}
+.ab-body{
+  padding-left:34px;
+  font-size:15.5px; line-height:1.82; color:var(--ink);
+}
+.ab-body.stop{border-left:0}
+
+/* ═══ DEVIL'S ADVOCATE ═══════════════════════════════════════════ */
+.devil{
+  background:var(--stop-soft);
+  border:1px solid #E8C9C2;
+  border-left:3px solid var(--stop);
+  border-radius:var(--radius);
+  padding:22px 24px;
+}
+.devil-head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-bottom:12px; flex-wrap:wrap;
+}
+.devil-who{
+  font-family:var(--mono);
+  font-size:11px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--stop); font-weight:700;
+  display:flex; align-items:center; gap:8px;
+}
+.devil-verdict{
+  font-family:var(--serif);
+  font-size:20px; font-weight:900; color:var(--stop);
+}
+.devil-summary{font-size:15.5px; line-height:1.8; color:var(--ink); margin-bottom:14px}
+.devil-args{display:flex; flex-direction:column; gap:9px}
+.devil-arg{
+  display:flex; gap:10px; align-items:flex-start;
+  font-size:14.5px; line-height:1.7; color:var(--ink);
+}
+.devil-arg::before{
+  content:"⚡"; color:var(--stop); flex-shrink:0; font-size:13px; margin-top:3px;
+}
+
+/* ═══ RISK SCENARIOS (condition cards · chosen direction A refined) ═══ */
+.risk-list{display:flex; flex-direction:column; gap:10px}
+.risk-card{
+  background:var(--paper2);
+  border:1px solid var(--line2);
+  border-radius:var(--radius-sm);
+  overflow:hidden;
+  box-shadow:var(--shadow-card);
+}
+.risk-trigger{
+  display:flex; align-items:center; gap:10px;
+  padding:12px 16px;
+  background:var(--sev-soft, var(--paper3));
+  border-bottom:1px solid var(--line);
+  font-family:var(--mono);
+  font-size:14px; font-weight:600; color:var(--sev, var(--ink));
+}
+.risk-trigger .rt-ico{
+  width:18px; height:18px; flex-shrink:0;
+}
+.risk-action{
+  padding:12px 16px;
+  display:flex; align-items:baseline; gap:10px;
+}
+.risk-action .ra-arrow{
+  font-family:var(--mono); color:var(--ink3); flex-shrink:0; font-weight:700;
+}
+.risk-action .ra-text{
+  font-size:15.5px; font-weight:700; color:var(--ink);
+}
+.risk-rationale{
+  padding:0 16px 13px 38px;
+  font-size:13.5px; line-height:1.65; color:var(--ink2);
+}
+/* severity tints */
+.risk-card.sev-stop{--sev:var(--stop); --sev-soft:var(--stop-soft)}
+.risk-card.sev-hold{--sev:var(--warn); --sev-soft:#F5ECD7}
+.risk-card.sev-go{--sev:var(--target); --sev-soft:var(--target-soft)}
+
+/* ═══ EXECUTION CHECKLIST (timeline + checkbox · chosen direction C+A) ═══ */
+.checklist{
+  position:relative;
+  padding-left:8px;
+}
+.check-item{
+  display:flex; gap:14px;
+  position:relative;
+  padding:4px 0 18px;
+}
+.check-item:last-child{padding-bottom:0}
+/* timeline rail */
+.check-item::before{
+  content:""; position:absolute;
+  left:13px; top:30px; bottom:-4px;
+  width:2px; background:var(--line2);
+}
+.check-item:last-child::before{display:none}
+.check-item.done::before{background:var(--target)}
+
+.check-box{
+  flex-shrink:0;
+  width:28px; height:28px; border-radius:8px;
+  border:2px solid var(--line2);
+  background:var(--paper2);
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .18s, border-color .18s, transform .12s;
+  position:relative; z-index:2;
+}
+.check-box:hover{border-color:var(--gold)}
+.check-box:active{transform:scale(.92)}
+.check-box svg{width:15px; height:15px; opacity:0; transition:opacity .18s; stroke:var(--paper2)}
+.check-item.done .check-box{background:var(--target); border-color:var(--target)}
+.check-item.done .check-box svg{opacity:1}
+
+.check-body{flex:1; padding-top:1px}
+.check-time{
+  font-family:var(--mono);
+  font-size:11px; letter-spacing:1.5px; font-weight:700;
+  color:var(--gold); text-transform:uppercase;
+  margin-bottom:2px;
+}
+.check-action{
+  font-size:15.5px; line-height:1.6; color:var(--ink);
+  transition:color .18s;
+}
+.check-item.done .check-action{color:var(--ink3); text-decoration:line-through; text-decoration-color:var(--line2)}
+.check-progress{
+  font-family:var(--mono);
+  font-size:11px; letter-spacing:1.5px; color:var(--ink3);
+  margin-bottom:16px;
+  display:flex; align-items:center; gap:10px;
+}
+.check-progress .cp-bar{
+  flex:1; height:4px; border-radius:3px; background:var(--paper3); overflow:hidden;
+}
+.check-progress .cp-bar > i{display:block; height:100%; background:var(--target); border-radius:3px; transition:width .3s}
+.check-reset{
+  font-family:var(--mono); font-size:10px; letter-spacing:1px;
+  color:var(--ink3); background:none; border:none; cursor:pointer;
+  text-decoration:underline; text-underline-offset:2px;
+}
+.check-reset:hover{color:var(--stop)}
+
+/* ═══ WATCH-specific ═══════════════════════════════════════════ */
+.trigger-list{display:flex; flex-direction:column; gap:8px}
+.trigger-row{
+  display:flex; align-items:flex-start; gap:12px;
+  padding:13px 16px;
+  background:var(--paper2);
+  border:1px solid var(--line);
+  border-left:3px solid var(--system);
+  border-radius:var(--radius-sm);
+  box-shadow:var(--shadow-card);
+}
+.trigger-row .tr-arrow{color:var(--system); font-family:var(--mono); font-weight:700; flex-shrink:0; margin-top:1px}
+.trigger-row .tr-text{flex:1}
+.trigger-row .tr-cond{font-size:15.5px; font-weight:700; color:var(--ink)}
+.trigger-row .tr-note{font-size:13px; color:var(--ink2); margin-top:2px}
+
+.scanner-card{
+  background:var(--paper2);
+  border:1px solid var(--line2);
+  border-radius:var(--radius);
+  padding:20px 22px;
+  box-shadow:var(--shadow-card);
+}
+.scanner-top{display:flex; align-items:baseline; gap:12px; margin-bottom:14px; flex-wrap:wrap}
+.scanner-code{font-family:var(--mono); font-size:24px; font-weight:700; color:var(--ink)}
+.scanner-name{font-size:18px; font-weight:800; color:var(--ink)}
+.scanner-score{
+  font-family:var(--mono); font-size:12px; letter-spacing:1px;
+  color:var(--system); margin-left:auto;
+  background:var(--system-soft); padding:4px 10px; border-radius:20px;
+}
+.scanner-split{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.scanner-col .sc-h{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:7px; display:flex; align-items:center; gap:6px;
+}
+.scanner-col.sees .sc-h{color:var(--target)}
+.scanner-col.avoid .sc-h{color:var(--stop)}
+.scanner-col p{font-size:14.5px; line-height:1.7; color:var(--ink)}
+
+.micro-pick{
+  background:var(--gold-soft);
+  border:1px dashed var(--gold);
+  border-radius:var(--radius);
+  padding:18px 22px;
+}
+.micro-pick .mp-tag{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--gold); font-weight:700; margin-bottom:8px;
+}
+
+/* ═══ FOOTER NAV ═══════════════════════════════════════════════ */
+.foot-nav{
+  margin-top:40px; padding-top:24px;
+  border-top:1px solid var(--line2);
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.foot-nav a{
+  font-family:var(--mono); font-size:12px; letter-spacing:1px;
+  color:var(--ink2);
+  display:inline-flex; align-items:center; gap:7px;
+  padding:9px 14px; border-radius:20px;
+  border:1px solid var(--line2); background:var(--paper2);
+  transition:border-color .15s, color .15s;
+}
+.foot-nav a:hover{border-color:var(--gold); color:var(--gold); text-decoration:none}
+.foot-nav a.home{color:var(--gold)}
+.foot-nav .fn-spacer{flex:1}
+
+/* ═══ EMPTY / FALLBACK ═════════════════════════════════════════ */
+.empty-field{color:var(--ink3); font-style:italic}
+
+/* ═══ RESPONSIVE ═══════════════════════════════════════════════ */
+@media (max-width:640px){
+  body{font-size:15.5px}
+  .page{padding:0 16px 60px}
+  .return-band{margin:0 -16px}
+  .hero-verdict{font-size:clamp(38px, 13vw, 52px)}
+  .keynums{grid-template-columns:repeat(2, 1fr)}   /* 2×2 on mobile */
+  .keynum.entry .kn-val{font-size:26px}            /* reset entry weighting in 2×2 */
+  .keynum.entry::after{display:none}
+  .stock-card{flex-direction:column; align-items:flex-start}
+  .stock-verdict-wrap{text-align:left}
+  .conf-bar{margin-left:0}
+  .scanner-split{grid-template-columns:1fr; gap:12px}
+  .sec-h{font-size:20px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *, *::before, *::after{transition-duration:.001ms !important; animation-duration:.001ms !important}
+  html{scroll-behavior:auto}
+}
+
+/* ═══ DARK-MODE awareness (respect OS, but keep paper warmth) ═══ */
+@media (prefers-color-scheme:dark){
+  /* Intentionally NOT inverting — picks subsite is a "daylight reading" space.
+     The navy return-band already bridges from the dark dashboard.
+     If needed later, a .theme-night class can override here. */
+}

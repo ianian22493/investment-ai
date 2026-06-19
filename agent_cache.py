@@ -64,6 +64,7 @@ TTL: dict[str, int | None] = {
     "devils_advocate":  None,
     "reflection":       None,
     "master_agent":     None,
+    "pick_explainer":   None,    # /picks/YYYY-MM-DD.html — daily fresh
 
     # Portfolio Desk
     "us_portfolio":     3,
