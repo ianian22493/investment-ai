@@ -255,23 +255,25 @@ document.getElementById('kn-hold').textContent = f(DATA.hold_days);
 document.getElementById('chart-fallback-sym').textContent = `${f(DATA.name)} ${f(DATA.code)} · TPE`;
 (function loadTV(){
   if(!DATA.code) return;
-  const s = document.createElement('script');
-  s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
-  s.async = true;
-  s.innerHTML = JSON.stringify({
-    symbols: [[`${DATA.name} ${DATA.code}`, `TPE:${DATA.code}`]],
-    width: "100%", height: "380", locale: "zh_TW",
-    colorTheme: "light", isTransparent: true,
-    showVolume: true, fontFamily: "JetBrains Mono"
-  });
-  s.onload = () => { const fb = document.getElementById('chart-fallback'); if(fb) fb.style.display='none'; };
-  document.getElementById('tv-chart').appendChild(s);
-  // hide fallback if widget renders an iframe
-  setTimeout(()=>{
-    if(document.querySelector('#tv-chart iframe')){
-      const fb = document.getElementById('chart-fallback'); if(fb) fb.style.display='none';
-    }
-  }, 2500);
+  // Iframe embed is more reliable than the dynamic script approach —
+  // works regardless of CSP / async bootstrap timing. Falls back to
+  // the static SVG chart-fallback when the iframe is blocked.
+  const sym = encodeURIComponent(`TPE:${DATA.code}`);
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://s.tradingview.com/widgetembed/?symbol=${sym}` +
+               `&interval=D&hide_top_toolbar=1&hide_side_toolbar=1` +
+               `&theme=light&style=1&timezone=Asia%2FTaipei&locale=zh_TW` +
+               `&studies=%5B%22MASimple%40tv-basicstudies%22%5D&toolbarbg=fafafa`;
+  iframe.style.cssText = 'width:100%; height:380px; border:0; border-radius:8px; background:var(--paper2);';
+  iframe.loading = 'lazy';
+  iframe.referrerPolicy = 'origin';
+  iframe.onload = () => {
+    const fb = document.getElementById('chart-fallback');
+    if(fb) fb.style.display = 'none';
+  };
+  // If iframe never fires onload within 5s (blocked / network slow),
+  // the fallback stays visible — graceful degradation.
+  document.getElementById('tv-chart').appendChild(iframe);
 })();
 
 /* Deep analysis */
