@@ -1395,6 +1395,22 @@ body.midnight-deep::after{ opacity:.18 !important; }
         <div class="confidence-track"><div class="confidence-fill" id="briefing-conf-fill"></div></div>
         <span class="confidence-val" id="briefing-conf-val">—</span>
       </div>
+      <!-- Task 9 · Always-visible entry to standalone pick page -->
+      <a id="briefing-pick-link" href="#" target="_self"
+         style="display:none; margin-top:14px; padding:10px 12px;
+                background:rgba(201,168,76,.08);
+                border:1px solid rgba(201,168,76,.4);
+                border-radius:5px;
+                text-decoration:none;
+                align-items:center; justify-content:space-between; gap:10px;
+                transition:background .15s, border-color .15s">
+        <span style="font:700 10px/1 'JetBrains Mono',monospace;letter-spacing:1.5px;color:var(--gold)">
+          📖 READ FULL ANALYSIS
+        </span>
+        <span style="font:600 9px/1 'JetBrains Mono',monospace;color:var(--text3);letter-spacing:1px">
+          today →
+        </span>
+      </a>
     </section>
 
     <!-- LIVE TRIGGERS (cockpit rule state) -->
@@ -2737,6 +2753,24 @@ function renderSidebar(){
   $('briefing-conf-fill').style.background = vCol;
   $('briefing-conf-val').textContent = conf.toFixed(2);
   $('briefing-conf-val').style.color = vCol;
+
+  // ───── Task 9: pick page link (always-visible entry) ─────
+  // Shows the link whenever we have today's date. Page may 404 today
+  // (first run-up day) but will exist after next 16:30 post-market cron.
+  const briefingLink = $('briefing-pick-link');
+  const today = (DATA.generated_at || '').slice(0, 10);
+  if(briefingLink && today){
+    briefingLink.href = `picks/${today}.html`;
+    briefingLink.style.display = 'flex';   // reveal (was display:none)
+    briefingLink.onmouseover = () => {
+      briefingLink.style.background = 'rgba(201,168,76,.18)';
+      briefingLink.style.borderColor = 'var(--gold)';
+    };
+    briefingLink.onmouseout = () => {
+      briefingLink.style.background = 'rgba(201,168,76,.08)';
+      briefingLink.style.borderColor = 'rgba(201,168,76,.4)';
+    };
+  }
 
   // ───── COCKPIT (rule states, not log) ─────
   const liquidity = wm.liquidity_risk || wm.risk_level || 'moderate';
