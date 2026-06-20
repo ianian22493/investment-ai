@@ -282,7 +282,67 @@ a:hover{text-decoration:underline; text-underline-offset:3px}
 .keynum.target{--kc:var(--target)}
 .keynum.hold{--kc:var(--ink)}
 
-/* ═══ CHART ══════════════════════════════════════════════════════ */
+/* ═══ CHART CTA ══════════════════════════════════════════════════ */
+/* TradingView's free embed walls Taiwan stocks; we link out to their
+   public symbol page instead. Make it look like a confident invitation,
+   not a fallback. */
+.tv-cta{
+  display:flex; align-items:center; gap:18px;
+  padding:24px 26px;
+  background:linear-gradient(135deg, var(--paper2) 0%, var(--gold-soft) 100%);
+  border:1px solid var(--line2);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-card);
+  text-decoration:none; color:inherit;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.tv-cta:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 24px rgba(60,48,28,.10);
+  border-color:var(--gold);
+  text-decoration:none;
+}
+.tv-cta-icon{
+  flex:none;
+  width:56px; height:56px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--paper); color:var(--gold);
+  border:1px solid var(--line2);
+}
+.tv-cta-body{flex:1; min-width:0}
+.tv-cta-h{
+  font-family:var(--serif);
+  font-size:clamp(20px, 4.2vw, 26px);
+  font-weight:700;
+  color:var(--ink);
+  margin-bottom:5px;
+  line-height:1.2;
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+}
+.tv-cta-code{
+  font-family:var(--mono);
+  font-size:11px; letter-spacing:1.5px;
+  color:var(--gold);
+  font-weight:600;
+}
+.tv-cta-sub{
+  font-family:var(--sans);
+  font-size:12.5px;
+  color:var(--ink2);
+  line-height:1.5;
+}
+.tv-cta-arrow{
+  flex:none;
+  font-family:var(--serif);
+  font-size:28px;
+  color:var(--gold);
+  font-weight:700;
+  transition:transform .15s ease;
+}
+.tv-cta:hover .tv-cta-arrow{transform:translateX(4px)}
+
+/* Legacy chart-wrap / chart-fallback kept for older generated pages
+   (will fade out as new ones replace) */
 .chart-wrap{
   background:var(--paper2);
   border:1px solid var(--line2);

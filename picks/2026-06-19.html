@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{{name}} {{code}} · Yuzu Picks</title>
+<title>Yuzu Pick · Daily Journal</title>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,7 @@
 
   <!-- Dashboard continuity band -->
   <div class="return-band">
-    <a class="rb-back" href="../index.html">← DASHBOARD</a>
+    <a class="rb-back" href="https://ianian22493.github.io/">← 柚子首頁</a>
     <span class="rb-logo"><img src="../favicon.svg" alt="">YUZU CAPITAL</span>
     <span class="rb-meta" id="rb-date">—</span>
   </div>
@@ -84,16 +84,23 @@
   <section class="sec">
     <div class="sec-label"><span class="sec-no">04</span> 走勢圖 · CHART</div>
     <div class="chart-wrap">
-      <div class="tradingview-widget-container">
-        <div id="tv-chart"></div>
-        <div class="chart-fallback" id="chart-fallback">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-            <path d="M3 17l5-6 4 4 5-8 4 5"/><path d="M3 21h18"/>
+      <a id="tv-link" href="#" target="_blank" rel="noopener" class="tv-cta">
+        <div class="tv-cta-icon">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"/>
+            <path d="M7 14l3-3 3 3 5-6"/>
+            <circle cx="7" cy="14" r="1.2" fill="currentColor"/>
+            <circle cx="10" cy="11" r="1.2" fill="currentColor"/>
+            <circle cx="13" cy="14" r="1.2" fill="currentColor"/>
+            <circle cx="18" cy="8"  r="1.2" fill="currentColor"/>
           </svg>
-          <div>TradingView 走勢圖<br><span id="chart-fallback-sym">—</span></div>
-          <div style="font-size:10px; opacity:.6">（需連線載入 · 離線時顯示此區）</div>
         </div>
-      </div>
+        <div class="tv-cta-body">
+          <div class="tv-cta-h"><span id="tv-cta-name">—</span> <span id="tv-cta-code" class="tv-cta-code">—</span></div>
+          <div class="tv-cta-sub">在 TradingView 開完整 K 線圖 · 日線 / 週線 / 技術指標</div>
+        </div>
+        <div class="tv-cta-arrow">→</div>
+      </a>
     </div>
   </section>
 
@@ -138,7 +145,7 @@
 
   <!-- FOOTER NAV -->
   <nav class="foot-nav">
-    <a class="home" href="../index.html">← DASHBOARD</a>
+    <a class="home" href="https://ianian22493.github.io/">← 柚子首頁</a>
     <span class="fn-spacer"></span>
     <a href="#" id="prev-pick">← 前一筆</a>
     <a href="index.html">月曆</a>
@@ -251,25 +258,18 @@ document.getElementById('kn-target').textContent = f(DATA.target);
 document.getElementById('kn-rr').textContent = DATA.risk_reward ? `R:R ${DATA.risk_reward}` : '目標';
 document.getElementById('kn-hold').textContent = f(DATA.hold_days);
 
-/* Chart */
-document.getElementById('chart-fallback-sym').textContent = `${f(DATA.name)} ${f(DATA.code)} · TPE`;
-(function loadTV(){
-  if(!DATA.code) return;
-  const sym = encodeURIComponent(`TPE:${DATA.code}`);
-  const iframe = document.createElement('iframe');
-  iframe.src = `https://s.tradingview.com/widgetembed/?symbol=${sym}` +
-               `&interval=D&hide_top_toolbar=1&hide_side_toolbar=1` +
-               `&theme=light&style=1&timezone=Asia%2FTaipei&locale=zh_TW` +
-               `&studies=%5B%22MASimple%40tv-basicstudies%22%5D&toolbarbg=fafafa`;
-  iframe.style.cssText = 'width:100%; height:380px; border:0; border-radius:8px; background:var(--paper2);';
-  iframe.loading = 'lazy';
-  iframe.referrerPolicy = 'origin';
-  iframe.onload = () => {
-    const fb = document.getElementById('chart-fallback');
-    if(fb) fb.style.display = 'none';
-  };
-  document.getElementById('tv-chart').appendChild(iframe);
-})();
+/* Tab title */
+if(DATA.code && DATA.code !== '—'){
+  document.title = `${DATA.code} ${DATA.name || ''} · ${DATA.verdict || 'Pick'} · Yuzu`;
+}
+
+/* Chart CTA — link out to TradingView's free public symbol page */
+if(DATA.code && DATA.code !== '—'){
+  const link = document.getElementById('tv-link');
+  link.href = `https://www.tradingview.com/symbols/TWSE-${DATA.code}/`;
+  document.getElementById('tv-cta-name').textContent = f(DATA.name);
+  document.getElementById('tv-cta-code').textContent = `TWSE:${DATA.code}`;
+}
 
 /* Deep analysis */
 const ANALYSIS = [
