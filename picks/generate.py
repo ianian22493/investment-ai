@@ -179,13 +179,16 @@ def build_picks_manifest() -> list[dict]:
             d = json.loads(data_match.group(1))
             has_pick = d.get("code") and d.get("code") not in ("—", "NONE", "", None)
             manifest.append({
-                "date":    page_date,
-                "type":    "pick" if has_pick else "watch",
-                "code":    d.get("code") if has_pick else None,
-                "name":    d.get("name") if has_pick else None,
-                "verdict": d.get("verdict", "—"),
-                "result":  None,   # filled below from alpha.db
-                "pnl":     None,
+                "date":       page_date,
+                "type":       "pick" if has_pick else "watch",
+                "code":       d.get("code") if has_pick else None,
+                "name":       d.get("name") if has_pick else None,
+                "verdict":    d.get("verdict", "—"),
+                "entry_zone": d.get("entry_zone") if has_pick else None,
+                "stop_loss":  d.get("stop_loss") if has_pick else None,
+                "target":     d.get("target") if has_pick else None,
+                "result":     None,   # filled below from alpha.db
+                "pnl":        None,
             })
         except Exception as e:
             print(f"  [generate.py] skip manifest scan {fn}: {e}")

@@ -91,6 +91,24 @@
 .cal-result.win{color:var(--target)}
 .cal-result.loss{color:var(--stop)}
 .cal-code{font-family:var(--mono); font-size:10px; color:var(--ink3); margin-top:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cal-entry{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.3px;
+  color:var(--gold); font-weight:600; margin-top:2px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.cal-toggle{
+  position:absolute; right:6px; bottom:6px;
+  width:22px; height:22px; border-radius:5px;
+  background:var(--paper); border:1px solid var(--line2);
+  font-family:var(--mono); font-size:13px; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; padding:0;
+  transition:background .12s, border-color .12s, color .12s;
+}
+.cal-toggle.unset{color:var(--ink3)}
+.cal-toggle.done{color:var(--target); border-color:var(--target); background:var(--target-soft)}
+.cal-toggle.skipped{color:var(--stop); border-color:var(--stop); background:var(--stop-soft)}
+.cal-toggle:hover{transform:scale(1.08); border-color:var(--gold)}
 
 /* hover tooltip */
 .cal-tip{
@@ -164,8 +182,9 @@
   .stat-strip{grid-template-columns:repeat(2,1fr)}
   .cal{gap:4px}
   .cal-cell{padding:5px 6px; border-radius:8px}
-  .cal-result, .cal-code{display:none}  /* compact: dot only on mobile */
+  .cal-result, .cal-code, .cal-entry{display:none}  /* compact: dot + toggle only on mobile */
   .cal-dot{position:static; margin-top:auto; align-self:flex-start}
+  .cal-toggle{width:18px; height:18px; font-size:11px; right:4px; bottom:4px}
   .pick-table td{padding:11px 8px}
   .pt-stock .pt-code{display:block; margin:0 0 2px}
 }
@@ -242,7 +261,7 @@
 
 <!-- Generator injects real picks array into this script tag.
      Unreplaced → SAMPLE below (mockup mode for standalone preview). -->
-<script id="picks-data" type="application/json">[{"date": "2026-06-19", "type": "pick", "code": "2492", "name": "華新科", "verdict": "推薦出手", "result": "pending", "pnl": null}]</script>
+<script id="picks-data" type="application/json">[{"date": "2026-06-19", "type": "pick", "code": "2492", "name": "華新科", "verdict": "推薦出手", "entry_zone": "560.0-565.0", "stop_loss": "545.0", "target": "595.0", "result": "pending", "pnl": null}]</script>
 
 <script>
 /* PICKS INDEX DATA — only used as fallback when picks-data is unreplaced
@@ -272,6 +291,36 @@ const todayISO = new Date().toISOString().slice(0,10);
 const WD = ['日','一','二','三','四','五','六'];
 
 /* ─── Calendar render ─── */
+/* ─── localStorage 'yuzu-pick-actioned' — SAME key + schema as dashboard
+ *      ARCHIVE so toggling here syncs with PICK HISTORY there.
+ *      Schema v2: { [pickId]: { state: 'followed'|'skipped', entry: number|null } }
+ *      pickId = `${date}|${code}` */
+const ACTIONED_KEY = 'yuzu-pick-actioned';
+function escapeHTML(s){
+  if(s==null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function pickId(iso, code){ return `${iso}|${code||''}`; }
+function getActionedMap(){
+  try { return JSON.parse(localStorage.getItem(ACTIONED_KEY) || '{}'); }
+  catch { return {}; }
+}
+function getActionedState(id){
+  const e = getActionedMap()[id];
+  if(!e) return null;
+  return (typeof e === 'string') ? e : (e.state || null);
+}
+function cycleActionedState(id){
+  const cur = getActionedState(id);
+  const next = cur === null ? 'followed' : cur === 'followed' ? 'skipped' : null;
+  const map = getActionedMap();
+  const existing = (typeof map[id] === 'object' && map[id]) ? map[id] : {};
+  if(next) map[id] = { state: next, entry: existing.entry || null };
+  else delete map[id];
+  try { localStorage.setItem(ACTIONED_KEY, JSON.stringify(map)); } catch {}
+  return next;
+}
+
 function renderCalendar(){
   document.getElementById('monthLabel').textContent = `${viewYear} · ${String(viewMonth+1).padStart(2,'0')}`;
   const cal = document.getElementById('calendar');
@@ -295,22 +344,49 @@ function renderCalendar(){
     }
     let dotClass = 'watch', resHTML = '';
     if(p.type === 'watch'){ dotClass = 'watch'; }
-    else if(p.result === 'win'){ dotClass='win'; resHTML = `<div class="cal-result win">${p.pnl||'WIN'}</div>`; }
-    else if(p.result === 'loss'){ dotClass='loss'; resHTML = `<div class="cal-result loss">${p.pnl||'LOSS'}</div>`; }
+    else if(p.result === 'win'){ dotClass='win'; resHTML = `<div class="cal-result win">${escapeHTML(p.pnl||'WIN')}</div>`; }
+    else if(p.result === 'loss'){ dotClass='loss'; resHTML = `<div class="cal-result loss">${escapeHTML(p.pnl||'LOSS')}</div>`; }
     else { dotClass='watch'; resHTML = `<div class="cal-result" style="color:var(--ink3)">…</div>`; }
 
-    const codeLine = p.code ? `<div class="cal-code">${p.code}</div>` : '<div class="cal-code">觀望</div>';
+    const codeLine = p.code ? `<div class="cal-code">${escapeHTML(p.code)}</div>` : '<div class="cal-code">觀望</div>';
+    const entryLine = (p.type === 'pick' && p.entry_zone)
+      ? `<div class="cal-entry">${escapeHTML(p.entry_zone)}</div>` : '';
+
+    // "我做了嗎" toggle — only on pick days. State syncs with dashboard ARCHIVE.
+    let toggleHTML = '';
+    if(p.type === 'pick' && p.code){
+      const pid = pickId(iso, p.code);
+      const st  = getActionedState(pid);
+      const sym = st === 'followed' ? '✓' : st === 'skipped' ? '✗' : '☐';
+      const cls = st === 'followed' ? 'done' : st === 'skipped' ? 'skipped' : 'unset';
+      const ttl = st === 'followed' ? '已照做 (點擊改為 沒做)'
+                : st === 'skipped'  ? '沒做 (點擊清除)'
+                :                     '未標記 (點擊：我做了)';
+      toggleHTML = `<button class="cal-toggle ${cls}" data-pid="${escapeHTML(pid)}" title="${ttl}" aria-label="${ttl}">${sym}</button>`;
+    }
+
     cal.insertAdjacentHTML('beforeend', `
       <a class="cal-cell has ${isToday?'today':''}" href="${iso}.html"
-         data-iso="${iso}" data-name="${p.name||'觀望'}" data-code="${p.code||''}"
-         data-res="${p.result||(p.type==='watch'?'watch':'pending')}" data-pnl="${p.pnl||''}">
+         data-iso="${iso}" data-name="${escapeHTML(p.name||'觀望')}" data-code="${escapeHTML(p.code||'')}"
+         data-res="${p.result||(p.type==='watch'?'watch':'pending')}" data-pnl="${escapeHTML(p.pnl||'')}">
         <span class="cal-day">${day}</span>
         <span class="cal-dot ${dotClass}"></span>
-        ${resHTML}${codeLine}
+        ${codeLine}${entryLine}${resHTML}${toggleHTML}
       </a>`);
   }
   wireTips();
 }
+
+// Event delegation: clicking the toggle button cycles state without
+// navigating to the pick page (preventDefault on parent <a>).
+document.getElementById('calendar').addEventListener('click', e => {
+  const btn = e.target.closest('.cal-toggle');
+  if(!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  cycleActionedState(btn.dataset.pid);
+  renderCalendar();   // re-render to update the toggle visual
+});
 
 /* ─── Hover tooltips ─── */
 const tip = document.getElementById('calTip');
