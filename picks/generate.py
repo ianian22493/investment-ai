@@ -155,6 +155,96 @@ def render(template_path: str, data: dict) -> str:
     return html.replace("{{DATA_JSON}}", payload)
 
 
+def build_picks_manifest() -> list[dict]:
+    """掃描 picks/*.html 從每個檔案抽出注入的 pick-data JSON，
+    建出 calendar 用的 manifest。順便從 alpha.db 補 win/loss 結果。
+    """
+    import sqlite3
+    manifest = []
+    for fn in sorted(os.listdir(PICKS_DIR)):
+        m = re.match(r"^(\d{4}-\d{2}-\d{2})\.html$", fn)
+        if not m:
+            continue
+        page_date = m.group(1)
+        path = os.path.join(PICKS_DIR, fn)
+        try:
+            with open(path, encoding="utf-8") as f:
+                content = f.read()
+            data_match = re.search(
+                r'<script id="pick-data" type="application/json">(.+?)</script>',
+                content, re.S,
+            )
+            if not data_match:
+                continue
+            d = json.loads(data_match.group(1))
+            has_pick = d.get("code") and d.get("code") not in ("—", "NONE", "", None)
+            manifest.append({
+                "date":    page_date,
+                "type":    "pick" if has_pick else "watch",
+                "code":    d.get("code") if has_pick else None,
+                "name":    d.get("name") if has_pick else None,
+                "verdict": d.get("verdict", "—"),
+                "result":  None,   # filled below from alpha.db
+                "pnl":     None,
+            })
+        except Exception as e:
+            print(f"  [generate.py] skip manifest scan {fn}: {e}")
+
+    # Enrich with outcomes from alpha.db
+    db_path = os.path.join(DATA_DIR, "alpha.db")
+    if os.path.exists(db_path):
+        try:
+            conn = sqlite3.connect(db_path)
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                "SELECT date, stock_code, return_pct, success, resolved FROM picks"
+            ).fetchall()
+            by_date = {r["date"]: r for r in rows}
+            conn.close()
+            for entry in manifest:
+                if entry["type"] != "pick":
+                    continue
+                r = by_date.get(entry["date"])
+                if not r:
+                    continue
+                if r["resolved"] == 1 and r["return_pct"] is not None:
+                    entry["result"] = "win" if r["return_pct"] > 0 else "loss"
+                    sign = "+" if r["return_pct"] > 0 else ""
+                    entry["pnl"] = f"{sign}{r['return_pct']:.1f}%"
+                else:
+                    entry["result"] = "pending"
+        except Exception as e:
+            print(f"  [generate.py] alpha.db enrich failed: {e}")
+    return manifest
+
+
+def render_calendar_index():
+    """把當前 picks/*.html 整理成 manifest，注入 picks/index.html
+    的 <script id="picks-data"> 區塊。每次 cron 都會跑，所以月曆永遠是
+    最新狀態（不會殘留 SAMPLE 假資料）。"""
+    manifest = build_picks_manifest()
+    index_path = os.path.join(PICKS_DIR, "index.html")
+    if not os.path.exists(index_path):
+        return
+    with open(index_path, encoding="utf-8") as f:
+        html = f.read()
+    payload = json.dumps(manifest, ensure_ascii=False)
+    payload = payload.replace("</script>", "<\\/script>")
+    # Match the script tag content (both unreplaced {{PICKS_JSON}} and
+    # previously-injected JSON). Replace text node only.
+    new_html = re.sub(
+        r'(<script id="picks-data" type="application/json">)(.*?)(</script>)',
+        lambda m: m.group(1) + payload + m.group(3),
+        html, count=1, flags=re.S,
+    )
+    if new_html != html:
+        with open(index_path, "w", encoding="utf-8") as f:
+            f.write(new_html)
+        print(f"[generate.py] [OK] refreshed calendar manifest ({len(manifest)} entries)")
+    else:
+        print(f"[generate.py] [WARN] calendar manifest unchanged (script tag not found?)")
+
+
 def main():
     analysis = _load_json(os.path.join(DATA_DIR, "analysis.json"))
     if not analysis:
@@ -225,6 +315,11 @@ def main():
                 with open(prev_path, "w", encoding="utf-8") as f:
                     f.write(new_prev_html)
                 print(f"[generate.py] ✓ backfilled next_date in {prev}.html")
+
+    # Refresh calendar index — scan all existing picks/*.html, build a
+    # manifest, inject into picks/index.html. Replaces any stale SAMPLE
+    # data and ensures every dot on the calendar links to a real file.
+    render_calendar_index()
 
 
 if __name__ == "__main__":
