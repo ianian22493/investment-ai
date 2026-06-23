@@ -222,15 +222,18 @@ def build_picks_manifest() -> list[dict]:
 
 
 def write_latest_pointer():
-    """把最近一篇 pick 的日期寫到 picks/latest.json，讓 hub
-    不用依賴 analysis.json 的 generated_at（盤前會清空 tw_daily_pick）。"""
+    """把最近一篇日記頁的日期寫到 picks/latest.json，讓 hub
+    不用依賴 analysis.json 的 generated_at（盤前會清空 tw_daily_pick）。
+    含 watch day — 觀望日也有頁面（reflection + 為什麼不出手），
+    使用者該看得到。如果存在 pick day 比較新就用 pick，否則 watch。"""
     manifest = build_picks_manifest()
-    picks_only = [m for m in manifest if m.get("type") == "pick"]
-    if not picks_only:
+    if not manifest:
         return
-    latest = max(picks_only, key=lambda m: m["date"])
+    # 取所有 entries（pick + watch）中最新日期
+    latest = max(manifest, key=lambda m: m["date"])
     out = {
         "date":    latest["date"],
+        "type":    latest.get("type"),   # 'pick' or 'watch'
         "code":    latest.get("code"),
         "name":    latest.get("name"),
         "verdict": latest.get("verdict"),
@@ -239,7 +242,8 @@ def write_latest_pointer():
     path = os.path.join(PICKS_DIR, "latest.json")
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
-    print(f"[generate.py] [OK] wrote picks/latest.json → {latest['date']} {latest.get('code')}")
+    print(f"[generate.py] [OK] wrote picks/latest.json → {latest['date']} "
+          f"{latest.get('type')} {latest.get('code') or '(watch)'}")
 
 
 def render_calendar_index():
