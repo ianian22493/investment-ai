@@ -427,6 +427,24 @@ def run_all():
 
     # ── Save analysis.json ────────────────────────────────────────────────────
     outputs.pop("_candidates", None)   # internal key, not for serialization
+
+    # Pre-market preserves yesterday's tw_daily_pick (Phase 4 only runs post-market).
+    # Without this, the morning cron overwrites analysis.json with an empty pick agent,
+    # breaking the hub's "今日 pick" card link until the 16:30 cron runs.
+    if t0.hour < 13 and not outputs.get("tw_daily_pick"):
+        try:
+            prev_path = os.path.join(DATA_DIR, "analysis.json")
+            if os.path.exists(prev_path):
+                with open(prev_path, encoding="utf-8") as f:
+                    prev = json.load(f)
+                prev_pick = (prev.get("agents", {}) or {}).get("tw_daily_pick")
+                if prev_pick:
+                    outputs["tw_daily_pick"] = prev_pick
+                    print(f"  [pre-market] preserved previous tw_daily_pick "
+                          f"({prev_pick.get('pick',{}).get('code','?')})")
+        except Exception as e:
+            print(f"  [WARN] preserve previous tw_daily_pick: {e}")
+
     analysis = {
         "generated_at": t0.isoformat(),
         "market_snapshot": {
