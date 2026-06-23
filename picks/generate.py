@@ -221,6 +221,27 @@ def build_picks_manifest() -> list[dict]:
     return manifest
 
 
+def write_latest_pointer():
+    """把最近一篇 pick 的日期寫到 picks/latest.json，讓 hub
+    不用依賴 analysis.json 的 generated_at（盤前會清空 tw_daily_pick）。"""
+    manifest = build_picks_manifest()
+    picks_only = [m for m in manifest if m.get("type") == "pick"]
+    if not picks_only:
+        return
+    latest = max(picks_only, key=lambda m: m["date"])
+    out = {
+        "date":    latest["date"],
+        "code":    latest.get("code"),
+        "name":    latest.get("name"),
+        "verdict": latest.get("verdict"),
+        "result":  latest.get("result"),
+    }
+    path = os.path.join(PICKS_DIR, "latest.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
+    print(f"[generate.py] [OK] wrote picks/latest.json → {latest['date']} {latest.get('code')}")
+
+
 def render_calendar_index():
     """把當前 picks/*.html 整理成 manifest，注入 picks/index.html
     的 <script id="picks-data"> 區塊。每次 cron 都會跑，所以月曆永遠是
@@ -265,9 +286,13 @@ def main():
     else:
         date_str = datetime.now(TZ).strftime("%Y-%m-%d")
 
-    # Only generate post-market — pre-market run has no tw_daily_pick
+    # Only generate post-market — pre-market run has no tw_daily_pick.
+    # But still refresh calendar + latest pointer so hub always finds the
+    # most recent existing pick page.
     if not analysis.get("agents", {}).get("tw_daily_pick"):
         print(f"[generate.py] {date_str} 沒有 tw_daily_pick (盤前 run?) — skip page generation")
+        render_calendar_index()
+        write_latest_pointer()
         return
 
     pick_day = _is_pick_day(analysis)
@@ -323,6 +348,7 @@ def main():
     # manifest, inject into picks/index.html. Replaces any stale SAMPLE
     # data and ensures every dot on the calendar links to a real file.
     render_calendar_index()
+    write_latest_pointer()
 
 
 if __name__ == "__main__":
