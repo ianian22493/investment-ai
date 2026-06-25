@@ -1,26 +1,26 @@
 {
   "market_regime_score": 0.0,
-  "trend_strength": 0.057,
-  "risk_pressure": 0.493,
-  "volatility_risk": 0.382,
-  "confidence_score": 0.775,
-  "scanner_momentum": 0.883,
-  "ai_sector_strength": 0.244,
+  "trend_strength": 0.43,
+  "risk_pressure": 0.466,
+  "volatility_risk": 0.201,
+  "confidence_score": 0.8,
+  "scanner_momentum": 0.5,
+  "ai_sector_strength": 0.95,
   "foreign_flow_strength": 0.0,
   "breadth_score": 0.49,
-  "liquidity_score": 0.684,
+  "liquidity_score": 0.272,
   "_sources": {
     "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
-    "trend_strength": "taiex_chg=-2.24%→base=0.127 market_overview_adj=-0.07",
-    "risk_pressure": "vix=19.2→0.358 tw_verdict_adj=-0.000 da_conf=0.90→0.135",
-    "volatility_risk": "vix=19.2→0.305×0.7 taiex_abs=2.24%→0.560×0.3",
-    "confidence_score": "avg_agent_conf=0.775 error_agents=0 degraded=0 penalty=0.00",
-    "scanner_momentum": "top10_avg=5.30/6.0",
-    "ai_sector_strength": "basket 7檔 avg=-2.20% → 0.24",
-    "foreign_flow_strength": "BFI82U_foreign_net=-1774.2億元 → normalized=0.000 (÷500億 clamp±0.5)",
+    "trend_strength": "taiex_chg=+0.00%→base=0.500 market_overview_adj=-0.07",
+    "risk_pressure": "vix=18.6→0.331 tw_verdict_adj=-0.000 da_conf=0.90→0.135",
+    "volatility_risk": "vix=18.6→0.288×0.7 taiex_abs=0.00%→0.000×0.3",
+    "confidence_score": "avg_agent_conf=0.800 error_agents=0 degraded=0 penalty=0.00",
+    "scanner_momentum": "no candidates loaded",
+    "ai_sector_strength": "basket 7檔 avg=+nan% → 0.95",
+    "foreign_flow_strength": "BFI82U_foreign_net=-1774.0億元 → normalized=0.000 (÷500億 clamp±0.5)",
     "breadth_score": "MI_INDEX advance=476(+23漲停) decline=496(+4跌停) advance_ratio=0.490",
-    "liquidity_score": "margin_balance=5939億元 變化=-1.84% → score=0.684 (-2%→0.7, +2%→0.3)"
+    "liquidity_score": "margin_balance=6075億元 變化=+2.28% → score=0.272 (-2%→0.7, +2%→0.3)"
   },
   "_data_gaps": [],
-  "_computed_at": "2026-06-24T16:34:00.982019+08:00"
+  "_computed_at": "2026-06-25T08:35:25.081127+08:00"
 }
