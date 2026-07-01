@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>今日觀望 · Yuzu Pick Journal</title>
+<title>Yuzu Pick · Daily Journal</title>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,14 +14,18 @@
 
 <!--
   ════════════════════════════════════════════════════════════════════
-  WATCH DAY TEMPLATE · Yuzu Capital /picks/
-  Inject watch-day JSON into <script id="pick-data">. Unreplaced → SAMPLE.
+  PICK DAY TEMPLATE · Yuzu Capital /picks/
+  Data contract: inject the pick JSON into the <script id="pick-data"> tag
+  below (replace the {"date": "2026-07-01", "regime": "趨勢多頭", "risk_level": "low", "trading_budget": "35% · ~NT$ 372,765", "code": "3706", "name": "神達", "verdict": "謹慎試單", "confidence": 0.65, "entry_zone": "91.0-92.0", "stop_loss": "88.5", "target": "97.0", "hold_days": "預計持有1-3天", "ref_close": "91.3", "risk_reward": "1:1.8", "context_paragraph": "今日台股在外資大舉買超323.75億元推動下，強勢突破歷史新高47018.99點，S&P500也維持上漲動能，收在7499.36點。這些數據都指向市場呈現明確的風險開啟訊號，我的系統評分顯示市場趨勢動能強勁 (trend_strength 0.903, scanner_momentum 0.917)，外資流入強度亦高達0.824。這顯現出資金持續流入的積極態勢，尤其是在高價電子股中。然而，VIX指數維持在16.99，顯示市場雖熱絡但並非完全無視潛在波動。上漲家數與下跌家數比例為417/560，並非普漲格局，透露出資金集中於特定族群的現象。這種高位強勢但非全面性的局面，提醒我在追逐短期機會時，仍需對大盤處於歷史高位可能帶來的系統性風險保持警覺 (risk_pressure 0.328)。我的交易預算35%仍會謹慎配置，以應對這種「趨勢多頭但市場高位」的複雜情境。", "why_this_stock": "在今日scanner篩選出的前五檔股票中，神達(3706)之所以脫穎而出，關鍵在於其具備了AI PC/Server概念的主流題材優勢，這是其他候選標的，如龍德造船(6753)、同欣電(6271)、志聖(2467)等，較為缺乏的。雖然德律(3030)也同時具備了「breakout_ma20」的技術訊號，但神達作為AI伺服器供應鏈的一員，其產業能見度與市場追捧熱度明顯更高，能更好地承接大盤資金流向高價電子股的趨勢。在當前市場資金集中於AI相關題材的背景下，神達的題材性與技術面突破的結合，使其更具爆發潛力與短期吸引力，尤其是在今日放量突破MA20之後，其轉強訊號得到進一步確認。這讓我選擇將有限的預算集中於這檔具備雙重利多支撐的標的。", "entry_rationale": "本次進場價區設定在91.0-92.0元，主要考量神達今日在放量下成功突破了多日盤整區間與MA20，收盤價91.3元即落在這個區間。這個價位提供了相對明確的技術轉強點，意味著短線賣壓已被有效消化，多方動能正在積累。我預期在這個區間進場，能有效地捕捉到突破後的慣性上漲初期，同時將交易成本控制在相對合理的區間內。大量籌碼在此區間換手，使得該價位區間成為後續股價能否持續走強的關鍵支撐，若能站穩此處，上漲機率將大幅增加。", "stop_rationale": "停損點設定在88.5元，是基於嚴格的風險控制與技術面考量。此價位略低於今日突破MA20的起漲點，同時也低於過去幾日盤整區間的下緣。如果股價跌破88.5元，意味著本次MA20的突破訊號失效，多方動能不足以維持，甚至可能轉為假突破，籌碼結構將重新轉弱。以進場價中點91.5元計算，風險約為3元，這使得我的風險/報酬比維持在系統建議的1:1.8，確保單筆交易損失在可控範圍內，符合我在高點市場中謹慎試單的策略。", "target_rationale": "我的目標價設定在97.0元，主要是根據技術面上的前高壓力區，以及保持系統建議的風險/報酬比1:1.8來計算。以中位進場價91.5元與停損價88.5元計算，風險為3元。若要達成1.8R，則獲利點應為3元 * 1.8 = 5.4元，即91.5 + 5.4 = 96.9元。97.0元正好是此計算結果的合理圓整，且觀察歷史K線，此區域存在一個較為顯著的短期套牢區或壓力關卡。我的目標是捕捉突破後的短線動能，並在此壓力區附近獲利了結，避免過度戀戰而錯失出場時機，以確保這次試單能實現合理的報酬。", "hold_rationale": "預計持有1-3天的主要原因，是基於這次選股的短線動能突破性質。在目前大盤處於高位且資金流動快速的環境下，這種AI概念股的突破往往在1-3天內就能展現其最強的爆發力。我的策略是捕捉這波短線的慣性上漲，而不是進行長期波段持有。若股價在短時間內無法有效站穩並繼續上攻，或是出現大量黑K反轉訊號，我會考慮提前出場。目標是在達成獲利目標後，快速鎖定利潤，避免因市場情緒快速轉變而影響收益，符合當前「趨勢多頭但市場高位」下謹慎操作的原則。", "risk_scenarios": [{"trigger": "若股價開盤直接跳空跌破88.5元或盤中跌破並未迅速收回", "action": "立刻停損出場，不論是否觸及停損價，避免損失擴大。", "severity": "stop", "rationale": "突破訊號完全失效，多方力道潰散，需立即控制風險。"}, {"trigger": "若股價開高走低，未能守住91.0元，且成交量縮小", "action": "將停損點上移至開盤價附近或89.5元，觀察能否重新站穩。", "severity": "hold", "rationale": "顯示買盤承接力道不足，可能形成假突破，需降低風險敞口。"}, {"trigger": "若台股大盤出現急速下跌或重大利空消息", "action": "視情況減碼或提前出場，不再堅守原訂停損點。", "severity": "stop", "rationale": "系統性風險優先於個股表現，大盤環境惡化將連帶影響個股。"}, {"trigger": "若股價在94.0-95.0元區間盤整超過半天，且量能縮減", "action": "重新評估是否續抱，或考慮減碼部分部位，保護已實現利潤。", "severity": "hold", "rationale": "顯示上攻動能減弱，可能遇到短期壓力，後續爆發力存疑。"}, {"trigger": "若股價在1-2天內迅速達到97.0元目標價附近，並出現長上影線或大量黑K", "action": "預設目標價獲利了結，無需戀戰。", "severity": "go", "rationale": "目標達成，且出現反轉訊號，應確保獲利入袋。"}, {"trigger": "若AI PC/Server相關新聞出現負面消息，直接影響神達股價", "action": "即時判斷消息嚴重性，必要時果斷出場。", "severity": "stop", "rationale": "基本面利空可能改變交易邏輯，需優先反應。"}, {"trigger": "若股價開盤直接跳空突破93.0元，並帶量上攻", "action": "考慮追高少量部位，並將停損上調至今日開盤價附近。", "severity": "go", "rationale": "顯示市場追價意願強烈，突破力道超乎預期，可適度參與。"}], "execution_checklist": [{"time": "盤前 (08:30-08:45)", "action": "確認今日美股期貨及亞洲主要股市開盤情況，判斷大盤整體氛圍。檢查神達相關新聞有無重大異動。"}, {"time": "開盤 (09:00-09:05)", "action": "觀察神達開盤價是否落在91.0-92.0元區間。若直接跳空過高或過低，則依據風險情境判斷是否進場。確認開盤5分鐘量能。"}, {"time": "盤中 (09:05-10:00)", "action": "若符合進場區間，以市價或限價單分批建倉，確保買入均價在合理範圍內。設定好88.5元停損單。"}, {"time": "盤中 (10:00-收盤前)", "action": "持續監控股價走勢、成交量變化，並留意是否觸及停損點或目標價。特別關注大盤及同族群股票動態，確認資金流向。"}, {"time": "盤中 (隨時)", "action": "若出現極端行情或風險情境中描述的觸發條件，立刻執行相應的動作，不預設立場。若接近目標價97.0元，準備獲利了結。"}, {"time": "收盤 (13:30)", "action": "檢視今日交易執行情況，並根據收盤價評估持倉狀況，更新次日策略。若未出場，則檢查是否有未執行訂單。"}], "devils_advocate": {"verdict": "強烈反對", "summary": "市場普遍的樂觀情緒與進攻建議，此刻如同建立在流沙之上的城堡。當前的「歷史高點」和「強勁動能」更像是末日狂歡前的最後一杯酒，而非堅實的成長基石。過度依賴技術指標和表象，可能將我們的投資組合暴露於被嚴重低估的尾部風險之中，一旦市場情緒突然反轉，其後果將不堪設想，遠超預期。", "counter_arguments": ["今日外資對台股的323億元淨買超，明顯指向資金仍偏好流入特定新興市場，並非全面性的流動性緊縮。市場對於聯準會的鷹派立場已有所預期與消化，當前全球流動性並非鐵板一塊。", "地緣政治風險確實永恆存在，但其發生時點與實際影響程度難以精確預測。在缺乏具體惡化訊號的當下，根據當前市場呈現的數據和動能進行短線操作，仍是合理的風險管理範疇。", "台股具備獨特的產業結構與供應鏈優勢，AI題材在台灣有堅實的本土產業鏈支撐，與美股「七巨頭」雖有部分連結，但並非完全綁定。神達作為AI伺服器供應鏈一環，具備其獨立的成長邏輯與動能，不應過度解讀為美股科技股的影子。"]}, "prev_date": "2026-06-30", "next_date": null} token). If left unreplaced, the page
+  renders with SAMPLE data so it works as a standalone mockup.
+  Every field has a fallback — missing fields never crash the page.
   ════════════════════════════════════════════════════════════════════
 -->
-<script id="pick-data" type="application/json">{"date": "2026-07-01", "regime": "資金輪動", "risk_level": "moderate", "verdict": "空手觀望", "context_paragraph": "今日市場呈現資金輪動格局，在美股續創新高帶動下，台股也保持高檔震盪。S&P500上漲0.79%，但台股大盤今日幾乎持平，顯示追價力道有限。外資小幅淨匯出約5億台幣，VIX維持16.45，顯示市場潛在波動風險仍在。儘管上漲家數多於下跌，但權值股尾盤獲利了結賣壓浮現，整體市場動能略顯觀望，而非全面積極。", "why_watching": "今日系統選擇觀望，核心考量是「耐心等待一個更好的價格」，而非錯失機會。儘管美股強勁，台股也續創新高，但系統偵測到幾項關鍵訊號不夠明確：\n1.  **量能與動能不足：** 大盤今日漲幅趨近於零，顯示整體追價意願在高點顯著下降。權值股尾盤出現獲利了結賣壓，顯示市場多方動能存在隱憂，而非健康的輪動態勢。\n2.  **外資態度保守：** 外資今日持續淨匯出約5億台幣，儘管金額不大，但在大盤屢創新高之際，外資未能轉為積極買超，顯示其對當前高點的態度仍偏保守，缺乏大資金的推升力道。\n3.  **風險報酬比不佳：** 主要股指均處於歷史高位，VIX維持在16.45，此時追高潛在回檔風險增加，而向上空間相對有限，導致風險報酬比不夠吸引系統出手。\n4.  **群體思維偏誤警示：** 系統注意到DA分析師普遍看好強勢股，但判斷這種「市場情緒過熱」本身即是風險訊號，可能將投資組合置於脆弱境地。在缺乏明確利多且結構性風險浮現時，系統傾向規避短期波動。", "reactivation_triggers": [{"cond": "外資連續 2 日買超", "note": "且單日金額 > 50 億"}, {"cond": "TAIEX 突破前高後帶量上漲 1% 以上", "note": "確認大盤向上動能，而非高檔整理"}, {"cond": "VIX 跌破 15 且維持 2 日", "note": "市場恐慌情緒顯著下降，風險溢價降低"}, {"cond": "Breadth Score 提升至 0.8 以上", "note": "市場廣度擴張，整體健康度提升"}], "scanner_top1": {"code": "8033", "name": "雷虎", "score": 6, "what_scanner_sees": "Scanner偵測到雷虎(8033)多項強勢訊號。股價位居20日均線之上並呈均線多頭排列，顯示技術面趨勢強勁。同時，交易量能顯著放大，伴隨RSI處於強勢區間，且股價創下五日新高，顯示短線動能充足。其相對強度訊號也確認了該股在市場中的領先地位，展現出強勁的市場人氣與追捧力道。", "what_we_dont_like": "儘管雷虎展現強勁動能，但考量當前大盤處於歷史高點的整理區間，外資又未積極買超，系統認為該股目前的「位階」偏高，潛在獲利空間對比回檔風險，風險報酬比並非最佳。在市場整體風險偏好趨於謹慎之際，過於強勢且已漲高的個股，其追高風險亦相對放大，因此系統選擇暫不介入，等待更佳的進場時機。"}, "micro_pick": null, "prev_date": "2026-06-30", "next_date": null}</script>
+<script id="pick-data" type="application/json">{"date": "2026-07-01", "regime": "趨勢多頭", "risk_level": "low", "trading_budget": "35% · ~NT$ 372,765", "code": "3706", "name": "神達", "verdict": "謹慎試單", "confidence": 0.65, "entry_zone": "91.0-92.0", "stop_loss": "88.5", "target": "97.0", "hold_days": "預計持有1-3天", "ref_close": "91.3", "risk_reward": "1:1.8", "context_paragraph": "今日台股在外資大舉買超323.75億元推動下，強勢突破歷史新高47018.99點，S&P500也維持上漲動能，收在7499.36點。這些數據都指向市場呈現明確的風險開啟訊號，我的系統評分顯示市場趨勢動能強勁 (trend_strength 0.903, scanner_momentum 0.917)，外資流入強度亦高達0.824。這顯現出資金持續流入的積極態勢，尤其是在高價電子股中。然而，VIX指數維持在16.99，顯示市場雖熱絡但並非完全無視潛在波動。上漲家數與下跌家數比例為417/560，並非普漲格局，透露出資金集中於特定族群的現象。這種高位強勢但非全面性的局面，提醒我在追逐短期機會時，仍需對大盤處於歷史高位可能帶來的系統性風險保持警覺 (risk_pressure 0.328)。我的交易預算35%仍會謹慎配置，以應對這種「趨勢多頭但市場高位」的複雜情境。", "why_this_stock": "在今日scanner篩選出的前五檔股票中，神達(3706)之所以脫穎而出，關鍵在於其具備了AI PC/Server概念的主流題材優勢，這是其他候選標的，如龍德造船(6753)、同欣電(6271)、志聖(2467)等，較為缺乏的。雖然德律(3030)也同時具備了「breakout_ma20」的技術訊號，但神達作為AI伺服器供應鏈的一員，其產業能見度與市場追捧熱度明顯更高，能更好地承接大盤資金流向高價電子股的趨勢。在當前市場資金集中於AI相關題材的背景下，神達的題材性與技術面突破的結合，使其更具爆發潛力與短期吸引力，尤其是在今日放量突破MA20之後，其轉強訊號得到進一步確認。這讓我選擇將有限的預算集中於這檔具備雙重利多支撐的標的。", "entry_rationale": "本次進場價區設定在91.0-92.0元，主要考量神達今日在放量下成功突破了多日盤整區間與MA20，收盤價91.3元即落在這個區間。這個價位提供了相對明確的技術轉強點，意味著短線賣壓已被有效消化，多方動能正在積累。我預期在這個區間進場，能有效地捕捉到突破後的慣性上漲初期，同時將交易成本控制在相對合理的區間內。大量籌碼在此區間換手，使得該價位區間成為後續股價能否持續走強的關鍵支撐，若能站穩此處，上漲機率將大幅增加。", "stop_rationale": "停損點設定在88.5元，是基於嚴格的風險控制與技術面考量。此價位略低於今日突破MA20的起漲點，同時也低於過去幾日盤整區間的下緣。如果股價跌破88.5元，意味著本次MA20的突破訊號失效，多方動能不足以維持，甚至可能轉為假突破，籌碼結構將重新轉弱。以進場價中點91.5元計算，風險約為3元，這使得我的風險/報酬比維持在系統建議的1:1.8，確保單筆交易損失在可控範圍內，符合我在高點市場中謹慎試單的策略。", "target_rationale": "我的目標價設定在97.0元，主要是根據技術面上的前高壓力區，以及保持系統建議的風險/報酬比1:1.8來計算。以中位進場價91.5元與停損價88.5元計算，風險為3元。若要達成1.8R，則獲利點應為3元 * 1.8 = 5.4元，即91.5 + 5.4 = 96.9元。97.0元正好是此計算結果的合理圓整，且觀察歷史K線，此區域存在一個較為顯著的短期套牢區或壓力關卡。我的目標是捕捉突破後的短線動能，並在此壓力區附近獲利了結，避免過度戀戰而錯失出場時機，以確保這次試單能實現合理的報酬。", "hold_rationale": "預計持有1-3天的主要原因，是基於這次選股的短線動能突破性質。在目前大盤處於高位且資金流動快速的環境下，這種AI概念股的突破往往在1-3天內就能展現其最強的爆發力。我的策略是捕捉這波短線的慣性上漲，而不是進行長期波段持有。若股價在短時間內無法有效站穩並繼續上攻，或是出現大量黑K反轉訊號，我會考慮提前出場。目標是在達成獲利目標後，快速鎖定利潤，避免因市場情緒快速轉變而影響收益，符合當前「趨勢多頭但市場高位」下謹慎操作的原則。", "risk_scenarios": [{"trigger": "若股價開盤直接跳空跌破88.5元或盤中跌破並未迅速收回", "action": "立刻停損出場，不論是否觸及停損價，避免損失擴大。", "severity": "stop", "rationale": "突破訊號完全失效，多方力道潰散，需立即控制風險。"}, {"trigger": "若股價開高走低，未能守住91.0元，且成交量縮小", "action": "將停損點上移至開盤價附近或89.5元，觀察能否重新站穩。", "severity": "hold", "rationale": "顯示買盤承接力道不足，可能形成假突破，需降低風險敞口。"}, {"trigger": "若台股大盤出現急速下跌或重大利空消息", "action": "視情況減碼或提前出場，不再堅守原訂停損點。", "severity": "stop", "rationale": "系統性風險優先於個股表現，大盤環境惡化將連帶影響個股。"}, {"trigger": "若股價在94.0-95.0元區間盤整超過半天，且量能縮減", "action": "重新評估是否續抱，或考慮減碼部分部位，保護已實現利潤。", "severity": "hold", "rationale": "顯示上攻動能減弱，可能遇到短期壓力，後續爆發力存疑。"}, {"trigger": "若股價在1-2天內迅速達到97.0元目標價附近，並出現長上影線或大量黑K", "action": "預設目標價獲利了結，無需戀戰。", "severity": "go", "rationale": "目標達成，且出現反轉訊號，應確保獲利入袋。"}, {"trigger": "若AI PC/Server相關新聞出現負面消息，直接影響神達股價", "action": "即時判斷消息嚴重性，必要時果斷出場。", "severity": "stop", "rationale": "基本面利空可能改變交易邏輯，需優先反應。"}, {"trigger": "若股價開盤直接跳空突破93.0元，並帶量上攻", "action": "考慮追高少量部位，並將停損上調至今日開盤價附近。", "severity": "go", "rationale": "顯示市場追價意願強烈，突破力道超乎預期，可適度參與。"}], "execution_checklist": [{"time": "盤前 (08:30-08:45)", "action": "確認今日美股期貨及亞洲主要股市開盤情況，判斷大盤整體氛圍。檢查神達相關新聞有無重大異動。"}, {"time": "開盤 (09:00-09:05)", "action": "觀察神達開盤價是否落在91.0-92.0元區間。若直接跳空過高或過低，則依據風險情境判斷是否進場。確認開盤5分鐘量能。"}, {"time": "盤中 (09:05-10:00)", "action": "若符合進場區間，以市價或限價單分批建倉，確保買入均價在合理範圍內。設定好88.5元停損單。"}, {"time": "盤中 (10:00-收盤前)", "action": "持續監控股價走勢、成交量變化，並留意是否觸及停損點或目標價。特別關注大盤及同族群股票動態，確認資金流向。"}, {"time": "盤中 (隨時)", "action": "若出現極端行情或風險情境中描述的觸發條件，立刻執行相應的動作，不預設立場。若接近目標價97.0元，準備獲利了結。"}, {"time": "收盤 (13:30)", "action": "檢視今日交易執行情況，並根據收盤價評估持倉狀況，更新次日策略。若未出場，則檢查是否有未執行訂單。"}], "devils_advocate": {"verdict": "強烈反對", "summary": "市場普遍的樂觀情緒與進攻建議，此刻如同建立在流沙之上的城堡。當前的「歷史高點」和「強勁動能」更像是末日狂歡前的最後一杯酒，而非堅實的成長基石。過度依賴技術指標和表象，可能將我們的投資組合暴露於被嚴重低估的尾部風險之中，一旦市場情緒突然反轉，其後果將不堪設想，遠超預期。", "counter_arguments": ["今日外資對台股的323億元淨買超，明顯指向資金仍偏好流入特定新興市場，並非全面性的流動性緊縮。市場對於聯準會的鷹派立場已有所預期與消化，當前全球流動性並非鐵板一塊。", "地緣政治風險確實永恆存在，但其發生時點與實際影響程度難以精確預測。在缺乏具體惡化訊號的當下，根據當前市場呈現的數據和動能進行短線操作，仍是合理的風險管理範疇。", "台股具備獨特的產業結構與供應鏈優勢，AI題材在台灣有堅實的本土產業鏈支撐，與美股「七巨頭」雖有部分連結，但並非完全綁定。神達作為AI伺服器供應鏈一環，具備其獨立的成長邏輯與動能，不應過度解讀為美股科技股的影子。"]}, "prev_date": "2026-06-30", "next_date": null}</script>
 
 <div class="page">
 
+  <!-- Dashboard continuity band -->
   <div class="return-band">
     <a class="rb-back" href="https://ianian22493.github.io/">← 柚子首頁</a>
     <span class="rb-logo"><img src="../favicon.svg" alt="">YUZU CAPITAL</span>
@@ -31,57 +35,110 @@
   <!-- 1 · HERO -->
   <header class="hero">
     <div class="hero-date" id="hero-date"></div>
-    <div class="hero-verdict watch" id="hero-verdict">今日觀望</div>
+    <div class="hero-verdict" id="hero-verdict">—</div>
     <p class="hero-sub" id="hero-sub"></p>
   </header>
 
-  <!-- 2 · WHY WATCHING -->
-  <section class="sec">
-    <div class="sec-label"><span class="sec-no">01</span> 為什麼不出手 · WHY WATCHING</div>
-    <div class="prose" id="why-watching"></div>
-  </section>
-
-  <!-- 3 · REACTIVATION TRIGGERS -->
-  <section class="sec">
-    <div class="sec-label"><span class="sec-no">02</span> 重新出手條件 · TRIGGERS</div>
-    <p class="prose" style="font-size:14.5px; color:var(--ink2); margin-bottom:16px">
-      系統不是放棄，是在等。以下任一條件成立，就會重新評估進場。
-    </p>
-    <div class="trigger-list" id="trigger-list"></div>
-  </section>
-
-  <!-- 4 · SCANNER TOP1 -->
-  <section class="sec" id="scanner-sec">
-    <div class="sec-label"><span class="sec-no">03</span> 雷達最強標的 · SCANNER</div>
-    <p class="prose" style="font-size:14.5px; color:var(--ink2); margin-bottom:16px">
-      雖然今天不出手，但系統雷達上分數最高的是這檔 —— 以及為什麼我們還是按兵不動。
-    </p>
-    <div class="scanner-card">
-      <div class="scanner-top">
-        <span class="scanner-code" id="sc-code">—</span>
-        <span class="scanner-name" id="sc-name">—</span>
-        <span class="scanner-score" id="sc-score">score —</span>
+  <!-- 2 · STOCK CARD -->
+  <section class="sec" style="border-bottom:none; padding-bottom:14px">
+    <div class="stock-card">
+      <div class="stock-id">
+        <span class="stock-code" id="stock-code">—</span>
+        <span class="stock-name" id="stock-name">—</span>
       </div>
-      <div class="scanner-split">
-        <div class="scanner-col sees">
-          <div class="sc-h">▲ 雷達看到什麼</div>
-          <p id="sc-sees"></p>
-        </div>
-        <div class="scanner-col avoid">
-          <div class="sc-h">▼ 但我們不喜歡</div>
-          <p id="sc-avoid"></p>
-        </div>
+      <div class="stock-verdict-wrap">
+        <div class="stock-verdict" id="stock-verdict">—</div>
+        <div class="conf-bar"><i id="conf-fill" style="width:0%"></i></div>
+        <div class="stock-conf" id="stock-conf">conf —</div>
       </div>
     </div>
   </section>
 
-  <!-- 5 · MICRO PICK (optional) -->
-  <section class="sec" id="micro-sec" style="display:none">
-    <div class="sec-label"><span class="sec-no">04</span> 試單建議 · MICRO PICK</div>
-    <div class="micro-pick">
-      <div class="mp-tag">⚐ 小量試單（非正式進場）</div>
-      <div class="prose" id="micro-body"></div>
+  <!-- 3 · KEY NUMBERS -->
+  <section class="sec" style="border-bottom:none; padding-top:14px">
+    <div class="keynums">
+      <div class="keynum entry">
+        <div class="kn-label">Entry</div>
+        <div class="kn-val" id="kn-entry">—</div>
+        <div class="kn-sub" id="kn-entry-sub">進場區</div>
+      </div>
+      <div class="keynum stop">
+        <div class="kn-label">Stop</div>
+        <div class="kn-val" id="kn-stop">—</div>
+        <div class="kn-sub">停損</div>
+      </div>
+      <div class="keynum target">
+        <div class="kn-label">Target</div>
+        <div class="kn-val" id="kn-target">—</div>
+        <div class="kn-sub" id="kn-rr">目標</div>
+      </div>
+      <div class="keynum hold">
+        <div class="kn-label">Hold</div>
+        <div class="kn-val" id="kn-hold">—</div>
+        <div class="kn-sub">天</div>
+      </div>
     </div>
+  </section>
+
+  <!-- 4 · CHART -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">04</span> 走勢圖 · CHART</div>
+    <a id="tv-link" href="#" target="_blank" rel="noopener" class="tv-cta">
+      <div class="tv-cta-icon">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"/>
+          <path d="M7 14l3-3 3 3 5-6"/>
+          <circle cx="7" cy="14" r="1.2" fill="currentColor"/>
+          <circle cx="10" cy="11" r="1.2" fill="currentColor"/>
+          <circle cx="13" cy="14" r="1.2" fill="currentColor"/>
+          <circle cx="18" cy="8"  r="1.2" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="tv-cta-body">
+        <div class="tv-cta-h"><span id="tv-cta-name">—</span> <span id="tv-cta-code" class="tv-cta-code">—</span></div>
+        <div class="tv-cta-sub">在 TradingView 開完整 K 線圖 · 日線 / 週線 / 技術指標</div>
+      </div>
+      <div class="tv-cta-arrow">→</div>
+    </a>
+  </section>
+
+  <!-- 5 · DEEP ANALYSIS -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">05</span> 深度分析 · ANALYSIS</div>
+    <div id="analysis"></div>
+  </section>
+
+  <!-- 6 · DEVIL'S ADVOCATE -->
+  <section class="sec" id="devil-sec">
+    <div class="sec-label"><span class="sec-no">06</span> 反方論述 · DEVIL'S ADVOCATE</div>
+    <div class="devil">
+      <div class="devil-head">
+        <span class="devil-who">⚔ DA · 反對派</span>
+        <span class="devil-verdict" id="devil-verdict">—</span>
+      </div>
+      <p class="devil-summary" id="devil-summary"></p>
+      <div class="devil-args" id="devil-args"></div>
+    </div>
+  </section>
+
+  <!-- 7 · RISK SCENARIOS -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">07</span> 風險劇本 · IF → THEN</div>
+    <p class="prose" style="font-size:14.5px; color:var(--ink2); margin-bottom:16px">
+      像臨床的決策規則 —— 看到什麼狀況，就做什麼動作。盤中照表操課，不臨場猶豫。
+    </p>
+    <div class="risk-list" id="risk-list"></div>
+  </section>
+
+  <!-- 8 · EXECUTION CHECKLIST -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">08</span> 執行清單 · CHECKLIST</div>
+    <div class="check-progress">
+      <span id="check-count">0 / 0</span>
+      <span class="cp-bar"><i id="check-bar" style="width:0%"></i></span>
+      <button class="check-reset" id="check-reset">重置</button>
+    </div>
+    <div class="checklist" id="checklist"></div>
   </section>
 
   <!-- FOOTER NAV -->
@@ -96,27 +153,53 @@
 </div>
 
 <script>
+/* ════════════════════════════════════════════════════════════════
+   SAMPLE DATA — used when {"date": "2026-07-01", "regime": "趨勢多頭", "risk_level": "low", "trading_budget": "35% · ~NT$ 372,765", "code": "3706", "name": "神達", "verdict": "謹慎試單", "confidence": 0.65, "entry_zone": "91.0-92.0", "stop_loss": "88.5", "target": "97.0", "hold_days": "預計持有1-3天", "ref_close": "91.3", "risk_reward": "1:1.8", "context_paragraph": "今日台股在外資大舉買超323.75億元推動下，強勢突破歷史新高47018.99點，S&P500也維持上漲動能，收在7499.36點。這些數據都指向市場呈現明確的風險開啟訊號，我的系統評分顯示市場趨勢動能強勁 (trend_strength 0.903, scanner_momentum 0.917)，外資流入強度亦高達0.824。這顯現出資金持續流入的積極態勢，尤其是在高價電子股中。然而，VIX指數維持在16.99，顯示市場雖熱絡但並非完全無視潛在波動。上漲家數與下跌家數比例為417/560，並非普漲格局，透露出資金集中於特定族群的現象。這種高位強勢但非全面性的局面，提醒我在追逐短期機會時，仍需對大盤處於歷史高位可能帶來的系統性風險保持警覺 (risk_pressure 0.328)。我的交易預算35%仍會謹慎配置，以應對這種「趨勢多頭但市場高位」的複雜情境。", "why_this_stock": "在今日scanner篩選出的前五檔股票中，神達(3706)之所以脫穎而出，關鍵在於其具備了AI PC/Server概念的主流題材優勢，這是其他候選標的，如龍德造船(6753)、同欣電(6271)、志聖(2467)等，較為缺乏的。雖然德律(3030)也同時具備了「breakout_ma20」的技術訊號，但神達作為AI伺服器供應鏈的一員，其產業能見度與市場追捧熱度明顯更高，能更好地承接大盤資金流向高價電子股的趨勢。在當前市場資金集中於AI相關題材的背景下，神達的題材性與技術面突破的結合，使其更具爆發潛力與短期吸引力，尤其是在今日放量突破MA20之後，其轉強訊號得到進一步確認。這讓我選擇將有限的預算集中於這檔具備雙重利多支撐的標的。", "entry_rationale": "本次進場價區設定在91.0-92.0元，主要考量神達今日在放量下成功突破了多日盤整區間與MA20，收盤價91.3元即落在這個區間。這個價位提供了相對明確的技術轉強點，意味著短線賣壓已被有效消化，多方動能正在積累。我預期在這個區間進場，能有效地捕捉到突破後的慣性上漲初期，同時將交易成本控制在相對合理的區間內。大量籌碼在此區間換手，使得該價位區間成為後續股價能否持續走強的關鍵支撐，若能站穩此處，上漲機率將大幅增加。", "stop_rationale": "停損點設定在88.5元，是基於嚴格的風險控制與技術面考量。此價位略低於今日突破MA20的起漲點，同時也低於過去幾日盤整區間的下緣。如果股價跌破88.5元，意味著本次MA20的突破訊號失效，多方動能不足以維持，甚至可能轉為假突破，籌碼結構將重新轉弱。以進場價中點91.5元計算，風險約為3元，這使得我的風險/報酬比維持在系統建議的1:1.8，確保單筆交易損失在可控範圍內，符合我在高點市場中謹慎試單的策略。", "target_rationale": "我的目標價設定在97.0元，主要是根據技術面上的前高壓力區，以及保持系統建議的風險/報酬比1:1.8來計算。以中位進場價91.5元與停損價88.5元計算，風險為3元。若要達成1.8R，則獲利點應為3元 * 1.8 = 5.4元，即91.5 + 5.4 = 96.9元。97.0元正好是此計算結果的合理圓整，且觀察歷史K線，此區域存在一個較為顯著的短期套牢區或壓力關卡。我的目標是捕捉突破後的短線動能，並在此壓力區附近獲利了結，避免過度戀戰而錯失出場時機，以確保這次試單能實現合理的報酬。", "hold_rationale": "預計持有1-3天的主要原因，是基於這次選股的短線動能突破性質。在目前大盤處於高位且資金流動快速的環境下，這種AI概念股的突破往往在1-3天內就能展現其最強的爆發力。我的策略是捕捉這波短線的慣性上漲，而不是進行長期波段持有。若股價在短時間內無法有效站穩並繼續上攻，或是出現大量黑K反轉訊號，我會考慮提前出場。目標是在達成獲利目標後，快速鎖定利潤，避免因市場情緒快速轉變而影響收益，符合當前「趨勢多頭但市場高位」下謹慎操作的原則。", "risk_scenarios": [{"trigger": "若股價開盤直接跳空跌破88.5元或盤中跌破並未迅速收回", "action": "立刻停損出場，不論是否觸及停損價，避免損失擴大。", "severity": "stop", "rationale": "突破訊號完全失效，多方力道潰散，需立即控制風險。"}, {"trigger": "若股價開高走低，未能守住91.0元，且成交量縮小", "action": "將停損點上移至開盤價附近或89.5元，觀察能否重新站穩。", "severity": "hold", "rationale": "顯示買盤承接力道不足，可能形成假突破，需降低風險敞口。"}, {"trigger": "若台股大盤出現急速下跌或重大利空消息", "action": "視情況減碼或提前出場，不再堅守原訂停損點。", "severity": "stop", "rationale": "系統性風險優先於個股表現，大盤環境惡化將連帶影響個股。"}, {"trigger": "若股價在94.0-95.0元區間盤整超過半天，且量能縮減", "action": "重新評估是否續抱，或考慮減碼部分部位，保護已實現利潤。", "severity": "hold", "rationale": "顯示上攻動能減弱，可能遇到短期壓力，後續爆發力存疑。"}, {"trigger": "若股價在1-2天內迅速達到97.0元目標價附近，並出現長上影線或大量黑K", "action": "預設目標價獲利了結，無需戀戰。", "severity": "go", "rationale": "目標達成，且出現反轉訊號，應確保獲利入袋。"}, {"trigger": "若AI PC/Server相關新聞出現負面消息，直接影響神達股價", "action": "即時判斷消息嚴重性，必要時果斷出場。", "severity": "stop", "rationale": "基本面利空可能改變交易邏輯，需優先反應。"}, {"trigger": "若股價開盤直接跳空突破93.0元，並帶量上攻", "action": "考慮追高少量部位，並將停損上調至今日開盤價附近。", "severity": "go", "rationale": "顯示市場追價意願強烈，突破力道超乎預期，可適度參與。"}], "execution_checklist": [{"time": "盤前 (08:30-08:45)", "action": "確認今日美股期貨及亞洲主要股市開盤情況，判斷大盤整體氛圍。檢查神達相關新聞有無重大異動。"}, {"time": "開盤 (09:00-09:05)", "action": "觀察神達開盤價是否落在91.0-92.0元區間。若直接跳空過高或過低，則依據風險情境判斷是否進場。確認開盤5分鐘量能。"}, {"time": "盤中 (09:05-10:00)", "action": "若符合進場區間，以市價或限價單分批建倉，確保買入均價在合理範圍內。設定好88.5元停損單。"}, {"time": "盤中 (10:00-收盤前)", "action": "持續監控股價走勢、成交量變化，並留意是否觸及停損點或目標價。特別關注大盤及同族群股票動態，確認資金流向。"}, {"time": "盤中 (隨時)", "action": "若出現極端行情或風險情境中描述的觸發條件，立刻執行相應的動作，不預設立場。若接近目標價97.0元，準備獲利了結。"}, {"time": "收盤 (13:30)", "action": "檢視今日交易執行情況，並根據收盤價評估持倉狀況，更新次日策略。若未出場，則檢查是否有未執行訂單。"}], "devils_advocate": {"verdict": "強烈反對", "summary": "市場普遍的樂觀情緒與進攻建議，此刻如同建立在流沙之上的城堡。當前的「歷史高點」和「強勁動能」更像是末日狂歡前的最後一杯酒，而非堅實的成長基石。過度依賴技術指標和表象，可能將我們的投資組合暴露於被嚴重低估的尾部風險之中，一旦市場情緒突然反轉，其後果將不堪設想，遠超預期。", "counter_arguments": ["今日外資對台股的323億元淨買超，明顯指向資金仍偏好流入特定新興市場，並非全面性的流動性緊縮。市場對於聯準會的鷹派立場已有所預期與消化，當前全球流動性並非鐵板一塊。", "地緣政治風險確實永恆存在，但其發生時點與實際影響程度難以精確預測。在缺乏具體惡化訊號的當下，根據當前市場呈現的數據和動能進行短線操作，仍是合理的風險管理範疇。", "台股具備獨特的產業結構與供應鏈優勢，AI題材在台灣有堅實的本土產業鏈支撐，與美股「七巨頭」雖有部分連結，但並非完全綁定。神達作為AI伺服器供應鏈一環，具備其獨立的成長邏輯與動能，不應過度解讀為美股科技股的影子。"]}, "prev_date": "2026-06-30", "next_date": null} is left unreplaced (mockup mode)
+   ════════════════════════════════════════════════════════════════ */
 const SAMPLE = {
-  date: "2026-06-17",
-  regime: "震盪整理",
-  risk_level: "中高",
-  verdict: "空手觀望",
-  context_paragraph: "今日加權指數開高走低，終場小跌，量能萎縮至近月低點。外資轉為小幅賣超，市場觀望氣氛濃厚，等待週四美國 CPI 數據。",
-  why_watching: "今天系統選擇空手，原因有三：第一，量能不足——加權指數成交量只有月均量的 78%，在這種「無量盤」裡突破容易是假動作。第二，最強候選股的風險報酬比不夠乾淨，現在進場等於用 8 分的把握賺 6 分的空間，不划算。第三，週四有 CPI 數據，與其在數據前猜方向，不如等塵埃落定再出手。耐心不是沒事做，是在等一個更好的價格。",
-  reactivation_triggers: [
-    { cond: "外資連續 2 日買超", note: "且單日金額 > 50 億，代表資金回流" },
-    { cond: "加權指數帶量站回月線", note: "成交量需 > 月均量 1.1x" },
-    { cond: "CPI 數據公布後波動收斂", note: "VIX 回落至 18 以下" },
-    { cond: "出現 ≥ 2 檔 scanner_score ≥ 7 的候選", note: "目前最高僅 5 分" }
-  ],
-  scanner_top1: {
-    code: "3017", name: "奇鋐", score: 5,
-    what_scanner_sees: "散熱題材龍頭，近期帶量突破前高，外資連 3 日小幅買超，技術面與題材面都站在多方。",
-    what_we_dont_like: "已經連漲 5 天，短線乖離過大，現在追等於買在情緒高點。風險報酬比只有 1.8，低於系統 2.5 的門檻。寧可等它回測均線再說。"
+  date: "2026-06-19",
+  regime: "中性偏多",
+  risk_level: "中",
+  trading_budget: "NT$ 80,000",
+  code: "2317", name: "鴻海",
+  verdict: "進攻", confidence: 0.85,
+  entry_zone: "286–290", stop_loss: "282",
+  target: "303", hold_days: "5–10",
+  ref_close: 289.0, risk_reward: "3.2",
+  context_paragraph: "今日台股 regime 為中性偏多，加權指數站回月線，外資由連續賣超轉為小幅買超，市場情緒從謹慎轉為觀望。AI 伺服器與散熱類股出現資金輪動跡象，但整體量能尚未放大，屬於「可以小量試單、不宜重壓」的盤勢。在這個 regime 下，系統的交易預算控制在 8 萬，單一部位不超過總資金的 4%。",
+  why_this_stock: "鴻海是這波 AI 伺服器代工的核心受惠者，且本益比相對同業仍偏低。相較於股價已大漲的散熱股，鴻海的風險報酬比更乾淨——下檔有月線與前低雙重支撐，上檔則有法人目標價空間。在十幾檔候選中，它是「故事好、技術面剛突破、但還沒漲完」的少數標的。",
+  entry_rationale: "286–290 是這兩天的盤整區上緣，今日收 289 剛好站上。建議在 286–290 之間進場，若開盤跳空過高（>293）則放棄追，等回測。",
+  stop_rationale: "282 是前一波低點與月線的交會處。跌破代表這次突破失敗，必須無條件停損，不凹單。以 289 進場計算，停損約 -2.4%。",
+  target_rationale: "303 是去年高點的頸線壓力，也是法人最近一致上調的目標價區。風險報酬比 3.2，符合系統「報酬至少是風險 2.5 倍才出手」的門檻。",
+  hold_rationale: "這是波段而非當沖，預計持有 5–10 個交易日。若 3 日內未表態（量縮價平），可考慮提前出場換股。",
+  devils_advocate: {
+    verdict: "謹慎反對",
+    summary: "我承認故事好，但時機有疑慮。這個位置是「突破當天追高」，而突破常有假突破。",
+    counter_arguments: [
+      "今日量能只有 5 日均量的 1.05 倍，突破缺乏量能背書，假突破機率不低。",
+      "外資雖轉買超，但金額僅 12 億，相對大盤盤面屬於雜訊等級，不足以構成趨勢確認。",
+      "鴻海權值股屬性，容易被大盤拖累——若加權指數回檔，個股技術面再好也難獨善其身。"
+    ]
   },
-  micro_pick: null
+  risk_scenarios: [
+    { trigger: "若開盤跌破 282", action: "立刻停損出場", severity: "stop", rationale: "前波低點與月線交會，跌破代表突破失敗，紀律性停損。" },
+    { trigger: "若開盤量未達 5 日均量 1.2x", action: "不進場、續觀察", severity: "hold", rationale: "突破需要量能背書，量不到寧可錯過也不冒假突破風險。" },
+    { trigger: "若跳空開高 >293", action: "放棄追高、等回測", severity: "hold", rationale: "進場成本墊高會破壞風險報酬比，等回到 286–290 再說。" },
+    { trigger: "若盤中放量站上 295", action: "可加碼至滿倉", severity: "go", rationale: "量價齊揚確認趨勢，是這次劇本中唯一加碼條件。" },
+    { trigger: "若收盤跌回 285 以下", action: "隔日減半部位", severity: "hold", rationale: "收盤破進場區下緣代表多方力竭，先降低曝險。" }
+  ],
+  execution_checklist: [
+    { time: "盤前", action: "確認 286–290 在開盤跳空合理範圍內，未跳空過高" },
+    { time: "09:00", action: "觀察開盤量能與第一根 K 棒方向" },
+    { time: "09:30", action: "若量達 5 日均量 1.2x 且價在 286–290 → 進場" },
+    { time: "盤中", action: "設好 282 停損單，放著不動" },
+    { time: "收盤", action: "若收 285 以下 → 記錄，準備隔日減半" }
+  ]
 };
 
+/* ════════════════════════════════════════════════════════════════
+   LOAD DATA — JSON injection or SAMPLE fallback
+   ════════════════════════════════════════════════════════════════ */
 let DATA;
 try {
   const raw = document.getElementById('pick-data').textContent.trim();
@@ -124,6 +207,8 @@ try {
 } catch(e){ DATA = SAMPLE; }
 
 const f = (v, dflt='—') => (v === undefined || v === null || v === '') ? dflt : v;
+
+/* ── Date formatting ── */
 const WD = ['日','一','二','三','四','五','六'];
 function fmtDate(iso){
   if(!iso) return {full:'—', wd:'', mono:'—'};
@@ -136,54 +221,147 @@ function fmtDate(iso){
   };
 }
 
+/* ════════════════ RENDER ════════════════ */
 const dt = fmtDate(DATA.date);
 document.getElementById('rb-date').textContent = dt.mono;
-document.getElementById('hero-date').innerHTML = `<span>${dt.full}</span><span class="weekday">${dt.wd}</span>`;
-document.getElementById('hero-verdict').textContent = f(DATA.verdict, '今日觀望');
-document.getElementById('hero-sub').innerHTML =
-  `今天系統選擇<span class="accent"> 不出手</span>。耐心也是一種部位。` + `
+
+document.getElementById('hero-date').innerHTML = `
+  <span>${dt.full}</span>
+  <span class="weekday">${dt.wd}</span>
+`;
+document.getElementById('hero-verdict').textContent = f(DATA.verdict, '進攻');
+
+const heroChips = `
   <span class="hero-chiprow" style="margin-top:14px">
     <span class="chip regime"><span class="dot"></span>REGIME · ${f(DATA.regime)}</span>
     <span class="chip risk"><span class="dot"></span>風險 · ${f(DATA.risk_level)}</span>
+    <span class="chip budget"><span class="dot"></span>預算 · ${f(DATA.trading_budget)}</span>
   </span>`;
+document.getElementById('hero-sub').innerHTML =
+  `今天系統決定<span class="accent"> 出手</span>。以下是完整的進場劇本與風險控制。` + heroChips;
 
-document.getElementById('why-watching').className = 'prose lead-cap';
-document.getElementById('why-watching').innerHTML =
-  (f(DATA.why_watching, DATA.context_paragraph) || '—')
-    .split('\n').filter(Boolean).map(p => `<p>${p}</p>`).join('') || '<p class="empty-field">—</p>';
+/* Stock card */
+document.getElementById('stock-code').textContent = f(DATA.code);
+document.getElementById('stock-name').textContent = f(DATA.name);
+document.getElementById('stock-verdict').textContent = f(DATA.verdict);
+const conf = Math.round((DATA.confidence || 0) * 100);
+document.getElementById('conf-fill').style.width = conf + '%';
+document.getElementById('stock-conf').textContent = `信心 · ${conf}%`;
 
-/* Triggers */
-document.getElementById('trigger-list').innerHTML =
-  (DATA.reactivation_triggers||[]).map(t => `
-    <div class="trigger-row">
-      <span class="tr-arrow">→</span>
-      <div class="tr-text">
-        <div class="tr-cond">${f(t.cond)}</div>
-        ${t.note ? `<div class="tr-note">${t.note}</div>` : ''}
-      </div>
-    </div>`).join('') || '<p class="empty-field">無條件設定。</p>';
+/* Key numbers */
+document.getElementById('kn-entry').textContent = f(DATA.entry_zone);
+document.getElementById('kn-entry-sub').textContent = DATA.ref_close ? `收 ${DATA.ref_close}` : '進場區';
+document.getElementById('kn-stop').textContent = f(DATA.stop_loss);
+document.getElementById('kn-target').textContent = f(DATA.target);
+document.getElementById('kn-rr').textContent = DATA.risk_reward ? `R:R ${DATA.risk_reward}` : '目標';
+document.getElementById('kn-hold').textContent = f(DATA.hold_days);
 
-/* Scanner */
-const sc = DATA.scanner_top1;
-if(sc && (sc.code || sc.name)){
-  document.getElementById('sc-code').textContent = f(sc.code);
-  document.getElementById('sc-name').textContent = f(sc.name);
-  document.getElementById('sc-score').textContent = `score ${f(sc.score)}`;
-  document.getElementById('sc-sees').textContent = f(sc.what_scanner_sees, '—');
-  document.getElementById('sc-avoid').textContent = f(sc.what_we_dont_like, '—');
+/* Tab title */
+if(DATA.code && DATA.code !== '—'){
+  document.title = `${DATA.code} ${DATA.name || ''} · ${DATA.verdict || 'Pick'} · Yuzu`;
+}
+
+/* Chart CTA — TradingView free-tier embed walls Taiwan-stock charts
+ * with "此商品僅在 TradingView 可用" for both widgetembed and mini
+ * widgets. Linking out to TV's public symbol page is the cleanest
+ * solution: the page itself is freely viewable with full chart. */
+if(DATA.code && DATA.code !== '—'){
+  const link = document.getElementById('tv-link');
+  link.href = `https://www.tradingview.com/symbols/TWSE-${DATA.code}/`;
+  document.getElementById('tv-cta-name').textContent = f(DATA.name);
+  document.getElementById('tv-cta-code').textContent = `TWSE:${DATA.code}`;
+}
+
+/* Deep analysis */
+const ANALYSIS = [
+  ['脈絡', DATA.context_paragraph],
+  ['為什麼是這檔', DATA.why_this_stock],
+  ['進場依據', DATA.entry_rationale],
+  ['停損依據', DATA.stop_rationale],
+  ['目標與持有', [DATA.target_rationale, DATA.hold_rationale].filter(Boolean).join(' ')]
+];
+document.getElementById('analysis').innerHTML = ANALYSIS.map(([title, body], i) => body ? `
+  <div class="analysis-block">
+    <div class="ab-head"><span class="ab-num">${i+1}</span><span class="ab-title">${title}</span></div>
+    <div class="ab-body${i===0?' lead-cap':''}"><p>${body}</p></div>
+  </div>` : '').join('') || '<p class="empty-field">尚無分析內容。</p>';
+
+/* Devil's advocate */
+const da = DATA.devils_advocate || {};
+if(da.summary || (da.counter_arguments||[]).length){
+  document.getElementById('devil-verdict').textContent = f(da.verdict, '反對');
+  document.getElementById('devil-summary').textContent = f(da.summary, '');
+  document.getElementById('devil-args').innerHTML =
+    (da.counter_arguments||[]).map(a => `<div class="devil-arg">${a}</div>`).join('');
 } else {
-  document.getElementById('scanner-sec').style.display = 'none';
+  document.getElementById('devil-sec').style.display = 'none';
 }
 
-/* Micro pick */
-const mp = DATA.micro_pick;
-if(mp && (mp.text || mp.code || typeof mp === 'string')){
-  document.getElementById('micro-sec').style.display = '';
-  const body = typeof mp === 'string' ? mp :
-    `${mp.code ? `<b>${mp.code} ${mp.name||''}</b> · ` : ''}${mp.text || mp.rationale || ''}`;
-  document.getElementById('micro-body').innerHTML = `<p>${body}</p>`;
-}
+/* Risk scenarios */
+const SEV_ICON = {
+  stop: '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
+  hold: '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r=".6" fill="currentColor"/></svg>',
+  go:   '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>'
+};
+document.getElementById('risk-list').innerHTML =
+  (DATA.risk_scenarios||[]).map(r => {
+    const sev = r.severity || 'hold';
+    return `
+    <div class="risk-card sev-${sev}">
+      <div class="risk-trigger">${SEV_ICON[sev]||SEV_ICON.hold}<span>${f(r.trigger)}</span></div>
+      <div class="risk-action"><span class="ra-arrow">→</span><span class="ra-text">${f(r.action)}</span></div>
+      ${r.rationale ? `<div class="risk-rationale">${r.rationale}</div>` : ''}
+    </div>`;
+  }).join('') || '<p class="empty-field">無風險劇本。</p>';
 
+/* Execution checklist · checkboxes persist in localStorage */
+const CHECK_KEY = 'yuzu-check-' + f(DATA.date, 'x') + '-' + f(DATA.code, 'x');
+let checkState = {};
+try { checkState = JSON.parse(localStorage.getItem(CHECK_KEY) || '{}'); } catch(e){}
+
+const checklist = DATA.execution_checklist || [];
+function renderChecklist(){
+  const host = document.getElementById('checklist');
+  host.innerHTML = checklist.map((c, i) => `
+    <div class="check-item ${checkState[i] ? 'done' : ''}" data-idx="${i}">
+      <div class="check-box" role="checkbox" aria-checked="${!!checkState[i]}" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+      </div>
+      <div class="check-body">
+        <div class="check-time">${f(c.time)}</div>
+        <div class="check-action">${f(c.action)}</div>
+      </div>
+    </div>`).join('') || '<p class="empty-field">無執行清單。</p>';
+  updateProgress();
+  host.querySelectorAll('.check-item').forEach(item => {
+    const toggle = () => {
+      const idx = item.dataset.idx;
+      checkState[idx] = !checkState[idx];
+      localStorage.setItem(CHECK_KEY, JSON.stringify(checkState));
+      item.classList.toggle('done', checkState[idx]);
+      item.querySelector('.check-box').setAttribute('aria-checked', !!checkState[idx]);
+      updateProgress();
+    };
+    item.querySelector('.check-box').addEventListener('click', toggle);
+    item.querySelector('.check-box').addEventListener('keydown', e => {
+      if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); toggle(); }
+    });
+  });
+}
+function updateProgress(){
+  const total = checklist.length;
+  const done = Object.values(checkState).filter(Boolean).length;
+  document.getElementById('check-count').textContent = `${done} / ${total}`;
+  document.getElementById('check-bar').style.width = total ? (done/total*100)+'%' : '0%';
+}
+document.getElementById('check-reset').addEventListener('click', () => {
+  checkState = {};
+  localStorage.removeItem(CHECK_KEY);
+  renderChecklist();
+});
+renderChecklist();
+
+/* Prev/next nav (wired by generator; demo = disabled) */
 if(DATA.prev_date) document.getElementById('prev-pick').href = DATA.prev_date + '.html';
 else document.getElementById('prev-pick').style.opacity = '.35';
 if(DATA.next_date) document.getElementById('next-pick').href = DATA.next_date + '.html';
