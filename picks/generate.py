@@ -17,7 +17,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 # Make project root importable
@@ -43,6 +43,19 @@ def _is_pick_day(analysis: dict) -> bool:
     pick = (analysis.get("agents", {}).get("tw_daily_pick") or {}).get("pick", {}) or {}
     code = pick.get("code")
     return bool(code) and code not in ("—", "NONE", "", None)
+
+
+def _next_trading_day(dt: datetime) -> str:
+    """從 cron 執行日，往後找下一個交易日（週一~週五）。
+    Sun 16:30 → Mon      Mon 16:30 → Tue      Thu 16:30 → Fri
+    這是 pick 頁的**目標交易日**，也是 pick 檔名。
+    註：僅避開週末，不處理台股封關/國定假日；那些日子 pick 頁還是會產，
+    但檔名對應的日期市場不開，等於「跳過該日」— 使用者用月曆能看到。
+    """
+    d = dt + timedelta(days=1)
+    while d.weekday() >= 5:   # Sat=5, Sun=6
+        d += timedelta(days=1)
+    return d.strftime("%Y-%m-%d")
 
 
 def _scan_existing_picks() -> list[str]:
@@ -283,12 +296,17 @@ def main():
     candidates = candidates_data.get("candidates", []) if candidates_data else []
     market_data = _load_json(os.path.join(DATA_DIR, "market_data.json"))
 
-    # Detect date — prefer analysis.generated_at, fallback to today (Asia/Taipei)
+    # Pick 檔名 = **隔天交易日**（不是 cron 執行日）。
+    # Sun 16:30 → 檔名是週一日期；Mon 16:30 → 檔名是週二日期。
+    # 這樣使用者看到的檔名就是「可以下單的那天」。
     gen_at = analysis.get("generated_at", "")
     if gen_at:
-        date_str = gen_at[:10]
+        run_dt = datetime.fromisoformat(gen_at)
     else:
-        date_str = datetime.now(TZ).strftime("%Y-%m-%d")
+        run_dt = datetime.now(TZ)
+    date_str = _next_trading_day(run_dt)
+    run_date_str = run_dt.strftime("%Y-%m-%d")
+    print(f"[generate.py] cron run at {run_date_str} → pick 檔名 = {date_str} (下一交易日)")
 
     # Only generate post-market — pre-market run has no tw_daily_pick.
     # But still refresh calendar + latest pointer so hub always finds the

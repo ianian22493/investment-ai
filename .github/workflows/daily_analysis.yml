@@ -16,16 +16,46 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # ── Skip weekends + Fri afternoon ──────────────────────────────────
+      # Post-market cron produces the NEXT trading day's pick, so we only
+      # need to run when a next-day exists worth targeting:
+      #   Sun 16:30 → Mon pick   Mon-Thu 16:30 → Tue-Fri pick
+      # Fri 16:30 would be for Monday (3-day gap, stale by then) — Sun
+      # refreshes it anyway. Sat and Sun-morning have no useful new data.
+      # cron-job.org still pings us daily; this gate quietly exits when
+      # we shouldn't do work. See CLAUDE.md for schedule doc.
+      - name: Skip check (weekend / Fri PM / Sun AM)
+        id: skip
+        run: |
+          DOW=$(TZ='Asia/Taipei' date +%u)   # 1=Mon .. 7=Sun
+          HR=$(TZ='Asia/Taipei' date +%H)
+          echo "Taipei $(TZ='Asia/Taipei' date '+%a %H:%M') · DOW=$DOW HR=$HR"
+          if [ "$DOW" = "6" ]; then
+            echo "Saturday — skip entire run"; echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ "$DOW" = "7" ] && [ "$HR" -lt 13 ]; then
+            echo "Sunday morning — skip (no market data to refresh)"
+            echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ "$DOW" = "5" ] && [ "$HR" -ge 13 ]; then
+            echo "Friday afternoon — skip (Sun will produce Mon pick)"
+            echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
       - name: Set up Python
+        if: steps.skip.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
 
       - name: Install dependencies
+        if: steps.skip.outputs.skip != 'true'
         run: pip install -r requirements.txt
 
       - name: Smoke tests
+        if: steps.skip.outputs.skip != 'true'
         # Soft gate — failure is reported but doesn't block the analysis
         # pipeline (we'd rather have today's analysis with a noisy smoke
         # log than no analysis at all). Watch the Actions tab for ✗ marks.
@@ -39,6 +69,7 @@ jobs:
           GEMINI_API_KEY: "smoke-stub-not-real"
 
       - name: Fetch market data
+        if: steps.skip.outputs.skip != 'true'
         run: python fetch_market_data.py
         env:
           PYTHONUNBUFFERED: "1"
@@ -46,11 +77,13 @@ jobs:
           SHIOAJI_SECRET_KEY: ${{ secrets.SHIOAJI_SECRET_KEY }}
 
       - name: Run stock scanner
+        if: steps.skip.outputs.skip != 'true'
         run: python scanner.py
         env:
           PYTHONUNBUFFERED: "1"
 
       - name: Run investment agents
+        if: steps.skip.outputs.skip != 'true'
         run: python run_agents.py
         env:
           GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
@@ -60,6 +93,7 @@ jobs:
           PYTHONUNBUFFERED: "1"
 
       - name: Generate daily pick page
+        if: steps.skip.outputs.skip != 'true'
         # Only runs after Phase 4 produced tw_daily_pick. generate.py skips
         # itself if no pick data exists (pre-market run).
         run: python picks/generate.py
@@ -70,6 +104,7 @@ jobs:
         continue-on-error: true   # pick page is non-critical; analysis still commits even if this breaks
 
       - name: Commit and push analysis
+        if: steps.skip.outputs.skip != 'true'
         run: |
           git config user.name  "Investment AI Bot"
           git config user.email "bot@investment-ai.local"
@@ -108,6 +143,7 @@ jobs:
           done
 
       - name: Trigger GitHub Pages rebuild
+        if: steps.skip.outputs.skip != 'true'
         run: |
           curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
