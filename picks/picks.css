@@ -618,3 +618,39 @@ a:hover{text-decoration:underline; text-underline-offset:3px}
      The navy return-band already bridges from the dark dashboard.
      If needed later, a .theme-night class can override here. */
 }
+
+/* ═══ Glossary tooltip system (Task A) ═══
+   Terms auto-annotated by inline JS via GLOSSARY dictionary. */
+[data-tip]{
+  position:relative;
+  cursor:help;
+  text-decoration:underline dotted rgba(160,96,16,0.35);
+  text-underline-offset:2px;
+}
+[data-tip]:hover::after,
+[data-tip]:focus::after{
+  content:attr(data-tip);
+  position:absolute;
+  bottom:calc(100% + 8px);
+  left:50%;
+  transform:translateX(-50%);
+  padding:9px 13px;
+  background:#F5EFDF;
+  border:1px solid rgba(160,96,16,0.35);
+  border-radius:4px;
+  color:#3A2E20;
+  font-family:'Noto Sans TC',-apple-system,sans-serif;
+  font-size:12px;
+  font-weight:400;
+  letter-spacing:0.2px;
+  white-space:normal;
+  max-width:280px;
+  width:max-content;
+  z-index:10000;
+  box-shadow:0 4px 20px rgba(90,60,20,0.25);
+  pointer-events:none;
+  text-align:left;
+  line-height:1.6;
+  text-transform:none;
+}
+

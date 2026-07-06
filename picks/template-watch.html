@@ -188,7 +188,10 @@ if(DATA.prev_date) document.getElementById('prev-pick').href = DATA.prev_date + 
 else document.getElementById('prev-pick').style.opacity = '.35';
 if(DATA.next_date) document.getElementById('next-pick').href = DATA.next_date + '.html';
 else document.getElementById('next-pick').style.opacity = '.35';
+
+if(window.applyGlossary) window.applyGlossary();
 </script>
+<script src="glossary.js"></script>
 
 </body>
 </html>

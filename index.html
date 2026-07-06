@@ -1268,6 +1268,49 @@ body.midnight-deep::after{ opacity:.18 !important; }
 @media (prefers-reduced-motion: reduce){
   .counsel-panel, .counsel-backdrop{ transition:none; }
 }
+
+/* ─── Glossary tooltip system (Task A) ─────────────────────────
+   Any element with [data-tip="..."] gets a hover/tap tooltip.
+   Applied automatically by JS via a lookup dictionary (see
+   GLOSSARY + applyGlossary()). No manual HTML annotations needed. */
+[data-tip]{
+  position:relative;
+  cursor:help;
+  text-decoration:underline dotted rgba(122,142,189,0.35);
+  text-underline-offset:2px;
+}
+[data-tip]:hover::after,
+[data-tip]:focus::after{
+  content:attr(data-tip);
+  position:absolute;
+  bottom:calc(100% + 8px);
+  left:50%;
+  transform:translateX(-50%);
+  padding:8px 12px;
+  background:#0A1523;
+  border:1px solid var(--border3);
+  border-radius:4px;
+  color:var(--text);
+  font-family:'Noto Sans TC',-apple-system,sans-serif;
+  font-size:11px;
+  font-weight:400;
+  letter-spacing:0.3px;
+  white-space:normal;
+  max-width:280px;
+  width:max-content;
+  z-index:10000;
+  box-shadow:0 4px 20px rgba(0,0,0,0.65);
+  pointer-events:none;
+  text-align:left;
+  line-height:1.55;
+  text-transform:none;   /* labels are UPPERCASE but tooltip stays natural */
+}
+/* When tooltip target is near right edge, prefer left-anchored */
+[data-tip][data-tip-anchor="left"]:hover::after,
+[data-tip][data-tip-anchor="left"]:focus::after{
+  left:0;
+  transform:none;
+}
 </style>
 </head>
 <body>
@@ -6055,6 +6098,104 @@ document.addEventListener('click', (e) => {
   // Defer expand so the minimize transition can run first
   setTimeout(() => expandRoom(card.room), 220);
 });
+
+// ─── Glossary tooltip auto-decorator (Task A) ─────────────────────
+// Walks the DOM, finds elements whose text matches a known term,
+// and adds data-tip="..." so the CSS tooltip fires on hover.
+// Reruns via MutationObserver so newly rendered modules also get
+// annotated (dashboard re-renders many sections via innerHTML).
+const GLOSSARY = {
+  // Sidebar navigation
+  "EXEC FLOOR":       "執行台 · 綜合各部門建議做出當日最終決策",
+  "TRADING FLOOR":    "交易台 · 台股短線 agents 討論該不該進場",
+  "RESEARCH LAB":     "研究室 · 產業趨勢與基本面深度分析",
+  "RISK CONTROL":     "風控中心 · 檢查持倉集中度、槓桿與現金風險",
+  "WEALTH OFFICE":    "財富辦公室 · 追蹤總資產配置與現金流",
+  "ARCHIVE":          "歷史檔案 · 過去 pick 紀錄與勝負結果",
+  "DECISION LOG":     "決策日誌 · 每次系統為什麼做這判斷的紀錄",
+  "SIGNAL MATRIX":    "訊號矩陣 · 10 個維度的市場健康度總覽",
+  "AGENT FLOWS":      "Agent 流程圖 · 看今天各個 AI 之間怎麼互動",
+  "OVERVIEW":         "總覽 · 全公司當日狀況一目了然",
+  "SETTINGS":         "設定 · 個人偏好與帳戶設定",
+
+  // Card / section titles
+  "REGIME":                          "市場情境判定 · 分成「趨勢多頭 / 震盪整理 / 趨勢空頭」等，決定要進攻還是防守",
+  "CAPITAL BUDGET":                  "今日可動用資金 · 系統依風險調整過的倉位比例",
+  "TRADING BUDGET":                  "今日可動用資金 · 系統依風險調整過的倉位比例",
+  "TODAY'S VERDICT":                 "今日決議 · 系統對台股短線的最終決策",
+  "TODAY'S BRIEFING":                "今日簡報 · 一段摘要重點資訊",
+  "TODAY'S PICK":                    "今日精選 · 若系統推薦出手，這就是選中的股票",
+  "MARKET CHIPS":                    "市場籌碼 · 三大法人買賣超、融資餘額等",
+  "SCANNER RADAR":                   "篩選雷達 · 從技術面與籌碼面篩出的候選股",
+  "SIGNAL VECTOR":                   "訊號向量 · 10 個市場健康度指標的當前值",
+  "SIGNAL LEADERBOARD":              "訊號排行榜 · 各訊號目前的相對強度",
+  "SIGNAL EFFECTIVENESS RANKING":    "訊號有效性排名 · 過去哪個訊號最能預測隔日走勢",
+  "CONSTRAINT VIOLATIONS":           "限制違反 · 系統原本要出手，但風控規則否決",
+  "REFLECTION":                      "反思 · AI 每日檢視昨日決策是否成功並記取教訓",
+  "TOP 3 ACTIONS":                   "前三行動建議 · 今日建議的優先執行事項",
+  "EXPOSURE":                        "曝險 · 目前資金分布的風險程度",
+  "PICK HISTORY":                    "歷史選股 · 過去所有 pick 的紀錄與結果",
+  "CAPITAL FLOW FLAGS":              "資金流警訊 · 三大法人異常買賣或融資異動的預警",
+  "CAPITAL FLOW":                    "資金流 · 錢往哪流：法人買賣超、融資餘額變化",
+  "DATA HEALTH":                     "資料健康度 · 系統各資料源今日是否正常抓到",
+  "AGENT COUNSEL":                   "AI 顧問對話 · 你可以問 AI 任何問題",
+
+  // Stat labels
+  "勝率":                            "過去所有已結案 pick 中，賺錢的比例",
+  "最佳 REGIME":                     "在哪種市場情境下你的勝率最高",
+
+  // Pick page (also used on picks/*.html)
+  "R:R":         "風險報酬比 · 潛在獲利 ÷ 停損距離。1:2 = 贏 2 賠 1，越高越好",
+  "β":           "Beta 值 · 相對大盤的敏感度。β=1 跟大盤同步，β>1 波動更大",
+  "VIX":         "恐慌指數 · 反映美股未來 30 天預期波動。<20 平靜、>30 恐慌",
+  "停損":         "跌到這個價位就出場，強制止損不猶豫",
+  "停利":         "漲到這個價位獲利了結（也可視情況延後）",
+  "進場區":       "建議買進的價格區間，太高就不追",
+  "目標":         "預期的獲利出場價位",
+
+  // Signals & modes
+  "MICRO-PICK":       "小額試單 · 系統本體觀望，但 scanner 有強勢候選，用小倉位試試",
+  "WATCH-STREAK":     "連續觀望天數 · 超過 5 天沒推薦出手時提醒你重新檢視",
+  "CASH-CRUNCH":      "現金吃緊警示 · 未來 12 個月大筆支出對比目前現金的風險",
+  "confidence":       "信心值 · 系統對這個判斷的把握程度，0.9 = 90% 把握",
+  "空手觀望":         "系統建議今日不進場 · 通常因為風險高於預期報酬",
+  "推薦出手":         "系統建議今日出手 · 找到勝率與風報比都合格的機會",
+  "局部防守":         "系統建議降低倉位 · 情況不利但也不必全面撤退",
+};
+// Extract prefix from labels like "SCANNER RADAR · 12 候選" so we match "SCANNER RADAR"
+function _labelPrefix(text){
+  return text.replace(/\s*[·:.].*$/, '').trim();
+}
+function applyGlossary(root=document){
+  const selectors = [
+    '.nav-label', '.section-label', '.card-title', '.module-label',
+    '.stat-label', '.kn-label', '.ex-k', '.health-name', '.stock-label',
+    '[data-term]',   // opt-in
+  ];
+  root.querySelectorAll(selectors.join(',')).forEach(el => {
+    if(el.hasAttribute('data-tip')) return;
+    const raw = (el.textContent || '').trim();
+    // Direct hit
+    if(GLOSSARY[raw]){ el.setAttribute('data-tip', GLOSSARY[raw]); return; }
+    // Prefix hit
+    const prefix = _labelPrefix(raw);
+    if(prefix && GLOSSARY[prefix]){ el.setAttribute('data-tip', GLOSSARY[prefix]); return; }
+    // data-term opt-in: element specifies which key to use
+    const term = el.getAttribute('data-term');
+    if(term && GLOSSARY[term]){ el.setAttribute('data-tip', GLOSSARY[term]); }
+  });
+}
+applyGlossary();
+// Re-scan when the dashboard re-renders modules (innerHTML swaps are frequent).
+const _glossObs = new MutationObserver(muts => {
+  for(const m of muts){
+    for(const n of m.addedNodes){
+      if(n.nodeType === 1) applyGlossary(n);
+    }
+  }
+});
+_glossObs.observe(document.body, {childList:true, subtree:true});
+window.applyGlossary = applyGlossary;
 </script>
 <!-- 回到入口 Hub -->
 <a id="yuzu-home-fab" href="https://ianian22493.github.io/" aria-label="回到入口" style="position:fixed;left:18px;bottom:18px;z-index:99999;display:flex;align-items:center;gap:8px;padding:9px 16px 9px 11px;background:linear-gradient(135deg,#f0d050,#a06010);color:#2C2620;font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;font-size:13px;font-weight:700;letter-spacing:.02em;text-decoration:none;border-radius:50px;box-shadow:0 4px 16px rgba(160,96,16,.45),0 1px 0 rgba(255,255,255,.4) inset;transition:transform .2s ease,box-shadow .2s ease" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'"><svg width="20" height="20" viewBox="0 0 34 34" fill="none" aria-hidden="true"><defs><radialGradient id="yhf" cx="38%" cy="28%" r="72%"><stop offset="0%" stop-color="#fffbe8"/><stop offset="100%" stop-color="#7a4800"/></radialGradient></defs><circle cx="17" cy="17" r="17" fill="url(#yhf)"/><circle cx="17" cy="17" r="11.5" fill="none" stroke="rgba(27,45,79,.35)" stroke-width="1.2"/><circle cx="17" cy="17" r="2.8" fill="rgba(27,45,79,.6)"/><line x1="17" y1="14.2" x2="10.5" y2="7.5" stroke="rgba(27,45,79,.7)" stroke-width="1.4" stroke-linecap="round"/><line x1="17" y1="14.2" x2="23.5" y2="7.5" stroke="rgba(27,45,79,.7)" stroke-width="1.4" stroke-linecap="round"/><line x1="17" y1="14.2" x2="17" y2="23" stroke="rgba(27,45,79,.7)" stroke-width="1.4" stroke-linecap="round"/></svg>回到入口</a>
