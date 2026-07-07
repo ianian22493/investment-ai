@@ -166,10 +166,27 @@
 
 .list-empty{text-align:center; padding:50px 20px; color:var(--ink3); font-style:italic}
 
+/* range toggle */
+.range-toggle{
+  display:flex; gap:6px; margin-bottom:12px; justify-content:center;
+}
+.range-toggle button{
+  font-family:var(--mono); font-size:11px; letter-spacing:1px;
+  padding:6px 14px; background:transparent; color:var(--ink3);
+  border:1px solid var(--line); border-radius:20px; cursor:pointer;
+  transition:all .15s ease;
+}
+.range-toggle button:hover{color:var(--ink2); border-color:var(--gold-dim)}
+.range-toggle button.active{
+  background:var(--gold); color:var(--paper); border-color:var(--gold);
+  font-weight:700;
+}
+
 /* summary stats */
 .stat-strip{
   display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:22px;
 }
+.stat .s-sub{font-family:var(--mono); font-size:10px; color:var(--ink3); margin-top:2px}
 .stat{
   background:var(--paper2); border:1px solid var(--line); border-radius:var(--radius-sm);
   padding:14px 16px; text-align:center;
@@ -206,6 +223,11 @@
   </header>
 
   <!-- summary -->
+  <div class="range-toggle" id="rangeToggle">
+    <button data-range="7">近 7 天</button>
+    <button data-range="30" class="active">近 30 天</button>
+    <button data-range="all">全部</button>
+  </div>
   <div class="stat-strip" id="stat-strip"></div>
 
   <!-- controls -->
@@ -445,18 +467,68 @@ function renderList(){
 }
 
 /* ─── Stats ─── */
-function renderStats(){
-  const picks = PICKS.filter(p => p.type === 'pick');
-  const settled = picks.filter(p => p.result === 'win' || p.result === 'loss');
-  const wins = picks.filter(p => p.result === 'win').length;
-  const winRate = settled.length ? Math.round(wins/settled.length*100) : 0;
-  const watches = PICKS.filter(p => p.type === 'watch').length;
-  document.getElementById('stat-strip').innerHTML = `
-    <div class="stat"><div class="s-val">${PICKS.length}</div><div class="s-lbl">總紀錄</div></div>
-    <div class="stat"><div class="s-val">${picks.length}</div><div class="s-lbl">出手</div></div>
-    <div class="stat"><div class="s-val win">${winRate}%</div><div class="s-lbl">勝率</div></div>
-    <div class="stat"><div class="s-val">${watches}</div><div class="s-lbl">觀望</div></div>`;
+let statsRange = '30';   // '7' | '30' | 'all'
+function _picksInRange(){
+  if(statsRange === 'all') return PICKS;
+  const days = parseInt(statsRange, 10);
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - days);
+  const iso = cutoff.toISOString().slice(0,10);
+  return PICKS.filter(p => p.date >= iso);
 }
+function _pnlValue(pnl){
+  // "+6.1%" → 6.1, "-3.8%" → -3.8, null → null
+  if(!pnl) return null;
+  const m = pnl.match(/([+-]?\d+(?:\.\d+)?)/);
+  return m ? parseFloat(m[1]) : null;
+}
+function renderStats(){
+  const scope = _picksInRange();
+  const picks = scope.filter(p => p.type === 'pick');
+  const settled = picks.filter(p => p.result === 'win' || p.result === 'loss');
+  const wins = settled.filter(p => p.result === 'win');
+  const winRate = settled.length ? Math.round(wins.length/settled.length*100) : null;
+  const watches = scope.filter(p => p.type === 'watch').length;
+  // Average P&L across settled trades (both wins and losses)
+  const pnls = settled.map(p => _pnlValue(p.pnl)).filter(v => v !== null);
+  const avgPnl = pnls.length ? (pnls.reduce((a,b)=>a+b,0) / pnls.length) : null;
+  // Format helpers
+  const winRateHtml = winRate === null
+    ? `<div class="s-val" style="color:var(--ink3)">—</div>`
+    : `<div class="s-val ${winRate >= 50 ? 'win':''}">${winRate}%</div>`;
+  const avgPnlHtml = avgPnl === null
+    ? `<div class="s-val" style="color:var(--ink3)">—</div>`
+    : `<div class="s-val" style="color:${avgPnl >= 0 ? 'var(--target)':'var(--stop)'}">${avgPnl >= 0 ? '+':''}${avgPnl.toFixed(1)}%</div>`;
+  const winCount = `${wins.length}W / ${settled.length - wins.length}L`;
+  const rangeLbl = statsRange === 'all' ? '全部' : `近 ${statsRange} 天`;
+  document.getElementById('stat-strip').innerHTML = `
+    <div class="stat" data-tip="${rangeLbl}內系統推薦出手的次數">
+      <div class="s-val">${picks.length}</div>
+      <div class="s-lbl">出手次數</div>
+    </div>
+    <div class="stat" data-tip="已結案 pick 中賺錢的比例">
+      ${winRateHtml}
+      <div class="s-lbl">勝率</div>
+      <div class="s-sub">${settled.length ? winCount : '無已結案'}</div>
+    </div>
+    <div class="stat" data-tip="已結案 pick 的平均損益百分比（贏跟輸都算進去）">
+      ${avgPnlHtml}
+      <div class="s-lbl">平均損益</div>
+    </div>
+    <div class="stat" data-tip="${rangeLbl}內系統建議空手不進場的天數">
+      <div class="s-val">${watches}</div>
+      <div class="s-lbl">觀望天數</div>
+    </div>`;
+  if(window.applyGlossary) window.applyGlossary(document.getElementById('stat-strip'));
+}
+/* Range toggle wiring */
+document.querySelectorAll('#rangeToggle button').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('#rangeToggle button').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+    statsRange = btn.dataset.range;
+    renderStats();
+  };
+});
 
 /* ─── Wiring ─── */
 document.getElementById('prevMonth').onclick = () => { viewMonth--; if(viewMonth<0){viewMonth=11; viewYear--;} renderCalendar(); };
