@@ -18,7 +18,7 @@
   Inject watch-day JSON into <script id="pick-data">. Unreplaced → SAMPLE.
   ════════════════════════════════════════════════════════════════════
 -->
-<script id="pick-data" type="application/json">{"date": "2026-07-07", "regime": "區間盤", "risk_level": "moderate", "verdict": "空手觀望", "context_paragraph": "台股今日經歷劇烈震盪，高價股面臨嚴重獲利了結賣壓，導致市場主流族群顯著轉弱。儘管有少數類股逆勢走強，但大盤整體風險偏高，VIX指數回升顯示市場謹慎情緒。外資單日大幅賣超逾255億，配合美股科技股動能放緩，當前市場處於區間盤整格局，短線交易風險增加。", "why_watching": "耐心不是沒事做，而是在等一個更好的價格。今日系統選擇空手觀望，主要基於以下幾點考量：\n\n1.  **風險報酬比不佳**：市場經歷劇烈震盪，獲利了結壓力顯著。儘管有少數個股表現強勢，但在大盤整體風險偏高（risk_pressure 0.296）的背景下，追高風險遠大於潛在報酬。系統判斷在當前不確定性增加的結構中，短線交易勝率與風險報酬比均不佳。\n2.  **資金動能不足**：外資單日賣超高達255億，顯示資金正在撤離，使得市場缺乏明確的買盤支持（foreign_flow_strength 0.245）。量能未能有效放大至足以扭轉頹勢的水平，顯示多數資金處於觀望狀態，市場缺少上攻合力。\n3.  **不確定性升高**：VIX指數回升至16.35，反映市場避險情緒升溫。美股科技股動能放緩，加上系統內部評估 `REGIME_UNFAVORABLE`，均指向短線操作存在較高不確定性與潛在風險。\n4.  **強勢股位階過高**：儘管Scanner捕捉到部分強勢股，但這些個股經過前期漲幅後，位階普遍偏高。在當前修正壓力中，它們更容易成為獲利了結的標的，而非具備安全邊際的切入點。", "reactivation_triggers": [{"cond": "外資連續 2 日買超", "note": "且單日金額皆逾 50 億，顯示資金回流意願"}, {"cond": "VIX 指數回落至 15 以下", "note": "市場恐慌情緒顯著緩解，風險偏好回升"}, {"cond": "大盤趨勢強度 (trend_strength) 回升至 0.6 以上", "note": "顯示多頭趨勢恢復主導，且風險壓力 (risk_pressure) 降至 0.2 以下"}, {"cond": "市場廣度 (breadth_score) 站穩 0.6 以上", "note": "顯示健康輪動與普漲格局浮現，市場參與度提升"}], "scanner_top1": {"code": "1717", "name": "長興", "score": 6, "what_scanner_sees": "長興今日展現強勁技術訊號，包括股價站穩月線之上 (above_ma20)、成交量顯著放大 (vol_surge)、RSI指標進入強勢區間 (rsi_zone)。此外，短中長期均線呈現多頭排列 (ma_aligned)，並創下近五日新高 (five_day_high)，配合其相對大盤的強勢表現 (rs_signal)，顯示其個股動能與多頭結構穩健。", "what_we_dont_like": "儘管長興個股表現出色，但在大盤整體風險偏高、主流族群轉弱的環境下，其作為單一個股的抗跌性仍有待觀察。系統考量整體市場的風險報酬比不佳，加上外資大幅賣超，認為此時投入可能面臨孤掌難鳴的局面。且一旦市場修正加劇，這類強勢股的補跌風險也不容忽視，故選擇暫不介入。"}, "micro_pick": null, "prev_date": "2026-07-06", "next_date": "2026-07-08"}</script>
+<script id="pick-data" type="application/json">{"date": "2026-07-08", "regime": "資金輪動", "risk_level": "moderate", "verdict": "空手觀望", "context_paragraph": "今日台股呈現資金輪動格局，大盤雖收平盤，但高價股面臨劇烈獲利了結賣壓，導致主流族群顯著轉弱。外資單日大幅賣超逾 255 億元，顯示資金外流壓力。儘管全球主要指數處於歷史高位，美股科技板塊表現亦不俗，但台股內部結構動盪，VIX 指數有回升跡象，市場不確定性增加，需保持高度警惕與耐心。", "why_watching": "「耐心並非無所事事，而是在等待一個更具吸引力的價格與更清晰的市場結構。」今日系統決定空手觀望，主要基於以下幾點考量：\n\n首先，市場籌碼結構顯著惡化。外資單日大幅賣超逾 255 億元 (foreign_flow_strength 0.245)，顯示資金正從台股流出。同時，高價股面臨嚴峻的獲利了結賣壓，導致過往主流族群明顯轉弱，市場缺乏強而有力的領漲板塊支持。\n\n其次，大盤整體風險因子偏高。儘管指數表面持平，但市場內部結構動盪劇烈，VIX 指數回升至 15.57，反映出市場對未來波動的擔憂情緒升溫。美股科技股的承壓也為台股帶來不確定性，在當前市場普遍存在樂觀情緒與盲點的背景下，系統認為此刻並非進場的理想時機。\n\n再者，市場廣度不足。儘管上漲家數略多於下跌家數 (534/431)，但綜合 breadth_score 0.553 指標顯示，資金僅在特定小型族群間輪動，並未形成有效且全面的上攻動能。這種缺乏共識的輪動，使得擇股難度與風險同步升高。\n\n最後，在當前充滿不確定性且高估值風險仍需警惕的環境下，短線交易的勝率及風險報酬比均不具吸引力。市場對於高估值 AI 題材的普遍樂觀，反而增加了潛在的下行風險。此刻，系統選擇耐心等待，而非盲目追逐風險。", "reactivation_triggers": [{"cond": "外資連續 2 日買超", "note": "且單日金額 > 50 億新台幣"}, {"cond": "VIX 指數回落至 14 以下", "note": "且美股主要指數趨穩"}, {"cond": "台股大盤突破前高並站穩 3 日", "note": "且成交量能有效放大"}, {"cond": "Breadth Score 提升至 0.75 以上", "note": "顯示資金廣泛回流市場，非僅局部輪動"}, {"cond": "主流族群出現明確止穩訊號", "note": "且有新領漲族群浮現，而非單一個股表現"}], "scanner_top1": {"code": "1717", "name": "長興", "score": 6, "what_scanner_sees": "長興 (1717) 在 Scanner 雷達上表現突出，其技術面訊號極為強勁。股價位居均線之上 (above_ma20)，且均線呈現多頭排列 (ma_aligned)，顯示明確的上漲趨勢。近期更出現放量突破 (vol_surge) 並創五日新高 (five_day_high)，搭配 RSI 動能穩健 (rsi_zone) 與相對強度訊號 (rs_signal)，顯示其具備短線爆發潛力與市場關注度。", "what_we_dont_like": "儘管長興展現強勁動能，但考量到目前市場整體結構的脆弱性，系統仍選擇不介入。當前大盤外資賣壓沉重，主流族群轉弱，即便個股再強勢，其上漲的持續性與潛在風險報酬比仍有疑慮。在市場風險偏好降低、資金廣度不足的背景下，單一個股的強勢難以抵禦系統性壓力，其位階與短期波動風險也相對較高。"}, "micro_pick": null, "prev_date": "2026-07-07", "next_date": null}</script>
 
 <div class="page">
 
@@ -188,8 +188,10 @@ if(DATA.prev_date) document.getElementById('prev-pick').href = DATA.prev_date + 
 else document.getElementById('prev-pick').style.opacity = '.35';
 if(DATA.next_date) document.getElementById('next-pick').href = DATA.next_date + '.html';
 else document.getElementById('next-pick').style.opacity = '.35';
-</script>
 
+if(window.applyGlossary) window.applyGlossary();
+</script>
 <script src="glossary.js"></script>
+
 </body>
 </html>
