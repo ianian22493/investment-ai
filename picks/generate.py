@@ -308,11 +308,22 @@ def main():
     run_date_str = run_dt.strftime("%Y-%m-%d")
     print(f"[generate.py] cron run at {run_date_str} → pick 檔名 = {date_str} (下一交易日)")
 
-    # Only generate post-market — pre-market run has no tw_daily_pick.
-    # But still refresh calendar + latest pointer so hub always finds the
-    # most recent existing pick page.
+    # Only produce fresh pick pages on POST-MARKET runs (hour >= 13).
+    # Pre-market runs (08:30) now preserve yesterday's tw_daily_pick in
+    # run_agents.py so latest.json stays populated, but that data is
+    # STALE — we must NOT generate a new-day page from it, or the
+    # "07-07.html" file will contain yesterday's decision with tomorrow's
+    # date. Still refresh calendar + latest pointer for hub freshness.
+    if run_dt.hour < 13:
+        print(f"[generate.py] pre-market run ({run_dt.hour:02d}:xx) — skip page generation, refresh index only")
+        render_calendar_index()
+        write_latest_pointer()
+        return
+
+    # Post-market but Phase 4 wasn't triggered (e.g. Phase 4 skipped for
+    # some other reason) — no fresh pick data, refresh index and bail.
     if not analysis.get("agents", {}).get("tw_daily_pick"):
-        print(f"[generate.py] {date_str} 沒有 tw_daily_pick (盤前 run?) — skip page generation")
+        print(f"[generate.py] {date_str} 沒有 tw_daily_pick — skip page generation")
         render_calendar_index()
         write_latest_pointer()
         return
