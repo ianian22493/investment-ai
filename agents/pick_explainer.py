@@ -79,6 +79,8 @@ PICK_SCHEMA = """輸出格式（strict JSON，無 markdown wrapping）：
 }
 
 絕對不要輸出 markdown code fence、不要解釋、純 JSON。
+字串值內也禁用任何 markdown 記號（**粗體**、`反引號`、# 標題）——頁面用
+純文字渲染，這些記號會原樣顯示給讀者。要強調就用中文標點或「引號」。
 """
 
 
@@ -122,6 +124,8 @@ WATCH_SCHEMA = """輸出格式（strict JSON）：
 
 如果輸入沒有 scanner candidates，scanner_top1 全部填空字串。
 絕對不要輸出 markdown code fence、不要解釋、純 JSON。
+字串值內也禁用任何 markdown 記號（**粗體**、`反引號`、# 標題）——頁面用
+純文字渲染，這些記號會原樣顯示給讀者。要強調就用中文標點或「引號」。
 """
 
 

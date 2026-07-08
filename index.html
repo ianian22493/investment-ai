@@ -4769,14 +4769,21 @@ async function load(){
       fetch('data/errors.log?t=' + Date.now()).catch(() => null),
       fetch('data/signal_history.jsonl?t=' + Date.now()).catch(() => null),
     ]);
-    // Parse errors.log (JSONL) — keep newest 5 entries
+    // Parse errors.log (JSONL) — keep newest 5 entries within 48h.
+    // The log is append-only and never rotated, so without a recency
+    // cutoff a quiet system keeps flagging weeks-old errors as "RECENT".
     LATEST_ERRORS = [];
     if(r3 && r3.ok){
       try {
         const text = await r3.text();
-        LATEST_ERRORS = text.trim().split(/\r?\n/).filter(Boolean).slice(-5).map(l => {
+        const cutoff = Date.now() - 48 * 3600 * 1000;
+        LATEST_ERRORS = text.trim().split(/\r?\n/).filter(Boolean).map(l => {
           try { return JSON.parse(l); } catch { return null; }
-        }).filter(Boolean).reverse();
+        }).filter(e => {
+          if(!e) return false;
+          const t = Date.parse(e.ts || '');
+          return !isNaN(t) && t >= cutoff;
+        }).slice(-5).reverse();
       } catch { LATEST_ERRORS = []; }
     }
     // Parse signal_history.jsonl — keep last 60 entries (~30 trading days × 2 runs)

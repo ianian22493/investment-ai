@@ -158,14 +158,40 @@ def build_watch_data(analysis: dict, market_data: dict, candidates: list, explai
     }
 
 
+def _strip_md(v):
+    """遞迴清除 LLM 偶發輸出的 markdown 記號（**粗體**、`code`）。
+
+    Template 用純文字渲染，這些記號會原樣顯示在頁面上（2026-07-08
+    前有 4 頁觀望日中獎）。只清 ** 與反引號，單一 * 可能是合法字元不動。
+    """
+    if isinstance(v, str):
+        return v.replace("**", "").replace("`", "")
+    if isinstance(v, list):
+        return [_strip_md(x) for x in v]
+    if isinstance(v, dict):
+        return {k: _strip_md(x) for k, x in v.items()}
+    return v
+
+
+PICK_DATA_TAG = '<script id="pick-data" type="application/json">'
+
+
 def render(template_path: str, data: dict) -> str:
-    """把 data 注入 template 的 {{DATA_JSON}} placeholder。"""
+    """把 data 注入 template 的 {{DATA_JSON}} placeholder。
+
+    只注入 <script id="pick-data"> 裡那一個 token——過去用全域
+    replace，把整包 JSON 也塞進了兩段註解（檔案肥 3 倍），還害
+    backfill 的 count=1 regex 改到註解、真資料的 next_date 留 null。
+    """
     with open(template_path, encoding="utf-8") as f:
         html = f.read()
-    payload = json.dumps(data, ensure_ascii=False)
+    payload = json.dumps(_strip_md(data), ensure_ascii=False)
     # Embed safely — escape </script> if it appears in any string (XSS-ish)
     payload = payload.replace("</script>", "<\\/script>")
-    return html.replace("{{DATA_JSON}}", payload)
+    marker = PICK_DATA_TAG + "{{DATA_JSON}}</script>"
+    if marker not in html:
+        raise RuntimeError(f"pick-data script tag with token not found in {template_path}")
+    return html.replace(marker, PICK_DATA_TAG + payload + "</script>", 1)
 
 
 def build_picks_manifest() -> list[dict]:
@@ -366,11 +392,16 @@ def main():
         if os.path.exists(prev_path):
             with open(prev_path, encoding="utf-8") as f:
                 prev_html = f.read()
-            # Find and update the prev_date / next_date in injected JSON
-            new_prev_html = re.sub(
+            # Update next_date inside the #pick-data script only — the file
+            # may contain other "next_date" strings (template comments in
+            # pages generated before the render() fix), and a bare count=1
+            # sub used to hit those instead of the real data.
+            tag_idx = prev_html.find(PICK_DATA_TAG)
+            head, tail = (prev_html[:tag_idx], prev_html[tag_idx:]) if tag_idx != -1 else ("", prev_html)
+            new_prev_html = head + re.sub(
                 r'"next_date"\s*:\s*(?:"[^"]*"|null)',
                 f'"next_date": "{date_str}"',
-                prev_html, count=1
+                tail, count=1
             )
             if new_prev_html != prev_html:
                 with open(prev_path, "w", encoding="utf-8") as f:

@@ -118,10 +118,24 @@ const SAMPLE = {
 };
 
 let DATA;
-try {
-  const raw = document.getElementById('pick-data').textContent.trim();
-  DATA = (raw && !raw.startsWith('{{')) ? JSON.parse(raw) : SAMPLE;
-} catch(e){ DATA = SAMPLE; }
+{
+  const raw = (document.getElementById('pick-data')?.textContent || '').trim();
+  if (!raw || raw.startsWith('{{')) {
+    // Mockup mode: template opened directly, token unreplaced → demo data.
+    DATA = SAMPLE;
+  } else {
+    try { DATA = JSON.parse(raw); }
+    catch(e){
+      // Real page with broken data: never silently show SAMPLE as if it
+      // were today's analysis — render an explicit error state instead.
+      DATA = {};
+      document.body.insertAdjacentHTML('afterbegin',
+        '<div style="background:#8a2222;color:#fff;padding:14px 20px;font-size:15px;line-height:1.6">' +
+        '⚠ 本頁資料載入失敗（pick-data JSON 解析錯誤）。以下欄位皆為空白佔位，' +
+        '不是今日實際分析——請檢查 picks/generate.py 的輸出。</div>');
+    }
+  }
+}
 
 const f = (v, dflt='—') => (v === undefined || v === null || v === '') ? dflt : v;
 const WD = ['日','一','二','三','四','五','六'];

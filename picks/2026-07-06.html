@@ -18,7 +18,7 @@
   Inject watch-day JSON into <script id="pick-data">. Unreplaced → SAMPLE.
   ════════════════════════════════════════════════════════════════════
 -->
-<script id="pick-data" type="application/json">{"date": "2026-07-06", "regime": "區間盤", "risk_level": "moderate", "verdict": "空手觀望", "context_paragraph": "今日市場呈現分歧走勢，台股加權指數雖然收紅，但美股那斯達克表現疲弱，全球主要股指在盤中維持謹慎態度。系統判定當前市場為區間盤，並明確指出此時不適合進行短線交易。外資今日大幅賣超近 780 億，顯示資金流出壓力，儘管上漲家數仍顯韌性，但在整體不確定性與評價風險考量下，Yuzu Capital OS 選擇維持空手觀望，等待更清晰的市場訊號出現。", "why_watching": "Yuzu Capital OS 今日選擇空手，並非市場缺乏波動，而是耐心等待一個風險報酬比更具吸引力的進場時機。當前系統明確判斷市場處於「區間盤」格局，且不適合進行短線交易，這表示在此體制下，隨意出手可能導致勝率降低，資金效率不彰。具體來說，我們觀察到以下幾個關鍵訊號：\n\n首先，今日外資大幅淨賣超近 780 億元，導致 `foreign_flow_strength` 指標直接降至 0.0，顯示市場缺乏來自大型資金的強力支持，這種持續性的資金流出為短期市場帶來顯著壓力。其次，儘管台股盤中展現韌性，但美股那斯達克指數的疲弱表現，以及華爾街對估值風險的普遍警惕，都在提醒我們全球資金對於市場高檔的態度趨於謹慎，這使得整體市場上行空間受限，下行風險增加。\n\n再者，Yuzu Capital OS 內部的信號融合指標顯示，雖然 `scanner_momentum` 和 `breadth_score` 仍維持相對高檔，市場內部潛藏動能，但 `trend_strength` 僅為 0.513，未能形成明確的多頭趨勢。我們的決策引擎認為，在缺乏清晰趨勢且外資大舉撤出的情況下，即使有部分個股表現強勢，也難以支撐系統化且具高勝率的短線操作。系統的職責是確保每一次出手都建立在相對穩固的市場基礎上，避免在混沌不明的環境中承擔不必要的風險。", "reactivation_triggers": [{"cond": "外資連續 2 日買超", "note": "且單日合計金額 > 100 億元"}, {"cond": "系統判定市場體制轉變為明確的多頭趨勢 (Trend-Following)", "note": "搭配 `trend_strength` 指標突破 0.75"}, {"cond": "VIX 指數跌破 15", "note": "且 `risk_pressure` 指標連續 2 日低於 0.2"}, {"cond": "加權指數連續 3 日站穩關鍵均線", "note": "且 `scanner_momentum` 指標維持 1.0 或 `breadth_score` 突破 0.85"}], "scanner_top1": {"code": "1434", "name": "福懋", "score": 95, "what_scanner_sees": "Scanner 系統鎖定福懋 (1434) 的原因顯而易見。該股不僅技術面強勢，包括股價穩站月線 (above_ma20) 且均線呈現多頭排列 (ma_aligned)，暗示短期上漲趨勢確立。更值得注意的是，其在近期創下五日新高 (five_day_high)，並伴隨明顯的量能急增 (vol_surge)，顯示有強勁的買盤推升。同時，相對強度訊號 (rs_signal) 與 RSI 處於健康區間 (rsi_zone)，進一步確認了其動能充沛，是市場中少數同時具備價量齊揚和技術面多重支持的標的。", "what_we_dont_like": "儘管福懋在技術指標上展現強勁，但 Yuzu Capital OS 評估在當前「區間盤」的市場體制下，其風險報酬比並不理想。系統認為，即使個股表現突出，若缺乏整體市場的明確趨勢支持，且外資呈現大舉流出態勢，個股短期內仍可能受到大盤拖累，存在迅速反轉的風險。在整體市場不確定性高、資金流向不明的環境中，追逐短期強勢股的策略勝率大幅降低。因此，儘管福懋是雷達偵測到的最強標的，系統仍選擇保持審慎，等待更穩健的進場時機與更佳的市場共識。"}, "micro_pick": null, "prev_date": "2026-07-03", "next_date": "2026-07-07"}</script>
+<script id="pick-data" type="application/json">{"date": "2026-07-06", "regime": "區間盤", "risk_level": "moderate", "verdict": "空手觀望", "context_paragraph": "今日市場呈現分歧走勢，台股加權指數雖然收紅，但美股那斯達克表現疲弱，全球主要股指在盤中維持謹慎態度。系統判定當前市場為區間盤，並明確指出此時不適合進行短線交易。外資今日大幅賣超近 780 億，顯示資金流出壓力，儘管上漲家數仍顯韌性，但在整體不確定性與評價風險考量下，Yuzu Capital OS 選擇維持空手觀望，等待更清晰的市場訊號出現。", "why_watching": "Yuzu Capital OS 今日選擇空手，並非市場缺乏波動，而是耐心等待一個風險報酬比更具吸引力的進場時機。當前系統明確判斷市場處於「區間盤」格局，且不適合進行短線交易，這表示在此體制下，隨意出手可能導致勝率降低，資金效率不彰。具體來說，我們觀察到以下幾個關鍵訊號：\n\n首先，今日外資大幅淨賣超近 780 億元，導致 foreign_flow_strength 指標直接降至 0.0，顯示市場缺乏來自大型資金的強力支持，這種持續性的資金流出為短期市場帶來顯著壓力。其次，儘管台股盤中展現韌性，但美股那斯達克指數的疲弱表現，以及華爾街對估值風險的普遍警惕，都在提醒我們全球資金對於市場高檔的態度趨於謹慎，這使得整體市場上行空間受限，下行風險增加。\n\n再者，Yuzu Capital OS 內部的信號融合指標顯示，雖然 scanner_momentum 和 breadth_score 仍維持相對高檔，市場內部潛藏動能，但 trend_strength 僅為 0.513，未能形成明確的多頭趨勢。我們的決策引擎認為，在缺乏清晰趨勢且外資大舉撤出的情況下，即使有部分個股表現強勢，也難以支撐系統化且具高勝率的短線操作。系統的職責是確保每一次出手都建立在相對穩固的市場基礎上，避免在混沌不明的環境中承擔不必要的風險。", "reactivation_triggers": [{"cond": "外資連續 2 日買超", "note": "且單日合計金額 > 100 億元"}, {"cond": "系統判定市場體制轉變為明確的多頭趨勢 (Trend-Following)", "note": "搭配 trend_strength 指標突破 0.75"}, {"cond": "VIX 指數跌破 15", "note": "且 risk_pressure 指標連續 2 日低於 0.2"}, {"cond": "加權指數連續 3 日站穩關鍵均線", "note": "且 scanner_momentum 指標維持 1.0 或 breadth_score 突破 0.85"}], "scanner_top1": {"code": "1434", "name": "福懋", "score": 95, "what_scanner_sees": "Scanner 系統鎖定福懋 (1434) 的原因顯而易見。該股不僅技術面強勢，包括股價穩站月線 (above_ma20) 且均線呈現多頭排列 (ma_aligned)，暗示短期上漲趨勢確立。更值得注意的是，其在近期創下五日新高 (five_day_high)，並伴隨明顯的量能急增 (vol_surge)，顯示有強勁的買盤推升。同時，相對強度訊號 (rs_signal) 與 RSI 處於健康區間 (rsi_zone)，進一步確認了其動能充沛，是市場中少數同時具備價量齊揚和技術面多重支持的標的。", "what_we_dont_like": "儘管福懋在技術指標上展現強勁，但 Yuzu Capital OS 評估在當前「區間盤」的市場體制下，其風險報酬比並不理想。系統認為，即使個股表現突出，若缺乏整體市場的明確趨勢支持，且外資呈現大舉流出態勢，個股短期內仍可能受到大盤拖累，存在迅速反轉的風險。在整體市場不確定性高、資金流向不明的環境中，追逐短期強勢股的策略勝率大幅降低。因此，儘管福懋是雷達偵測到的最強標的，系統仍選擇保持審慎，等待更穩健的進場時機與更佳的市場共識。"}, "micro_pick": null, "prev_date": "2026-07-03", "next_date": "2026-07-07"}</script>
 
 <div class="page">
 
@@ -118,10 +118,24 @@ const SAMPLE = {
 };
 
 let DATA;
-try {
-  const raw = document.getElementById('pick-data').textContent.trim();
-  DATA = (raw && !raw.startsWith('{{')) ? JSON.parse(raw) : SAMPLE;
-} catch(e){ DATA = SAMPLE; }
+{
+  const raw = (document.getElementById('pick-data')?.textContent || '').trim();
+  if (!raw || raw.startsWith('{{')) {
+    // Mockup mode: template opened directly, token unreplaced → demo data.
+    DATA = SAMPLE;
+  } else {
+    try { DATA = JSON.parse(raw); }
+    catch(e){
+      // Real page with broken data: never silently show SAMPLE as if it
+      // were today's analysis — render an explicit error state instead.
+      DATA = {};
+      document.body.insertAdjacentHTML('afterbegin',
+        '<div style="background:#8a2222;color:#fff;padding:14px 20px;font-size:15px;line-height:1.6">' +
+        '⚠ 本頁資料載入失敗（pick-data JSON 解析錯誤）。以下欄位皆為空白佔位，' +
+        '不是今日實際分析——請檢查 picks/generate.py 的輸出。</div>');
+    }
+  }
+}
 
 const f = (v, dflt='—') => (v === undefined || v === null || v === '') ? dflt : v;
 const WD = ['日','一','二','三','四','五','六'];
