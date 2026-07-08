@@ -1,6 +1,6 @@
 {
-  "_comment": "Static portfolio snapshot — update manually when holdings change | 2026-06-03: 賣出 2536/4588/4707 (實現 +105313)",
-  "_updated": "2026-06-03",
+  "_comment": "Static portfolio snapshot | 2026-06-03 賣出 2536/4588/4707 | 2026-07-07 更新持股（新增 2603/3491/3665/6442/8299 + 加碼 3293/2211/1104）+ 每檔加 sector 欄位 (for Task C)",
+  "_updated": "2026-07-07",
   "personal_finance": {
     "cash_savings_twd": 1065043,
     "monthly_income_twd": 110000,
@@ -12,99 +12,167 @@
     {
       "code": "00692",
       "name": "富邦公司治理",
-      "shares": 6699,
-      "value": 558387,
-      "cost": 241000,
-      "pnl": 317389,
-      "pnl_pct": 131.7,
+      "shares": 6918,
+      "value": 634985,
+      "cost": 260771,
+      "pnl": 374214,
+      "pnl_pct": 143.5,
       "type": "ETF",
-      "strategy": "long"
+      "strategy": "long",
+      "sector": "ETF-broad"
     },
     {
       "code": "00915",
       "name": "凱基優選高股息30",
       "shares": 2000,
-      "value": 51418,
-      "cost": 16050,
-      "pnl": 35368,
-      "pnl_pct": 220.36,
+      "value": 64186,
+      "cost": 15150,
+      "pnl": 49036,
+      "pnl_pct": 323.67,
       "type": "ETF",
-      "strategy": "long"
+      "strategy": "long",
+      "sector": "ETF-dividend"
     },
     {
       "code": "1104",
       "name": "環泥",
-      "shares": 20000,
-      "value": 563522,
-      "cost": 508982,
-      "pnl": 54540,
-      "pnl_pct": 10.72,
+      "shares": 21000,
+      "value": 566602,
+      "cost": 498669,
+      "pnl": 67933,
+      "pnl_pct": 13.62,
       "type": "stock",
-      "strategy": "long"
+      "strategy": "long",
+      "sector": "水泥"
     },
     {
       "code": "2211",
       "name": "長榮鋼",
-      "shares": 3100,
-      "value": 304619,
-      "cost": 265380,
-      "pnl": 39239,
-      "pnl_pct": 14.79,
+      "shares": 5100,
+      "value": 482869,
+      "cost": 445442,
+      "pnl": 37427,
+      "pnl_pct": 8.4,
       "type": "stock",
-      "strategy": "both"
+      "strategy": "both",
+      "sector": "鋼鐵"
     },
     {
       "code": "2330",
       "name": "台積電",
       "shares": 40,
-      "value": 89604,
-      "cost": 71700,
-      "pnl": 17904,
-      "pnl_pct": 24.97,
+      "value": 98168,
+      "cost": 71460,
+      "pnl": 26708,
+      "pnl_pct": 37.37,
       "type": "stock",
-      "strategy": "long"
+      "strategy": "long",
+      "sector": "半導體-代工"
+    },
+    {
+      "code": "2603",
+      "name": "長榮",
+      "shares": 1000,
+      "value": 195133,
+      "cost": 192273,
+      "pnl": 2860,
+      "pnl_pct": 1.49,
+      "type": "stock",
+      "strategy": "both",
+      "sector": "航運-貨櫃"
     },
     {
       "code": "2834",
       "name": "臺企銀",
       "shares": 13000,
-      "value": 209679,
+      "value": 236211,
       "cost": 165731,
-      "pnl": 43948,
-      "pnl_pct": 26.52,
+      "pnl": 70480,
+      "pnl_pct": 42.53,
       "type": "stock",
-      "strategy": "long"
+      "strategy": "long",
+      "sector": "金融-銀行"
     },
     {
       "code": "3293",
       "name": "鈦象",
       "shares": 940,
-      "value": 684193,
-      "cost": 627157,
-      "pnl": 57036,
-      "pnl_pct": 9.09,
+      "value": 700082,
+      "cost": 593317,
+      "pnl": 106765,
+      "pnl_pct": 17.99,
       "type": "stock",
-      "strategy": "both"
+      "strategy": "long",
+      "sector": "遊戲軟體"
+    },
+    {
+      "code": "3491",
+      "name": "昇達科",
+      "shares": 80,
+      "value": 101152,
+      "cost": 107350,
+      "pnl": -6198,
+      "pnl_pct": -5.77,
+      "type": "stock",
+      "strategy": "both",
+      "sector": "通訊網路-微波"
+    },
+    {
+      "code": "3665",
+      "name": "貿聯-KY",
+      "shares": 50,
+      "value": 94582,
+      "cost": 97161,
+      "pnl": -2579,
+      "pnl_pct": -2.65,
+      "type": "stock",
+      "strategy": "both",
+      "sector": "電子零組件-連接線"
     },
     {
       "code": "3703",
       "name": "欣陸",
       "shares": 12000,
-      "value": 245520,
-      "cost": 303286,
-      "pnl": -57766,
-      "pnl_pct": -19.05,
+      "value": 246120,
+      "cost": 290686,
+      "pnl": -44566,
+      "pnl_pct": -15.33,
       "type": "stock",
       "strategy": "long",
-      "watch": "stop_loss_review"
+      "sector": "營建-工程"
+    },
+    {
+      "code": "6442",
+      "name": "光聖",
+      "shares": 130,
+      "value": 192206,
+      "cost": 244041,
+      "pnl": -51835,
+      "pnl_pct": -21.24,
+      "type": "stock",
+      "strategy": "both",
+      "sector": "通訊網路-光通訊"
+    },
+    {
+      "code": "8299",
+      "name": "群聯",
+      "shares": 90,
+      "value": 191754,
+      "cost": 214520,
+      "pnl": -22766,
+      "pnl_pct": -10.61,
+      "type": "stock",
+      "strategy": "long",
+      "sector": "半導體-NAND控制IC"
     }
   ],
   "tw_summary": {
-    "total_value": 2706942,
-    "total_cost": 2199286,
-    "total_pnl": 507656,
-    "total_pnl_pct": 23.08,
-    "broker": "永豐金"
+    "total_value": 3804050,
+    "total_cost": 3196571,
+    "total_pnl": 607479,
+    "total_pnl_pct": 19.0,
+    "broker": "國泰證券",
+    "_updated": "2026-07-07"
   },
   "us_stocks": [
     {
