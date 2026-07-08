@@ -619,6 +619,76 @@ a:hover{text-decoration:underline; text-underline-offset:3px}
      If needed later, a .theme-night class can override here. */
 }
 
+/* ═══ Holdings correlation card (Task C) ═══
+   顯示今日 pick 與現有持股的產業重疊警示。
+   三種嚴重程度 · high / medium / low = 紅 / 橘 / 淡金 */
+.corr-card{
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 16px; margin:4px 0 0;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--paper2);
+  font-family:'Noto Sans TC', sans-serif;
+}
+.corr-card.warn-high{
+  border-color:rgba(180,60,60,0.5);
+  background:#FAE4E1;
+}
+.corr-card.warn-medium{
+  border-color:rgba(200,120,30,0.5);
+  background:#FAEFDB;
+}
+.corr-card.warn-low{
+  border-color:rgba(160,96,16,0.35);
+  background:#FCF5E4;
+}
+.corr-icon{
+  font-size:22px; line-height:1; flex-shrink:0;
+  margin-top:1px;
+}
+.corr-body{flex:1; min-width:0}
+.corr-title{
+  font-family:'Noto Serif TC', serif; font-weight:700;
+  font-size:15px; color:var(--ink); margin-bottom:6px;
+}
+.corr-title .corr-level{
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px; letter-spacing:1.5px;
+  padding:2px 7px; border-radius:3px;
+  margin-left:8px; vertical-align:1px;
+}
+.corr-title .corr-level.high{background:#B44848; color:#FFF}
+.corr-title .corr-level.medium{background:#C87830; color:#FFF}
+.corr-title .corr-level.low{background:#A06010; color:#FFF}
+.corr-summary{
+  font-size:13.5px; color:var(--ink2); line-height:1.55;
+  margin-bottom:8px;
+}
+.corr-matches{
+  display:flex; flex-wrap:wrap; gap:6px;
+}
+.corr-chip{
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px; padding:3px 9px;
+  background:rgba(160,96,16,0.08); color:var(--ink);
+  border:1px solid rgba(160,96,16,0.25);
+  border-radius:12px;
+}
+.corr-chip.exact{
+  background:rgba(180,60,60,0.12);
+  border-color:rgba(180,60,60,0.35);
+  color:#7A2020;
+  font-weight:700;
+}
+.corr-chip .cc-sector{color:var(--ink3); font-size:10.5px; margin-left:3px}
+
+@media (max-width:640px){
+  .corr-card{padding:12px}
+  .corr-title{font-size:14px}
+  .corr-summary{font-size:13px}
+}
+
 /* ═══ Glossary tooltip system (Task A) ═══
    Terms auto-annotated by inline JS via GLOSSARY dictionary. */
 [data-tip]{

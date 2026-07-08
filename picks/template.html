@@ -55,6 +55,11 @@
     </div>
   </section>
 
+  <!-- 2B · HOLDINGS CORRELATION (只在有相關性時顯示) -->
+  <section class="sec" id="corr-sec" style="border-bottom:none; padding-top:2px; padding-bottom:0; display:none">
+    <div class="corr-card" id="corr-card"></div>
+  </section>
+
   <!-- 3 · KEY NUMBERS -->
   <section class="sec" style="border-bottom:none; padding-top:14px">
     <div class="keynums">
@@ -276,6 +281,43 @@ document.getElementById('kn-hold').textContent = f(DATA.hold_days);
 if(DATA.code && DATA.code !== '—'){
   document.title = `${DATA.code} ${DATA.name || ''} · ${DATA.verdict || 'Pick'} · Yuzu`;
 }
+
+/* Holdings correlation (Task C) — 只在有 medium/high 警告時顯示 */
+(function renderCorr(){
+  const c = DATA.correlation;
+  if(!c || !c.matches || !c.matches.length) return;
+  if(c.warning_level === 'none') return;
+
+  const sec = document.getElementById('corr-sec');
+  const card = document.getElementById('corr-card');
+  if(!sec || !card) return;
+
+  const level = c.warning_level;
+  const icons = {high:'⚠', medium:'⚡', low:'📎'};
+  const titles = {
+    high:   '注意：與現有持股高度重疊',
+    medium: '提醒：與現有持股同大類',
+    low:    '參考：跟現有持股有輕微相關'
+  };
+  const chips = c.matches.map(m => `
+    <span class="corr-chip ${m.match_type}">
+      <span class="cc-code">${m.code}</span>
+      <span class="cc-name">${m.name}</span>
+      <span class="cc-sector">${m.sector}</span>
+    </span>`).join('');
+  card.className = 'corr-card warn-' + level;
+  card.innerHTML = `
+    <div class="corr-icon">${icons[level] || '📎'}</div>
+    <div class="corr-body">
+      <div class="corr-title">
+        ${titles[level] || titles.low}
+        <span class="corr-level ${level}">${level.toUpperCase()}</span>
+      </div>
+      <div class="corr-summary">${c.summary || ''}</div>
+      <div class="corr-matches">${chips}</div>
+    </div>`;
+  sec.style.display = 'block';
+})();
 
 /* Chart CTA — TradingView free-tier embed walls Taiwan-stock charts
  * with "此商品僅在 TradingView 可用" for both widgetembed and mini

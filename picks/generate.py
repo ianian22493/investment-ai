@@ -135,6 +135,8 @@ def build_pick_data(analysis: dict, market_data: dict, candidates: list, explain
             "counter_arguments": (agents.get("devils_advocate") or {}).get("counter_argument", [])
                                 or (agents.get("devils_advocate") or {}).get("counter_arguments", []),
         },
+        # Holdings correlation (Task C) — 產業重疊警示
+        "correlation":       pick_agent.get("correlation") or {},
     }
 
 

@@ -1523,6 +1523,32 @@ function fmtChg(v){if(v==null)return '—';const s=v>0?'+':'';return `${s}${pars
 function fmtDate(iso){if(!iso)return'—';const d=new Date(iso);const p=n=>String(n).padStart(2,'0');return `${d.getMonth()+1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`}
 function minsAgo(iso){if(!iso) return null; const d=new Date(iso); return Math.floor((Date.now()-d.getTime())/60000)}
 
+// Holdings correlation chip (Task C) — appended to pick card
+function renderCorrChip(corr){
+  if(!corr || !corr.matches || !corr.matches.length) return '';
+  if(corr.warning_level === 'none') return '';
+  const lvl = corr.warning_level;
+  const colors = {
+    high:   {bg:'rgba(255,69,96,0.10)',  border:'var(--red)',    text:'var(--red)',    icon:'⚠'},
+    medium: {bg:'rgba(255,184,0,0.10)',  border:'var(--yellow)', text:'var(--yellow)', icon:'⚡'},
+    low:    {bg:'rgba(201,168,76,0.08)', border:'var(--gold)',   text:'var(--gold)',   icon:'📎'},
+  };
+  const c = colors[lvl] || colors.low;
+  const chips = corr.matches.map(m => `
+    <span class="corr-mini-chip" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:var(--bg4);border:1px solid ${m.match_type==='exact'?'var(--red)':'var(--border2)'};border-radius:10px;font-size:10.5px;color:var(--text2);margin-right:5px;margin-top:4px">
+      <b style="color:${m.match_type==='exact'?'var(--red)':'var(--text)'}">${m.code}</b>
+      <span>${m.name}</span>
+    </span>`).join('');
+  return `<div class="corr-warn" style="margin-top:12px;padding:10px 12px;background:${c.bg};border-left:2px solid ${c.border};border-radius:0 4px 4px 0" data-tip="產業重疊警告：同大類的股票同時持有，會提高該產業對總資產的曝險">
+    <div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:${c.text};letter-spacing:0.5px;margin-bottom:6px">
+      <span>${c.icon}</span>
+      <span>持股重疊 · ${lvl.toUpperCase()} · 同大類已佔 ${corr.family_exposure_pct}%</span>
+    </div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.5">${corr.summary || ''}</div>
+    <div style="margin-top:4px">${chips}</div>
+  </div>`;
+}
+
 function verdictColor(v){
   if(!v) return 'var(--text2)';
   if(/進攻|買進|加碼/.test(v)) return 'var(--green)';
@@ -3007,7 +3033,7 @@ function renderExec(target){
         <div><div class="pick-field-label">TARGET</div><div class="pick-field-val target">${p.target||'—'}</div></div>
         <div><div class="pick-field-label">HOLD</div><div class="pick-field-val">${p.hold_days||'—'}</div></div>
       </div>
-    </div></div>`;
+    </div>${renderCorrChip(pick.correlation)}</div>`;
   } else {
     pickHTML = renderEmptyExplain(pick, 'exec');
   }
@@ -3175,6 +3201,7 @@ function renderTrading(target){
         ${cl.catalyst?`<div style="margin-top:4px"><b style="color:var(--text3);font-size:9px;letter-spacing:1px">CATALYST · </b>${cl.catalyst}</div>`:''}
         ${cl.chips?`<div style="margin-top:4px"><b style="color:var(--text3);font-size:9px;letter-spacing:1px">CHIPS · </b>${cl.chips}</div>`:''}
       </div>`:''}
+      ${renderCorrChip(pick.correlation)}
     </div>`;
   } else {
     pickHTML = renderEmptyExplain(pick, 'trading');

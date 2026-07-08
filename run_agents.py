@@ -16,7 +16,7 @@ from agents import (
     tw_short_term, tw_long_term, us_portfolio, fx_fund, asset_allocation,
     devils_advocate,
     trading_master, portfolio_master, wealth_master,
-    master_agent, tw_daily_pick,
+    master_agent, tw_daily_pick, holdings_correlation,
 )
 from agents import reflection as reflection_agent
 from agents.regime_engine import determine_regime
@@ -297,6 +297,18 @@ def run_all():
         )
         pick = outputs["tw_daily_pick"]
         print(f"    → {pick.get('verdict')} | {pick.get('pick',{}).get('name','?')}({pick.get('pick',{}).get('code','?')})")
+
+        # Holdings correlation (Task C) — 純 Python，不 call LLM。
+        # 提示同大類/相同精細類的重疊，警告過度集中風險。
+        try:
+            pick_code = (pick.get("pick") or {}).get("code", "")
+            corr = holdings_correlation.compute(pick_code, portfolio_live)
+            pick["correlation"] = corr
+            if corr.get("warning_level") in ("high", "medium"):
+                print(f"    → 相關性: {corr['warning_level']} · {corr.get('summary','')[:80]}")
+        except Exception as e:
+            print(f"    [WARN] holdings_correlation failed: {e}")
+
         outcome_tracker.save_today_pick(pick, regime, market_data, candidates=candidates)
 
         # ── Micro-position trial — additive suggestion when system 空手

@@ -11,6 +11,7 @@ from . import (
     devils_advocate,
     master_agent,
     tw_daily_pick,
+    holdings_correlation,
     trading_master,
     portfolio_master,
     wealth_master,
