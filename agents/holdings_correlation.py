@@ -26,16 +26,31 @@ from typing import Any
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 SECTOR_MAP_PATH = os.path.join(ROOT, "data", "sector_map.json")
+SECTOR_MAP_AUTO_PATH = os.path.join(ROOT, "data", "sector_map_auto.json")
 
 
 def _load_sector_map() -> dict[str, str]:
-    """讀 data/sector_map.json 的 mapping 區段。"""
+    """讀兩個 sector map:
+    - data/sector_map.json (手動細分, 132 檔) — 優先
+    - data/sector_map_auto.json (FinMind 自動生成 3000+ 檔) — fallback
+
+    人工優先: 若同 code 兩個檔都有，用手動的。"""
+    auto_map: dict[str, str] = {}
+    manual_map: dict[str, str] = {}
+    try:
+        with open(SECTOR_MAP_AUTO_PATH, encoding="utf-8") as f:
+            auto_map = json.load(f).get("mapping", {})
+    except Exception:
+        pass
     try:
         with open(SECTOR_MAP_PATH, encoding="utf-8") as f:
-            data = json.load(f)
-        return data.get("mapping", {})
+            manual_map = json.load(f).get("mapping", {})
     except Exception:
-        return {}
+        pass
+    # merge: auto first, manual overrides
+    merged = dict(auto_map)
+    merged.update(manual_map)
+    return merged
 
 
 def _family_of(sector: str) -> str:
