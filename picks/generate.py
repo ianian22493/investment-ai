@@ -45,15 +45,58 @@ def _is_pick_day(analysis: dict) -> bool:
     return bool(code) and code not in ("—", "NONE", "", None)
 
 
+def _load_tw_holidays() -> set[str]:
+    """讀 data/tw_holidays.json，回傳 YYYY-MM-DD 字串 set。"""
+    path = os.path.join(DATA_DIR, "tw_holidays.json")
+    if not os.path.exists(path):
+        return set()
+    try:
+        with open(path, encoding="utf-8") as f:
+            d = json.load(f)
+        out = set()
+        for year_hols in d.get("holidays", {}).values():
+            out.update(year_hols)
+        return out
+    except Exception:
+        return set()
+
+
+def _load_tw_special_trading_days() -> set[str]:
+    """補班日 - 週末但要開盤那些天。"""
+    path = os.path.join(DATA_DIR, "tw_holidays.json")
+    if not os.path.exists(path):
+        return set()
+    try:
+        with open(path, encoding="utf-8") as f:
+            d = json.load(f)
+        out = set()
+        for year_days in d.get("special_trading_days", {}).values():
+            if isinstance(year_days, list):
+                out.update(year_days)
+        return out
+    except Exception:
+        return set()
+
+
+def _is_trading_day(d: datetime) -> bool:
+    """週一至週五，且不在假日名單；週末但在補班日也算。"""
+    date_str = d.strftime("%Y-%m-%d")
+    holidays = _load_tw_holidays()
+    special = _load_tw_special_trading_days()
+    if date_str in holidays:
+        return False
+    if date_str in special:
+        return True
+    return d.weekday() < 5   # Mon-Fri
+
+
 def _next_trading_day(dt: datetime) -> str:
-    """從 cron 執行日，往後找下一個交易日（週一~週五）。
-    Sun 16:30 → Mon      Mon 16:30 → Tue      Thu 16:30 → Fri
-    這是 pick 頁的**目標交易日**，也是 pick 檔名。
-    註：僅避開週末，不處理台股封關/國定假日；那些日子 pick 頁還是會產，
-    但檔名對應的日期市場不開，等於「跳過該日」— 使用者用月曆能看到。
+    """從 cron 執行日，往後找下一個交易日。
+    跳過：週末、台股封關日、國定假日。
+    含：補班日（週末但要開盤）。
     """
     d = dt + timedelta(days=1)
-    while d.weekday() >= 5:   # Sat=5, Sun=6
+    while not _is_trading_day(d):
         d += timedelta(days=1)
     return d.strftime("%Y-%m-%d")
 
@@ -241,7 +284,9 @@ def build_picks_manifest() -> list[dict]:
             conn = sqlite3.connect(db_path)
             conn.row_factory = sqlite3.Row
             rows = conn.execute(
-                "SELECT date, stock_code, return_pct, success, resolved FROM picks"
+                """SELECT date, stock_code, return_pct, success, resolved,
+                          benchmark_return_pct, alpha_pct
+                   FROM picks"""
             ).fetchall()
             by_date = {r["date"]: r for r in rows}
             conn.close()
@@ -255,11 +300,45 @@ def build_picks_manifest() -> list[dict]:
                     entry["result"] = "win" if r["return_pct"] > 0 else "loss"
                     sign = "+" if r["return_pct"] > 0 else ""
                     entry["pnl"] = f"{sign}{r['return_pct']:.1f}%"
+                    # Numeric fields for baseline UI
+                    entry["return_pct"] = r["return_pct"]
+                    entry["benchmark_return_pct"] = r["benchmark_return_pct"]
+                    entry["alpha_pct"] = r["alpha_pct"]
                 else:
                     entry["result"] = "pending"
         except Exception as e:
             print(f"  [generate.py] alpha.db enrich failed: {e}")
     return manifest
+
+
+def write_stats_json():
+    """輸出所有 alpha.db.picks 已結案紀錄到 picks/stats.json，供
+    calendar 頁的勝率/alpha 統計使用（獨立於檔案系統，含歷史）。"""
+    import sqlite3
+    db_path = os.path.join(DATA_DIR, "alpha.db")
+    if not os.path.exists(db_path):
+        return
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("""
+        SELECT date, stock_code, stock_name, verdict, return_pct, success,
+               benchmark_return_pct, alpha_pct, resolved
+        FROM picks
+        WHERE stock_code != 'NONE' AND resolved = 1
+        ORDER BY date ASC
+    """).fetchall()
+    conn.close()
+    settled = [dict(r) for r in rows]
+    out = {
+        "_comment": "全部已結案 picks（含歷史），供 calendar 頁 stats 面板使用",
+        "_updated": datetime.now(TZ).strftime("%Y-%m-%d %H:%M"),
+        "_count": len(settled),
+        "picks": settled,
+    }
+    path = os.path.join(PICKS_DIR, "stats.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
+    print(f"[generate.py] [OK] wrote picks/stats.json ({len(settled)} settled picks)")
 
 
 def write_latest_pointer():
@@ -346,6 +425,7 @@ def main():
         print(f"[generate.py] pre-market run ({run_dt.hour:02d}:xx) — skip page generation, refresh index only")
         render_calendar_index()
         write_latest_pointer()
+        write_stats_json()
         return
 
     # Post-market but Phase 4 wasn't triggered (e.g. Phase 4 skipped for
@@ -354,6 +434,7 @@ def main():
         print(f"[generate.py] {date_str} 沒有 tw_daily_pick — skip page generation")
         render_calendar_index()
         write_latest_pointer()
+        write_stats_json()
         return
 
     pick_day = _is_pick_day(analysis)
@@ -415,6 +496,7 @@ def main():
     # data and ensures every dot on the calendar links to a real file.
     render_calendar_index()
     write_latest_pointer()
+    write_stats_json()
 
 
 if __name__ == "__main__":

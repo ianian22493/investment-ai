@@ -56,6 +56,32 @@ def _fetch_close(code: str, date_str: str, strict: bool = False) -> float | None
     return None
 
 
+def _fetch_benchmark_close(date_str: str) -> float | None:
+    """0050 元大台灣50 在特定日期的收盤價（同期基準）。
+    yfinance ticker '0050.TW'。假日/週末會 fallback 到 前後 3 天內第一個交易日。
+    """
+    from datetime import datetime as _dt, timedelta as _td
+    try:
+        hist = yf.Ticker("0050.TW").history(period="60d", auto_adjust=True)
+        if hist.empty:
+            return None
+        hist.index = hist.index.tz_localize(None)
+        target = _dt.strptime(date_str, "%Y-%m-%d")
+        # exact match preferred
+        for ts, row in hist.iterrows():
+            if ts.strftime("%Y-%m-%d") == date_str:
+                return round(float(row["Close"]), 2)
+        # else: nearest previous trading day within 3 days
+        for offset in range(1, 4):
+            probe = (target - _td(days=offset)).strftime("%Y-%m-%d")
+            for ts, row in hist.iterrows():
+                if ts.strftime("%Y-%m-%d") == probe:
+                    return round(float(row["Close"]), 2)
+    except Exception:
+        pass
+    return None
+
+
 def _fetch_ohlc_range(code: str, start_date: str, end_date: str) -> list[dict]:
     """取得 [start_date, end_date] 區間內所有交易日的 OHLC。
     自動嘗試 .TW / .TWO。回 list[{date, open, high, low, close}]。
@@ -168,12 +194,16 @@ def save_today_pick(pick_output: dict, regime: dict, market_data: dict, candidat
                 )
                 return
 
+    # Benchmark: 0050 收盤 for alpha vs 大盤
+    bench_ref = _fetch_benchmark_close(today)
+
     row_id = alpha_db.save_pick(
         date=today,
         pick=pick,
         regime=regime,
         ref_close=float(ref_close) if ref_close else None,
         scanner_signals=scanner_signals,
+        benchmark_ref_close=bench_ref,
     )
     sig_str = ", ".join(scanner_signals) if scanner_signals else "無 scanner 信號"
     print(f"[outcome_tracker] 已記錄推薦：{pick.get('name')}({code}) "
@@ -315,6 +345,9 @@ def resolve_pending(today_market_data: dict = None):
             print(f"[outcome_tracker] {pick_date} {code} 持有期間 OHLC 暫不可得，下次再試")
             continue
 
+        # Benchmark 0050 close on exit_date (for alpha vs 大盤)
+        bench_exit = _fetch_benchmark_close(result["exit_date"]) if result.get("exit_date") else None
+
         alpha_db.resolve_pick_full(
             pick_id=p["id"],
             exit_close=result["exit_close"],
@@ -328,6 +361,7 @@ def resolve_pending(today_market_data: dict = None):
             hit_stop=result["hit_stop"],
             hold_days_actual=result["hold_days_actual"],
             pending=result["pending"],
+            benchmark_exit_close=bench_exit,
         )
 
         if result["pending"]:

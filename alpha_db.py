@@ -63,6 +63,11 @@ def init_db():
             ("max_gain_pct",     "REAL"),    # (max_close - ref) / ref
             ("max_drawdown_pct", "REAL"),    # (min_close - ref) / ref
             ("hold_days_actual", "INTEGER"), # 實際交易日數
+            # v3 (2026-07-08) benchmark tracking：pick 同期 0050 表現
+            ("benchmark_ref_close",  "REAL"),    # 0050 在 pick 發布日的收盤
+            ("benchmark_exit_close", "REAL"),    # 0050 在退場日的收盤
+            ("benchmark_return_pct", "REAL"),    # 0050 同期報酬 %
+            ("alpha_pct",            "REAL"),    # pick_return - benchmark_return
         ]
         for name, kind in new_columns:
             if name not in existing:
@@ -97,8 +102,12 @@ def save_pick(
     regime: dict,
     ref_close: float = None,
     scanner_signals: list = None,
+    benchmark_ref_close: float = None,
 ) -> int:
-    """Insert a new pick record. Returns row id."""
+    """Insert a new pick record. Returns row id.
+
+    benchmark_ref_close: 0050 收盤在 pick 日 — 用於後續算 alpha vs 大盤。
+    """
     init_db()
     code = pick.get("code", "NONE")
     if not code or code == "—":
@@ -120,8 +129,9 @@ def save_pick(
         cur = conn.execute("""
             INSERT INTO picks
               (date, stock_code, stock_name, entry_zone, stop_loss, target,
-               hold_days, regime, risk_level, signals, verdict, confidence, ref_close)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+               hold_days, regime, risk_level, signals, verdict, confidence, ref_close,
+               benchmark_ref_close)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             date,
             code,
@@ -136,6 +146,7 @@ def save_pick(
             pick.get("verdict", ""),
             float(pick.get("confidence", 0) or 0),
             ref_close,
+            benchmark_ref_close,
         ))
         return cur.lastrowid
 
@@ -182,18 +193,22 @@ def resolve_pick_full(
     hit_stop: int,
     hold_days_actual: int,
     pending: bool = False,
+    benchmark_exit_close: float = None,
 ):
     """Resolve a pick with full hold-period stats.
     pending=True writes interim stats (max/min so far) but keeps resolved=0
     so the next cron can update again. Used while the hold window is still open.
+
+    benchmark_exit_close: 0050 收盤在 exit_date — 用於算 vs 大盤的 alpha。
     """
     with get_conn() as conn:
         row = conn.execute(
-            "SELECT ref_close FROM picks WHERE id=?", (pick_id,)
+            "SELECT ref_close, benchmark_ref_close FROM picks WHERE id=?", (pick_id,)
         ).fetchone()
         if not row:
             return
         ref = row["ref_close"]
+        bench_ref = row["benchmark_ref_close"]
 
         return_pct = None
         max_gain_pct = None
@@ -210,6 +225,14 @@ def resolve_pick_full(
             if min_low is not None:
                 max_drawdown_pct = round((min_low - ref) / ref * 100, 3)
 
+        # Benchmark vs pick (alpha)
+        benchmark_return_pct = None
+        alpha_pct = None
+        if bench_ref and bench_ref > 0 and benchmark_exit_close is not None:
+            benchmark_return_pct = round((benchmark_exit_close - bench_ref) / bench_ref * 100, 3)
+            if return_pct is not None:
+                alpha_pct = round(return_pct - benchmark_return_pct, 3)
+
         conn.execute("""
             UPDATE picks SET
               close_next_day=COALESCE(close_next_day, ?),  -- preserve old value if set
@@ -218,6 +241,9 @@ def resolve_pick_full(
               max_gain_pct=?, max_drawdown_pct=?,
               hit_target=?, hit_stop=?, hold_days_actual=?,
               return_pct=?, success=?,
+              benchmark_exit_close=COALESCE(?, benchmark_exit_close),
+              benchmark_return_pct=COALESCE(?, benchmark_return_pct),
+              alpha_pct=COALESCE(?, alpha_pct),
               resolved=?, resolved_at=?
             WHERE id=?
         """, (
@@ -227,6 +253,7 @@ def resolve_pick_full(
             max_gain_pct, max_drawdown_pct,
             hit_target, hit_stop, hold_days_actual,
             return_pct, success,
+            benchmark_exit_close, benchmark_return_pct, alpha_pct,
             0 if pending else 1, datetime.now(TZ).isoformat(),
             pick_id,
         ))
