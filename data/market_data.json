@@ -1,9 +1,11 @@
 {
-  "fetched_at": "2026-07-09T08:32:01.844197+08:00",
+  "fetched_at": "2026-07-09T16:31:52.711502+08:00",
   "indices": {
     "taiex": {
-      "close": 45479.11,
-      "change_pct": 0
+      "close": 45354.61,
+      "prev_close": 45734.41,
+      "change": -379.8,
+      "change_pct": -0.83
     },
     "sp500": {
       "close": 7482.71,
@@ -18,223 +20,231 @@
       "change_pct": 0.2
     },
     "vix": {
-      "close": 16.9,
-      "prev_close": 16.13,
-      "change": 0.77,
-      "change_pct": 4.77
+      "close": 16.61,
+      "prev_close": 16.9,
+      "change": -0.29,
+      "change_pct": -1.72
     }
   },
   "tw_stocks": {
     "00692": {
-      "institutional": {},
-      "technical": {
-        "ma5": 92.85,
-        "ma10": 92.38,
-        "ma20": 91.85,
-        "ma60": 85.99,
-        "above_ma20": true,
-        "above_ma60": true,
-        "vol_5d_avg": 1083354.0
-      }
-    },
-    "00915": {
-      "close": 32.17,
-      "open": 31.95,
-      "high": 32.35,
-      "low": 31.78,
-      "change_pct": 0.75,
-      "volume": 1,
-      "amount": 32170,
+      "close": 91.65,
+      "open": 92.0,
+      "high": 92.5,
+      "low": 91.35,
+      "change_pct": -0.38,
+      "volume": 3,
+      "amount": 274950,
       "source": "shioaji_realtime",
       "institutional": {},
       "technical": {
-        "ma5": 32.2,
-        "ma10": 32.32,
-        "ma20": 32.0,
-        "ma60": 28.51,
-        "above_ma20": true,
+        "ma5": 92.47,
+        "ma10": 92.28,
+        "ma20": 92.06,
+        "ma60": 86.31,
+        "above_ma20": false,
         "above_ma60": true,
-        "vol_5d_avg": 4361725.0
+        "vol_5d_avg": 821890.0
+      }
+    },
+    "00915": {
+      "close": 31.98,
+      "open": 32.13,
+      "high": 32.19,
+      "low": 31.82,
+      "change_pct": -0.59,
+      "volume": 2,
+      "amount": 63960,
+      "source": "shioaji_realtime",
+      "institutional": {},
+      "technical": {
+        "ma5": 32.18,
+        "ma10": 32.19,
+        "ma20": 32.1,
+        "ma60": 28.65,
+        "above_ma20": false,
+        "above_ma60": true,
+        "vol_5d_avg": 3483410.0
       }
     },
     "1104": {
       "close": 27.1,
-      "open": 27.5,
-      "high": 27.6,
-      "low": 27.1,
-      "change_pct": -1.63,
-      "volume": 62,
-      "amount": 1680200,
+      "open": 27.25,
+      "high": 27.4,
+      "low": 27.05,
+      "change_pct": 0.0,
+      "volume": 39,
+      "amount": 1056900,
       "source": "shioaji_realtime",
       "institutional": {},
       "technical": {
-        "ma5": 27.31,
-        "ma10": 27.04,
-        "ma20": 27.94,
-        "ma60": 28.19,
+        "ma5": 27.34,
+        "ma10": 27.07,
+        "ma20": 27.84,
+        "ma60": 28.16,
         "above_ma20": false,
         "above_ma60": false,
-        "vol_5d_avg": 853070.0
+        "vol_5d_avg": 857137.0
       }
     },
     "2211": {
-      "close": 95.1,
-      "open": 94.6,
-      "high": 95.3,
-      "low": 94.5,
-      "change_pct": 0.0,
-      "volume": 1,
-      "amount": 95100,
+      "close": 95.0,
+      "open": 96.0,
+      "high": 96.0,
+      "low": 94.4,
+      "change_pct": -0.1,
+      "volume": 29,
+      "amount": 2755000,
       "source": "shioaji_realtime",
       "institutional": {},
       "technical": {
-        "ma5": 95.8,
-        "ma10": 94.91,
-        "ma20": 94.71,
-        "ma60": 95.69,
+        "ma5": 95.7,
+        "ma10": 94.96,
+        "ma20": 94.84,
+        "ma60": 95.61,
         "above_ma20": true,
         "above_ma60": false,
-        "vol_5d_avg": 610684.0
+        "vol_5d_avg": 577720.0
       }
     },
     "2330": {
-      "close": 2465.0,
-      "open": 2445.0,
-      "high": 2465.0,
-      "low": 2420.0,
-      "change_pct": 1.02,
-      "volume": 91,
-      "amount": 224315000,
+      "close": 2415.0,
+      "open": 2450.0,
+      "high": 2460.0,
+      "low": 2415.0,
+      "change_pct": -2.02,
+      "volume": 121,
+      "amount": 292215000,
       "source": "shioaji_realtime",
       "institutional": {},
       "technical": {
-        "ma5": 2455.0,
-        "ma10": 2429.0,
-        "ma20": 2403.25,
-        "ma60": 2287.92,
+        "ma5": 2445.0,
+        "ma10": 2431.5,
+        "ma20": 2411.25,
+        "ma60": 2293.92,
         "above_ma20": true,
         "above_ma60": true,
-        "vol_5d_avg": 29357506.0
+        "vol_5d_avg": 28283311.0
       }
     },
     "2536": {
-      "close": 18.95,
-      "open": 19.15,
-      "high": 19.2,
-      "low": 18.85,
-      "change_pct": -1.55,
-      "volume": 6,
-      "amount": 113700,
+      "close": 19.55,
+      "open": 19.3,
+      "high": 19.65,
+      "low": 19.2,
+      "change_pct": 3.16,
+      "volume": 23,
+      "amount": 449650,
       "source": "shioaji_realtime",
       "institutional": {},
       "technical": {
-        "ma5": 20.49,
-        "ma10": 20.78,
-        "ma20": 21.18,
-        "ma60": 20.91,
+        "ma5": 20.16,
+        "ma10": 20.61,
+        "ma20": 21.08,
+        "ma60": 20.86,
         "above_ma20": false,
         "above_ma60": false,
-        "vol_5d_avg": 1895143.0
+        "vol_5d_avg": 1986920.0
       }
     },
     "2834": {
-      "close": 18.25,
-      "open": 18.1,
+      "close": 17.95,
+      "open": 18.25,
       "high": 18.25,
-      "low": 17.9,
-      "change_pct": 0.82,
-      "volume": 79,
-      "amount": 1441750,
+      "low": 17.95,
+      "change_pct": -1.64,
+      "volume": 13,
+      "amount": 233350,
       "source": "shioaji_realtime",
       "institutional": {},
       "technical": {
-        "ma5": 18.01,
+        "ma5": 18.05,
         "ma10": 17.89,
-        "ma20": 17.65,
-        "ma60": 16.71,
+        "ma20": 17.7,
+        "ma60": 16.75,
         "above_ma20": true,
         "above_ma60": true,
-        "vol_5d_avg": 30241055.0
+        "vol_5d_avg": 30629358.0
       }
     },
     "3293": {
-      "close": 748.0,
-      "open": 745.0,
-      "high": 758.0,
-      "low": 732.0,
-      "change_pct": 1.9,
-      "volume": 3,
-      "amount": 2244000,
+      "close": 744.0,
+      "open": 748.0,
+      "high": 750.0,
+      "low": 736.0,
+      "change_pct": -0.53,
+      "volume": 1,
+      "amount": 744000,
       "source": "shioaji_realtime",
       "institutional": {},
       "technical": {
-        "ma5": 781.8,
-        "ma10": 779.1,
-        "ma20": 774.65,
-        "ma60": 760.73,
+        "ma5": 770.6,
+        "ma10": 777.5,
+        "ma20": 771.9,
+        "ma60": 760.48,
         "above_ma20": false,
         "above_ma60": false,
-        "vol_5d_avg": 1813821.0
+        "vol_5d_avg": 1617914.0
       }
     },
     "3703": {
       "close": 20.6,
       "open": 20.65,
-      "high": 20.75,
-      "low": 20.6,
-      "change_pct": -0.72,
-      "volume": 47,
-      "amount": 968200,
+      "high": 20.7,
+      "low": 20.55,
+      "change_pct": 0.0,
+      "volume": 1,
+      "amount": 20600,
       "source": "shioaji_realtime",
       "institutional": {},
       "technical": {
-        "ma5": 20.71,
-        "ma10": 21.09,
-        "ma20": 21.41,
-        "ma60": 21.01,
+        "ma5": 20.73,
+        "ma10": 21.01,
+        "ma20": 21.34,
+        "ma60": 20.98,
         "above_ma20": false,
         "above_ma60": false,
-        "vol_5d_avg": 935979.0
+        "vol_5d_avg": 821260.0
       }
     },
     "4588": {
       "close": 57.5,
-      "open": 58.9,
-      "high": 58.9,
+      "open": 58.7,
+      "high": 58.7,
       "low": 57.1,
-      "change_pct": -1.03,
-      "volume": 1,
-      "amount": 57500,
+      "change_pct": 0.0,
+      "volume": 2,
+      "amount": 115000,
       "source": "shioaji_realtime",
       "institutional": {},
       "technical": {
-        "ma5": 58.9,
-        "ma10": 58.84,
-        "ma20": 58.84,
-        "ma60": 58.56,
+        "ma5": 58.54,
+        "ma10": 58.63,
+        "ma20": 58.82,
+        "ma60": 58.51,
         "above_ma20": false,
         "above_ma60": false,
-        "vol_5d_avg": 123240.0
+        "vol_5d_avg": 98299.0
       }
     },
     "4707": {
-      "close": 37.95,
-      "open": 36.6,
-      "high": 38.5,
-      "low": 36.15,
-      "change_pct": 3.68,
-      "volume": 54,
-      "amount": 2049300,
+      "close": 36.25,
+      "open": 36.4,
+      "high": 37.5,
+      "low": 35.2,
+      "change_pct": -4.47,
+      "volume": 6,
+      "amount": 217500,
       "source": "shioaji_realtime",
       "institutional": {},
       "technical": {
-        "ma5": 35.0,
-        "ma10": 31.57,
-        "ma20": 26.43,
-        "ma60": 19.42,
+        "ma5": 36.07,
+        "ma10": 32.65,
+        "ma20": 27.29,
+        "ma60": 19.79,
         "above_ma20": true,
         "above_ma60": true,
-        "vol_5d_avg": 14224954.0
+        "vol_5d_avg": 12503550.0
       }
     }
   },
@@ -294,16 +304,16 @@
     "jpy_per_usd": 162.6
   },
   "portfolio_value": {
-    "tw_stocks_twd": 3814432,
+    "tw_stocks_twd": 3802932,
     "tw_stocks_live": [
       {
         "code": "00692",
         "name": "富邦公司治理",
         "shares": 6918,
-        "value": 634985,
+        "value": 634035,
         "cost": 260771,
-        "pnl": 374214,
-        "pnl_pct": 143.5,
+        "pnl": 373264,
+        "pnl_pct": 143.14,
         "type": "ETF",
         "strategy": "long",
         "sector": "ETF-broad"
@@ -312,10 +322,10 @@
         "code": "00915",
         "name": "凱基優選高股息30",
         "shares": 2000,
-        "value": 64340,
+        "value": 63960,
         "cost": 15150,
-        "pnl": 49190,
-        "pnl_pct": 324.69,
+        "pnl": 48810,
+        "pnl_pct": 322.18,
         "type": "ETF",
         "strategy": "long",
         "sector": "ETF-dividend"
@@ -336,10 +346,10 @@
         "code": "2211",
         "name": "長榮鋼",
         "shares": 5100,
-        "value": 485010,
+        "value": 484500,
         "cost": 445442,
-        "pnl": 39568,
-        "pnl_pct": 8.88,
+        "pnl": 39058,
+        "pnl_pct": 8.77,
         "type": "stock",
         "strategy": "both",
         "sector": "鋼鐵"
@@ -348,10 +358,10 @@
         "code": "2330",
         "name": "台積電",
         "shares": 40,
-        "value": 98600,
+        "value": 96600,
         "cost": 71460,
-        "pnl": 27140,
-        "pnl_pct": 37.98,
+        "pnl": 25140,
+        "pnl_pct": 35.18,
         "type": "stock",
         "strategy": "long",
         "sector": "半導體-代工"
@@ -372,10 +382,10 @@
         "code": "2834",
         "name": "臺企銀",
         "shares": 13000,
-        "value": 237250,
+        "value": 233350,
         "cost": 165731,
-        "pnl": 71519,
-        "pnl_pct": 43.15,
+        "pnl": 67619,
+        "pnl_pct": 40.8,
         "type": "stock",
         "strategy": "long",
         "sector": "金融-銀行"
@@ -384,10 +394,10 @@
         "code": "3293",
         "name": "鈦象",
         "shares": 940,
-        "value": 703120,
+        "value": 699360,
         "cost": 593317,
-        "pnl": 109803,
-        "pnl_pct": 18.51,
+        "pnl": 106043,
+        "pnl_pct": 17.87,
         "type": "stock",
         "strategy": "long",
         "sector": "遊戲軟體"
@@ -454,10 +464,10 @@
       }
     ],
     "tw_summary_live": {
-      "total_value": 3814432,
+      "total_value": 3802932,
       "total_cost": 3196571,
-      "total_pnl": 617861,
-      "total_pnl_pct": 19.33,
+      "total_pnl": 606361,
+      "total_pnl_pct": 18.97,
       "broker": "國泰證券"
     },
     "us_stocks_twd": 455022,
@@ -614,35 +624,35 @@
     "funds_twd": 128233,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 10997687,
-    "total_gross_twd": 26397687,
+    "net_assets_twd": 10986187,
+    "total_gross_twd": 26386187,
     "allocation_pct": {
       "tw_stocks": 14.4,
       "us_stocks": 1.7,
       "funds": 0.5,
-      "real_estate": 83.3
+      "real_estate": 83.4
     }
   },
   "tw_positions_live": [],
   "breadth": {
-    "advance": 394,
-    "decline": 599,
-    "limit_up": 17,
-    "limit_down": 4,
-    "unchanged": 69,
-    "advance_ratio": 0.397,
-    "total_stocks": 1062
+    "advance": 411,
+    "decline": 552,
+    "limit_up": 22,
+    "limit_down": 2,
+    "unchanged": 74,
+    "advance_ratio": 0.427,
+    "total_stocks": 1037
   },
   "institutional_market": {
-    "foreign_net_amount": -37948987989,
-    "trust_net_amount": 12680292684,
-    "dealer_net_amount": -16942740236,
-    "total_institutional_net": -42211435541,
+    "foreign_net_amount": -47132566429,
+    "trust_net_amount": 15410018070,
+    "dealer_net_amount": -7671165811,
+    "total_institutional_net": -39393714170,
     "foreign_net_positive": false,
-    "date": "20260708",
-    "foreign_net_shares": -37948987989,
-    "trust_net_shares": 12680292684,
-    "dealer_net_shares": -16942740236,
+    "date": "20260709",
+    "foreign_net_shares": -47132566429,
+    "trust_net_shares": 15410018070,
+    "dealer_net_shares": -7671165811,
     "unit": "TWD"
   },
   "margin_balance": {
@@ -657,64 +667,64 @@
   "ai_sector": {
     "constituents": {
       "2330": {
-        "close": 2465.0,
-        "change_pct": 1.02
+        "close": 2415.0,
+        "change_pct": -2.03
       },
       "2454": {
-        "close": 3995.0,
-        "change_pct": -0.87
+        "close": 3925.0,
+        "change_pct": -1.75
       },
       "3017": {
-        "close": 2325.0,
-        "change_pct": -5.1
+        "close": 2350.0,
+        "change_pct": 1.08
       },
       "3653": {
-        "close": 3200.0,
+        "close": 3205.0,
         "change_pct": 0.16
       },
       "6669": {
-        "close": 5050.0,
-        "change_pct": 0.7
+        "close": 5040.0,
+        "change_pct": -0.2
       },
       "3661": {
-        "close": 4065.0,
-        "change_pct": 0.74
+        "close": 4210.0,
+        "change_pct": 3.57
       },
       "00891": {
-        "close": NaN,
-        "change_pct": NaN
+        "close": 36.47,
+        "change_pct": 0.86
       }
     },
-    "avg_change_pct": NaN,
-    "median_change_pct": 0.7,
+    "avg_change_pct": 0.241,
+    "median_change_pct": 0.16,
     "count": 7
   },
   "news": {
     "tw": [
+      "台塑本業轉虧為盈！第二季每股盈餘1.67元 南亞每股賺3.37元創新高 - Yahoo股市",
+      "韓國股市不能再跌…即便台灣有台積電（2330）？郭哲榮：台股很難置身事外 - 聯合新聞網",
+      "台股過熱了嗎？楊金龍：外資近期賣超屬停利 籲投資人勿過度槓桿 - 自由財經",
+      "台股過熱？兆元流入股市 楊金龍憂「它」估值過高 | 中廣新聞網 - LINE TODAY",
+      "鄭麗文喊台股5萬點只是表面「根都快爛掉」 謝金河不忍了 - Yahoo股市",
+      "台股血崩元凶是它？謝金河早警告「1類ETF」出事要小心 - Yahoo股市",
+      "台積電1556億股利來了 !台股喜迎活水?專家曝隱憂 - Yahoo股市",
+      "【Yahoo早盤】台股多空交戰...颱風假添變數觀望氣氛濃 分析師張家豪揭關鍵拉鋸點位 - Yahoo股市",
       "【Follow法人】外資狂砍00981A近4萬張！反手掃貨長榮航6萬張 聯電也獲加碼 - Yahoo股市",
-      "台股熱絡掀借貸潮央行：密切關注股市融資槓桿| 股市要聞| 股市 - 聯合新聞網",
-      "近一月股市震盪20檔主動式台股ETF 僅「這一檔」打敗大盤- 理財 - 工商時報",
-      "台股崩千點不是AI泡沫化！專家曝真正元凶：全球股市一起買單- 財經 - 中時新聞網",
-      "00981A、00988A、00935...25檔ETF基金半年「報酬率翻倍」！台股狂震，AI行情還有戲？2026穩賺3重點 - 今周刊",
-      "4772 台特化 - +90 - 股市爆料同學會 - CMoney",
-      "《台北股市》外資08日賣超股：中石化、至上、台化 - 富聯網",
-      "台股連47天「兆元行情」破功！崩盤前兆嗎？專家解析 - Yahoo股市",
-      "股市延長交易到下午3點半？金管會主委彭金隆喊卡：暫不實施「沒有時間表」 - Yahoo股市",
-      "【Yahoo早盤】台股開高後震盪翻臉...苦守4萬5關卡 分析師翁偉捷示警：還沒看到止跌訊號 - Yahoo股市",
-      "技術面短多股 聚光 - 聯合新聞網",
-      "台股太熱！外資持股市值暴增 央行：穩匯友 - Yahoo股市"
+      "【Hot台股】台股大V又大A...網憂「這是A出貨盤嗎」 專家勸：別太悲觀 - Yahoo股市",
+      "個股概覽 | 個股 - 股市 - CMoney",
+      "台股衝5萬點鄭麗文喊「快爛掉」 謝金河曝1數據KO反酸：心向中國 - 自由時報"
     ],
     "us": [
       "Trump rings Wall Street’s opening bells as he ties his presidency to stock market gains - AP News",
       "Wall Street sends strong 4-word verdict on the stock market - thestreet.com",
       "Wall Street Insider Says SK Hynix IPO Could Overwhelm the Market. Here’s the Risk Beyond Memory Stocks. - Yahoo Finance",
+      "Wall Street’s Peace Trade Collides With Renewed Iran Fighting - WSJ",
       "Bank Stocks Are Charging Into Q2 Earnings. Why Wall Street Sees More Gains Ahead - Investopedia",
-      "Dow jumps 150 points for first close above 53,000; Nasdaq rises as chips rebound: Live updates - CNBC",
+      "Oil hits multi-week high, Wall Street slips as Iran tensions reignite - Reuters",
       "As a red-hot global stock market stumbles into bear territory, this Wall Street bull spots a dip worth buying - MarketWatch",
-      "Apple’s $100 Billion Buyback Machine Keeps Wall Street Watching - 24/7 Wall St.",
-      "'No longer a Goldilocks market': A Wall Street firm unveils its investing playbook for a new stock regime - Business Insider",
-      "US stock market today: Wall Street sees mixed performance; Dow rises 0.3%, Nasdaq falls 0.8% as AI stocks - The Times of India",
-      "Dow futures crash over 500 points: 5 things to know before Wall Street opens - Invezz"
+      "Here are Wall Street analysts' top S&P 500 stocks for the second half of 2026 - CNBC",
+      "US stock futures steady after Wall St slips on renewed US-Iran attacks - Investing.com",
+      "Wall Street slides as doubts rise over U.S.-Iran ceasefire (SPX:) - Seeking Alpha"
     ]
   }
 }
