@@ -16,20 +16,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ── Skip weekends + Fri afternoon ──────────────────────────────────
+      # ── Skip weekends + Fri PM + Sun AM + TW holidays ──────────────────
       # Post-market cron produces the NEXT trading day's pick, so we only
       # need to run when a next-day exists worth targeting:
       #   Sun 16:30 → Mon pick   Mon-Thu 16:30 → Tue-Fri pick
       # Fri 16:30 would be for Monday (3-day gap, stale by then) — Sun
       # refreshes it anyway. Sat and Sun-morning have no useful new data.
+      # Also skip TW national holidays (春節/雙十/etc) — market closed,
+      # yfinance returns stale data, analysis meaningless.
       # cron-job.org still pings us daily; this gate quietly exits when
       # we shouldn't do work. See CLAUDE.md for schedule doc.
-      - name: Skip check (weekend / Fri PM / Sun AM)
+      - name: Skip check (weekend / Fri PM / Sun AM / TW holiday)
         id: skip
         run: |
           DOW=$(TZ='Asia/Taipei' date +%u)   # 1=Mon .. 7=Sun
           HR=$(TZ='Asia/Taipei' date +%H)
-          echo "Taipei $(TZ='Asia/Taipei' date '+%a %H:%M') · DOW=$DOW HR=$HR"
+          DATE=$(TZ='Asia/Taipei' date +%Y-%m-%d)
+          echo "Taipei $(TZ='Asia/Taipei' date '+%a %H:%M') · DOW=$DOW HR=$HR DATE=$DATE"
+
+          # TW holiday check — data/tw_holidays.json is the source of truth.
+          # A date under "holidays" (and not under "special_trading_days")
+          # means market closed → skip the whole run.
+          if [ -f data/tw_holidays.json ]; then
+            if python3 -c "
+          import json, sys
+          d = json.load(open('data/tw_holidays.json', encoding='utf-8'))
+          target = '$DATE'
+          hols = set()
+          for y in d.get('holidays', {}).values(): hols.update(y)
+          special = set()
+          for y in d.get('special_trading_days', {}).values():
+              if isinstance(y, list): special.update(y)
+          sys.exit(0 if (target in hols and target not in special) else 1)
+          "; then
+              echo "TW holiday $DATE — skip entire run"
+              echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+          fi
+
           if [ "$DOW" = "6" ]; then
             echo "Saturday — skip entire run"; echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
           fi
