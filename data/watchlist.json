@@ -6,6 +6,30 @@
     "twii_daily_drop_pct_below": -2.5,
     "note": "任一成立=恐慌日，照 恐慌日SOP.md 操作"
   },
+  "position_rules": [
+    {
+      "type": "single_max_pct",
+      "market": "tw",
+      "max": 10,
+      "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
+    },
+    {
+      "type": "group_max_pct",
+      "market": "us",
+      "name": "Musk桶",
+      "symbols": ["TSLA", "SPCX"],
+      "max": 25,
+      "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
+    },
+    {
+      "type": "group_max_pct",
+      "market": "us",
+      "name": "資安因子",
+      "symbols": ["ZS", "RBRK", "S"],
+      "max": 15,
+      "note": "單一因子上限 15%（論述卡：三檔合併審）"
+    }
+  ],
   "stocks": [
     {
       "symbol": "2330.TW",

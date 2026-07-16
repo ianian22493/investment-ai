@@ -474,6 +474,14 @@ body.preset-midnight .room-bg { filter:saturate(.6)  brightness(.78) hue-rotate(
 }
 .module-label .label-meta{flex:none; margin:0; color:var(--text3); font-weight:700}
 
+/* WATCHLIST ALERTS (寶藏股哨兵) */
+.wl-alerts{display:flex; flex-direction:column; gap:6px; font-size:11px}
+.wl-alert{border-left:2px solid #FF4560; padding:4px 8px; background:rgba(255,69,96,.06); line-height:1.5}
+.wl-alert .wl-name{color:#FF4560; font-weight:700}
+.wl-alert .wl-note{color:var(--text3)}
+.wl-empty{color:var(--text3); font-size:11px}
+.wl-meta{color:var(--text3); opacity:.7; font-size:10px; margin-top:2px}
+
 /* DATA HEALTH (top of sidebar) */
 .health-rows{display:flex; flex-direction:column; gap:5px}
 .health-row{
@@ -1460,6 +1468,12 @@ body.midnight-deep::after{ opacity:.18 !important; }
     <section class="module">
       <div class="module-label">LIVE TRIGGERS</div>
       <div class="cockpit" id="cockpit"></div>
+    </section>
+
+    <!-- WATCHLIST ALERTS (寶藏股哨兵 data/alerts.json) -->
+    <section class="module">
+      <div class="module-label">WATCHLIST ALERTS</div>
+      <div class="wl-alerts" id="wl-alerts"><div class="wl-empty">loading…</div></div>
     </section>
 
     <!-- AGENT ACTIVITY (narrative) -->
@@ -6233,5 +6247,25 @@ window.applyGlossary = applyGlossary;
 </script>
 <!-- 回到入口 Hub -->
 <a id="yuzu-home-fab" href="https://ianian22493.github.io/" aria-label="回到入口" style="position:fixed;left:18px;bottom:18px;z-index:99999;display:flex;align-items:center;gap:8px;padding:9px 16px 9px 11px;background:linear-gradient(135deg,#f0d050,#a06010);color:#2C2620;font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;font-size:13px;font-weight:700;letter-spacing:.02em;text-decoration:none;border-radius:50px;box-shadow:0 4px 16px rgba(160,96,16,.45),0 1px 0 rgba(255,255,255,.4) inset;transition:transform .2s ease,box-shadow .2s ease" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'"><svg width="20" height="20" viewBox="0 0 34 34" fill="none" aria-hidden="true"><defs><radialGradient id="yhf" cx="38%" cy="28%" r="72%"><stop offset="0%" stop-color="#fffbe8"/><stop offset="100%" stop-color="#7a4800"/></radialGradient></defs><circle cx="17" cy="17" r="17" fill="url(#yhf)"/><circle cx="17" cy="17" r="11.5" fill="none" stroke="rgba(27,45,79,.35)" stroke-width="1.2"/><circle cx="17" cy="17" r="2.8" fill="rgba(27,45,79,.6)"/><line x1="17" y1="14.2" x2="10.5" y2="7.5" stroke="rgba(27,45,79,.7)" stroke-width="1.4" stroke-linecap="round"/><line x1="17" y1="14.2" x2="23.5" y2="7.5" stroke="rgba(27,45,79,.7)" stroke-width="1.4" stroke-linecap="round"/><line x1="17" y1="14.2" x2="17" y2="23" stroke="rgba(27,45,79,.7)" stroke-width="1.4" stroke-linecap="round"/></svg>回到入口</a>
+<script>
+/* ───── WATCHLIST ALERTS（寶藏股哨兵，讀 data/alerts.json）───── */
+(function () {
+  var box = document.getElementById('wl-alerts');
+  if (!box) return;
+  fetch('data/alerts.json', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d || !d.results) { box.innerHTML = '<div class="wl-empty">哨兵尚未回報（alerts.json 未產生）</div>'; return; }
+      var hits = d.results.filter(function (a) { return a.hit; });
+      var meta = '<div class="wl-meta">checked ' + (d.checked_at || '—') + '</div>';
+      if (!hits.length) { box.innerHTML = '<div class="wl-empty">✓ 觀察名單無觸發</div>' + meta; return; }
+      box.innerHTML = hits.map(function (a) {
+        return '<div class="wl-alert"><span class="wl-name">' + a.name + '</span> ' + a.detail +
+               '<div class="wl-note">' + a.note + '</div></div>';
+      }).join('') + meta;
+    })
+    .catch(function () { box.innerHTML = '<div class="wl-empty">alerts 載入失敗</div>'; });
+})();
+</script>
 </body>
 </html>

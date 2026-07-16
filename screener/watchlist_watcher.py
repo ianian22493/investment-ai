@@ -76,6 +76,81 @@ def check_panic(cfg):
     return out
 
 
+def check_positions(cfg):
+    """部位規格哨兵：TW 權重用 portfolio.json 的 value 欄（時效由 staleness 檢查把關），
+    US 權重用 shares × dashboard data.json 現價（抓不到退回成本價）。"""
+    rules = cfg.get("position_rules", [])
+    if not rules:
+        return []
+    try:
+        pf = json.loads((ROOT / "data" / "portfolio.json").read_text(encoding="utf-8"))
+    except Exception as e:  # noqa: BLE001
+        print(f"  [warn] portfolio.json read failed: {e}")
+        return []
+    out = []
+
+    # 持倉檔時效：整套規格檢查都站在這個檔上，過期先警告
+    upd = pf.get("_updated")
+    if upd:
+        try:
+            age = (datetime.now(TW_TZ).date()
+                   - datetime.strptime(upd, "%Y-%m-%d").date()).days
+            out.append({"key": "pos|staleness", "symbol": "portfolio.json",
+                        "name": "持倉檔時效", "rule": "stale_portfolio",
+                        "hit": age > 30,
+                        "detail": f"_updated={upd}（{age} 天前）",
+                        "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"})
+        except ValueError:
+            pass
+
+    us_px = {}
+    try:
+        req = urllib.request.Request(
+            "https://ianian22493.github.io/investment-dashboard/data.json",
+            headers={"User-Agent": "watcher"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            us_px = {k: (v or {}).get("price") for k, v in json.load(r).get("us", {}).items()}
+    except Exception as e:  # noqa: BLE001
+        print(f"  [warn] dashboard data.json failed (US weights fall back to cost): {e}")
+
+    tw = {s["code"]: float(s.get("value") or 0) for s in pf.get("tw_stocks", [])}
+    tw_names = {s["code"]: s.get("name", "") for s in pf.get("tw_stocks", [])}
+    us = {}
+    for s in pf.get("us_stocks", []):
+        px = us_px.get(s["ticker"]) or s.get("avg_cost_usd") or 0
+        us[s["ticker"]] = float(s.get("shares") or 0) * float(px)
+    books = {"tw": (tw, sum(tw.values())), "us": (us, sum(us.values()))}
+
+    for rule in rules:
+        book, total = books.get(rule["market"], ({}, 0))
+        if not total:
+            continue
+        if rule["type"] == "single_max_pct":
+            exempt = tuple(rule.get("exempt_prefixes", ["00"]))  # ETF＝核心層，不受個股上限
+            for code, val in sorted(book.items(), key=lambda x: -x[1]):
+                if code.startswith(exempt):
+                    continue
+                pct = val / total * 100
+                if pct > rule["max"]:
+                    out.append({
+                        "key": f"pos|{rule['market']}|{code}",
+                        "symbol": code,
+                        "name": f"{code} {tw_names.get(code, '')}".strip(),
+                        "rule": "position_over_limit", "hit": True,
+                        "detail": f"佔 {rule['market'].upper()} 部位 {pct:.1f}%＞上限 {rule['max']}%",
+                        "note": rule["note"]})
+        elif rule["type"] == "group_max_pct":
+            val = sum(book.get(c, 0) for c in rule["symbols"])
+            pct = val / total * 100
+            out.append({
+                "key": f"pos|{rule['market']}|{rule['name']}",
+                "symbol": "+".join(rule["symbols"]), "name": rule["name"],
+                "rule": "factor_over_limit", "hit": pct > rule["max"],
+                "detail": f"合計佔 {rule['market'].upper()} 部位 {pct:.1f}%（上限 {rule['max']}%）",
+                "note": rule["note"]})
+    return out
+
+
 def discord_notify(new_hits):
     hook = os.environ.get("DISCORD_WEBHOOK_URL", "").strip()
     if not hook:
@@ -107,6 +182,7 @@ def main():
         r = check_stock(entry)
         if r:
             results.append(r)
+    results.extend(check_positions(cfg))
 
     prev_hits = set()
     if ALERTS.exists():

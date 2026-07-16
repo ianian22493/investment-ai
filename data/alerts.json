@@ -1,6 +1,6 @@
 {
- "checked_at": "2026-07-16 16:37 +0800",
- "hit_count": 2,
+ "checked_at": "2026-07-16 13:03 +0800",
+ "hit_count": 7,
  "new_hit_count": 0,
  "results": [
   {
@@ -9,7 +9,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 16.0",
+   "detail": "VIX 15.7",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -18,7 +18,7 @@
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
    "hit": false,
-   "detail": "單日 -0.01%",
+   "detail": "單日 -0.35%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -27,7 +27,7 @@
    "name": "台積電",
    "rule": "below_ma20",
    "hit": false,
-   "detail": "現價 2470.00 vs 月線 2434.50",
+   "detail": "現價 2450.00 vs 月線 2433.50",
    "note": "核心加碼窗口：跌破月線（觀察名單：法說或恐慌日跌破月線分批）"
   },
   {
@@ -54,7 +54,7 @@
    "name": "欣陸",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 20.75 vs 月線 21.01",
+   "detail": "現價 20.80 vs 月線 21.01",
    "note": "持倉警戒：Q3 底期限前持續在月線下＝出場倒數"
   },
   {
@@ -74,6 +74,60 @@
    "hit": false,
    "detail": "現價 6.50 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
+  },
+  {
+   "key": "pos|staleness",
+   "symbol": "portfolio.json",
+   "name": "持倉檔時效",
+   "rule": "stale_portfolio",
+   "hit": false,
+   "detail": "_updated=2026-07-07（9 天前）",
+   "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
+  },
+  {
+   "key": "pos|tw|3293",
+   "symbol": "3293",
+   "name": "3293 鈦象",
+   "rule": "position_over_limit",
+   "hit": true,
+   "detail": "佔 TW 部位 18.4%＞上限 10%",
+   "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
+  },
+  {
+   "key": "pos|tw|1104",
+   "symbol": "1104",
+   "name": "1104 環泥",
+   "rule": "position_over_limit",
+   "hit": true,
+   "detail": "佔 TW 部位 14.9%＞上限 10%",
+   "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
+  },
+  {
+   "key": "pos|tw|2211",
+   "symbol": "2211",
+   "name": "2211 長榮鋼",
+   "rule": "position_over_limit",
+   "hit": true,
+   "detail": "佔 TW 部位 12.7%＞上限 10%",
+   "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
+  },
+  {
+   "key": "pos|us|Musk桶",
+   "symbol": "TSLA+SPCX",
+   "name": "Musk桶",
+   "rule": "factor_over_limit",
+   "hit": true,
+   "detail": "合計佔 US 部位 30.3%（上限 25%）",
+   "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
+  },
+  {
+   "key": "pos|us|資安因子",
+   "symbol": "ZS+RBRK+S",
+   "name": "資安因子",
+   "rule": "factor_over_limit",
+   "hit": true,
+   "detail": "合計佔 US 部位 16.6%（上限 15%）",
+   "note": "單一因子上限 15%（論述卡：三檔合併審）"
   }
  ]
 }
