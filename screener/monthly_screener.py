@@ -299,7 +299,7 @@ def main():
         "fin_quarter_roc": fin_tag,
         "rev_history_depth_months": hist_depth,
         "mode": "bootstrap（歷史<3個月，連續條件未啟用，僅要求當月+累計YoY>0）" if bootstrap
-                else "full（連續≥3個月YoY>0 已啟用）",
+                else "full（連續3個月以上YoY>0 已啟用）",
         "notes": [
             "金額單位：千元。gm=最新季毛利率%，gm_trend_pp=較前一儲存季的百分點變化（需累積兩季後才有值）",
             "Track B 未含市值過濾（API 無市值欄位），第二層人工驗證時自行檢查市值<300億與利基獨佔",
