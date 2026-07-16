@@ -1,0 +1,70 @@
+{
+ "checked_at": "2026-07-16 12:33 +0800",
+ "hit_count": 2,
+ "new_hit_count": 2,
+ "results": [
+  {
+   "key": "panic|vix",
+   "symbol": "^VIX",
+   "name": "VIX",
+   "rule": "above_25",
+   "hit": false,
+   "detail": "VIX 15.7",
+   "note": "恐慌日條件一：照恐慌日SOP操作"
+  },
+  {
+   "key": "panic|twii",
+   "symbol": "^TWII",
+   "name": "加權指數",
+   "rule": "daily_drop_below_-2.5",
+   "hit": false,
+   "detail": "單日 +0.33%",
+   "note": "恐慌日條件二：照恐慌日SOP操作"
+  },
+  {
+   "key": "2330.TW|below_ma20|",
+   "symbol": "2330.TW",
+   "name": "台積電",
+   "rule": "below_ma20",
+   "hit": false,
+   "detail": "現價 2465.00 vs 月線 2434.25",
+   "note": "核心加碼窗口：跌破月線（觀察名單：法說或恐慌日跌破月線分批）"
+  },
+  {
+   "key": "8299.TWO|below_ma20|",
+   "symbol": "8299.TWO",
+   "name": "群聯",
+   "rule": "below_ma20",
+   "hit": true,
+   "detail": "現價 1995.00 vs 月線 2284.50",
+   "note": "持倉移動停損警戒：跌破月線＝檢查 NAND 合約價與論述卡"
+  },
+  {
+   "key": "3703.TW|below_ma20|",
+   "symbol": "3703.TW",
+   "name": "欣陸",
+   "rule": "below_ma20",
+   "hit": true,
+   "detail": "現價 20.75 vs 月線 21.01",
+   "note": "持倉警戒：Q3 底期限前持續在月線下＝出場倒數"
+  },
+  {
+   "key": "SOUN|below_price|6.33",
+   "symbol": "SOUN",
+   "name": "SoundHound",
+   "rule": "below_price",
+   "hit": false,
+   "detail": "現價 6.50 vs 觸發價 6.33",
+   "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
+  },
+  {
+   "key": "SOUN|below_price|5.9",
+   "symbol": "SOUN",
+   "name": "SoundHound",
+   "rule": "below_price",
+   "hit": false,
+   "detail": "現價 6.50 vs 觸發價 5.9",
+   "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
+  }
+ ]
+}
