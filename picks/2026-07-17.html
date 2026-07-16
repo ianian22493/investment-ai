@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yuzu Pick · Daily Journal</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&family=Noto+Serif+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="picks.css">
+</head>
+<body>
+
+<!--
+  ════════════════════════════════════════════════════════════════════
+  PICK DAY TEMPLATE · Yuzu Capital /picks/
+  Data contract: inject the pick JSON into the <script id="pick-data"> tag
+  below (generate.py replaces the DATA_JSON token — spelled without braces
+  here so the injection only ever matches the script tag, not this comment).
+  If left unreplaced, the page renders with SAMPLE data as a standalone mockup.
+  Every field has a fallback — missing fields never crash the page.
+  ════════════════════════════════════════════════════════════════════
+-->
+<script id="pick-data" type="application/json">{"date": "2026-07-17", "regime": "資金輪動", "risk_level": "moderate", "trading_budget": "35% · ~NT$ 372,765", "code": "2467", "name": "志聖", "verdict": "謹慎試單", "confidence": 0.6, "entry_zone": "618.0-625.0", "stop_loss": "598.0", "target": "670.0", "hold_days": "1-3天", "ref_close": "620.0", "risk_reward": "1:2.06", "context_paragraph": "今日市場籠罩在資金輪動的氛圍中，雖然整體台股大盤指數45624.98點維持平盤，但仔細觀察，外資今日賣超近483億元，上漲家數亦少於下跌家數 (371 vs 597)，顯示市場內部資金流向的紊亂與偏向謹慎。儘管如此，美國科技股的強勢表現帶動S&P500上漲0.38%，VIX恐慌指數維持在16.11的低檔，表明系統性風險情緒尚未高漲。台積電超預期的第二季財報，無疑為台灣半導體產業注入一劑強心針，提供了在資金輪動中明確的催化劑。我的系統偵測到目前市場處於「資金輪動」的風險開啟階段，此策略在此體制下歷史勝率相對較低，因此今日選股更需考量其「事件驅動」的明確性與風險控管的嚴格性。", "why_this_stock": "在眾多scanner候選股中，志聖 (2467) 之所以脫穎而出，關鍵在於其作為半導體設備及PCB相關供應商，能直接受惠於台積電 (TSMC) 超預期財報所帶來的產業利多與資金效應。雖然其他如沛爾生醫、南茂、一詮、崇越等也出現強勁的技術訊號，但志聖的題材聯動性更為明確且具備即時性。今日志聖股價在訊息公布後，展現出明確的帶量突破MA20格局，成交量顯著放大，這不單純是技術面的訊號，更暗示有新的法人或主力資金正積極進駐，尋求半導體設備供應鏈中的投資機會。相較之下，其他候選股多為泛題材或技術面共振，缺乏像志聖這樣直接且具備「催化劑」的明確利基。", "entry_rationale": "我的進場價區設定在618.0元至625.0元，這區間的考量在於其今日收盤價620.0元位於MA20之上，且帶量突破了近期整理平台的上緣壓力區。618.0元可視為今日突破後的回踩確認支撐位，若開盤後有短暫拉回，此處是較佳的低接點；而625.0元則是今日高點附近，若能站穩此價位，將確認多頭攻勢的延續。選擇此區間是為了捕捉股價在突破後仍具慣性上攻的動能，同時確保進場位置不會過度追高，保留一定的安全邊際。", "stop_rationale": "停損點設定在598.0元，這個價位考量了幾個關鍵因素。首先，598.0元恰好是今日帶量突破MA20之前的近期平台整理區的下緣支撐。一旦股價跌破此點，將意味著今日的突破力道失效，且股價可能重回整理區間甚至轉弱。其次，這個停損點也使得本次交易的風險報酬比約為1:2.06，符合我的風險管理原則。設定在此，可以確保即便判斷失誤，損失也能被有效控制在預算範圍內，避免單次交易對整體資金造成過大衝擊。", "target_rationale": "目標價設定在670.0元，這是一個綜合技術面與風險報酬比後得出的合理預期。技術上，670.0元接近前波高點685元，且是近期反彈波段的一個關鍵壓力區。在資金輪動體制下，股價上攻往往會面臨較大的獲利了結賣壓，因此將目標設定在一個相對保守但可實現的位置，避免過於樂觀。此外，以618.0元進場、598.0元停損計算，670.0元的目標價能提供約1:2.06的風險報酬比，這符合我的獲利預期，並為我提供了足夠的動機去執行這筆交易。", "hold_rationale": "持有天數設定在1至3天，這反映了本次交易的核心策略：捕捉台積電財報利多所帶來的短期產業資金移轉與情緒催化。在目前「資金輪動」且勝率相對較低的市場環境下，長線持有風險較高。我的目標是快速進入、快速退出，利用股價因消息面催化而出現的短期慣性上攻。若股價能迅速達到目標價，我將果斷獲利了結；若動能不足或出現轉弱訊號，我也會在指定停損點或提前出場，避免資金被長期套牢或面臨不確定的市場波動。", "risk_scenarios": [{"trigger": "若開盤直接跳空漲停，超出625.0元進場區間", "action": "放棄追價，觀察後續是否有量縮回踩機會", "severity": "stop", "rationale": "不追高，確保風險報酬比符合預期"}, {"trigger": "若開盤跳空向下，直接跌破598.0元", "action": "立刻停損", "severity": "stop", "rationale": "顯示利多不漲，可能存在未預期利空或籌碼鬆動"}, {"trigger": "若盤中成交量未能持續放大，股價在620.0元附近量縮盤整", "action": "持股觀察，若無明顯上攻動能，考慮減碼一半", "severity": "hold", "rationale": "資金追逐意願不足，可能延遲上攻時間或形成假突破"}, {"trigger": "若盤中漲勢強勁，但接近670.0元目標價時出現爆量黑K", "action": "先獲利了結大部分部位", "severity": "go", "rationale": "爆量黑K暗示獲利了結賣壓沉重，短期高點可能已現"}, {"trigger": "若大盤突然出現急殺，VIX指數快速竄升至18以上", "action": "考慮提前停利或停損所有部位", "severity": "stop", "rationale": "系統性風險增高，所有個股都難以倖免，應先求資金安全"}, {"trigger": "若明日開高走低，未能突破今日高點625.0元，且收盤價跌破618.0元", "action": "次日開盤前減碼一半", "severity": "hold", "rationale": "顯示上攻力道不足，可能形成假突破，應降低持股風險"}], "execution_checklist": [{"time": "盤前", "action": "確認志聖 (2467) 預計開盤價是否落在618.0-625.0區間內，並觀察集合競價狀況"}, {"time": "09:00", "action": "觀察開盤價與開盤量。若在618.0-625.0區間內且有穩定買盤，按計畫分批建立部位，但不追高過625.0元"}, {"time": "09:30", "action": "檢視開盤半小時的成交量與K線型態，確認是否符合帶量上攻的預期。若量能不足或出現大量黑K，暫停進場或減碼"}, {"time": "盤中", "action": "持續追蹤股價與成交量變化。若股價向上接近目標價670.0元，準備部分獲利了結；若向下接近停損點598.0元，則準備執行停損"}, {"time": "收盤", "action": "檢查當日收盤價是否能站穩在618.0元之上。若收盤價跌破，重新評估隔日策略並考慮是否隔日減碼"}, {"time": "隔日開盤前", "action": "回顧市場新聞及籌碼變化（如券商分點進出），調整次日操作計畫，特別是停損停利點位的敏感度"}], "devils_advocate": {"verdict": "強烈反對", "summary": "魔鬼代言人對本次交易持強烈反對意見，認為分析師們過度樂觀，未充分考量全球市場已處於歷史高位、VIX恐慌指數低迷所隱含的反轉風險。他們指出，在當前資產配置的脆弱性下，短線追高建議如同火中取栗，忽視了地緣政治衝突升級（特別是台海風險）與潛在流動性危機可能引發的系統性風險，甚至對AI概念股可能存在的泡沫破裂風險提出警告。", "counter_arguments": ["本交易的核心邏輯是基於台積電超預期財報帶來的「短期事件驅動」，而非長線持有或押注全面性牛市。1-3天的持有週期與嚴格的停損點（598.0元），旨在快速捕捉局部利多反應，有效降低了長期地緣政治或系統性流動性風險的暴露。", "儘管AI泡沫論點有其合理性，但志聖作為半導體設備及PCB供應商，其業務受惠於整體半導體產業景氣復甦，並非單純追逐AI概念股的估值炒作。台積電財報的強勁表現，提供了堅實的基本面支撐，而非虛無縹緲的AI故事。", "對於資產配置脆弱性與房貸槓桿過高的警告，本單筆交易僅佔Yuzu Capital OS總交易預算的35%，且設置了精確的停損機制，確保單一風險事件不會對整體資金組合造成毀滅性影響。這是系統性風險控制的一環，而非與市場對賭。"]}, "correlation": {"pick_code": "2467", "pick_sector": "電子零組件", "pick_sector_family": "電子零組件", "matches": [{"code": "3665", "name": "貿聯-KY", "sector": "電子零組件-連接線", "match_type": "family", "value_twd": 94582, "exposure_pct": 2.5}], "family_exposure_pct": 2.5, "exact_exposure_pct": 0.0, "warning_level": "low", "summary": "2467(電子零組件) · 同大類（電子零組件）：貿聯-KY · 加碼前該大類已佔 2.5%"}, "prev_date": "2026-07-16", "next_date": null}</script>
+
+<div class="page">
+
+  <!-- Dashboard continuity band -->
+  <div class="return-band">
+    <a class="rb-back" href="https://ianian22493.github.io/">← 柚子首頁</a>
+    <span class="rb-logo"><img src="../favicon.svg" alt="">YUZU CAPITAL</span>
+    <span class="rb-meta" id="rb-date">—</span>
+  </div>
+
+  <!-- 1 · HERO -->
+  <header class="hero">
+    <div class="hero-date" id="hero-date"></div>
+    <div class="hero-verdict" id="hero-verdict">—</div>
+    <p class="hero-sub" id="hero-sub"></p>
+  </header>
+
+  <!-- 2 · STOCK CARD -->
+  <section class="sec" style="border-bottom:none; padding-bottom:14px">
+    <div class="stock-card">
+      <div class="stock-id">
+        <span class="stock-code" id="stock-code">—</span>
+        <span class="stock-name" id="stock-name">—</span>
+      </div>
+      <div class="stock-verdict-wrap">
+        <div class="stock-verdict" id="stock-verdict">—</div>
+        <div class="conf-bar"><i id="conf-fill" style="width:0%"></i></div>
+        <div class="stock-conf" id="stock-conf">conf —</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2B · HOLDINGS CORRELATION (只在有相關性時顯示) -->
+  <section class="sec" id="corr-sec" style="border-bottom:none; padding-top:2px; padding-bottom:0; display:none">
+    <div class="corr-card" id="corr-card"></div>
+  </section>
+
+  <!-- 3 · KEY NUMBERS -->
+  <section class="sec" style="border-bottom:none; padding-top:14px">
+    <div class="keynums">
+      <div class="keynum entry">
+        <div class="kn-label">Entry</div>
+        <div class="kn-val" id="kn-entry">—</div>
+        <div class="kn-sub" id="kn-entry-sub">進場區</div>
+      </div>
+      <div class="keynum stop">
+        <div class="kn-label">Stop</div>
+        <div class="kn-val" id="kn-stop">—</div>
+        <div class="kn-sub">停損</div>
+      </div>
+      <div class="keynum target">
+        <div class="kn-label">Target</div>
+        <div class="kn-val" id="kn-target">—</div>
+        <div class="kn-sub" id="kn-rr">目標</div>
+      </div>
+      <div class="keynum hold">
+        <div class="kn-label">Hold</div>
+        <div class="kn-val" id="kn-hold">—</div>
+        <div class="kn-sub">天</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · CHART -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">04</span> 走勢圖 · CHART</div>
+    <a id="tv-link" href="#" target="_blank" rel="noopener" class="tv-cta">
+      <div class="tv-cta-icon">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"/>
+          <path d="M7 14l3-3 3 3 5-6"/>
+          <circle cx="7" cy="14" r="1.2" fill="currentColor"/>
+          <circle cx="10" cy="11" r="1.2" fill="currentColor"/>
+          <circle cx="13" cy="14" r="1.2" fill="currentColor"/>
+          <circle cx="18" cy="8"  r="1.2" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="tv-cta-body">
+        <div class="tv-cta-h"><span id="tv-cta-name">—</span> <span id="tv-cta-code" class="tv-cta-code">—</span></div>
+        <div class="tv-cta-sub">在 TradingView 開完整 K 線圖 · 日線 / 週線 / 技術指標</div>
+      </div>
+      <div class="tv-cta-arrow">→</div>
+    </a>
+  </section>
+
+  <!-- 5 · DEEP ANALYSIS -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">05</span> 深度分析 · ANALYSIS</div>
+    <div id="analysis"></div>
+  </section>
+
+  <!-- 6 · DEVIL'S ADVOCATE -->
+  <section class="sec" id="devil-sec">
+    <div class="sec-label"><span class="sec-no">06</span> 反方論述 · DEVIL'S ADVOCATE</div>
+    <div class="devil">
+      <div class="devil-head">
+        <span class="devil-who">⚔ DA · 反對派</span>
+        <span class="devil-verdict" id="devil-verdict">—</span>
+      </div>
+      <p class="devil-summary" id="devil-summary"></p>
+      <div class="devil-args" id="devil-args"></div>
+    </div>
+  </section>
+
+  <!-- 7 · RISK SCENARIOS -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">07</span> 風險劇本 · IF → THEN</div>
+    <p class="prose" style="font-size:14.5px; color:var(--ink2); margin-bottom:16px">
+      像臨床的決策規則 —— 看到什麼狀況，就做什麼動作。盤中照表操課，不臨場猶豫。
+    </p>
+    <div class="risk-list" id="risk-list"></div>
+  </section>
+
+  <!-- 8 · EXECUTION CHECKLIST -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">08</span> 執行清單 · CHECKLIST</div>
+    <div class="check-progress">
+      <span id="check-count">0 / 0</span>
+      <span class="cp-bar"><i id="check-bar" style="width:0%"></i></span>
+      <button class="check-reset" id="check-reset">重置</button>
+    </div>
+    <div class="checklist" id="checklist"></div>
+  </section>
+
+  <!-- FOOTER NAV -->
+  <nav class="foot-nav">
+    <a class="home" href="https://ianian22493.github.io/">← 柚子首頁</a>
+    <span class="fn-spacer"></span>
+    <a href="#" id="prev-pick">← 前一筆</a>
+    <a href="index.html">月曆</a>
+    <a href="#" id="next-pick">下一筆 →</a>
+  </nav>
+
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   SAMPLE DATA — used when the DATA_JSON token is left unreplaced
+   (mockup mode, i.e. opening this template file directly)
+   ════════════════════════════════════════════════════════════════ */
+const SAMPLE = {
+  date: "2026-06-19",
+  regime: "中性偏多",
+  risk_level: "中",
+  trading_budget: "NT$ 80,000",
+  code: "2317", name: "鴻海",
+  verdict: "進攻", confidence: 0.85,
+  entry_zone: "286–290", stop_loss: "282",
+  target: "303", hold_days: "5–10",
+  ref_close: 289.0, risk_reward: "3.2",
+  context_paragraph: "今日台股 regime 為中性偏多，加權指數站回月線，外資由連續賣超轉為小幅買超，市場情緒從謹慎轉為觀望。AI 伺服器與散熱類股出現資金輪動跡象，但整體量能尚未放大，屬於「可以小量試單、不宜重壓」的盤勢。在這個 regime 下，系統的交易預算控制在 8 萬，單一部位不超過總資金的 4%。",
+  why_this_stock: "鴻海是這波 AI 伺服器代工的核心受惠者，且本益比相對同業仍偏低。相較於股價已大漲的散熱股，鴻海的風險報酬比更乾淨——下檔有月線與前低雙重支撐，上檔則有法人目標價空間。在十幾檔候選中，它是「故事好、技術面剛突破、但還沒漲完」的少數標的。",
+  entry_rationale: "286–290 是這兩天的盤整區上緣，今日收 289 剛好站上。建議在 286–290 之間進場，若開盤跳空過高（>293）則放棄追，等回測。",
+  stop_rationale: "282 是前一波低點與月線的交會處。跌破代表這次突破失敗，必須無條件停損，不凹單。以 289 進場計算，停損約 -2.4%。",
+  target_rationale: "303 是去年高點的頸線壓力，也是法人最近一致上調的目標價區。風險報酬比 3.2，符合系統「報酬至少是風險 2.5 倍才出手」的門檻。",
+  hold_rationale: "這是波段而非當沖，預計持有 5–10 個交易日。若 3 日內未表態（量縮價平），可考慮提前出場換股。",
+  devils_advocate: {
+    verdict: "謹慎反對",
+    summary: "我承認故事好，但時機有疑慮。這個位置是「突破當天追高」，而突破常有假突破。",
+    counter_arguments: [
+      "今日量能只有 5 日均量的 1.05 倍，突破缺乏量能背書，假突破機率不低。",
+      "外資雖轉買超，但金額僅 12 億，相對大盤盤面屬於雜訊等級，不足以構成趨勢確認。",
+      "鴻海權值股屬性，容易被大盤拖累——若加權指數回檔，個股技術面再好也難獨善其身。"
+    ]
+  },
+  risk_scenarios: [
+    { trigger: "若開盤跌破 282", action: "立刻停損出場", severity: "stop", rationale: "前波低點與月線交會，跌破代表突破失敗，紀律性停損。" },
+    { trigger: "若開盤量未達 5 日均量 1.2x", action: "不進場、續觀察", severity: "hold", rationale: "突破需要量能背書，量不到寧可錯過也不冒假突破風險。" },
+    { trigger: "若跳空開高 >293", action: "放棄追高、等回測", severity: "hold", rationale: "進場成本墊高會破壞風險報酬比，等回到 286–290 再說。" },
+    { trigger: "若盤中放量站上 295", action: "可加碼至滿倉", severity: "go", rationale: "量價齊揚確認趨勢，是這次劇本中唯一加碼條件。" },
+    { trigger: "若收盤跌回 285 以下", action: "隔日減半部位", severity: "hold", rationale: "收盤破進場區下緣代表多方力竭，先降低曝險。" }
+  ],
+  execution_checklist: [
+    { time: "盤前", action: "確認 286–290 在開盤跳空合理範圍內，未跳空過高" },
+    { time: "09:00", action: "觀察開盤量能與第一根 K 棒方向" },
+    { time: "09:30", action: "若量達 5 日均量 1.2x 且價在 286–290 → 進場" },
+    { time: "盤中", action: "設好 282 停損單，放著不動" },
+    { time: "收盤", action: "若收 285 以下 → 記錄，準備隔日減半" }
+  ]
+};
+
+/* ════════════════════════════════════════════════════════════════
+   LOAD DATA — JSON injection or SAMPLE fallback
+   ════════════════════════════════════════════════════════════════ */
+let DATA;
+{
+  const raw = (document.getElementById('pick-data')?.textContent || '').trim();
+  if (!raw || raw.startsWith('{{')) {
+    // Mockup mode: template opened directly, token unreplaced → demo data.
+    DATA = SAMPLE;
+  } else {
+    try { DATA = JSON.parse(raw); }
+    catch(e){
+      // Real page with broken data: never silently show SAMPLE as if it
+      // were today's analysis — render an explicit error state instead.
+      DATA = {};
+      document.body.insertAdjacentHTML('afterbegin',
+        '<div style="background:#8a2222;color:#fff;padding:14px 20px;font-size:15px;line-height:1.6">' +
+        '⚠ 本頁資料載入失敗（pick-data JSON 解析錯誤）。以下欄位皆為空白佔位，' +
+        '不是今日實際分析——請檢查 picks/generate.py 的輸出。</div>');
+    }
+  }
+}
+
+const f = (v, dflt='—') => (v === undefined || v === null || v === '') ? dflt : v;
+
+/* ── Date formatting ── */
+const WD = ['日','一','二','三','四','五','六'];
+function fmtDate(iso){
+  if(!iso) return {full:'—', wd:'', mono:'—'};
+  const d = new Date(iso + 'T00:00:00');
+  if(isNaN(d)) return {full:iso, wd:'', mono:iso};
+  return {
+    full: `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`,
+    wd: `星期${WD[d.getDay()]}`,
+    mono: iso.replace(/-/g,' · ')
+  };
+}
+
+/* ════════════════ RENDER ════════════════ */
+const dt = fmtDate(DATA.date);
+document.getElementById('rb-date').textContent = dt.mono;
+
+document.getElementById('hero-date').innerHTML = `
+  <span>${dt.full}</span>
+  <span class="weekday">${dt.wd}</span>
+`;
+document.getElementById('hero-verdict').textContent = f(DATA.verdict, '進攻');
+
+const heroChips = `
+  <span class="hero-chiprow" style="margin-top:14px">
+    <span class="chip regime"><span class="dot"></span>REGIME · ${f(DATA.regime)}</span>
+    <span class="chip risk"><span class="dot"></span>風險 · ${f(DATA.risk_level)}</span>
+    <span class="chip budget"><span class="dot"></span>預算 · ${f(DATA.trading_budget)}</span>
+  </span>`;
+document.getElementById('hero-sub').innerHTML =
+  `今天系統決定<span class="accent"> 出手</span>。以下是完整的進場劇本與風險控制。` + heroChips;
+
+/* Stock card */
+document.getElementById('stock-code').textContent = f(DATA.code);
+document.getElementById('stock-name').textContent = f(DATA.name);
+document.getElementById('stock-verdict').textContent = f(DATA.verdict);
+const conf = Math.round((DATA.confidence || 0) * 100);
+document.getElementById('conf-fill').style.width = conf + '%';
+document.getElementById('stock-conf').textContent = `信心 · ${conf}%`;
+
+/* Key numbers */
+document.getElementById('kn-entry').textContent = f(DATA.entry_zone);
+document.getElementById('kn-entry-sub').textContent = DATA.ref_close ? `收 ${DATA.ref_close}` : '進場區';
+document.getElementById('kn-stop').textContent = f(DATA.stop_loss);
+document.getElementById('kn-target').textContent = f(DATA.target);
+document.getElementById('kn-rr').textContent = DATA.risk_reward ? `R:R ${DATA.risk_reward}` : '目標';
+document.getElementById('kn-hold').textContent = f(DATA.hold_days);
+
+/* Tab title */
+if(DATA.code && DATA.code !== '—'){
+  document.title = `${DATA.code} ${DATA.name || ''} · ${DATA.verdict || 'Pick'} · Yuzu`;
+}
+
+/* Holdings correlation (Task C) — 只在有 medium/high 警告時顯示 */
+(function renderCorr(){
+  const c = DATA.correlation;
+  if(!c || !c.matches || !c.matches.length) return;
+  if(c.warning_level === 'none') return;
+
+  const sec = document.getElementById('corr-sec');
+  const card = document.getElementById('corr-card');
+  if(!sec || !card) return;
+
+  const level = c.warning_level;
+  const icons = {high:'⚠', medium:'⚡', low:'📎'};
+  const titles = {
+    high:   '注意：與現有持股高度重疊',
+    medium: '提醒：與現有持股同大類',
+    low:    '參考：跟現有持股有輕微相關'
+  };
+  const chips = c.matches.map(m => `
+    <span class="corr-chip ${m.match_type}">
+      <span class="cc-code">${m.code}</span>
+      <span class="cc-name">${m.name}</span>
+      <span class="cc-sector">${m.sector}</span>
+    </span>`).join('');
+  card.className = 'corr-card warn-' + level;
+  card.innerHTML = `
+    <div class="corr-icon">${icons[level] || '📎'}</div>
+    <div class="corr-body">
+      <div class="corr-title">
+        ${titles[level] || titles.low}
+        <span class="corr-level ${level}">${level.toUpperCase()}</span>
+      </div>
+      <div class="corr-summary">${c.summary || ''}</div>
+      <div class="corr-matches">${chips}</div>
+    </div>`;
+  sec.style.display = 'block';
+})();
+
+/* Chart CTA — TradingView free-tier embed walls Taiwan-stock charts
+ * with "此商品僅在 TradingView 可用" for both widgetembed and mini
+ * widgets. Linking out to TV's public symbol page is the cleanest
+ * solution: the page itself is freely viewable with full chart. */
+if(DATA.code && DATA.code !== '—'){
+  const link = document.getElementById('tv-link');
+  link.href = `https://www.tradingview.com/symbols/TWSE-${DATA.code}/`;
+  document.getElementById('tv-cta-name').textContent = f(DATA.name);
+  document.getElementById('tv-cta-code').textContent = `TWSE:${DATA.code}`;
+}
+
+/* Deep analysis */
+const ANALYSIS = [
+  ['脈絡', DATA.context_paragraph],
+  ['為什麼是這檔', DATA.why_this_stock],
+  ['進場依據', DATA.entry_rationale],
+  ['停損依據', DATA.stop_rationale],
+  ['目標與持有', [DATA.target_rationale, DATA.hold_rationale].filter(Boolean).join(' ')]
+];
+document.getElementById('analysis').innerHTML = ANALYSIS.map(([title, body], i) => body ? `
+  <div class="analysis-block">
+    <div class="ab-head"><span class="ab-num">${i+1}</span><span class="ab-title">${title}</span></div>
+    <div class="ab-body${i===0?' lead-cap':''}"><p>${body}</p></div>
+  </div>` : '').join('') || '<p class="empty-field">尚無分析內容。</p>';
+
+/* Devil's advocate */
+const da = DATA.devils_advocate || {};
+if(da.summary || (da.counter_arguments||[]).length){
+  document.getElementById('devil-verdict').textContent = f(da.verdict, '反對');
+  document.getElementById('devil-summary').textContent = f(da.summary, '');
+  document.getElementById('devil-args').innerHTML =
+    (da.counter_arguments||[]).map(a => `<div class="devil-arg">${a}</div>`).join('');
+} else {
+  document.getElementById('devil-sec').style.display = 'none';
+}
+
+/* Risk scenarios */
+const SEV_ICON = {
+  stop: '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
+  hold: '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r=".6" fill="currentColor"/></svg>',
+  go:   '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>'
+};
+document.getElementById('risk-list').innerHTML =
+  (DATA.risk_scenarios||[]).map(r => {
+    const sev = r.severity || 'hold';
+    return `
+    <div class="risk-card sev-${sev}">
+      <div class="risk-trigger">${SEV_ICON[sev]||SEV_ICON.hold}<span>${f(r.trigger)}</span></div>
+      <div class="risk-action"><span class="ra-arrow">→</span><span class="ra-text">${f(r.action)}</span></div>
+      ${r.rationale ? `<div class="risk-rationale">${r.rationale}</div>` : ''}
+    </div>`;
+  }).join('') || '<p class="empty-field">無風險劇本。</p>';
+
+/* Execution checklist · checkboxes persist in localStorage */
+const CHECK_KEY = 'yuzu-check-' + f(DATA.date, 'x') + '-' + f(DATA.code, 'x');
+let checkState = {};
+try { checkState = JSON.parse(localStorage.getItem(CHECK_KEY) || '{}'); } catch(e){}
+
+const checklist = DATA.execution_checklist || [];
+function renderChecklist(){
+  const host = document.getElementById('checklist');
+  host.innerHTML = checklist.map((c, i) => `
+    <div class="check-item ${checkState[i] ? 'done' : ''}" data-idx="${i}">
+      <div class="check-box" role="checkbox" aria-checked="${!!checkState[i]}" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+      </div>
+      <div class="check-body">
+        <div class="check-time">${f(c.time)}</div>
+        <div class="check-action">${f(c.action)}</div>
+      </div>
+    </div>`).join('') || '<p class="empty-field">無執行清單。</p>';
+  updateProgress();
+  host.querySelectorAll('.check-item').forEach(item => {
+    const toggle = () => {
+      const idx = item.dataset.idx;
+      checkState[idx] = !checkState[idx];
+      localStorage.setItem(CHECK_KEY, JSON.stringify(checkState));
+      item.classList.toggle('done', checkState[idx]);
+      item.querySelector('.check-box').setAttribute('aria-checked', !!checkState[idx]);
+      updateProgress();
+    };
+    item.querySelector('.check-box').addEventListener('click', toggle);
+    item.querySelector('.check-box').addEventListener('keydown', e => {
+      if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); toggle(); }
+    });
+  });
+}
+function updateProgress(){
+  const total = checklist.length;
+  const done = Object.values(checkState).filter(Boolean).length;
+  document.getElementById('check-count').textContent = `${done} / ${total}`;
+  document.getElementById('check-bar').style.width = total ? (done/total*100)+'%' : '0%';
+}
+document.getElementById('check-reset').addEventListener('click', () => {
+  checkState = {};
+  localStorage.removeItem(CHECK_KEY);
+  renderChecklist();
+});
+renderChecklist();
+
+/* Prev/next nav (wired by generator; demo = disabled) */
+if(DATA.prev_date) document.getElementById('prev-pick').href = DATA.prev_date + '.html';
+else document.getElementById('prev-pick').style.opacity = '.35';
+if(DATA.next_date) document.getElementById('next-pick').href = DATA.next_date + '.html';
+else document.getElementById('next-pick').style.opacity = '.35';
+
+if(window.applyGlossary) window.applyGlossary();
+</script>
+<script src="glossary.js"></script>
+
+</body>
+</html>

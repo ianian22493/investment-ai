@@ -1,7 +1,7 @@
 {
- "checked_at": "2026-07-16 12:33 +0800",
+ "checked_at": "2026-07-16 16:37 +0800",
  "hit_count": 2,
- "new_hit_count": 2,
+ "new_hit_count": 0,
  "results": [
   {
    "key": "panic|vix",
@@ -9,7 +9,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 15.7",
+   "detail": "VIX 16.0",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -18,7 +18,7 @@
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
    "hit": false,
-   "detail": "單日 +0.33%",
+   "detail": "單日 -0.01%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -27,7 +27,7 @@
    "name": "台積電",
    "rule": "below_ma20",
    "hit": false,
-   "detail": "現價 2465.00 vs 月線 2434.25",
+   "detail": "現價 2470.00 vs 月線 2434.50",
    "note": "核心加碼窗口：跌破月線（觀察名單：法說或恐慌日跌破月線分批）"
   },
   {
@@ -36,8 +36,17 @@
    "name": "群聯",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 1995.00 vs 月線 2284.50",
+   "detail": "現價 1980.00 vs 月線 2283.75",
    "note": "持倉移動停損警戒：跌破月線＝檢查 NAND 合約價與論述卡"
+  },
+  {
+   "key": "6442.TW|near_52w_low|",
+   "symbol": "6442.TW",
+   "name": "光聖",
+   "rule": "near_52w_low",
+   "hit": false,
+   "detail": "現價 1350.00 vs 52週低 448.00（門檻 +3.0%）",
+   "note": "持倉警戒：再破前低＝論述卡規定無條件出場"
   },
   {
    "key": "3703.TW|below_ma20|",
