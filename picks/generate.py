@@ -180,6 +180,9 @@ def build_pick_data(analysis: dict, market_data: dict, candidates: list, explain
         },
         # Holdings correlation (Task C) — 產業重疊警示
         "correlation":       pick_agent.get("correlation") or {},
+        # Swing book (2026-07-17 波段改版) — 在倉部位快照
+        "open_positions":    pick_agent.get("open_positions") or [],
+        "max_positions":     pick_agent.get("max_positions", 3),
     }
 
 
@@ -200,6 +203,9 @@ def build_watch_data(analysis: dict, market_data: dict, candidates: list, explai
         "reactivation_triggers": explainer.get("reactivation_triggers", []),
         "scanner_top1":     explainer.get("scanner_top1") or None,
         "micro_pick":       pick_agent.get("micro_pick"),
+        # Swing book (2026-07-17 波段改版) — 在倉部位快照
+        "open_positions":   pick_agent.get("open_positions") or [],
+        "max_positions":    pick_agent.get("max_positions", 3),
     }
 
 

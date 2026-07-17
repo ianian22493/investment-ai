@@ -114,16 +114,21 @@ def save_pick(
         code = "NONE"
 
     # Prefer scanner signals (precise); fall back to core_logic (coarse)
-    SCANNER_SIGNAL_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high", "rs_signal")
+    # Swing 版 core_logic 欄位：trend_structure / sector / fundamental /
+    # catalyst / chips / event_risk（短線版舊欄位保留 fallback 相容）
+    SCANNER_SIGNAL_KEYS = ("trend_up", "above_ma60", "pullback_buy", "base_breakout", "vol_accumulate", "rsi_swing", "rs_20d_strong")
     if scanner_signals:
         signals = scanner_signals
     else:
         core = pick.get("core_logic", {})
         signals = []
-        if core.get("capital_flow"):  signals.append("capital_flow")
-        if core.get("sector"):        signals.append("ai_sector")
-        if core.get("technical"):     signals.append("technical_breakout")
+        if core.get("trend_structure") or core.get("technical"):
+            signals.append("trend_structure")
+        if core.get("sector"):        signals.append("sector_flow")
+        if core.get("fundamental"):   signals.append("fundamental")
+        if core.get("catalyst"):      signals.append("catalyst")
         if core.get("chips"):         signals.append("institutional_buy")
+        if core.get("capital_flow"):  signals.append("capital_flow")
 
     with get_conn() as conn:
         cur = conn.execute("""
@@ -269,6 +274,30 @@ def get_unresolved_picks() -> list[dict]:
             ORDER BY date ASC
         """).fetchall()
         return [dict(r) for r in rows]
+
+
+def get_open_positions() -> list[dict]:
+    """波段在倉部位（resolved=0 的 picks + 即時追蹤數據）。
+    outcome_tracker.resolve_pending() 每天會更新 pending picks 的
+    return_pct / max_gain_pct / max_drawdown_pct / hold_days_actual，
+    所以這裡讀出來就是最新狀態。給 run_agents 注入 prompt + 前端顯示。
+    """
+    init_db()
+    with get_conn() as conn:
+        rows = conn.execute("""
+            SELECT id, date, stock_code, stock_name, entry_zone, stop_loss,
+                   target, hold_days, ref_close, return_pct, max_gain_pct,
+                   max_drawdown_pct, hold_days_actual, verdict, confidence
+            FROM picks
+            WHERE resolved=0 AND stock_code != 'NONE'
+            ORDER BY date ASC
+        """).fetchall()
+        out = []
+        for r in rows:
+            d = dict(r)
+            d["current_return_pct"] = d.pop("return_pct", None)
+            out.append(d)
+        return out
 
 
 def get_recent_picks(days: int = 30) -> list[dict]:

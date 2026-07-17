@@ -94,7 +94,7 @@ def run(all_outputs: dict) -> dict:
     if candidates:
         cand_lines = []
         for c in candidates[:3]:
-            sigs = [k for k in ("breakout_ma20", "vol_surge", "rsi_zone", "ma_aligned") if c.get(k)]
+            sigs = [k for k in ("trend_up", "pullback_buy", "base_breakout", "vol_accumulate", "rs_20d_strong") if c.get(k)]
             cand_lines.append(
                 f"  {c.get('name','?')}({c.get('code','?')}) "
                 f"score={c.get('score',0)} signals={sigs}"

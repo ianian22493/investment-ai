@@ -54,8 +54,12 @@ def load_candidates() -> list:
 # and the user was getting zero recommendations for 14+ days even when
 # scanner had high-conviction candidates.
 MICRO_PICK_MIN_TRADING_BUDGET = 0.05    # was 0.15
-MICRO_PICK_MIN_SCANNER_SCORE  = 5       # scanner score on 0-7 scale
+MICRO_PICK_MIN_SCANNER_SCORE  = 5       # scanner score on 0-8 swing scale
 MICRO_PICK_SIZE_RATIO         = 0.30    # 30% of trading budget = trial size
+
+# Swing position management (2026-07-17 波段改版)
+# 最多同時 3 檔在倉。倉滿時跳過 pick LLM call（省 quota + 避免誘惑）。
+MAX_OPEN_POSITIONS = 3
 
 def _maybe_attach_micro_pick(outputs: dict, candidates: list, regime: dict, market_data: dict):
     """⚠ MUTATES `outputs`. Attaches `micro_pick` key to outputs['tw_daily_pick']
@@ -92,7 +96,7 @@ def _maybe_attach_micro_pick(outputs: dict, candidates: list, regime: dict, mark
         return  # Skip during outright crash
 
     top = candidates[0]
-    SIG_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high", "rs_signal")
+    SIG_KEYS = ("trend_up", "above_ma60", "pullback_buy", "base_breakout", "vol_accumulate", "rsi_swing", "rs_20d_strong")
     signals = [k for k in SIG_KEYS if top.get(k)]
     ref_close = (market_data.get("tw_stocks", {}).get(top["code"], {}) or {}).get("close")
     # Trial size = % of trading budget × portfolio. At 5% trading × 30% ratio = 1.5% total.
@@ -290,12 +294,60 @@ def run_all():
     if t0.hour >= 13:
         print("\n── Phase 4: Post-Market ──")
 
+        # ── Swing position gate ──────────────────────────────────────────
+        # resolve_pending() (run earlier) has refreshed open-position stats.
+        # 倉滿 → 直接空手，不呼叫 LLM（省 quota，也避免 agent 硬找標的）。
+        open_positions = alpha_db.get_open_positions()
+        if open_positions:
+            print(f"  [swing book] 在倉 {len(open_positions)}/{MAX_OPEN_POSITIONS}:")
+            for op in open_positions:
+                cur = op.get("current_return_pct")
+                cur_str = f"{cur:+.1f}%" if isinstance(cur, (int, float)) else "?"
+                print(f"    · {op['stock_name']}({op['stock_code']}) "
+                      f"{op['date']} 進 · 現況 {cur_str} · D+{op.get('hold_days_actual') or 0}")
+
         print("  tw_daily_pick...")
-        outputs["tw_daily_pick"] = tw_daily_pick.run(
-            market_data, portfolio_live, outputs["market_overview"], news,
-            regime=regime, candidates=candidates,
-        )
+        if len(open_positions) >= MAX_OPEN_POSITIONS:
+            outputs["tw_daily_pick"] = {
+                "verdict": "空手觀望",
+                "confidence": 1.0,
+                "pick": {"name": "—", "code": "—", "entry_zone": "—",
+                         "stop_loss": "—", "target": "—", "risk_reward": "—",
+                         "ref_close": "—", "hold_days": "—"},
+                "market_regime": regime.get("market_regime", ""),
+                "risk_appetite": "中性",
+                "suitable_for_trading": False,
+                "summary": (
+                    f"波段倉位已滿（{len(open_positions)}/{MAX_OPEN_POSITIONS} 檔在倉），"
+                    f"今日不開新倉。專注管理現有部位：依既定停損 / 目標紀律執行。"
+                ),
+                "core_logic": {},
+                "risk_flags": ["倉位已滿——新機會再好也不加倉，等現有部位結算"],
+                "counter_argument": "",
+                "agent_note": "positions-full gate (rule-based, no LLM call)",
+            }
+        else:
+            outputs["tw_daily_pick"] = tw_daily_pick.run(
+                market_data, portfolio_live, outputs["market_overview"], news,
+                regime=regime, candidates=candidates,
+                open_positions=open_positions,
+            )
         pick = outputs["tw_daily_pick"]
+
+        # 防呆：agent 不聽話重複推薦在倉股票 → 強制降為空手（避免 DB 重複開倉）
+        open_codes = {op["stock_code"] for op in open_positions}
+        picked_code = (pick.get("pick") or {}).get("code")
+        if picked_code and picked_code in open_codes:
+            print(f"    [WARN] agent 重複推薦在倉股票 {picked_code} — 強制空手")
+            pick["verdict"] = "空手觀望"
+            pick["summary"] = f"[系統攔截] agent 推薦了已在倉的 {picked_code}，已強制改為觀望。" + pick.get("summary", "")
+            pick["pick"] = {"name": "—", "code": "—", "entry_zone": "—",
+                            "stop_loss": "—", "target": "—", "risk_reward": "—",
+                            "ref_close": "—", "hold_days": "—"}
+
+        # 在倉部位隨 analysis.json 出去給前端（dashboard swing book + pick 頁）
+        pick["open_positions"] = open_positions
+        pick["max_positions"] = MAX_OPEN_POSITIONS
         print(f"    → {pick.get('verdict')} | {pick.get('pick',{}).get('name','?')}({pick.get('pick',{}).get('code','?')})")
 
         # Holdings correlation (Task C) — 純 Python，不 call LLM。

@@ -35,6 +35,11 @@
     <p class="hero-sub" id="hero-sub"></p>
   </header>
 
+  <!-- 1B · SWING BOOK (在倉部位，有部位才顯示) -->
+  <section class="sec" id="swing-sec" style="border-bottom:none; padding-bottom:0; display:none">
+    <div class="swing-book" id="swing-book"></div>
+  </section>
+
   <!-- 2 · WHY WATCHING -->
   <section class="sec">
     <div class="sec-label"><span class="sec-no">01</span> 為什麼不出手 · WHY WATCHING</div>
@@ -160,6 +165,33 @@ document.getElementById('hero-sub').innerHTML =
     <span class="chip regime"><span class="dot"></span>REGIME · ${f(DATA.regime)}</span>
     <span class="chip risk"><span class="dot"></span>風險 · ${f(DATA.risk_level)}</span>
   </span>`;
+
+/* Swing book (波段在倉部位) — 有部位才顯示 */
+(function renderSwingBook(){
+  const ops = DATA.open_positions;
+  if(!ops || !ops.length) return;
+  const sec = document.getElementById('swing-sec');
+  const box = document.getElementById('swing-book');
+  if(!sec || !box) return;
+  const maxP = DATA.max_positions || 3;
+  const rows = ops.map(p => {
+    const cur = (typeof p.current_return_pct === 'number')
+      ? `${p.current_return_pct >= 0 ? '+' : ''}${p.current_return_pct.toFixed(1)}%` : '—';
+    const curCls = (typeof p.current_return_pct === 'number')
+      ? (p.current_return_pct >= 0 ? 'up' : 'down') : '';
+    return `
+    <div class="sb-row">
+      <span class="sb-id"><b>${p.stock_code}</b> ${p.stock_name || ''}</span>
+      <span class="sb-date">${(p.date||'').slice(5)} 進</span>
+      <span class="sb-cur ${curCls}">${cur}</span>
+      <span class="sb-plan">停損 ${p.stop_loss || '—'} · 目標 ${p.target || '—'} · D+${p.hold_days_actual || 0}</span>
+    </div>`;
+  }).join('');
+  box.innerHTML = `
+    <div class="sb-head">📒 波段在倉 ${ops.length}/${maxP} — 今日重點是照顧它們</div>
+    ${rows}`;
+  sec.style.display = 'block';
+})();
 
 document.getElementById('why-watching').className = 'prose lead-cap';
 document.getElementById('why-watching').innerHTML =

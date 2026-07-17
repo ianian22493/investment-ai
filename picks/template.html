@@ -60,6 +60,11 @@
     <div class="corr-card" id="corr-card"></div>
   </section>
 
+  <!-- 2C · SWING BOOK (在倉部位，有部位才顯示) -->
+  <section class="sec" id="swing-sec" style="border-bottom:none; padding-top:2px; padding-bottom:0; display:none">
+    <div class="swing-book" id="swing-book"></div>
+  </section>
+
   <!-- 3 · KEY NUMBERS -->
   <section class="sec" style="border-bottom:none; padding-top:14px">
     <div class="keynums">
@@ -136,9 +141,9 @@
     <div class="risk-list" id="risk-list"></div>
   </section>
 
-  <!-- 8 · EXECUTION CHECKLIST -->
+  <!-- 8 · EXECUTION CHECKLIST（波段版：按持有階段組織）-->
   <section class="sec">
-    <div class="sec-label"><span class="sec-no">08</span> 執行清單 · CHECKLIST</div>
+    <div class="sec-label"><span class="sec-no">08</span> 波段照護計畫 · CARE PLAN</div>
     <div class="check-progress">
       <span id="check-count">0 / 0</span>
       <span class="cp-bar"><i id="check-bar" style="width:0%"></i></span>
@@ -259,7 +264,7 @@ const heroChips = `
     <span class="chip budget"><span class="dot"></span>預算 · ${f(DATA.trading_budget)}</span>
   </span>`;
 document.getElementById('hero-sub').innerHTML =
-  `今天系統決定<span class="accent"> 出手</span>。以下是完整的進場劇本與風險控制。` + heroChips;
+  `今天系統決定<span class="accent"> 開波段倉</span>。以下是未來 2 週-1 個月的完整劇本與風險控制。` + heroChips;
 
 /* Stock card */
 document.getElementById('stock-code').textContent = f(DATA.code);
@@ -275,12 +280,47 @@ document.getElementById('kn-entry-sub').textContent = DATA.ref_close ? `收 ${DA
 document.getElementById('kn-stop').textContent = f(DATA.stop_loss);
 document.getElementById('kn-target').textContent = f(DATA.target);
 document.getElementById('kn-rr').textContent = DATA.risk_reward ? `R:R ${DATA.risk_reward}` : '目標';
-document.getElementById('kn-hold').textContent = f(DATA.hold_days);
+/* hold_days「10-22 個交易日」太長塞不下 kn-val — 抽數字區間，單位下移到 sub */
+(function(){
+  const hd = String(DATA.hold_days || '—');
+  const m = hd.match(/(\d+\s*[-~]\s*\d+|\d+)/);
+  const knHold = document.getElementById('kn-hold');
+  knHold.textContent = m ? m[1].replace(/\s/g,'') : f(DATA.hold_days);
+  const sub = knHold.nextElementSibling;
+  if(sub && sub.classList.contains('kn-sub')) sub.textContent = /交易日/.test(hd) ? '交易日' : '天';
+})();
 
 /* Tab title */
 if(DATA.code && DATA.code !== '—'){
   document.title = `${DATA.code} ${DATA.name || ''} · ${DATA.verdict || 'Pick'} · Yuzu`;
 }
+
+/* Swing book (波段在倉部位) — 有部位才顯示 */
+(function renderSwingBook(){
+  const ops = DATA.open_positions;
+  if(!ops || !ops.length) return;
+  const sec = document.getElementById('swing-sec');
+  const box = document.getElementById('swing-book');
+  if(!sec || !box) return;
+  const maxP = DATA.max_positions || 3;
+  const rows = ops.map(p => {
+    const cur = (typeof p.current_return_pct === 'number')
+      ? `${p.current_return_pct >= 0 ? '+' : ''}${p.current_return_pct.toFixed(1)}%` : '—';
+    const curCls = (typeof p.current_return_pct === 'number')
+      ? (p.current_return_pct >= 0 ? 'up' : 'down') : '';
+    return `
+    <div class="sb-row">
+      <span class="sb-id"><b>${p.stock_code}</b> ${p.stock_name || ''}</span>
+      <span class="sb-date">${(p.date||'').slice(5)} 進</span>
+      <span class="sb-cur ${curCls}">${cur}</span>
+      <span class="sb-plan">停損 ${p.stop_loss || '—'} · 目標 ${p.target || '—'} · D+${p.hold_days_actual || 0}</span>
+    </div>`;
+  }).join('');
+  box.innerHTML = `
+    <div class="sb-head">📒 波段在倉 ${ops.length}/${maxP}</div>
+    ${rows}`;
+  sec.style.display = 'block';
+})();
 
 /* Holdings correlation (Task C) — 只在有 medium/high 警告時顯示 */
 (function renderCorr(){

@@ -1537,6 +1537,29 @@ function fmtChg(v){if(v==null)return '—';const s=v>0?'+':'';return `${s}${pars
 function fmtDate(iso){if(!iso)return'—';const d=new Date(iso);const p=n=>String(n).padStart(2,'0');return `${d.getMonth()+1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`}
 function minsAgo(iso){if(!iso) return null; const d=new Date(iso); return Math.floor((Date.now()-d.getTime())/60000)}
 
+// Swing book (波段在倉部位 · 2026-07-17 波段改版) — shown above TODAY'S PICK
+function renderSwingBook(pickAgent){
+  const ops = (pickAgent || {}).open_positions;
+  if(!ops || !ops.length) return '';
+  const maxP = (pickAgent || {}).max_positions || 3;
+  const rows = ops.map(p => {
+    const cur = (typeof p.current_return_pct === 'number')
+      ? `${p.current_return_pct >= 0 ? '+' : ''}${p.current_return_pct.toFixed(1)}%` : '—';
+    const curColor = (typeof p.current_return_pct === 'number')
+      ? (p.current_return_pct >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--text3)';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--border);font-size:12px;flex-wrap:wrap">
+      <span style="min-width:105px"><b style="font-family:'JetBrains Mono',monospace;color:var(--text)">${p.stock_code}</b> <span style="color:var(--text2)">${p.stock_name||''}</span></span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text3)">${(p.date||'').slice(5)} 進 · D+${p.hold_days_actual||0}</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${curColor}">${cur}</span>
+      <span style="font-size:11px;color:var(--text3)">停損 ${p.stop_loss||'—'} · 目標 ${p.target||'—'}</span>
+    </div>`;
+  }).join('');
+  return `<div class="swing-book-card" style="margin-bottom:12px;padding:11px 14px;background:var(--bg3);border:1px solid var(--border2);border-left:2px solid var(--gold);border-radius:0 6px 6px 0" data-tip="波段在倉部位：目前持有中的 swing 部位，最多同時 3 檔。每天 16:30 更新現況">
+    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-bottom:2px">📒 SWING BOOK · 在倉 ${ops.length}/${maxP}</div>
+    ${rows}
+  </div>`;
+}
+
 // Holdings correlation chip (Task C) — appended to pick card
 function renderCorrChip(corr){
   if(!corr || !corr.matches || !corr.matches.length) return '';
@@ -3125,6 +3148,7 @@ function renderExec(target){
     </div>
 
     <div class="section-label">TODAY'S PICK</div>
+    ${renderSwingBook(pick)}
     ${pickHTML}
     ${microPickHTML}
     ${forcePickBtn}
@@ -3285,6 +3309,7 @@ function renderTrading(target){
 
   target.innerHTML = `
     <div class="section-label">TODAY'S PICK</div>
+    ${renderSwingBook(pick)}
     ${pickHTML}
     <div style="margin-top:14px">${tmCard}</div>
     <div class="section-label">SCANNER RADAR · ${top.length} 候選</div>
@@ -6172,7 +6197,8 @@ const GLOSSARY = {
   "TRADING BUDGET":                  "今日可動用資金 · 系統依風險調整過的倉位比例",
   "TODAY'S VERDICT":                 "今日決議 · 系統對台股短線的最終決策",
   "TODAY'S BRIEFING":                "今日簡報 · 一段摘要重點資訊",
-  "TODAY'S PICK":                    "今日精選 · 若系統推薦出手，這就是選中的股票",
+  "TODAY'S PICK":                    "今日波段精選 · 若系統推薦出手，目標持有 2 週-1 個月",
+  "SWING BOOK":                      "波段在倉部位 · 目前持有中的 swing 部位（最多 3 檔），每日盤後更新現況",
   "MARKET CHIPS":                    "市場籌碼 · 三大法人買賣超、融資餘額等",
   "SCANNER RADAR":                   "篩選雷達 · 從技術面與籌碼面篩出的候選股",
   "SIGNAL VECTOR":                   "訊號向量 · 10 個市場健康度指標的當前值",

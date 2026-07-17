@@ -85,10 +85,11 @@ def _fetch_benchmark_close(date_str: str) -> float | None:
 def _fetch_ohlc_range(code: str, start_date: str, end_date: str) -> list[dict]:
     """取得 [start_date, end_date] 區間內所有交易日的 OHLC。
     自動嘗試 .TW / .TWO。回 list[{date, open, high, low, close}]。
+    period=3mo：波段持有窗 22 個交易日 ≈ 32+ 個日曆天，加上連假 buffer。
     """
     for suffix in (".TW", ".TWO"):
         try:
-            hist = yf.Ticker(code + suffix).history(period="60d", auto_adjust=True)
+            hist = yf.Ticker(code + suffix).history(period="3mo", auto_adjust=True)
             if hist.empty:
                 continue
             hist.index = hist.index.tz_localize(None)
@@ -112,12 +113,12 @@ def _fetch_ohlc_range(code: str, start_date: str, end_date: str) -> list[dict]:
 
 def _parse_hold_days_max(text: str) -> int:
     """從 hold_days 字串抽出最大天數。
-    "5-10 天" → 10 | "7" → 7 | "持有 3-5 個交易日" → 5
-    預設 5（保守，因為若 entry 後完全無動靜，5 天內應有結論）。
+    "10-22 個交易日" → 22 | "7" → 7 | "持有 3-5 個交易日" → 5
+    預設 22（波段版預設持有窗；舊短線 picks 的 hold_days 都有數字，不受影響）。
     """
     nums = re.findall(r"\d+", str(text or ""))
     if not nums:
-        return 5
+        return 22
     return max(int(n) for n in nums)
 
 
@@ -164,7 +165,7 @@ def save_today_pick(pick_output: dict, regime: dict, market_data: dict, candidat
         pick["name"] = canonical
 
     # 從 scanner candidates 找出該股的精確信號
-    SIGNAL_KEYS = ("breakout_ma20", "above_ma20", "vol_surge", "rsi_zone", "ma_aligned", "five_day_high", "rs_signal")
+    SIGNAL_KEYS = ("trend_up", "above_ma60", "pullback_buy", "base_breakout", "vol_accumulate", "rsi_swing", "rs_20d_strong")
     scanner_signals = None
     if candidates:
         matched = next((c for c in candidates if c.get("code") == code), None)
@@ -387,10 +388,14 @@ def resolve_pending(today_market_data: dict = None):
     _resolve_pending_watch_log(today)
 
 
+WATCH_LOG_RESOLVE_DAYS = 10   # 波段版：觀望日後看 10 個交易日（原短線版 5 日）
+
 def _resolve_pending_watch_log(today: str):
-    """For each unresolved watch_log entry that's ≥5 trading days old,
-    look at its scanner_top1's price action over those 5 days. Classify
+    """For each unresolved watch_log entry that's ≥10 trading days old,
+    look at its scanner_top1's price action over those days. Classify
     as missed/avoided/flat. This is what Reflection uses to detect bias.
+    波段改版後拉長到 10 日：波段機會的展開需要更長觀察窗，5 日內不動
+    不代表 miss。
     """
     pending = alpha_db.get_unresolved_watch_log()
     if not pending:
@@ -402,10 +407,9 @@ def _resolve_pending_watch_log(today: str):
         ref = w["ref_close"]
         if not ref:
             continue
-        # Need 5 trading days after wd
-        end = _n_trading_days_after(wd, 5)
+        end = _n_trading_days_after(wd, WATCH_LOG_RESOLVE_DAYS)
         if end > today:
-            continue   # not yet 5 trading days
+            continue   # observation window not finished yet
         start = _next_trading_day(wd)
         rows = _fetch_ohlc_range(code, start, end)
         if not rows:
@@ -417,7 +421,7 @@ def _resolve_pending_watch_log(today: str):
         alpha_db.resolve_watch_log(wd, round(max_gain, 2), round(max_dd, 2))
         resolved_n += 1
     if resolved_n:
-        print(f"[outcome_tracker] 觀望日 5 日結算 {resolved_n} 筆")
+        print(f"[outcome_tracker] 觀望日 {WATCH_LOG_RESOLVE_DAYS} 日結算 {resolved_n} 筆")
 
 
 def _next_trading_day(date_str: str) -> str:

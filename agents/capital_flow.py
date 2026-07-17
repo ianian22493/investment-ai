@@ -90,9 +90,15 @@ def compute(
         cash_pct      = 0.10
 
     # ── Step 3: Regime 調整交易預算 ──────────────────────────────────────────
+    # 2026-07-17 波段改版：改看 swing_trading_favorable。
+    # 短線閘門對「當日震盪」過敏（VIX≥20 或小跌就 False），波段策略持有
+    # 10-22 個交易日，日內震盪無關緊要——只有系統性風險才該砍預算。
     regime_risk = regime.get("risk_level", "moderate")
     regime_name = regime.get("market_regime", "")
-    trading_favorable = regime.get("short_term_trading_favorable", True)
+    swing_favorable = regime.get(
+        "swing_trading_favorable",
+        regime.get("short_term_trading_favorable", True),  # 舊 analysis.json 相容
+    )
 
     if regime_risk == "extreme":
         # 市場恐慌：把交易預算轉為現金
@@ -107,11 +113,11 @@ def compute(
         cash_pct      = min(1.0, cash_pct + shift)
         override_flags.append("REGIME_HIGH: 空頭賣壓 → 交易預算減半")
 
-    elif not trading_favorable and regime_risk in ("elevated", "moderate"):
+    elif not swing_favorable and regime_risk in ("elevated", "moderate"):
         shift = trading_pct * 0.3
         trading_pct   -= shift
         cash_pct      = min(1.0, cash_pct + shift)
-        override_flags.append("REGIME_UNFAVORABLE: 不適合短線 → 小幅降低交易預算")
+        override_flags.append("REGIME_UNFAVORABLE: 波段環境不利 → 小幅降低交易預算")
 
     elif regime_name in ("AI主升段",) and regime_risk == "low":
         # 最佳做多環境：增加交易預算，從現金挪移

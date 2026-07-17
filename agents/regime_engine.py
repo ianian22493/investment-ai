@@ -95,16 +95,23 @@ def determine_regime(market_data: dict) -> dict:
         trading_ok = False
         confidence = 0.60
 
+    # ── Swing gate（2週-1個月波段）────────────────────────────────────────────
+    # 波段策略對「當日震盪」不敏感——區間盤 / 高檔震盪反而是等拉回進場的好環境。
+    # 只有真正的系統性風險（恐慌盤 / 空頭賣壓）才封鎖新倉。
+    # 這跟 short_term_trading_favorable 分開：短線怕震盪，波段怕崩盤。
+    swing_ok = regime not in ("恐慌盤", "空頭賣壓")
+
     regime_summary = (
         f"市場體制：{regime}｜"
         f"VIX={vix:.1f}｜台股{taiex_chg:+.2f}%｜NASDAQ{nasdaq_chg:+.2f}%｜"
-        f"AI話題度={ai_hits}｜短線適合交易：{'✓' if trading_ok else '✗'}"
+        f"AI話題度={ai_hits}｜短線：{'✓' if trading_ok else '✗'}｜波段：{'✓' if swing_ok else '✗'}"
     )
 
     return {
         "market_regime": regime,
         "risk_level": risk_level,
         "short_term_trading_favorable": trading_ok,
+        "swing_trading_favorable": swing_ok,
         "confidence": confidence,
         "regime_factors": regime_factors,
         "regime_summary": regime_summary,

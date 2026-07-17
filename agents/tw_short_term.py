@@ -73,14 +73,15 @@ def run(
             lines.append(f"  · {insight}")
 
     if candidates:
-        lines.append("\n【量化掃描器精選（今日市場強勢候選股）】")
+        lines.append("\n【量化掃描器波段候選（趨勢確立 + 位階健康）】")
         for c in candidates[:8]:
             sigs = []
-            if c.get("breakout_ma20"): sigs.append("MA20突破")
-            if c.get("vol_surge"):     sigs.append(f"量爆{c.get('vol_ratio',0)}x")
-            if c.get("rsi_zone"):      sigs.append(f"RSI{c.get('rsi',0)}")
-            if c.get("ma_aligned"):    sigs.append("均線多排")
-            if c.get("five_day_high"): sigs.append("5日高")
+            if c.get("trend_up"):       sigs.append("中期趨勢向上")
+            if c.get("above_ma60"):     sigs.append("站上季線")
+            if c.get("pullback_buy"):   sigs.append(f"貼MA20({c.get('dist_ma20_pct',0):+.1f}%)")
+            if c.get("base_breakout"):  sigs.append("盤整突破")
+            if c.get("vol_accumulate"): sigs.append(f"量能沉澱{c.get('vol_ratio',0)}x")
+            if c.get("rs_20d_strong"):  sigs.append(f"20日RS{c.get('rs_20d',0):+.1f}%")
             lines.append(f"  {c['name']}({c['code']}) score={c['score']} | {' / '.join(sigs)}")
 
     user_content = "\n".join(lines) + """

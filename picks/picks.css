@@ -689,6 +689,36 @@ a:hover{text-decoration:underline; text-underline-offset:3px}
   .corr-summary{font-size:13px}
 }
 
+/* ═══ Swing book (波段在倉部位 · 2026-07-17 波段改版) ═══ */
+.swing-book{
+  border:1px solid rgba(160,96,16,0.3);
+  border-radius:10px;
+  background:#FCF7EA;
+  padding:12px 16px;
+  margin:4px 0 0;
+  font-family:'Noto Sans TC', sans-serif;
+}
+.sb-head{
+  font-family:'Noto Serif TC', serif; font-weight:700;
+  font-size:14px; color:#5A452A; margin-bottom:8px;
+}
+.sb-row{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:7px 0; border-top:1px dashed rgba(160,96,16,0.2);
+  font-size:13px;
+}
+.sb-id{min-width:110px; color:var(--ink)}
+.sb-id b{font-family:'JetBrains Mono', monospace}
+.sb-date{font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--ink3)}
+.sb-cur{font-family:'JetBrains Mono', monospace; font-weight:700; min-width:52px}
+.sb-cur.up{color:#B02A2A}    /* 台股紅漲 */
+.sb-cur.down{color:#1E7A46}  /* 綠跌 */
+.sb-plan{font-size:12px; color:var(--ink2)}
+@media (max-width:640px){
+  .sb-row{gap:8px}
+  .sb-plan{width:100%; padding-left:2px}
+}
+
 /* ═══ Glossary tooltip system (Task A) ═══
    Terms auto-annotated by inline JS via GLOSSARY dictionary. */
 [data-tip]{
