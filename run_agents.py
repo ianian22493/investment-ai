@@ -83,6 +83,10 @@ def _maybe_attach_micro_pick(outputs: dict, candidates: list, regime: dict, mark
     if not is_empty:
         return
 
+    # 倉滿日不給試單建議 — 倉位紀律優先於任何新機會（含 micro）
+    if len(pick.get("open_positions") or []) >= pick.get("max_positions", MAX_OPEN_POSITIONS):
+        return
+
     cf = outputs.get("capital_flow", {})
     trading_budget = cf.get("budget", {}).get("trading", 0)
     if trading_budget < MICRO_PICK_MIN_TRADING_BUDGET:
