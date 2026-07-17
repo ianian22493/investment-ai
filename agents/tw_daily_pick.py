@@ -202,6 +202,9 @@ def run(
                 f"MA20={c.get('ma20','?')} MA60={c.get('ma60','?')} "
                 f"score={c['score']} | {' / '.join(sigs)}{tw_mark}"
             )
+            # 真實基本面（連動 #1：寶藏真篩選器月營收/毛利率資料）
+            if c.get("fundamental_line"):
+                lines.append(f"    └ {c['fundamental_line']}")
 
     user_content = "\n".join(lines) + """
 
@@ -211,6 +214,9 @@ def run(
 - 從全部上市櫃股票中選，scanner 候選是參考不是限制
 - 你在找「行情才剛開始」的股票，不是「今天最熱」的股票 —— 位階與買點優先
 - 基本面動能（月營收/報價/訂單）必須確認，core_logic.fundamental 必填
+- 候選股下方的「└ 基本面：」行是**真實月營收/毛利率數據**（來自公開資訊觀測站，
+  非新聞推測）——優先於你從新聞的印象。月營收 YoY 為負的候選股，除非有極強的
+  轉機證據，否則不選；連續多月正成長 + 毛利率健康者優先。
 - 持有窗內（未來一個月）的事件風險必須盤點，core_logic.event_risk 必填
 - **entry_zone / stop_loss / target 必須是具體可下單的價格**
   · 停損設技術位，離進場 -7%~-10%（要放得下日常震盪）

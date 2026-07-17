@@ -277,6 +277,18 @@ def run_all():
         for c in candidates:
             if c.get("code") in _treasure:
                 c["treasure_watch"] = _treasure[c["code"]]
+        # 真實基本面注入（連動 #1）：寶藏真篩選器的全市場月營收/毛利率
+        # 資料（data/screener/history/）。波段策略要求基本面動能——
+        # 在此之前 agent 只能從新聞猜，現在每檔候選都有真數據。
+        try:
+            import fundamental_feed
+            _funds = fundamental_feed.get_fundamentals([c["code"] for c in candidates])
+            for c in candidates:
+                c["fundamental_line"] = fundamental_feed.format_for_prompt(
+                    c["code"], _funds.get(c["code"]))
+            print(f"  [fundamental] 月營收/毛利率覆蓋 {len(_funds)}/{len(candidates)} 檔")
+        except Exception as e:
+            print(f"  [WARN] fundamental_feed failed: {e}")
 
     print(agent_cache.status_summary())
     # Show how many Gemini keys are loaded — confirms key rotation is wired up
