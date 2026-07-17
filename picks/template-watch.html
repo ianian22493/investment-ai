@@ -166,6 +166,17 @@ document.getElementById('hero-sub').innerHTML =
     <span class="chip risk"><span class="dot"></span>風險 · ${f(DATA.risk_level)}</span>
   </span>`;
 
+/* 恐慌日 SOP 提示條（連動 #3）— 這天觸發了寶藏系統的恐慌日條件 */
+(function renderPanicStrip(){
+  const p = DATA.panic_sop;
+  if(!p || !p.triggered) return;
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  hero.insertAdjacentHTML('afterend', `
+    <div class="panic-strip">🚨 <b>恐慌日 SOP 條件觸發</b> — ${(p.reasons||[]).join(' · ')}。
+    Swing 停開新倉；長波買點窗口 → 寶藏股研究室「恐慌日SOP.md」照表操課。</div>`);
+})();
+
 /* Swing book (波段在倉部位) — 有部位才顯示 */
 (function renderSwingBook(){
   const ops = DATA.open_positions;

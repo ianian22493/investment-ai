@@ -295,6 +295,33 @@ if(DATA.code && DATA.code !== '—'){
   document.title = `${DATA.code} ${DATA.name || ''} · ${DATA.verdict || 'Pick'} · Yuzu`;
 }
 
+/* 恐慌日 SOP 提示條（連動 #3）— 這天觸發了寶藏系統的恐慌日條件 */
+(function renderPanicStrip(){
+  const p = DATA.panic_sop;
+  if(!p || !p.triggered) return;
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  hero.insertAdjacentHTML('afterend', `
+    <div class="panic-strip">🚨 <b>恐慌日 SOP 條件觸發</b> — ${(p.reasons||[]).join(' · ')}。
+    Swing 停開新倉；長波買點窗口 → 寶藏股研究室「恐慌日SOP.md」照表操課。</div>`);
+})();
+
+/* 寶藏雷達收斂徽章（連動 #2）— pick 命中寶藏觀察名單時顯示 */
+(function renderTreasure(){
+  const tw = DATA.treasure_watch;
+  if(!tw || !tw.code) return;
+  const card = document.querySelector('.stock-card');
+  if(!card) return;
+  card.insertAdjacentHTML('afterend', `
+    <div class="treasure-badge">
+      <span class="tb-star">⭐</span>
+      <div class="tb-body">
+        <div class="tb-title">寶藏雷達也在追蹤這檔</div>
+        <div class="tb-note">${tw.note || tw.rule || ''}</div>
+      </div>
+    </div>`);
+})();
+
 /* Swing book (波段在倉部位) — 有部位才顯示 */
 (function renderSwingBook(){
   const ops = DATA.open_positions;

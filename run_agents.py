@@ -48,6 +48,79 @@ def load_candidates() -> list:
         return []
 
 
+def evaluate_panic_sop(market_data: dict) -> dict:
+    """連動 #3：對照寶藏股研究室的恐慌日 SOP 觸發條件。
+    條件的唯一正本在 data/watchlist.json 的 panic 區塊（觀察名單機器鏡像）：
+    VIX > 25 或 台股單日跌幅 ≤ -2.5%。觸發時前端顯示 SOP 啟動 banner。
+    swing 系統在恐慌日封鎖新倉；寶藏系統（長波）反而視為買點窗口——
+    這個 banner 就是兩套系統的交班訊號。
+    """
+    rules = {"vix_above": 25, "twii_daily_drop_pct_below": -2.5}
+    path = os.path.join(DATA_DIR, "watchlist.json")
+    try:
+        if os.path.exists(path):
+            rules.update({k: v for k, v in (load_json(path).get("panic") or {}).items()
+                          if isinstance(v, (int, float))})
+    except Exception:
+        pass
+
+    indices = market_data.get("indices", {})
+    def _f(v):
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+    vix = _f(indices.get("vix", {}).get("close"))
+    taiex_chg = _f(indices.get("taiex", {}).get("change_pct"))
+
+    vix_hit = vix is not None and vix > float(rules["vix_above"])
+    drop_hit = taiex_chg is not None and taiex_chg <= float(rules["twii_daily_drop_pct_below"])
+    reasons = []
+    if vix_hit:
+        reasons.append(f"VIX {vix:.1f} > {rules['vix_above']}")
+    if drop_hit:
+        reasons.append(f"台股單日 {taiex_chg:+.2f}% ≤ {rules['twii_daily_drop_pct_below']}%")
+
+    return {
+        "triggered": bool(vix_hit or drop_hit),
+        "reasons": reasons,
+        "vix": vix,
+        "taiex_chg_pct": taiex_chg,
+        "rules": rules,
+    }
+
+
+def load_treasure_watchlist() -> dict:
+    """讀 data/watchlist.json（寶藏股研究室觀察名單的機器鏡像），
+    回傳 {台股代號: entry} 對照表。symbol 格式 "2330.TW"/"8299.TWO" → 取代號。
+    美股 symbol（無 .TW 後綴）跳過——swing pick 只選台股。
+    """
+    path = os.path.join(DATA_DIR, "watchlist.json")
+    if not os.path.exists(path):
+        return {}
+    try:
+        w = load_json(path)
+        out = {}
+        for s in w.get("stocks", []):
+            sym = str(s.get("symbol", ""))
+            if ".TW" not in sym:   # covers .TW and .TWO
+                continue
+            code = sym.split(".")[0]
+            # 同一代號可能有多條 rule（如 SOUN 有兩條）— 台股目前一檔一條，
+            # 若重複就併 note
+            if code in out:
+                out[code]["note"] += "；" + s.get("note", "")
+            else:
+                out[code] = {
+                    "name": s.get("name", ""),
+                    "rule": s.get("rule", ""),
+                    "note": s.get("note", ""),
+                }
+        return out
+    except Exception:
+        return {}
+
+
 # Trial-pick gating thresholds — surfaces at this trading budget level,
 # regardless of master's 觀望 verdict. Lowered 2026-06-18 from 0.15 → 0.05
 # because Capital Flow was locking trading at 5% during pre-payment windows
@@ -198,6 +271,12 @@ def run_all():
     candidates = load_candidates()
     if candidates:
         print(f"  [scanner] {len(candidates)} candidates loaded")
+        # 寶藏雷達標記（連動 #2）：候選股若在寶藏觀察名單，掛上標記
+        # 讓 tw_daily_pick 的 prompt 看得到（agent 可加權或警惕）
+        _treasure = load_treasure_watchlist()
+        for c in candidates:
+            if c.get("code") in _treasure:
+                c["treasure_watch"] = _treasure[c["code"]]
 
     print(agent_cache.status_summary())
     # Show how many Gemini keys are loaded — confirms key rotation is wired up
@@ -365,6 +444,19 @@ def run_all():
         except Exception as e:
             print(f"    [WARN] holdings_correlation failed: {e}")
 
+        # 寶藏雷達交叉比對（連動 #2）— swing pick 命中寶藏股研究室的
+        # 觀察名單（data/watchlist.json）時附掛收斂徽章。兩套獨立方法論
+        # （日線波段 vs 長波論述卡）同時看上同一檔 = 強訊號；反之若命中
+        # 的是「持倉警戒」條目，則是重要的反向提示。
+        try:
+            treasure = load_treasure_watchlist()
+            pick_code = (pick.get("pick") or {}).get("code", "")
+            if pick_code and pick_code in treasure:
+                pick["treasure_watch"] = {"code": pick_code, **treasure[pick_code]}
+                print(f"    → ⭐ 寶藏雷達也在追蹤 {pick_code}: {treasure[pick_code].get('note','')[:60]}")
+        except Exception as e:
+            print(f"    [WARN] treasure watchlist lookup failed: {e}")
+
         outcome_tracker.save_today_pick(pick, regime, market_data, candidates=candidates)
 
         # ── Micro-position trial — additive suggestion when system 空手
@@ -513,6 +605,11 @@ def run_all():
         except Exception as e:
             print(f"  [WARN] preserve previous tw_daily_pick: {e}")
 
+    # 恐慌日 SOP 判定（連動 #3）— 觸發時前端顯示 banner
+    panic_sop = evaluate_panic_sop(market_data)
+    if panic_sop["triggered"]:
+        print(f"  [panic-sop] 🚨 恐慌日 SOP 條件觸發：{' · '.join(panic_sop['reasons'])}")
+
     analysis = {
         "generated_at": t0.isoformat(),
         "market_snapshot": {
@@ -527,6 +624,7 @@ def run_all():
         "regime":          regime,
         "capital_flow":    outputs["capital_flow"],
         "performance":     perf_stats if perf_stats.get("available") else None,
+        "panic_sop":       panic_sop,
         "agents":          outputs,
     }
 

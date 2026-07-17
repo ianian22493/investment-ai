@@ -193,10 +193,14 @@ def run(
             if c.get("rsi_swing"):      sigs.append(f"RSI{c.get('rsi',0)}")
             if c.get("rs_20d_strong"):  sigs.append(f"20日RS{c.get('rs_20d',0):+.1f}%")
             if not c.get("not_extended", True): sigs.append("⚠乖離過大")
+            tw_mark = ""
+            if c.get("treasure_watch"):
+                twd = c["treasure_watch"]
+                tw_mark = f" ⭐寶藏雷達追蹤中（{twd.get('note','')[:40]}）"
             lines.append(
                 f"  {c['name']}({c['code']}) 收{c.get('last_close','?')} "
                 f"MA20={c.get('ma20','?')} MA60={c.get('ma60','?')} "
-                f"score={c['score']} | {' / '.join(sigs)}"
+                f"score={c['score']} | {' / '.join(sigs)}{tw_mark}"
             )
 
     user_content = "\n".join(lines) + """

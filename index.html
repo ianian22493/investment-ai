@@ -1560,6 +1560,18 @@ function renderSwingBook(pickAgent){
   </div>`;
 }
 
+// 寶藏雷達收斂徽章（連動 #2）— pick 命中寶藏觀察名單時顯示
+function renderTreasureBadge(pickAgent){
+  const tw = (pickAgent || {}).treasure_watch;
+  if(!tw || !tw.code) return '';
+  return `<div style="margin-top:12px;padding:10px 12px;background:rgba(201,168,76,0.10);border:1px solid rgba(201,168,76,0.45);border-radius:6px" data-tip="寶藏股研究室（長波系統）的觀察名單也包含這檔 — 兩套獨立方法論同時關注">
+    <div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.5px;margin-bottom:4px">
+      <span>⭐</span><span>寶藏雷達也在追蹤 ${tw.code} ${tw.name||''}</span>
+    </div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.5">${tw.note || tw.rule || ''}</div>
+  </div>`;
+}
+
 // Holdings correlation chip (Task C) — appended to pick card
 function renderCorrChip(corr){
   if(!corr || !corr.matches || !corr.matches.length) return '';
@@ -3070,7 +3082,7 @@ function renderExec(target){
         <div><div class="pick-field-label">TARGET</div><div class="pick-field-val target">${p.target||'—'}</div></div>
         <div><div class="pick-field-label">HOLD</div><div class="pick-field-val">${p.hold_days||'—'}</div></div>
       </div>
-    </div>${renderCorrChip(pick.correlation)}</div>`;
+    </div>${renderTreasureBadge(pick)}${renderCorrChip(pick.correlation)}</div>`;
   } else {
     pickHTML = renderEmptyExplain(pick, 'exec');
   }
@@ -3239,6 +3251,7 @@ function renderTrading(target){
         ${cl.catalyst?`<div style="margin-top:4px"><b style="color:var(--text3);font-size:9px;letter-spacing:1px">CATALYST · </b>${cl.catalyst}</div>`:''}
         ${cl.chips?`<div style="margin-top:4px"><b style="color:var(--text3);font-size:9px;letter-spacing:1px">CHIPS · </b>${cl.chips}</div>`:''}
       </div>`:''}
+      ${renderTreasureBadge(pick)}
       ${renderCorrChip(pick.correlation)}
     </div>`;
   } else {
@@ -4812,6 +4825,27 @@ function renderAll(){
   renderTopbar();
   renderOffice();
   renderSidebar();
+  renderPanicBanner();
+}
+
+// 恐慌日 SOP banner（連動 #3）— 觸發條件的正本在寶藏股研究室
+// data/watchlist.json panic 區塊：VIX>25 或台股單日 ≤ -2.5%。
+// swing 系統這天封鎖新倉；寶藏系統（長波）視為買點窗口。
+function renderPanicBanner(){
+  document.getElementById('panic-sop-banner')?.remove();
+  const p = DATA && DATA.panic_sop;
+  if(!p || !p.triggered) return;
+  document.body.insertAdjacentHTML('afterbegin', `
+    <div id="panic-sop-banner" style="position:sticky;top:0;z-index:99998;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+         padding:10px 18px;background:linear-gradient(90deg,#3A0A10,#59101A);border-bottom:2px solid var(--red);
+         font-family:'Noto Sans TC',sans-serif">
+      <span style="font-size:18px">🚨</span>
+      <b style="color:#FF8A96;font-size:13px;letter-spacing:1px">恐慌日 SOP 條件觸發</b>
+      <span style="color:#E8B8BE;font-size:12px">${(p.reasons||[]).join(' · ')}</span>
+      <span style="color:#C89096;font-size:11.5px;margin-left:auto">
+        Swing 停開新倉 ✋ ／ 長波買點窗口 👉 打開「寶藏股研究室 / 恐慌日SOP.md」照表操課
+      </span>
+    </div>`);
 }
 
 async function load(){

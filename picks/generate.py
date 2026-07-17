@@ -183,6 +183,10 @@ def build_pick_data(analysis: dict, market_data: dict, candidates: list, explain
         # Swing book (2026-07-17 波段改版) — 在倉部位快照
         "open_positions":    pick_agent.get("open_positions") or [],
         "max_positions":     pick_agent.get("max_positions", 3),
+        # 寶藏雷達收斂徽章（連動 #2）
+        "treasure_watch":    pick_agent.get("treasure_watch"),
+        # 恐慌日 SOP（連動 #3）
+        "panic_sop":         analysis.get("panic_sop"),
     }
 
 
@@ -206,6 +210,8 @@ def build_watch_data(analysis: dict, market_data: dict, candidates: list, explai
         # Swing book (2026-07-17 波段改版) — 在倉部位快照
         "open_positions":   pick_agent.get("open_positions") or [],
         "max_positions":    pick_agent.get("max_positions", 3),
+        # 恐慌日 SOP（連動 #3）
+        "panic_sop":        analysis.get("panic_sop"),
     }
 
 
