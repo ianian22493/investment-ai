@@ -1,7 +1,7 @@
 {
- "checked_at": "2026-07-20 16:41 +0800",
- "hit_count": 9,
- "new_hit_count": 0,
+ "checked_at": "2026-07-21 08:35 +0800",
+ "hit_count": 11,
+ "new_hit_count": 2,
  "results": [
   {
    "key": "panic|vix",
@@ -9,7 +9,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 18.5",
+   "detail": "VIX 18.6",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -17,8 +17,8 @@
    "symbol": "^TWII",
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
-   "hit": false,
-   "detail": "單日 -0.52%",
+   "hit": true,
+   "detail": "單日 -6.47%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -63,7 +63,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 6.27 vs 觸發價 6.33",
+   "detail": "現價 6.31 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -72,8 +72,17 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 6.27 vs 觸發價 5.9",
+   "detail": "現價 6.31 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
+  },
+  {
+   "key": "SPCX|below_price|130.0",
+   "symbol": "SPCX",
+   "name": "SpaceX",
+   "rule": "below_price",
+   "hit": true,
+   "detail": "現價 119.85 vs 觸發價 130.0",
+   "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
    "key": "pos|staleness",
@@ -81,7 +90,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-07-07（13 天前）",
+   "detail": "_updated=2026-07-07（14 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -117,7 +126,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 29.8%（上限 25%）",
+   "detail": "合計佔 US 部位 29.0%（上限 25%）",
    "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
   },
   {
