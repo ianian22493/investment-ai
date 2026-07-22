@@ -205,6 +205,10 @@ def save_today_pick(pick_output: dict, regime: dict, market_data: dict, candidat
         ref_close=float(ref_close) if ref_close else None,
         scanner_signals=scanner_signals,
         benchmark_ref_close=bench_ref,
+        # verdict 在 pick_output 外層（歷史 bug：曾從內層讀 → 永遠空白）
+        verdict=pick_output.get("verdict", ""),
+        # target_date = 可下單的目標交易日 = pick 頁檔名 → 月曆 join 靠這欄
+        target_date=_next_trading_day(today),
     )
     sig_str = ", ".join(scanner_signals) if scanner_signals else "無 scanner 信號"
     print(f"[outcome_tracker] 已記錄推薦：{pick.get('name')}({code}) "
@@ -424,13 +428,42 @@ def _resolve_pending_watch_log(today: str):
         print(f"[outcome_tracker] 觀望日 {WATCH_LOG_RESOLVE_DAYS} 日結算 {resolved_n} 筆")
 
 
+_HOLIDAYS_CACHE = None
+
+def _tw_holidays() -> tuple[set, set]:
+    """讀 data/tw_holidays.json → (封關日 set, 補班交易日 set)。cached。"""
+    global _HOLIDAYS_CACHE
+    if _HOLIDAYS_CACHE is not None:
+        return _HOLIDAYS_CACHE
+    import json as _json
+    hols, special = set(), set()
+    path = os.path.join(os.path.dirname(__file__), "data", "tw_holidays.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            d = _json.load(f)
+        for y in (d.get("holidays") or {}).values():
+            hols.update(y)
+        for y in (d.get("special_trading_days") or {}).values():
+            if isinstance(y, list):
+                special.update(y)
+    except Exception:
+        pass
+    _HOLIDAYS_CACHE = (hols, special)
+    return _HOLIDAYS_CACHE
+
+
 def _next_trading_day(date_str: str) -> str:
-    """取得下一個交易日（近似，未排除台灣國定假日）。"""
+    """取得下一個交易日（跳過週末 + 台股封關日；含補班交易日）。"""
+    hols, special = _tw_holidays()
     d = datetime.strptime(date_str, "%Y-%m-%d")
-    d += timedelta(days=1)
-    while d.weekday() >= 5:
+    while True:
         d += timedelta(days=1)
-    return d.strftime("%Y-%m-%d")
+        ds = d.strftime("%Y-%m-%d")
+        if ds in special:
+            return ds
+        if d.weekday() >= 5 or ds in hols:
+            continue
+        return ds
 
 
 def print_summary():

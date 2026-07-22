@@ -296,12 +296,18 @@ def build_picks_manifest() -> list[dict]:
             conn = sqlite3.connect(db_path)
             conn.row_factory = sqlite3.Row
             rows = conn.execute(
-                """SELECT date, stock_code, return_pct, success, resolved,
+                """SELECT date, target_date, stock_code, return_pct, success, resolved,
                           benchmark_return_pct, alpha_pct
                    FROM picks"""
             ).fetchall()
-            by_date = {r["date"]: r for r in rows}
             conn.close()
+            # Join key = 頁面日期。DB 的 date 是 cron 決策日、target_date 是
+            # 可下單交易日（= 頁面檔名）。7/6 檔名改版後兩者錯開一個交易日，
+            # 舊的 date join 從那天起全部 miss（月曆永遠 pending）——
+            # 優先用 target_date，老 rows（target_date 為空）退回 date。
+            by_date = {}
+            for r in rows:
+                by_date[r["target_date"] or r["date"]] = r
             for entry in manifest:
                 if entry["type"] != "pick":
                     continue

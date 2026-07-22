@@ -68,6 +68,10 @@ def init_db():
             ("benchmark_exit_close", "REAL"),    # 0050 在退場日的收盤
             ("benchmark_return_pct", "REAL"),    # 0050 同期報酬 %
             ("alpha_pct",            "REAL"),    # pick_return - benchmark_return
+            # v4 (2026-07-22) 波段目標交易日：date=cron 決策日，target_date=
+            # 可下單的隔一交易日（= pick 頁檔名）。7/6 檔名改版後兩者錯開，
+            # 月曆 manifest 的勝負 join 因此斷裂——用這欄修復。
+            ("target_date",          "TEXT"),
         ]
         for name, kind in new_columns:
             if name not in existing:
@@ -103,10 +107,15 @@ def save_pick(
     ref_close: float = None,
     scanner_signals: list = None,
     benchmark_ref_close: float = None,
+    verdict: str = None,
+    target_date: str = None,
 ) -> int:
     """Insert a new pick record. Returns row id.
 
     benchmark_ref_close: 0050 收盤在 pick 日 — 用於後續算 alpha vs 大盤。
+    verdict: 推薦出手/謹慎試單 — 在 pick_output 外層，呼叫端要自己傳
+             （歷史 bug：曾從內層 pick dict 讀，永遠空字串）。
+    target_date: 可下單的目標交易日（= pick 頁檔名日期）。
     """
     init_db()
     code = pick.get("code", "NONE")
@@ -135,8 +144,8 @@ def save_pick(
             INSERT INTO picks
               (date, stock_code, stock_name, entry_zone, stop_loss, target,
                hold_days, regime, risk_level, signals, verdict, confidence, ref_close,
-               benchmark_ref_close)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+               benchmark_ref_close, target_date)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             date,
             code,
@@ -148,10 +157,11 @@ def save_pick(
             regime.get("market_regime", ""),
             regime.get("risk_level", ""),
             json.dumps(signals, ensure_ascii=False),
-            pick.get("verdict", ""),
+            verdict if verdict is not None else pick.get("verdict", ""),
             float(pick.get("confidence", 0) or 0),
             ref_close,
             benchmark_ref_close,
+            target_date,
         ))
         return cur.lastrowid
 
