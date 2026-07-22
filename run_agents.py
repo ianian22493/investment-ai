@@ -90,6 +90,53 @@ def evaluate_panic_sop(market_data: dict) -> dict:
     }
 
 
+PANIC_COOLDOWN_TRADING_DAYS = 3   # 恐慌日後 N 個交易日內不開新倉
+PANIC_LOG_PATH = os.path.join(DATA_DIR, "panic_log.json")
+
+
+def _log_panic_day(date_str: str):
+    """把恐慌日寫進 data/panic_log.json（dedupe，保留最近 30 筆）。"""
+    log = []
+    try:
+        if os.path.exists(PANIC_LOG_PATH):
+            log = load_json(PANIC_LOG_PATH).get("panic_days", [])
+    except Exception:
+        pass
+    if date_str not in log:
+        log.append(date_str)
+        log = sorted(log)[-30:]
+        save_json({"_doc": "恐慌日紀錄（VIX>25 或台股單日≤-2.5%）。冷卻期 gate 用。",
+                   "panic_days": log}, PANIC_LOG_PATH)
+
+
+def _panic_cooldown_status(today_str: str) -> dict:
+    """恐慌冷卻期判定：最近一個恐慌日之後未滿 N 個交易日 → 冷卻中。
+    崩盤餘波的震盪期勝率低（實例：7/17 崩 6.5%，7/19 進場的長榮航太
+    3 天觸發 -8.5% 停損）。恐慌日當天由 regime gate 擋，冷卻期擋餘波。
+    """
+    try:
+        log = load_json(PANIC_LOG_PATH).get("panic_days", []) if os.path.exists(PANIC_LOG_PATH) else []
+    except Exception:
+        log = []
+    past = [d for d in log if d <= today_str]
+    if not past:
+        return {"active": False}
+    last_panic = max(past)
+    # 從恐慌日往後數交易日
+    days_since = 0
+    cur = last_panic
+    while cur < today_str and days_since <= PANIC_COOLDOWN_TRADING_DAYS + 1:
+        cur = outcome_tracker._next_trading_day(cur)
+        days_since += 1
+    active = days_since <= PANIC_COOLDOWN_TRADING_DAYS
+    return {
+        "active": active,
+        "last_panic": last_panic,
+        "trading_days_since": days_since,
+        "required": PANIC_COOLDOWN_TRADING_DAYS,
+    }
+
+
 def load_treasure_watchlist() -> dict:
     """讀 data/watchlist.json（寶藏股研究室觀察名單的機器鏡像），
     回傳 {台股代號: entry} 對照表。symbol 格式 "2330.TW"/"8299.TWO" → 取代號。
@@ -158,6 +205,10 @@ def _maybe_attach_micro_pick(outputs: dict, candidates: list, regime: dict, mark
 
     # 倉滿日不給試單建議 — 倉位紀律優先於任何新機會（含 micro）
     if len(pick.get("open_positions") or []) >= pick.get("max_positions", MAX_OPEN_POSITIONS):
+        return
+
+    # 恐慌冷卻期也不給試單 — 餘波震盪期連小倉都不碰
+    if pick.get("panic_cooldown"):
         return
 
     cf = outputs.get("capital_flow", {})
@@ -267,6 +318,18 @@ def run_all():
     regime = determine_regime(market_data)
     market_data["regime"] = regime
     print(f"  [regime] {regime['regime_summary']}")
+
+    # 恐慌日 SOP 判定（連動 #3）+ 冷卻期（改進 #2）
+    # 觸發即記入 panic_log；冷卻期內 Phase 4 不開新倉（擋崩盤餘波）。
+    panic_sop = evaluate_panic_sop(market_data)
+    if panic_sop["triggered"]:
+        print(f"  [panic-sop] 🚨 恐慌日 SOP 條件觸發：{' · '.join(panic_sop['reasons'])}")
+        _log_panic_day(t0.strftime("%Y-%m-%d"))
+    cooldown = _panic_cooldown_status(t0.strftime("%Y-%m-%d"))
+    panic_sop["cooldown"] = cooldown
+    if cooldown.get("active"):
+        print(f"  [panic-cooldown] 冷卻中：{cooldown['last_panic']} 恐慌日後第 "
+              f"{cooldown['trading_days_since']} 個交易日（需滿 {cooldown['required']}）")
 
     candidates = load_candidates()
     if candidates:
@@ -401,9 +464,8 @@ def run_all():
                 print(f"    · {op['stock_name']}({op['stock_code']}) "
                       f"{op['date']} 進 · 現況 {cur_str} · D+{op.get('hold_days_actual') or 0}")
 
-        print("  tw_daily_pick...")
-        if len(open_positions) >= MAX_OPEN_POSITIONS:
-            outputs["tw_daily_pick"] = {
+        def _rule_based_watch(summary: str, risk_flag: str, note: str) -> dict:
+            return {
                 "verdict": "空手觀望",
                 "confidence": 1.0,
                 "pick": {"name": "—", "code": "—", "entry_zone": "—",
@@ -412,15 +474,32 @@ def run_all():
                 "market_regime": regime.get("market_regime", ""),
                 "risk_appetite": "中性",
                 "suitable_for_trading": False,
-                "summary": (
-                    f"波段倉位已滿（{len(open_positions)}/{MAX_OPEN_POSITIONS} 檔在倉），"
-                    f"今日不開新倉。專注管理現有部位：依既定停損 / 目標紀律執行。"
-                ),
+                "summary": summary,
                 "core_logic": {},
-                "risk_flags": ["倉位已滿——新機會再好也不加倉，等現有部位結算"],
+                "risk_flags": [risk_flag],
                 "counter_argument": "",
-                "agent_note": "positions-full gate (rule-based, no LLM call)",
+                "agent_note": note,
             }
+
+        print("  tw_daily_pick...")
+        if len(open_positions) >= MAX_OPEN_POSITIONS:
+            outputs["tw_daily_pick"] = _rule_based_watch(
+                f"波段倉位已滿（{len(open_positions)}/{MAX_OPEN_POSITIONS} 檔在倉），"
+                f"今日不開新倉。專注管理現有部位：依既定停損 / 目標紀律執行。",
+                "倉位已滿——新機會再好也不加倉，等現有部位結算",
+                "positions-full gate (rule-based, no LLM call)",
+            )
+        elif cooldown.get("active"):
+            outputs["tw_daily_pick"] = _rule_based_watch(
+                f"恐慌冷卻期：{cooldown['last_panic']} 觸發恐慌日條件，"
+                f"目前為其後第 {cooldown['trading_days_since']} 個交易日"
+                f"（需滿 {cooldown['required']} 個交易日才恢復開倉）。"
+                f"崩盤餘波的震盪期勝率偏低，波段系統暫停開新倉；"
+                f"長波買點窗口請照寶藏股研究室「恐慌日SOP.md」另行操作。",
+                "恐慌冷卻期——餘波震盪未平，新倉勝率偏低",
+                "panic-cooldown gate (rule-based, no LLM call)",
+            )
+            outputs["tw_daily_pick"]["panic_cooldown"] = True
         else:
             outputs["tw_daily_pick"] = tw_daily_pick.run(
                 market_data, portfolio_live, outputs["market_overview"], news,
@@ -617,11 +696,7 @@ def run_all():
         except Exception as e:
             print(f"  [WARN] preserve previous tw_daily_pick: {e}")
 
-    # 恐慌日 SOP 判定（連動 #3）— 觸發時前端顯示 banner
-    panic_sop = evaluate_panic_sop(market_data)
-    if panic_sop["triggered"]:
-        print(f"  [panic-sop] 🚨 恐慌日 SOP 條件觸發：{' · '.join(panic_sop['reasons'])}")
-
+    # panic_sop 已在 regime 階段計算（含 cooldown），直接放進 analysis
     analysis = {
         "generated_at": t0.isoformat(),
         "market_snapshot": {
