@@ -268,12 +268,36 @@ def run_scanner() -> list[dict]:
         print(f"[scanner] yfinance batch download failed: {e}")
         return []
 
+    # 盤中防護：台股交易時段（09:00-13:35）手動執行時，yfinance 的當日
+    # K 棒是不完整的盤中快照——量能/高低點都會失真，信號跟著錯。
+    # 正式 cron 一律收盤後跑（16:30），不受影響。
+    now = datetime.now(TZ)
+    drop_today = (
+        now.weekday() < 5
+        and (9, 0) <= (now.hour, now.minute) < (13, 36)
+    )
+    today_str = now.strftime("%Y-%m-%d")
+    if drop_today:
+        print(f"[scanner] ⚠ 盤中執行（{now.strftime('%H:%M')}）— 剔除當日不完整 K 棒")
+
+    def _strip_incomplete(series_or_df):
+        """若最後一根 K 的日期 == 今天且處於盤中，剔除之。"""
+        if series_or_df is None or len(series_or_df) == 0:
+            return series_or_df
+        try:
+            if drop_today and series_or_df.index[-1].strftime("%Y-%m-%d") == today_str:
+                return series_or_df.iloc[:-1]
+        except Exception:
+            pass
+        return series_or_df
+
     # Extract TAIEX close for relative strength calculation
     taiex_close = None
     try:
         if isinstance(raw.columns, pd.MultiIndex) and "^TWII" in raw.columns.get_level_values(0):
             taiex_df = raw["^TWII"]
             taiex_close = taiex_df["Close"].dropna() if "Close" in taiex_df.columns else None
+            taiex_close = _strip_incomplete(taiex_close)
             if taiex_close is not None and len(taiex_close) > 0:
                 print(f"[scanner] TAIEX RS base: {float(taiex_close.iloc[-1]):.0f} "
                       f"({(float(taiex_close.iloc[-1])-float(taiex_close.iloc[-2]))/float(taiex_close.iloc[-2])*100:+.2f}%)")
@@ -293,6 +317,7 @@ def run_scanner() -> list[dict]:
             else:
                 df = raw  # fallback for edge case
 
+            df = _strip_incomplete(df)
             signals = calc_signals(df, code, taiex_close=taiex_close)
             if signals is None or signals["score"] < MIN_SCORE:
                 continue
