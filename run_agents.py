@@ -643,6 +643,13 @@ def run_all():
     out_path = os.path.join(DATA_DIR, "analysis.json")
     save_json(analysis, out_path)
 
+    # Swing scorecard（寶藏雷達連動 #4）— 季度審判日的機器可讀成績單
+    try:
+        save_json(alpha_db.build_swing_scorecard(),
+                  os.path.join(DATA_DIR, "swing_scorecard.json"))
+    except Exception as e:
+        print(f"  [WARN] swing_scorecard build failed: {e}")
+
     # Also save signal vector as standalone file for dashboard / research
     sv_path = os.path.join(DATA_DIR, "signal_vector.json")
     save_json(outputs.get("signal_fusion", {}), sv_path)

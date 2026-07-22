@@ -866,3 +866,84 @@ def get_latest_reflection() -> dict | None:
             "SELECT * FROM reflections ORDER BY date DESC LIMIT 1"
         ).fetchone()
         return dict(row) if row else None
+
+
+# ── Swing scorecard（寶藏雷達連動 #4）─────────────────────────────────────────
+
+SWING_ERA_START = "2026-07-17"   # 波段改版上線日；之前的 picks 屬短線時代
+
+
+def build_swing_scorecard() -> dict:
+    """聚合所有已結案 picks 成季度記分卡，供寶藏股研究室的
+    「季度持倉審判日」任務抓取（GitHub Pages 公開 JSON）。
+
+    分兩個時代統計（short_term vs swing），審判日最想知道的就是
+    「改版後有沒有比較好」。
+    """
+    init_db()
+
+    def _agg(rows: list) -> dict:
+        if not rows:
+            return {"total": 0}
+        rets   = [r["return_pct"] for r in rows if r["return_pct"] is not None]
+        alphas = [r["alpha_pct"] for r in rows if r["alpha_pct"] is not None]
+        holds  = [r["hold_days_actual"] for r in rows if r["hold_days_actual"]]
+        wins   = [r for r in rows if r["success"] == 1]
+        reasons = {}
+        for r in rows:
+            k = r["exit_reason"] or "unknown"
+            reasons[k] = reasons.get(k, 0) + 1
+        return {
+            "total":          len(rows),
+            "wins":           len(wins),
+            "win_rate_pct":   round(len(wins) / len(rows) * 100, 1),
+            "avg_return_pct": round(sum(rets) / len(rets), 2) if rets else None,
+            "avg_alpha_pct":  round(sum(alphas) / len(alphas), 2) if alphas else None,
+            "avg_hold_days":  round(sum(holds) / len(holds), 1) if holds else None,
+            "exit_reasons":   reasons,
+        }
+
+    def _quarter(date_str: str) -> str:
+        y, m = date_str[:4], int(date_str[5:7])
+        return f"{y}Q{(m - 1) // 3 + 1}"
+
+    with get_conn() as conn:
+        rows = [dict(r) for r in conn.execute("""
+            SELECT date, stock_code, stock_name, return_pct, alpha_pct,
+                   success, exit_reason, hold_days_actual, verdict
+            FROM picks
+            WHERE resolved=1 AND stock_code != 'NONE'
+            ORDER BY date ASC
+        """).fetchall()]
+
+    short_era = [r for r in rows if r["date"] < SWING_ERA_START]
+    swing_era = [r for r in rows if r["date"] >= SWING_ERA_START]
+
+    by_quarter = {}
+    for r in rows:
+        by_quarter.setdefault(_quarter(r["date"]), []).append(r)
+
+    return {
+        "generated_at": datetime.now(TZ).isoformat(timespec="seconds"),
+        "_doc": ("Swing pick 系統記分卡（機器可讀）。讀取者：寶藏股研究室季度審判日"
+                 "（quarterly-holdings-judgment-day 排程）。short_term=改版前(1-3日動能)、"
+                 "swing=2026-07-17 起(10-22 交易日波段)。alpha=vs 0050 同期。"),
+        "swing_era_start": SWING_ERA_START,
+        "by_era": {
+            "short_term": _agg(short_era),
+            "swing":      _agg(swing_era),
+        },
+        "by_quarter": {q: _agg(rs) for q, rs in sorted(by_quarter.items())},
+        "open_positions": [
+            {"code": p["stock_code"], "name": p["stock_name"], "entry_date": p["date"],
+             "current_return_pct": p.get("current_return_pct"),
+             "days_held": p.get("hold_days_actual")}
+            for p in get_open_positions()
+        ],
+        "recent_resolved": [
+            {"date": r["date"], "code": r["stock_code"], "name": r["stock_name"],
+             "return_pct": r["return_pct"], "alpha_pct": r["alpha_pct"],
+             "exit": r["exit_reason"], "days": r["hold_days_actual"]}
+            for r in rows[-10:]
+        ],
+    }
