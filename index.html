@@ -1543,13 +1543,19 @@ function renderSwingBook(pickAgent){
   if(!ops || !ops.length) return '';
   const maxP = (pickAgent || {}).max_positions || 3;
   const rows = ops.map(p => {
-    const cur = (typeof p.current_return_pct === 'number')
-      ? `${p.current_return_pct >= 0 ? '+' : ''}${p.current_return_pct.toFixed(1)}%` : '—';
-    const curColor = (typeof p.current_return_pct === 'number')
-      ? (p.current_return_pct >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--text3)';
+    const waiting = p.waiting_fill;
+    const cur = waiting ? '待觸價'
+      : (typeof p.current_return_pct === 'number')
+        ? `${p.current_return_pct >= 0 ? '+' : ''}${p.current_return_pct.toFixed(1)}%` : '—';
+    const curColor = waiting ? 'var(--yellow)'
+      : (typeof p.current_return_pct === 'number')
+        ? (p.current_return_pct >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--text3)';
+    const dateNote = waiting
+      ? `進場區 ${p.entry_zone||'—'} 未觸及`
+      : `${(p.date||'').slice(5)} 進 · D+${p.hold_days_actual||0}`;
     return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--border);font-size:12px;flex-wrap:wrap">
       <span style="min-width:105px"><b style="font-family:'JetBrains Mono',monospace;color:var(--text)">${p.stock_code}</b> <span style="color:var(--text2)">${p.stock_name||''}</span></span>
-      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text3)">${(p.date||'').slice(5)} 進 · D+${p.hold_days_actual||0}</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text3)">${dateNote}</span>
       <span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${curColor}">${cur}</span>
       <span style="font-size:11px;color:var(--text3)">停損 ${p.stop_loss||'—'} · 目標 ${p.target||'—'}</span>
     </div>`;

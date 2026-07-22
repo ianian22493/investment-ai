@@ -139,6 +139,24 @@ def _parse_first_number(text: str):
     return float(m.group()) if m else None
 
 
+ENTRY_WINDOW_DAYS = 3   # 進場窗：pick 後 3 個交易日內要觸價，否則 not_filled
+
+
+def _parse_entry_zone(text: str) -> tuple[float, float] | None:
+    """解析 entry_zone 字串成 (low, high) 價格區間。
+    "138.5-142.0" → (138.5, 142.0) | "144" → (142.6, 145.4)（±1%）
+    解析失敗回 None（呼叫端 fallback 舊行為：pick 日收盤視為進場）。
+    """
+    nums = re.findall(r"\d+(?:\.\d+)?", str(text or ""))
+    if not nums:
+        return None
+    vals = [float(n) for n in nums[:2]]
+    if len(vals) == 1:
+        return (round(vals[0] * 0.99, 2), round(vals[0] * 1.01, 2))
+    lo, hi = min(vals), max(vals)
+    return (lo, hi)
+
+
 def save_today_pick(pick_output: dict, regime: dict, market_data: dict, candidates: list = None):
     """
     在 run_agents.py 盤後執行完 tw_daily_pick 後呼叫。
@@ -241,25 +259,74 @@ def _walk_hold_period(
     target: float | None,
     hold_days_max: int,
     today: str,
+    entry_zone: tuple[float, float] | None = None,
 ) -> dict | None:
-    """遍歷推薦日之後 [1, hold_days_max] 個交易日的 OHLC，回傳結算用統計。
-    若資料不足（連次日 OHLC 都沒有），回 None。
-    """
-    # AI 偶爾會在 stop/target 寫出跟 ref 完全不同數量級的值（幻覺）。
-    # 這裡 sanity check 後，若不合理就退到 time-based 結算（不假裝觸停損 / 目標）。
-    stop_loss, target = _sanitize_stop_target(ref_close, stop_loss, target)
+    """遍歷推薦日之後的 OHLC，回傳結算用統計。若資料不足回 None。
 
+    v5 進場成交追蹤：entry_zone 有值時，先在前 ENTRY_WINDOW_DAYS 個交易日
+    找「價格是否觸及進場區」：
+      - 觸價 → 以成交價（zone 中點 clip 到當日區間）為基準，從成交日起算
+        停損/目標/持有窗
+      - 進場窗過完沒觸價 → exit_reason='not_filled'（結案但不計損益）
+      - 進場窗還沒過完 → exit_reason='pending_fill'（待觸價）
+    entry_zone=None（解析失敗/舊資料）→ 沿用舊行為：pick 日收盤視為進場。
+    """
     start = _next_trading_day(pick_date)
-    end = _n_trading_days_after(pick_date, hold_days_max)
-    check_until = min(end, today)
+    # 進場窗 + 持有窗都要涵蓋
+    end_max = _n_trading_days_after(pick_date, ENTRY_WINDOW_DAYS + hold_days_max)
+    check_until = min(end_max, today)
     rows = _fetch_ohlc_range(code, start, check_until)
     if not rows:
         return None
 
-    max_high = max((r["high"] for r in rows), default=ref_close)
-    min_low  = min((r["low"]  for r in rows), default=ref_close)
-    max_close = max((r["close"] for r in rows), default=ref_close)
-    min_close = min((r["close"] for r in rows), default=ref_close)
+    # ── Phase A: 進場成交判定 ────────────────────────────────────────────
+    fill_idx = 0
+    fill_price = ref_close
+    fill_date = pick_date
+    if entry_zone:
+        lo, hi = entry_zone
+        fill_idx = None
+        for i, r in enumerate(rows[:ENTRY_WINDOW_DAYS]):
+            if r["low"] <= hi and r["high"] >= lo:   # 當日區間與進場區有交集
+                fill_idx = i
+                mid = (lo + hi) / 2
+                fill_price = round(min(max(mid, r["low"]), r["high"]), 2)
+                fill_date = r["date"]
+                break
+        if fill_idx is None:
+            if len(rows) >= ENTRY_WINDOW_DAYS:
+                # 進場窗過完，價格從未進區 — not_filled 結案
+                return {
+                    "exit_close": None, "exit_date": rows[ENTRY_WINDOW_DAYS-1]["date"],
+                    "exit_reason": "not_filled",
+                    "max_close": None, "min_close": None,
+                    "max_high": None, "min_low": None,
+                    "hit_target": 0, "hit_stop": 0, "hold_days_actual": 0,
+                    "pending": False,
+                    "fill_date": None, "fill_price": None,
+                }
+            # 進場窗還沒過完 — 待觸價
+            return {
+                "exit_close": None, "exit_date": rows[-1]["date"],
+                "exit_reason": "pending_fill",
+                "max_close": None, "min_close": None,
+                "max_high": None, "min_low": None,
+                "hit_target": 0, "hit_stop": 0, "hold_days_actual": 0,
+                "pending": True,
+                "fill_date": None, "fill_price": None,
+            }
+
+    # ── Phase B: 停損/目標/持有窗（從成交日起算）──────────────────────────
+    # sanity check 以成交價為基準（AI 偶爾對 stop/target 有數量級幻覺）
+    stop_loss, target = _sanitize_stop_target(fill_price, stop_loss, target)
+
+    walk_rows = rows[fill_idx : fill_idx + hold_days_max]
+    window_complete = len(rows) >= fill_idx + hold_days_max
+
+    max_high = max((r["high"] for r in walk_rows), default=fill_price)
+    min_low  = min((r["low"]  for r in walk_rows), default=fill_price)
+    max_close = max((r["close"] for r in walk_rows), default=fill_price)
+    min_close = min((r["close"] for r in walk_rows), default=fill_price)
 
     exit_close = None
     exit_date  = None
@@ -267,7 +334,7 @@ def _walk_hold_period(
     hit_target = 0
     hit_stop   = 0
 
-    for r in rows:
+    for r in walk_rows:
         # 同日同時觸停損 & 目標 — 保守假設先觸停損（更悲觀）
         if stop_loss is not None and r["low"] <= stop_loss:
             exit_close = stop_loss     # 假設於停損價成交
@@ -285,20 +352,20 @@ def _walk_hold_period(
     pending = False
     if exit_reason is None:
         # 沒觸停損也沒到目標
-        if rows[-1]["date"] >= end or check_until >= end:
+        if window_complete:
             # 持有窗已過完 — 用最後收盤結算
-            exit_close = rows[-1]["close"]
-            exit_date  = rows[-1]["date"]
+            exit_close = walk_rows[-1]["close"]
+            exit_date  = walk_rows[-1]["date"]
             exit_reason = "time"
         else:
             # 持有窗還沒結束 — 標 pending，下次再看
-            exit_close = rows[-1]["close"]
-            exit_date  = rows[-1]["date"]
+            exit_close = walk_rows[-1]["close"]
+            exit_date  = walk_rows[-1]["date"]
             exit_reason = "pending"
             pending = True
 
-    hold_days_actual = len(rows) if exit_reason in ("time", "pending") else (
-        next((i + 1 for i, r in enumerate(rows) if r["date"] == exit_date), len(rows))
+    hold_days_actual = len(walk_rows) if exit_reason in ("time", "pending") else (
+        next((i + 1 for i, r in enumerate(walk_rows) if r["date"] == exit_date), len(walk_rows))
     )
 
     return {
@@ -313,6 +380,8 @@ def _walk_hold_period(
         "hit_stop":    hit_stop,
         "hold_days_actual": hold_days_actual,
         "pending":     pending,
+        "fill_date":   fill_date,
+        "fill_price":  fill_price,
     }
 
 
@@ -344,8 +413,10 @@ def resolve_pending(today_market_data: dict = None):
         stop_loss = _parse_first_number(p.get("stop_loss"))
         target    = _parse_first_number(p.get("target"))
         hold_max  = _parse_hold_days_max(p.get("hold_days"))
+        entry_zone = _parse_entry_zone(p.get("entry_zone"))
 
-        result = _walk_hold_period(code, pick_date, ref, stop_loss, target, hold_max, today)
+        result = _walk_hold_period(code, pick_date, ref, stop_loss, target,
+                                   hold_max, today, entry_zone=entry_zone)
         if result is None:
             print(f"[outcome_tracker] {pick_date} {code} 持有期間 OHLC 暫不可得，下次再試")
             continue
@@ -367,20 +438,33 @@ def resolve_pending(today_market_data: dict = None):
             hold_days_actual=result["hold_days_actual"],
             pending=result["pending"],
             benchmark_exit_close=bench_exit,
+            entry_fill_date=result.get("fill_date"),
+            entry_fill_price=result.get("fill_price"),
         )
 
-        if result["pending"]:
-            ret = (result["exit_close"] - ref) / ref * 100
-            mg  = (result["max_close"] - ref) / ref * 100
-            md  = (result["min_close"] - ref) / ref * 100
-            print(f"[outcome_tracker] ◯ pending {pick_date} {code}: "
+        basis = result.get("fill_price") or ref
+        if result["exit_reason"] == "not_filled":
+            print(f"[outcome_tracker] [SKIP] not_filled {pick_date} {code}: "
+                  f"進場區 {p.get('entry_zone')} 於 {ENTRY_WINDOW_DAYS} 個交易日內未觸價，不計損益")
+            resolved_count += 1
+        elif result["exit_reason"] == "pending_fill":
+            print(f"[outcome_tracker] [WAIT] 待觸價 {pick_date} {code}: "
+                  f"進場區 {p.get('entry_zone')} 尚未觸及（窗剩餘中）")
+            pending_count += 1
+        elif result["pending"]:
+            ret = (result["exit_close"] - basis) / basis * 100
+            mg  = (result["max_close"] - basis) / basis * 100
+            md  = (result["min_close"] - basis) / basis * 100
+            fill_note = f" 成交@{result['fill_price']}({result['fill_date']})" if entry_zone else ""
+            print(f"[outcome_tracker] [HOLD] pending {pick_date} {code}:{fill_note} "
                   f"當前 {ret:+.2f}% (max {mg:+.2f}% / dd {md:+.2f}%) "
                   f"D+{result['hold_days_actual']}/{hold_max}")
             pending_count += 1
         else:
-            ret = (result["exit_close"] - ref) / ref * 100
-            mark = "✓" if ret > 0 else "✗"
-            print(f"[outcome_tracker] {mark} {pick_date} {code}: "
+            ret = (result["exit_close"] - basis) / basis * 100
+            mark = "[WIN]" if ret > 0 else "[LOSS]"
+            fill_note = f" 成交@{result['fill_price']}({result['fill_date']})" if entry_zone else ""
+            print(f"[outcome_tracker] {mark} {pick_date} {code}:{fill_note} "
                   f"{result['exit_reason']} @ {result['exit_close']} ({ret:+.2f}%) "
                   f"D+{result['hold_days_actual']}")
             resolved_count += 1

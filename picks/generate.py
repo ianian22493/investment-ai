@@ -297,7 +297,7 @@ def build_picks_manifest() -> list[dict]:
             conn.row_factory = sqlite3.Row
             rows = conn.execute(
                 """SELECT date, target_date, stock_code, return_pct, success, resolved,
-                          benchmark_return_pct, alpha_pct
+                          benchmark_return_pct, alpha_pct, exit_reason
                    FROM picks"""
             ).fetchall()
             conn.close()
@@ -314,7 +314,10 @@ def build_picks_manifest() -> list[dict]:
                 r = by_date.get(entry["date"])
                 if not r:
                     continue
-                if r["resolved"] == 1 and r["return_pct"] is not None:
+                if r["resolved"] == 1 and r["exit_reason"] == "not_filled":
+                    # v5：進場窗未觸價 — 不算勝負，月曆標「未成交」
+                    entry["result"] = "not_filled"
+                elif r["resolved"] == 1 and r["return_pct"] is not None:
                     entry["result"] = "win" if r["return_pct"] > 0 else "loss"
                     sign = "+" if r["return_pct"] > 0 else ""
                     entry["pnl"] = f"{sign}{r['return_pct']:.1f}%"

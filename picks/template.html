@@ -331,14 +331,17 @@ if(DATA.code && DATA.code !== '—'){
   if(!sec || !box) return;
   const maxP = DATA.max_positions || 3;
   const rows = ops.map(p => {
-    const cur = (typeof p.current_return_pct === 'number')
-      ? `${p.current_return_pct >= 0 ? '+' : ''}${p.current_return_pct.toFixed(1)}%` : '—';
-    const curCls = (typeof p.current_return_pct === 'number')
-      ? (p.current_return_pct >= 0 ? 'up' : 'down') : '';
+    const waiting = p.waiting_fill;
+    const cur = waiting ? '待觸價'
+      : (typeof p.current_return_pct === 'number')
+        ? `${p.current_return_pct >= 0 ? '+' : ''}${p.current_return_pct.toFixed(1)}%` : '—';
+    const curCls = waiting ? ''
+      : (typeof p.current_return_pct === 'number')
+        ? (p.current_return_pct >= 0 ? 'up' : 'down') : '';
     return `
     <div class="sb-row">
       <span class="sb-id"><b>${p.stock_code}</b> ${p.stock_name || ''}</span>
-      <span class="sb-date">${(p.date||'').slice(5)} 進</span>
+      <span class="sb-date">${waiting ? ('進場區 ' + (p.entry_zone||'—')) : (p.date||'').slice(5) + ' 進'}</span>
       <span class="sb-cur ${curCls}">${cur}</span>
       <span class="sb-plan">停損 ${p.stop_loss || '—'} · 目標 ${p.target || '—'} · D+${p.hold_days_actual || 0}</span>
     </div>`;

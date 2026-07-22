@@ -389,6 +389,7 @@ function renderCalendar(){
     if(p.type === 'watch'){ dotClass = 'watch'; }
     else if(p.result === 'win'){ dotClass='win'; resHTML = `<div class="cal-result win">${escapeHTML(p.pnl||'WIN')}</div>`; }
     else if(p.result === 'loss'){ dotClass='loss'; resHTML = `<div class="cal-result loss">${escapeHTML(p.pnl||'LOSS')}</div>`; }
+    else if(p.result === 'not_filled'){ dotClass='watch'; resHTML = `<div class="cal-result" style="color:var(--ink3)">未成交</div>`; }
     else { dotClass='watch'; resHTML = `<div class="cal-result" style="color:var(--ink3)">…</div>`; }
 
     const codeLine = p.code ? `<div class="cal-code">${escapeHTML(p.code)}</div>` : '<div class="cal-code">觀望</div>';
@@ -442,6 +443,7 @@ function wireTips(){
       if(res === 'win'){ resTxt = pnl || '獲利'; resCls='win'; }
       else if(res === 'loss'){ resTxt = pnl || '停損'; resCls='loss'; }
       else if(res === 'pending'){ resTxt = '進行中'; resCls='watch'; }
+      else if(res === 'not_filled'){ resTxt = '未成交'; resCls='watch'; }
       tip.innerHTML = code
         ? `${code} ${name} · <span class="tip-res ${resCls}">${resTxt}</span>`
         : `<span class="tip-res watch">今日觀望</span>`;

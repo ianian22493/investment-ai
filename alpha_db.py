@@ -72,6 +72,11 @@ def init_db():
             # 可下單的隔一交易日（= pick 頁檔名）。7/6 檔名改版後兩者錯開，
             # 月曆 manifest 的勝負 join 因此斷裂——用這欄修復。
             ("target_date",          "TEXT"),
+            # v5 (2026-07-22) 進場成交追蹤：pick 後 3 個交易日內價格要進
+            # entry_zone 才算真的開倉。沒觸價 → exit_reason='not_filled'，
+            # 不計入勝率（修正「假設 pick 日收盤一定買到」的樂觀偏誤）。
+            ("entry_fill_date",      "TEXT"),    # 實際觸價成交日
+            ("entry_fill_price",     "REAL"),    # 假設成交價（zone 中點 clip 到當日區間）
         ]
         for name, kind in new_columns:
             if name not in existing:
@@ -209,12 +214,18 @@ def resolve_pick_full(
     hold_days_actual: int,
     pending: bool = False,
     benchmark_exit_close: float = None,
+    entry_fill_date: str = None,
+    entry_fill_price: float = None,
 ):
     """Resolve a pick with full hold-period stats.
     pending=True writes interim stats (max/min so far) but keeps resolved=0
     so the next cron can update again. Used while the hold window is still open.
 
     benchmark_exit_close: 0050 收盤在 exit_date — 用於算 vs 大盤的 alpha。
+    entry_fill_price: 進場成交價（v5）——有值時損益以它為基準而非 ref_close。
+                      alpha 的 0050 基準仍取 pick 日（相差 1-3 日，可接受誤差）。
+    exit_reason='not_filled'：進場窗內未觸價 → exit_close=None →
+                      return_pct/success 皆 NULL，不進勝率統計。
     """
     with get_conn() as conn:
         row = conn.execute(
@@ -222,7 +233,7 @@ def resolve_pick_full(
         ).fetchone()
         if not row:
             return
-        ref = row["ref_close"]
+        ref = entry_fill_price or row["ref_close"]
         bench_ref = row["benchmark_ref_close"]
 
         return_pct = None
@@ -259,6 +270,8 @@ def resolve_pick_full(
               benchmark_exit_close=COALESCE(?, benchmark_exit_close),
               benchmark_return_pct=COALESCE(?, benchmark_return_pct),
               alpha_pct=COALESCE(?, alpha_pct),
+              entry_fill_date=COALESCE(?, entry_fill_date),
+              entry_fill_price=COALESCE(?, entry_fill_price),
               resolved=?, resolved_at=?
             WHERE id=?
         """, (
@@ -269,6 +282,7 @@ def resolve_pick_full(
             hit_target, hit_stop, hold_days_actual,
             return_pct, success,
             benchmark_exit_close, benchmark_return_pct, alpha_pct,
+            entry_fill_date, entry_fill_price,
             0 if pending else 1, datetime.now(TZ).isoformat(),
             pick_id,
         ))
@@ -295,9 +309,10 @@ def get_open_positions() -> list[dict]:
     init_db()
     with get_conn() as conn:
         rows = conn.execute("""
-            SELECT id, date, stock_code, stock_name, entry_zone, stop_loss,
+            SELECT id, date, target_date, stock_code, stock_name, entry_zone, stop_loss,
                    target, hold_days, ref_close, return_pct, max_gain_pct,
-                   max_drawdown_pct, hold_days_actual, verdict, confidence
+                   max_drawdown_pct, hold_days_actual, verdict, confidence,
+                   exit_reason, entry_fill_date, entry_fill_price
             FROM picks
             WHERE resolved=0 AND stock_code != 'NONE'
             ORDER BY date ASC
@@ -306,6 +321,8 @@ def get_open_positions() -> list[dict]:
         for r in rows:
             d = dict(r)
             d["current_return_pct"] = d.pop("return_pct", None)
+            # v5：進場窗內還沒觸價的部位標 waiting_fill，前端顯示「待觸價」
+            d["waiting_fill"] = (d.get("exit_reason") == "pending_fill")
             out.append(d)
         return out
 
@@ -895,18 +912,24 @@ def build_swing_scorecard() -> dict:
     def _agg(rows: list) -> dict:
         if not rows:
             return {"total": 0}
-        rets   = [r["return_pct"] for r in rows if r["return_pct"] is not None]
-        alphas = [r["alpha_pct"] for r in rows if r["alpha_pct"] is not None]
-        holds  = [r["hold_days_actual"] for r in rows if r["hold_days_actual"]]
-        wins   = [r for r in rows if r["success"] == 1]
+        # not_filled = 進場窗未觸價 → 排除在勝率/報酬統計外（v5），
+        # 但單獨列 count（「開單但買不到」也是策略品質的訊號）
+        not_filled = [r for r in rows if r["exit_reason"] == "not_filled"]
+        traded = [r for r in rows if r["exit_reason"] != "not_filled"]
+        rets   = [r["return_pct"] for r in traded if r["return_pct"] is not None]
+        alphas = [r["alpha_pct"] for r in traded if r["alpha_pct"] is not None]
+        holds  = [r["hold_days_actual"] for r in traded if r["hold_days_actual"]]
+        wins   = [r for r in traded if r["success"] == 1]
         reasons = {}
         for r in rows:
             k = r["exit_reason"] or "unknown"
             reasons[k] = reasons.get(k, 0) + 1
         return {
             "total":          len(rows),
+            "traded":         len(traded),
+            "not_filled":     len(not_filled),
             "wins":           len(wins),
-            "win_rate_pct":   round(len(wins) / len(rows) * 100, 1),
+            "win_rate_pct":   round(len(wins) / len(traded) * 100, 1) if traded else None,
             "avg_return_pct": round(sum(rets) / len(rets), 2) if rets else None,
             "avg_alpha_pct":  round(sum(alphas) / len(alphas), 2) if alphas else None,
             "avg_hold_days":  round(sum(holds) / len(holds), 1) if holds else None,
