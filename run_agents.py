@@ -18,6 +18,7 @@ from agents import (
     trading_master, portfolio_master, wealth_master,
     master_agent, tw_daily_pick, holdings_correlation,
 )
+import position_sizer
 from agents import reflection as reflection_agent
 from agents.regime_engine import determine_regime
 from agents.capital_flow import compute as compute_capital_flow
@@ -547,6 +548,27 @@ def run_all():
                 print(f"    → ⭐ 寶藏雷達也在追蹤 {pick_code}: {treasure[pick_code].get('note','')[:60]}")
         except Exception as e:
             print(f"    [WARN] treasure watchlist lookup failed: {e}")
+
+        # 部位大小建議（2026-07-24）— 風險基準法，補「買多少」的洞。
+        # 交易預算 = capital_flow trading% × 現金存款。剩餘空倉數決定均分上限
+        # （已在倉的部位不佔新倉的預算切分）。
+        try:
+            pk = pick.get("pick") or {}
+            if pk.get("code") and pk.get("code") not in ("—", "NONE", ""):
+                trading_pct = outputs["capital_flow"].get("budget", {}).get("trading", 0)
+                cash = portfolio.get("personal_finance", {}).get("cash_savings_twd", 0)
+                trading_budget_twd = trading_pct * cash
+                slots_left = max(1, MAX_OPEN_POSITIONS - len(open_positions))
+                pick["position_sizing"] = position_sizer.compute(
+                    pk.get("entry_zone"), pk.get("stop_loss"),
+                    trading_budget_twd, slots_left,
+                )
+                _ps = pick["position_sizing"]
+                if _ps.get("available"):
+                    print(f"    → 部位建議: {_ps['lots_desc']} "
+                          f"(預算 {_ps['size_pct_of_budget']}% · 停損虧 {_ps['max_loss_pct_of_budget']}%)")
+        except Exception as e:
+            print(f"    [WARN] position_sizer failed: {e}")
 
         outcome_tracker.save_today_pick(pick, regime, market_data, candidates=candidates)
 

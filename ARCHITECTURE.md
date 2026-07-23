@@ -98,6 +98,7 @@ cron-job.org 觸發 workflow_dispatch
 | `outcome_tracker.py` | 結算引擎：進場窗觸價 → 停損/目標/時間窗；watch log 10 日結算 |
 | `alpha_db.py` | SQLite（data/alpha.db）：picks/watch_log/reflections + scorecard builder |
 | `fundamental_feed.py` | 寶藏 screener 月營收/毛利率 → 候選股 prompt 注入 |
+| `position_sizer.py` | 部位大小（風險基準法，2026-07-24）：每筆觸停損最多虧交易預算 RISK_CEIL_PCT(2.5%)，受「均分預算=交易預算÷剩餘空倉」上限約束。交易預算 = capital_flow trading% × 現金。純 Python |
 | `tw_sector_lookup.py` | FinMind 全市場產業對照 → `data/sector_map_auto.json`（7 天 TTL） |
 | `agent_cache.py` / `prompt_cache.py` | 兩層快取（agent TTL 天 / prompt sha256 小時）；wealth cluster 綁 portfolio hash |
 | `picks/generate.py` | pick 頁 templater + 月曆 manifest + latest.json；`_next_trading_day` 假日感知 |

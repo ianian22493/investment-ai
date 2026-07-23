@@ -720,6 +720,37 @@ a:hover{text-decoration:underline; text-underline-offset:3px}
 }
 .treasure-badge .tb-note{font-size:12.5px; color:var(--ink2); line-height:1.5}
 
+/* ═══ 部位大小建議（2026-07-24 風險基準法）═══ */
+.sizing-card{
+  border:1px solid rgba(30,122,70,0.35);
+  border-left:4px solid #1E7A46;
+  border-radius:0 10px 10px 0;
+  background:#EDF6EF;
+  padding:14px 16px;
+  margin:2px 0 0;
+  font-family:'Noto Sans TC', sans-serif;
+}
+.sz-head{
+  font-family:'Noto Serif TC', serif; font-weight:700;
+  font-size:14px; color:#1E5A38; margin-bottom:10px;
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+}
+.sz-badge{
+  font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:700;
+  letter-spacing:1px; padding:2px 8px; border-radius:3px;
+}
+.sz-badge.even{background:rgba(30,122,70,0.15); color:#1E5A38}
+.sz-badge.risk{background:#B02A2A; color:#FFF}
+.sz-main{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:8px}
+.sz-lots{font-family:'Noto Serif TC', serif; font-size:26px; font-weight:900; color:var(--ink)}
+.sz-meta{display:flex; gap:12px; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink2)}
+.sz-risk{
+  font-size:13px; color:var(--ink); padding:8px 10px;
+  background:rgba(176,42,42,0.06); border-radius:5px; margin-bottom:8px;
+}
+.sz-risk b{color:#B02A2A; font-family:'JetBrains Mono', monospace}
+.sz-note{font-size:11px; color:var(--ink3); line-height:1.55}
+
 /* ═══ Swing book (波段在倉部位 · 2026-07-17 波段改版) ═══ */
 .swing-book{
   border:1px solid rgba(160,96,16,0.3);

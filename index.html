@@ -1578,6 +1578,21 @@ function renderTreasureBadge(pickAgent){
   </div>`;
 }
 
+// 部位大小建議（2026-07-24 風險基準法）— 附在 pick 卡下方
+function renderSizingChip(pickAgent){
+  const s = (pickAgent || {}).position_sizing;
+  if(!s || !s.available) return '';
+  const bindColor = s.binding === '風險上限' ? 'var(--red)' : 'var(--green)';
+  return `<div style="margin-top:12px;padding:11px 13px;background:var(--bg3);border-left:2px solid var(--green);border-radius:0 6px 6px 0" data-tip="風險基準法：每筆最多虧交易預算 ${s.risk_ceil_pct}%，停損越寬部位自動越小。機械式建議，實際自行判斷">
+    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--green);margin-bottom:6px">💰 部位大小 · <span style="color:${bindColor}">${s.binding}</span></div>
+    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+      <span style="font-size:20px;font-weight:800;color:var(--text)">${s.lots_desc}</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)">≈NT$ ${Number(s.size_twd).toLocaleString()} · 預算 ${s.size_pct_of_budget}%</span>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-top:5px">觸停損最多虧 <b style="color:var(--red)">NT$ ${Number(s.max_loss_twd).toLocaleString()}</b>（預算 ${s.max_loss_pct_of_budget}% · 停損距 ${s.stop_distance_pct}%）</div>
+  </div>`;
+}
+
 // Holdings correlation chip (Task C) — appended to pick card
 function renderCorrChip(corr){
   if(!corr || !corr.matches || !corr.matches.length) return '';
@@ -3088,7 +3103,7 @@ function renderExec(target){
         <div><div class="pick-field-label">TARGET</div><div class="pick-field-val target">${p.target||'—'}</div></div>
         <div><div class="pick-field-label">HOLD</div><div class="pick-field-val">${p.hold_days||'—'}</div></div>
       </div>
-    </div>${renderTreasureBadge(pick)}${renderCorrChip(pick.correlation)}</div>`;
+    </div>${renderSizingChip(pick)}${renderTreasureBadge(pick)}${renderCorrChip(pick.correlation)}</div>`;
   } else {
     pickHTML = renderEmptyExplain(pick, 'exec');
   }
@@ -3257,6 +3272,7 @@ function renderTrading(target){
         ${cl.catalyst?`<div style="margin-top:4px"><b style="color:var(--text3);font-size:9px;letter-spacing:1px">CATALYST · </b>${cl.catalyst}</div>`:''}
         ${cl.chips?`<div style="margin-top:4px"><b style="color:var(--text3);font-size:9px;letter-spacing:1px">CHIPS · </b>${cl.chips}</div>`:''}
       </div>`:''}
+      ${renderSizingChip(pick)}
       ${renderTreasureBadge(pick)}
       ${renderCorrChip(pick.correlation)}
     </div>`;

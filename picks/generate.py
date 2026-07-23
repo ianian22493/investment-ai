@@ -187,6 +187,8 @@ def build_pick_data(analysis: dict, market_data: dict, candidates: list, explain
         "treasure_watch":    pick_agent.get("treasure_watch"),
         # 恐慌日 SOP（連動 #3）
         "panic_sop":         analysis.get("panic_sop"),
+        # 部位大小建議（2026-07-24 風險基準法）
+        "position_sizing":   pick_agent.get("position_sizing"),
     }
 
 

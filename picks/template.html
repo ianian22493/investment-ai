@@ -91,6 +91,11 @@
     </div>
   </section>
 
+  <!-- 3B · POSITION SIZING（買多少 · 有資料才顯示）-->
+  <section class="sec" id="sizing-sec" style="border-top:none; padding-top:0; display:none">
+    <div class="sizing-card" id="sizing-card"></div>
+  </section>
+
   <!-- 4 · CHART -->
   <section class="sec">
     <div class="sec-label"><span class="sec-no">04</span> 走勢圖 · CHART</div>
@@ -307,6 +312,37 @@ if(DATA.code && DATA.code !== '—'){
 })();
 
 /* 寶藏雷達收斂徽章（連動 #2）— pick 命中寶藏觀察名單時顯示 */
+/* 部位大小建議（2026-07-24 風險基準法）— 有可算資料才顯示 */
+(function renderSizing(){
+  const s = DATA.position_sizing;
+  const sec = document.getElementById('sizing-sec');
+  const card = document.getElementById('sizing-card');
+  if(!sec || !card || !s) return;
+  if(!s.available){
+    // 倉滿/風控封鎖時交易預算為 0，不顯示（避免誤導）
+    return;
+  }
+  const bindingCls = s.binding === '風險上限' ? 'risk' : 'even';
+  card.innerHTML = `
+    <div class="sz-head">💰 部位大小建議 · POSITION SIZE
+      <span class="sz-badge ${bindingCls}">${s.binding}</span>
+    </div>
+    <div class="sz-main">
+      <div class="sz-lots">${s.lots_desc}</div>
+      <div class="sz-meta">
+        <span>約 NT$ ${Number(s.size_twd).toLocaleString()}</span>
+        <span>佔交易預算 ${s.size_pct_of_budget}%</span>
+      </div>
+    </div>
+    <div class="sz-risk">
+      觸停損最多虧 <b>NT$ ${Number(s.max_loss_twd).toLocaleString()}</b>
+      （交易預算的 ${s.max_loss_pct_of_budget}%，停損距進場 ${s.stop_distance_pct}%）
+    </div>
+    <div class="sz-note">風險基準法：每筆最多虧交易預算 ${s.risk_ceil_pct}%，停損越寬部位自動越小。
+      此為機械式建議，實際下單張數請自行判斷。</div>`;
+  sec.style.display = 'block';
+})();
+
 (function renderTreasure(){
   const tw = DATA.treasure_watch;
   if(!tw || !tw.code) return;
