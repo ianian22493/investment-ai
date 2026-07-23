@@ -22,7 +22,7 @@ LLM pipeline（Gemini 2.5 Flash），產出 dashboard + 每日決策日誌頁，
 | 持有期 | 10-22 個交易日 |
 | 目標 / 停損 | +10~20% / -7~-10%（技術位，放得下日常震盪） |
 | 風報比門檻 | ≥ 1:1.5 |
-| 同時在倉上限 | 3 檔（`run_agents.MAX_OPEN_POSITIONS`） |
+| 同時在倉上限 | 基本 3 檔（`SOFT_CAP_POSITIONS`）；雷達高分例外可加至 5（`HARD_CAP_POSITIONS`），見 §4.6b |
 | 進場窗 | pick 後 3 個交易日內須觸及 entry_zone，否則 `not_filled` |
 | 基本面 | 必要——月營收動能 + 催化劑（真實數據注入，見 §9） |
 
@@ -74,9 +74,10 @@ cron-job.org 觸發 workflow_dispatch
 1. **Workflow skip**（週末/假日）— `.github/workflows/daily_analysis.yml`
 2. **恐慌冷卻期**（恐慌日後 3 個交易日）— `run_agents._panic_cooldown_status`
 3. **Regime swing gate**（恐慌盤/空頭賣壓才封）— `agents/regime_engine.py` `swing_trading_favorable`
-4. **倉滿 gate**（3/3 在倉）— rule-based 空手，不呼叫 LLM
+4. **硬上限 gate**（5/5 在倉，HARD_CAP_POSITIONS）— rule-based 空手，不呼叫 LLM
 5. **Agent 自身判斷**（無好 setup → 空手觀望）
 6. **重複推薦攔截**（agent 推了在倉股票 → 強制空手）
+6b. **軟上限品質閘門**（在倉 3-4，介於 SOFT_CAP 3 與 HARD_CAP 5）：仍呼叫 agent，但只有「雷達高分例外」標的放行（verdict=推薦出手 且 confidence≥0.78 且該股 scanner score≥7），否則降為空手、記 `soft_cap_skipped`。放行時記 `override_slot`。基本 3 檔維持紀律、不錯過黃金機會可加到 5。
 7. **entry sanity check**（AI 報價幻覺 >30% 偏離 → 拒存）— `outcome_tracker`
 8. **constraint_validator**（預算不足時壓 verdict）
 

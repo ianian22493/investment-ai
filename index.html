@@ -1541,7 +1541,8 @@ function minsAgo(iso){if(!iso) return null; const d=new Date(iso); return Math.f
 function renderSwingBook(pickAgent){
   const ops = (pickAgent || {}).open_positions;
   if(!ops || !ops.length) return '';
-  const maxP = (pickAgent || {}).max_positions || 3;
+  const maxP = (pickAgent || {}).max_positions || 5;
+  const softP = (pickAgent || {}).soft_cap || 3;
   const rows = ops.map(p => {
     const waiting = p.waiting_fill;
     const cur = waiting ? '待觸價'
@@ -1560,8 +1561,9 @@ function renderSwingBook(pickAgent){
       <span style="font-size:11px;color:var(--text3)">停損 ${p.stop_loss||'—'} · 目標 ${p.target||'—'}</span>
     </div>`;
   }).join('');
-  return `<div class="swing-book-card" style="margin-bottom:12px;padding:11px 14px;background:var(--bg3);border:1px solid var(--border2);border-left:2px solid var(--gold);border-radius:0 6px 6px 0" data-tip="波段在倉部位：目前持有中的 swing 部位，最多同時 3 檔。每天 16:30 更新現況">
-    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-bottom:2px">📒 SWING BOOK · 在倉 ${ops.length}/${maxP}</div>
+  const capNote = ops.length >= softP ? `（達基本 ${softP}，雷達高分可加至 ${maxP}）` : `基本 ${softP} / 上限 ${maxP}`;
+  return `<div class="swing-book-card" style="margin-bottom:12px;padding:11px 14px;background:var(--bg3);border:1px solid var(--border2);border-left:2px solid var(--gold);border-radius:0 6px 6px 0" data-tip="波段在倉部位：基本上限 ${softP} 檔；雷達出現高分標的可破例加到最多 ${maxP} 檔。每天 16:30 更新現況">
+    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-bottom:2px">📒 SWING BOOK · 在倉 ${ops.length} 檔 · ${capNote}</div>
     ${rows}
   </div>`;
 }
@@ -6254,7 +6256,7 @@ const GLOSSARY = {
   "TODAY'S VERDICT":                 "今日決議 · 系統對台股短線的最終決策",
   "TODAY'S BRIEFING":                "今日簡報 · 一段摘要重點資訊",
   "TODAY'S PICK":                    "今日波段精選 · 若系統推薦出手，目標持有 2 週-1 個月",
-  "SWING BOOK":                      "波段在倉部位 · 目前持有中的 swing 部位（最多 3 檔），每日盤後更新現況",
+  "SWING BOOK":                      "波段在倉部位 · 基本上限 3 檔；雷達出現高分標的可破例加到最多 5 檔。每日盤後更新現況",
   "MARKET CHIPS":                    "市場籌碼 · 三大法人買賣超、融資餘額等",
   "SCANNER RADAR":                   "篩選雷達 · 從技術面與籌碼面篩出的候選股",
   "SIGNAL VECTOR":                   "訊號向量 · 10 個市場健康度指標的當前值",

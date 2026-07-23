@@ -7,7 +7,7 @@
 - 持有 10-22 個交易日
 - 目標 +10~20%，停損 -7~-10%（技術位）
 - 基本面 + 催化劑必要（拉長時間，故事要撐得住）
-- 最多同時 3 檔在倉（由 run_agents 控制）
+- 基本 3 檔在倉；雷達高分例外可加至最多 5 檔（由 run_agents 控制）
 """
 
 from .base import call_llm
@@ -130,9 +130,10 @@ def run(
             f"｜風險等級：{regime.get('risk_level','?')}"
         )
 
-    # 在倉部位 — 避免重複推薦 + 集中度控管
+    # 在倉部位 — 避免重複推薦 + 集中度控管 + 軟上限品質門檻
+    n_open = len(open_positions) if open_positions else 0
     if open_positions:
-        lines.append(f"\n【目前在倉部位 {len(open_positions)}/3】")
+        lines.append(f"\n【目前在倉部位 {n_open} 檔（基本上限 3 / 絕對上限 5）】")
         for p in open_positions:
             lines.append(
                 f"  · {p.get('stock_name','?')}({p.get('stock_code','?')}) "
@@ -140,6 +141,12 @@ def run(
                 f"· 停損 {p.get('stop_loss','?')} / 目標 {p.get('target','?')}"
             )
         lines.append("  ⚠ 不可重複推薦在倉股票；同產業標的要嚴格檢視集中度。")
+        if n_open >= 3:
+            lines.append(
+                f"  🔴 你已達基本上限（{n_open} 檔在倉）。此時**只有『真的非常好』的標的才值得開第 {n_open+1} 個位子**："
+                f"必須是「推薦出手」（非謹慎試單）、信心 ≥ 0.78、且該股 scanner 分數 ≥ 7 的雷達高分標的。"
+                f"達不到這個門檻，請直接「空手觀望」——守紀律比多開一檔更重要。系統也會在後端強制執行此門檻。"
+            )
 
     # Inject historical performance context
     perf_context = market_data.get("performance_context", "")
@@ -222,7 +229,7 @@ def run(
   · 停損設技術位，離進場 -7%~-10%（要放得下日常震盪）
   · 目標 +10%~+20%，risk_reward 必須 ≥ 1:1.5
   · hold_days 一律「10-22 個交易日」
-- 已在倉的股票不可重複推薦；倉位已滿 3 檔時直接空手觀望
+- 已在倉的股票不可重複推薦；達基本上限 3 檔後，只有雷達高分例外標的才開，否則空手觀望
 - 反方觀點必須提供
 """
 

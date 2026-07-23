@@ -178,9 +178,19 @@ MICRO_PICK_MIN_TRADING_BUDGET = 0.05    # was 0.15
 MICRO_PICK_MIN_SCANNER_SCORE  = 5       # scanner score on 0-8 swing scale
 MICRO_PICK_SIZE_RATIO         = 0.30    # 30% of trading budget = trial size
 
-# Swing position management (2026-07-17 波段改版)
-# 最多同時 3 檔在倉。倉滿時跳過 pick LLM call（省 quota + 避免誘惑）。
-MAX_OPEN_POSITIONS = 3
+# Swing position management (2026-07-17 波段改版；2026-07-24 軟/硬上限)
+# 基本上限 3 檔（維持紀律）。但若雷達（scanner）出現「真的高分」且 agent
+# 給出高信心的推薦出手，可破例加到最多 5 檔——不錯過黃金機會。
+#   在倉 0-2：一般標的照常開
+#   在倉 3-4：仍呼叫 agent，但只有「例外品質」標的放行，否則維持紀律空手
+#   在倉 5  ：絕對滿，跳過 LLM
+SOFT_CAP_POSITIONS = 3           # 基本上限
+HARD_CAP_POSITIONS = 5           # 例外絕對上限
+OVERRIDE_MIN_CONFIDENCE  = 0.78  # 例外開倉：agent 信心門檻
+OVERRIDE_MIN_SCANNER_SCORE = 7   # 例外開倉：scanner 8 維 ≥7 = 極強
+OVERRIDE_REQUIRE_VERDICT = "推薦出手"   # 例外只認最強 verdict，不認謹慎試單
+# 舊名相容（micro-pick gate / 前端 fallback 用絕對上限）
+MAX_OPEN_POSITIONS = HARD_CAP_POSITIONS
 
 def _maybe_attach_micro_pick(outputs: dict, candidates: list, regime: dict, market_data: dict):
     """⚠ MUTATES `outputs`. Attaches `micro_pick` key to outputs['tw_daily_pick']
@@ -458,7 +468,7 @@ def run_all():
         # 倉滿 → 直接空手，不呼叫 LLM（省 quota，也避免 agent 硬找標的）。
         open_positions = alpha_db.get_open_positions()
         if open_positions:
-            print(f"  [swing book] 在倉 {len(open_positions)}/{MAX_OPEN_POSITIONS}:")
+            print(f"  [swing book] 在倉 {len(open_positions)} 檔（基本 {SOFT_CAP_POSITIONS} / 上限 {HARD_CAP_POSITIONS}）:")
             for op in open_positions:
                 cur = op.get("current_return_pct")
                 cur_str = f"{cur:+.1f}%" if isinstance(cur, (int, float)) else "?"
@@ -483,12 +493,13 @@ def run_all():
             }
 
         print("  tw_daily_pick...")
-        if len(open_positions) >= MAX_OPEN_POSITIONS:
+        n_open = len(open_positions)
+        if n_open >= HARD_CAP_POSITIONS:
             outputs["tw_daily_pick"] = _rule_based_watch(
-                f"波段倉位已滿（{len(open_positions)}/{MAX_OPEN_POSITIONS} 檔在倉），"
+                f"波段倉位已達絕對上限（{n_open}/{HARD_CAP_POSITIONS} 檔在倉），"
                 f"今日不開新倉。專注管理現有部位：依既定停損 / 目標紀律執行。",
-                "倉位已滿——新機會再好也不加倉，等現有部位結算",
-                "positions-full gate (rule-based, no LLM call)",
+                "倉位已達上限 5 檔——等現有部位結算才有新空間",
+                "hard-cap gate (rule-based, no LLM call)",
             )
         elif cooldown.get("active"):
             outputs["tw_daily_pick"] = _rule_based_watch(
@@ -520,9 +531,55 @@ def run_all():
                             "stop_loss": "—", "target": "—", "risk_reward": "—",
                             "ref_close": "—", "hold_days": "—"}
 
+        # 軟上限品質閘門（2026-07-24）：在倉已達 SOFT_CAP(3) 但未達 HARD_CAP(5)。
+        # 只有「雷達高分 + 推薦出手 + 高信心」的例外標的才允許開第 4/5 個位子；
+        # 否則維持 3 倉紀律、今日空手。這樣不錯過黃金機會，也不放鬆紀律。
+        picked = pick.get("pick") or {}
+        pcode = picked.get("code")
+        has_real_pick = pcode and pcode not in ("—", "NONE", "")
+        if SOFT_CAP_POSITIONS <= n_open < HARD_CAP_POSITIONS and has_real_pick:
+            scan = next((c for c in (candidates or []) if c.get("code") == pcode), None)
+            scan_score = scan.get("score", 0) if scan else 0
+            conf = pick.get("confidence", 0) or 0
+            verdict = pick.get("verdict", "")
+            is_exceptional = (
+                verdict == OVERRIDE_REQUIRE_VERDICT
+                and conf >= OVERRIDE_MIN_CONFIDENCE
+                and scan_score >= OVERRIDE_MIN_SCANNER_SCORE
+            )
+            if is_exceptional:
+                print(f"    [override] ⭐ 雷達高分例外開倉：{pcode} "
+                      f"score={scan_score} conf={conf} verdict={verdict} → 允許第 {n_open+1} 檔")
+                pick["override_slot"] = {
+                    "position_number": n_open + 1,
+                    "scanner_score": scan_score,
+                    "confidence": conf,
+                }
+            else:
+                print(f"    [soft-cap] {pcode} 未達例外門檻 "
+                      f"(verdict={verdict} conf={conf} score={scan_score}) → 維持 {SOFT_CAP_POSITIONS} 倉紀律，空手")
+                reasons = []
+                if verdict != OVERRIDE_REQUIRE_VERDICT: reasons.append(f"非推薦出手（{verdict}）")
+                if conf < OVERRIDE_MIN_CONFIDENCE: reasons.append(f"信心 {conf}<{OVERRIDE_MIN_CONFIDENCE}")
+                if scan_score < OVERRIDE_MIN_SCANNER_SCORE: reasons.append(f"雷達 {scan_score}<{OVERRIDE_MIN_SCANNER_SCORE}")
+                pick["verdict"] = "空手觀望"
+                pick["summary"] = (
+                    f"已有 {n_open} 檔在倉（達基本上限 {SOFT_CAP_POSITIONS}）。今日雷達最佳標的 "
+                    f"{picked.get('name','')}({pcode}) 品質未達『雷達高分例外』門檻"
+                    f"（{'、'.join(reasons)}），維持紀律不加倉。原分析保留供參考："
+                ) + (pick.get("summary", "") or "")
+                pick["soft_cap_skipped"] = {
+                    "candidate_code": pcode, "candidate_name": picked.get("name", ""),
+                    "scanner_score": scan_score, "confidence": conf, "verdict": verdict,
+                }
+                pick["pick"] = {"name": "—", "code": "—", "entry_zone": "—",
+                                "stop_loss": "—", "target": "—", "risk_reward": "—",
+                                "ref_close": "—", "hold_days": "—"}
+
         # 在倉部位隨 analysis.json 出去給前端（dashboard swing book + pick 頁）
         pick["open_positions"] = open_positions
-        pick["max_positions"] = MAX_OPEN_POSITIONS
+        pick["max_positions"] = HARD_CAP_POSITIONS
+        pick["soft_cap"] = SOFT_CAP_POSITIONS
         print(f"    → {pick.get('verdict')} | {pick.get('pick',{}).get('name','?')}({pick.get('pick',{}).get('code','?')})")
 
         # Holdings correlation (Task C) — 純 Python，不 call LLM。
@@ -550,18 +607,18 @@ def run_all():
             print(f"    [WARN] treasure watchlist lookup failed: {e}")
 
         # 部位大小建議（2026-07-24）— 風險基準法，補「買多少」的洞。
-        # 交易預算 = capital_flow trading% × 現金存款。剩餘空倉數決定均分上限
-        # （已在倉的部位不佔新倉的預算切分）。
+        # 交易預算 = capital_flow trading% × 現金存款。均分上限用 SOFT_CAP(3)：
+        # 規劃 3 個等權核心部位，每檔約 1/3；例外開的第 4/5 檔一樣按此規則算，
+        # 由風險上限與當下現金自然收斂（不會因剩餘空倉少而放大）。
         try:
             pk = pick.get("pick") or {}
             if pk.get("code") and pk.get("code") not in ("—", "NONE", ""):
                 trading_pct = outputs["capital_flow"].get("budget", {}).get("trading", 0)
                 cash = portfolio.get("personal_finance", {}).get("cash_savings_twd", 0)
                 trading_budget_twd = trading_pct * cash
-                slots_left = max(1, MAX_OPEN_POSITIONS - len(open_positions))
                 pick["position_sizing"] = position_sizer.compute(
                     pk.get("entry_zone"), pk.get("stop_loss"),
-                    trading_budget_twd, slots_left,
+                    trading_budget_twd, SOFT_CAP_POSITIONS,
                 )
                 _ps = pick["position_sizing"]
                 if _ps.get("available"):

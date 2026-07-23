@@ -365,7 +365,8 @@ if(DATA.code && DATA.code !== '—'){
   const sec = document.getElementById('swing-sec');
   const box = document.getElementById('swing-book');
   if(!sec || !box) return;
-  const maxP = DATA.max_positions || 3;
+  const maxP = DATA.max_positions || 5;
+  const softP = DATA.soft_cap || 3;
   const rows = ops.map(p => {
     const waiting = p.waiting_fill;
     const cur = waiting ? '待觸價'
@@ -382,8 +383,9 @@ if(DATA.code && DATA.code !== '—'){
       <span class="sb-plan">停損 ${p.stop_loss || '—'} · 目標 ${p.target || '—'} · D+${p.hold_days_actual || 0}</span>
     </div>`;
   }).join('');
+  const capNote = ops.length >= softP ? `達基本 ${softP}·雷達高分可加至 ${maxP}` : `基本 ${softP}/上限 ${maxP}`;
   box.innerHTML = `
-    <div class="sb-head">📒 波段在倉 ${ops.length}/${maxP}</div>
+    <div class="sb-head">📒 波段在倉 ${ops.length} 檔 · ${capNote}</div>
     ${rows}`;
   sec.style.display = 'block';
 })();
