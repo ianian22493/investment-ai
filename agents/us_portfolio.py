@@ -7,7 +7,7 @@ Position tiering:
   Tracking (<$500): compact table, brief mention only
 """
 
-from .base import call_claude
+from .base import call_llm
 
 SYSTEM = """你是一位專注美股的長線成長型投資人。
 
@@ -143,4 +143,4 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
 
 注意：加碼建議請說明哪一檔、加碼比例（小/中/大）和理由。"""
 
-    return call_claude(SYSTEM, user_content, "us_portfolio")
+    return call_llm(SYSTEM, user_content, "us_portfolio")

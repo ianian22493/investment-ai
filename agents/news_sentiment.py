@@ -1,6 +1,6 @@
 """新聞情緒 Agent — 分析台股/美股消息面，提供情緒訊號。"""
 
-from .base import call_claude
+from .base import call_llm
 
 SYSTEM_PROMPT = """你是一位專業的市場消息面分析師，擅長從新聞標題中提取對台灣和美國股市的情緒訊號。
 
@@ -55,4 +55,4 @@ def run(market_data: dict, portfolio: dict) -> dict:
 verdict 請填整體情緒：「正面」、「偏正面」、「中性」、「偏負面」、「負面」
 """
 
-    return call_claude(SYSTEM_PROMPT, user_content, "news_sentiment")
+    return call_llm(SYSTEM_PROMPT, user_content, "news_sentiment")

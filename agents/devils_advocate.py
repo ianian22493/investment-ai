@@ -4,7 +4,7 @@ Bias: 極度懷疑，專找漏洞
 禁止: 不能給出任何正面肯定，只能質疑和反駁
 """
 
-from .base import call_claude
+from .base import call_llm
 import json
 
 SYSTEM = """你是一位投資委員會裡的反對派委員，你的唯一職責是挑戰其他分析師的結論。
@@ -61,4 +61,4 @@ def run(all_agent_outputs: dict) -> dict:
 
 記住：你的目的不是阻止所有行動，而是確保決策者看到他們可能忽略的風險。"""
 
-    return call_claude(SYSTEM, user_content, "devils_advocate")
+    return call_llm(SYSTEM, user_content, "devils_advocate")

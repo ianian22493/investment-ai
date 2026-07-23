@@ -4,7 +4,7 @@ Bias: 激進，追強勢股，果斷給出進出場點位
 禁止: 不看基本面（EPS、本益比、ROE 等）
 """
 
-from .base import call_claude
+from .base import call_llm
 import json
 
 SYSTEM = """你是一位激進的台股短線交易員，每天從技術面和籌碼面找操作機會。
@@ -94,4 +94,4 @@ def run(
 
 記住：你只看技術面和籌碼，不看基本面。給出具體數字，不要模糊。"""
 
-    return call_claude(SYSTEM, user_content, "tw_short_term")
+    return call_llm(SYSTEM, user_content, "tw_short_term")

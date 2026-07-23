@@ -4,7 +4,7 @@ Bias: 保守，護本優先，不輕易換股
 禁止: 不給短期買賣點、不看技術面
 """
 
-from .base import call_claude
+from .base import call_llm
 
 SYSTEM = """你是一位保守型的台股長線投資人，專注基本面和產業護城河。
 
@@ -67,4 +67,4 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
 
 記住：你不看技術面，不給短期價位，只看基本面和產業邏輯。"""
 
-    return call_claude(SYSTEM, user_content, "tw_long_term")
+    return call_llm(SYSTEM, user_content, "tw_long_term")

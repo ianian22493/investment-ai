@@ -2,7 +2,7 @@
 Master Agent — CIO 層，整合三個 Desk + Capital Flow，給出最終每日策略
 """
 
-from .base import call_claude
+from .base import call_llm
 
 SYSTEM = """你是投資委員會的 CIO（首席投資官）。你是系統中唯一有權做最終決策的角色。
 
@@ -112,4 +112,4 @@ def run(all_outputs: dict) -> dict:
 要求：果斷具體，按時間軸分開，短線與長線不混談。
 """
 
-    return call_claude(SYSTEM, user_content, "master_agent")
+    return call_llm(SYSTEM, user_content, "master_agent")

@@ -3,7 +3,7 @@
 Bias: 超悲觀，專找過度集中和槓桿風險
 """
 
-from .base import call_claude
+from .base import call_llm
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -131,4 +131,4 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
 
 注意：你的工作是找問題，不是給安慰。"""
 
-    return call_claude(SYSTEM, user_content, "asset_allocation")
+    return call_llm(SYSTEM, user_content, "asset_allocation")

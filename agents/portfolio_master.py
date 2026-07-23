@@ -4,7 +4,7 @@ Portfolio Desk Master — 整合中長線持倉管理
 決策時間軸：月～季
 """
 
-from .base import call_claude
+from .base import call_llm
 
 SYSTEM = """你是 Portfolio Desk Risk Committee，負責整合中長線持倉信號並提供客觀觀點。
 
@@ -63,4 +63,4 @@ def run(
 4. 若資金層有約束，優先保留哪些部位？
 """
 
-    return call_claude(SYSTEM, user_content, "portfolio_master")
+    return call_llm(SYSTEM, user_content, "portfolio_master")

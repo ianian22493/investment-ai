@@ -10,7 +10,7 @@
 - 最多同時 3 檔在倉（由 run_agents 控制）
 """
 
-from .base import call_claude
+from .base import call_llm
 
 SYSTEM = """你是一位機構級的台股波段交易研究 AI。
 
@@ -227,7 +227,7 @@ def run(
 """
 
     system_with_schema = SYSTEM + "\n\n" + PICK_SCHEMA
-    result = call_claude(system_with_schema, user_content, "tw_daily_pick", custom_schema=True)
+    result = call_llm(system_with_schema, user_content, "tw_daily_pick", custom_schema=True)
     if "pick" not in result:
         result["pick"] = {"name": "—", "code": "—", "entry_zone": "—",
                           "stop_loss": "—", "target": "—",

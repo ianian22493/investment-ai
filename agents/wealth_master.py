@@ -4,7 +4,7 @@ Wealth Desk Master — 整合財富管理與風控
 決策時間軸：季～年
 """
 
-from .base import call_claude
+from .base import call_llm
 
 SYSTEM = """你是 Wealth Desk Risk Committee，負責評估整體財務健康並提供風險訊號給 Capital Flow Engine。
 
@@ -148,7 +148,7 @@ def run(
 
     # Merge schema into system
     system_with_schema = SYSTEM + "\n\n額外輸出欄位：\n" + WEALTH_SCHEMA
-    from .base import call_claude as _call
+    from .base import call_llm as _call
     result = _call(system_with_schema, user_content, "wealth_master")
 
     # ── HARD POST-PROCESS: override cash_crunch_risk with deterministic

@@ -3,7 +3,7 @@
 Bias: 中立但謹慎，優先保本
 """
 
-from .base import call_claude
+from .base import call_llm
 import json
 
 SYSTEM = """你是一位資深的宏觀市場分析師，負責提供每日市場體制判斷。
@@ -54,4 +54,4 @@ def run(market_data: dict, portfolio: dict, regime: dict = None) -> dict:
 
 請根據以上資料判斷今日市場體制，給出其他 Agent 的操作基礎方向。"""
 
-    return call_claude(SYSTEM, user_content, "market_overview")
+    return call_llm(SYSTEM, user_content, "market_overview")

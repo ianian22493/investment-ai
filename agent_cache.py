@@ -24,7 +24,7 @@ This is one of TWO cache layers in the project. They cover different scenarios:
 In a normal run order:
   agent.run() → agent_cache.get_or_run(name, fn)
     ↓ (cache miss or no TTL set)
-    fn() → base.call_claude(system, user, name)
+    fn() → base.call_llm(system, user, name)
        ↓
        prompt_cache.get(hash)  ← layer 2 cache check
        ↓ (miss)

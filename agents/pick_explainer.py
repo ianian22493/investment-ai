@@ -23,7 +23,7 @@ import os
 # Make project root importable
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from .base import call_claude
+from .base import call_llm
 
 
 PICK_SYSTEM = """你是 Yuzu Capital OS 的「Pick Explainer」—— 把今日盤後 AI 委員會的
@@ -244,7 +244,7 @@ def _explain_pick(pick, pick_agent, regime, cf, agents, market_data, candidates)
 """
 
     system_with_schema = PICK_SYSTEM + "\n\n" + PICK_SCHEMA
-    return call_claude(system_with_schema, user_content, "pick_explainer", custom_schema=True)
+    return call_llm(system_with_schema, user_content, "pick_explainer", custom_schema=True)
 
 
 def _explain_watch(pick_agent, regime, cf, agents, market_data, candidates):
@@ -308,4 +308,4 @@ def _explain_watch(pick_agent, regime, cf, agents, market_data, candidates):
 """
 
     system_with_schema = WATCH_SYSTEM + "\n\n" + WATCH_SCHEMA
-    return call_claude(system_with_schema, user_content, "pick_explainer", custom_schema=True)
+    return call_llm(system_with_schema, user_content, "pick_explainer", custom_schema=True)

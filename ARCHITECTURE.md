@@ -171,7 +171,7 @@ DB 查詢、era 統計用 date。**混用會讓月曆勝負永遠 pending**（7/
 4. **yfinance 盤中 K 棒不完整**：scanner 已防護；其他新模組要抓價也要注意。
 5. **月曆 join 斷裂**：任何動到「日期語義」的改動，先想 §6。
 6. **AI 幻覺**：股名（tw_stock_lookup 校正）、報價（sanity check）、stop/target 數量級（sanitize）都有防護——新增欄位時記得跟上。
-7. **Gemini JSON 會帶引用標記 [1][2]** → base.py 已清，別繞過 call_claude 自己 parse。
+7. **Gemini JSON 會帶引用標記 [1][2]** → base.py 已清，別繞過 `call_llm`（base.py）自己 parse。註：`call_llm` 呼叫的是 **Gemini**（2026-07-24 從舊名 `call_claude` 改名，避免誤導——系統無任何 Claude 執行時依賴）。
 8. **GitHub Pages 偶發 "Deployment failed, try again later"** → re-run failed jobs 即可，非 code 問題。
 9. **hub/PWA cache 頑固**：資料 fetch 一律 no-store + query bust；手機問題先叫使用者刪 icon 重加。
 10. **memory 規則**：工作區 MEMORY.md 只在使用者要求時寫；LESSONS 類寫制度正本 `C:\Users\USER\.agents\institution\LESSONS.md`。

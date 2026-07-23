@@ -103,7 +103,7 @@ Structure:
 """
 
 
-def call_claude(system_prompt: str, user_content: str, agent_name: str, custom_schema: bool = False) -> dict:
+def call_llm(system_prompt: str, user_content: str, agent_name: str, custom_schema: bool = False) -> dict:
     """Call Gemini API and parse JSON response. Retries on transient errors (429/503/5xx).
     Prompt-hash cache layer in front — skips API call if identical prompt was seen
     within the last 24h. Cache complementary to agent_cache.py (agent-level TTL).

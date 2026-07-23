@@ -3,7 +3,7 @@ Reflection Agent — 每日盤後自我檢討
 分析近期推薦績效，產生結構化反思，供下次推薦注入。
 """
 
-from .base import call_claude
+from .base import call_llm
 
 SYSTEM = """你是一位客觀的量化交易績效分析師，負責每日盤後回顧推薦記錄。
 
@@ -172,8 +172,8 @@ def run(
 注意：如果某個體制或信號的樣本數 < 3，請明確標注「樣本不足」。
 """
 
-    # Delegate to call_claude — inherits multi-key rotation, prompt cache,
+    # Delegate to call_llm — inherits multi-key rotation, prompt cache,
     # error log, and quota-degradation fallback. custom_schema=True tells
     # base.py we already embedded our own REFLECTION_SCHEMA.
     system_with_schema = SYSTEM + "\n\n" + REFLECTION_SCHEMA
-    return call_claude(system_with_schema, user_content, "reflection", custom_schema=True)
+    return call_llm(system_with_schema, user_content, "reflection", custom_schema=True)

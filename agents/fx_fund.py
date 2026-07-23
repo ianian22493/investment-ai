@@ -3,7 +3,7 @@
 Bias: 保守，優先保護匯率成本
 """
 
-from .base import call_claude
+from .base import call_llm
 
 SYSTEM = """你是一位日幣匯率與基金策略專家。
 
@@ -72,4 +72,4 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
 3. 本月定期定額是否繼續？是否應增減金額？
 4. 如果日幣繼續走弱（>160），策略是什麼？"""
 
-    return call_claude(SYSTEM, user_content, "fx_fund")
+    return call_llm(SYSTEM, user_content, "fx_fund")

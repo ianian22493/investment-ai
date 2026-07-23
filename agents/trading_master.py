@@ -4,7 +4,7 @@ Trading Desk Master — 整合台股交易信號（波段版）
 決策時間軸：10-22 個交易日（2026-07-17 起波段策略）
 """
 
-from .base import call_claude
+from .base import call_llm
 
 SYSTEM = """你是 Trading Desk Risk Committee，負責整合波段交易信號並提供客觀的風險觀點。
 （系統為 10-22 個交易日的波段策略，不是隔日沖——評估信號時用「未來一個月」的尺度。）
@@ -71,4 +71,4 @@ def run(
 4. 若資金層有降權指令，如何調整部位大小？
 """
 
-    return call_claude(SYSTEM, user_content, "trading_master")
+    return call_llm(SYSTEM, user_content, "trading_master")
