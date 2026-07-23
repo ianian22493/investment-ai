@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>今日觀望 · Yuzu Pick Journal</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&family=Noto+Serif+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="picks.css">
+</head>
+<body>
+
+<!--
+  ════════════════════════════════════════════════════════════════════
+  WATCH DAY TEMPLATE · Yuzu Capital /picks/
+  Inject watch-day JSON into <script id="pick-data">. Unreplaced → SAMPLE.
+  ════════════════════════════════════════════════════════════════════
+-->
+<script id="pick-data" type="application/json">{"date": "2026-07-24", "regime": "區間盤", "risk_level": "moderate", "verdict": "空手觀望", "context_paragraph": "今日全球主要股指，包含台股與美股，仍處於歷史高檔區間，然而那斯達克指數的下跌與台股體制轉為區間盤，顯示市場風險偏好正溫和降溫。VIX 恐慌指數維持在相對中性偏高的 17.6，市場上漲家數亦略少於下跌家數，整體量能與動能訊號相對溫和。外資今日小幅買超 69.58 億，但整體市場仍透露出謹慎氛圍。", "why_watching": "本次系統選擇不開新倉，主要由於波段策略的倉位已滿（3/3 檔在倉）。此刻系統的優先任務是專注於現有部位的管理與優化，依既定停損與目標紀律執行，而非積極尋找新的佈局機會。此外，觀察到當前市場 regime 已轉為區間盤，市場風險偏好正在降溫，VIX 恐慌指數維持在中性偏高水位。DA 分析亦指出，目前市場可能存在高度不確定性與潛在風險，部分買進建議基於薄弱技術訊號或單一回調理由，未充分計入更深層的結構性挑戰。在倉位已滿且市場訊號混雜的情況下，系統秉持「耐心不是沒事做，是在等一個更好的價格」的原則，謹慎觀望，等待更明確、風險報酬比更佳的機會出現。", "reactivation_triggers": [{"cond": "市場 regime 轉為趨勢上漲 (trend_up)", "note": "且 breadth_score 大於 0.6"}, {"cond": "VIX 恐慌指數跌破 15.0", "note": "顯示市場避險情緒顯著降溫"}, {"cond": "外資連續 3 日淨買超", "note": "且單日金額平均 > 80 億"}, {"cond": "現有持倉達到目標價位並出場", "note": "釋出倉位後，系統會重新評估新進場機會"}, {"cond": "Scanner 前三名候選股同時出現明確的突破訊號", "note": "並伴隨量能有效放大"}], "scanner_top1": {"code": "2634", "name": "漢翔", "score": 7, "what_scanner_sees": "Scanner 雷達偵測到漢翔展現多重強勢訊號：趨勢向上且股價維持在月線上方，近期出現回檔買點，並有量能累積跡象。RSI 指標也顯示動能良好，近 20 日相對強度表現突出。這些技術與籌碼訊號顯示該股具備一定的上漲潛力與市場關注度。", "what_we_dont_like": "儘管漢翔在技術面與籌碼面表現亮眼，但由於目前波段倉位已達上限，系統策略優先管理現有部位。在市場整體風險偏好降溫且處於區間盤的背景下，系統對新進場標的的要求會更為嚴苛，尋求更高確定性與風險報酬比的機會。因此，即使是如此強勢的候選股，在倉位限制與宏觀謹慎的考量下，系統仍選擇按兵不動。"}, "micro_pick": null, "open_positions": [{"id": 16, "date": "2026-07-20", "target_date": "2026-07-21", "stock_code": "2887", "stock_name": "台新新光金", "entry_zone": "34.5-35.5", "stop_loss": "32.5（近期盤整低點下方）", "target": "39.5（潛在波段滿足點）", "hold_days": "10-22 個交易日", "ref_close": 35.15, "max_gain_pct": 0.865, "max_drawdown_pct": -3.602, "hold_days_actual": 3, "verdict": "", "confidence": 0.0, "exit_reason": "pending", "entry_fill_date": "2026-07-21", "entry_fill_price": 34.7, "current_return_pct": -0.576, "waiting_fill": false}, {"id": 17, "date": "2026-07-21", "target_date": "2026-07-22", "stock_code": "2059", "stock_name": "川湖", "entry_zone": "7800.0-8000.0", "stop_loss": "7250.0（前波低點下方，距MA20約-7.8%）", "target": "9100.0（潛在波段滿足點）", "hold_days": "10-22 個交易日", "ref_close": 7975.0, "max_gain_pct": null, "max_drawdown_pct": null, "hold_days_actual": 0, "verdict": "", "confidence": 0.0, "exit_reason": "pending_fill", "entry_fill_date": null, "entry_fill_price": null, "current_return_pct": null, "waiting_fill": true}, {"id": 18, "date": "2026-07-22", "target_date": "2026-07-23", "stock_code": "8028", "stock_name": "昇陽半導體", "entry_zone": "305.0-312.0", "stop_loss": "285.0（前波低點與MA60下方）", "target": "360.0（潛在波段滿足點）", "hold_days": "10-22 個交易日", "ref_close": 308.0, "max_gain_pct": 0.648, "max_drawdown_pct": -2.593, "hold_days_actual": 1, "verdict": "", "confidence": 0.0, "exit_reason": "pending", "entry_fill_date": "2026-07-23", "entry_fill_price": 308.5, "current_return_pct": -2.593, "waiting_fill": false}], "max_positions": 3, "panic_sop": {"triggered": false, "reasons": [], "vix": 17.6, "taiex_chg_pct": 0.06, "rules": {"vix_above": 25, "twii_daily_drop_pct_below": -2.5}, "cooldown": {"active": false, "last_panic": "2026-07-17", "trading_days_since": 4, "required": 3}}, "prev_date": "2026-07-23", "next_date": null}</script>
+
+<div class="page">
+
+  <div class="return-band">
+    <a class="rb-back" href="https://ianian22493.github.io/">← 柚子首頁</a>
+    <span class="rb-logo"><img src="../favicon.svg" alt="">YUZU CAPITAL</span>
+    <span class="rb-meta" id="rb-date">—</span>
+  </div>
+
+  <!-- 1 · HERO -->
+  <header class="hero">
+    <div class="hero-date" id="hero-date"></div>
+    <div class="hero-verdict watch" id="hero-verdict">今日觀望</div>
+    <p class="hero-sub" id="hero-sub"></p>
+  </header>
+
+  <!-- 1B · SWING BOOK (在倉部位，有部位才顯示) -->
+  <section class="sec" id="swing-sec" style="border-bottom:none; padding-bottom:0; display:none">
+    <div class="swing-book" id="swing-book"></div>
+  </section>
+
+  <!-- 2 · WHY WATCHING -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">01</span> 為什麼不出手 · WHY WATCHING</div>
+    <div class="prose" id="why-watching"></div>
+  </section>
+
+  <!-- 3 · REACTIVATION TRIGGERS -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">02</span> 重新出手條件 · TRIGGERS</div>
+    <p class="prose" style="font-size:14.5px; color:var(--ink2); margin-bottom:16px">
+      系統不是放棄，是在等。以下任一條件成立，就會重新評估進場。
+    </p>
+    <div class="trigger-list" id="trigger-list"></div>
+  </section>
+
+  <!-- 4 · SCANNER TOP1 -->
+  <section class="sec" id="scanner-sec">
+    <div class="sec-label"><span class="sec-no">03</span> 雷達最強標的 · SCANNER</div>
+    <p class="prose" style="font-size:14.5px; color:var(--ink2); margin-bottom:16px">
+      雖然今天不出手，但系統雷達上分數最高的是這檔 —— 以及為什麼我們還是按兵不動。
+    </p>
+    <div class="scanner-card">
+      <div class="scanner-top">
+        <span class="scanner-code" id="sc-code">—</span>
+        <span class="scanner-name" id="sc-name">—</span>
+        <span class="scanner-score" id="sc-score">score —</span>
+      </div>
+      <div class="scanner-split">
+        <div class="scanner-col sees">
+          <div class="sc-h">▲ 雷達看到什麼</div>
+          <p id="sc-sees"></p>
+        </div>
+        <div class="scanner-col avoid">
+          <div class="sc-h">▼ 但我們不喜歡</div>
+          <p id="sc-avoid"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · MICRO PICK (optional) -->
+  <section class="sec" id="micro-sec" style="display:none">
+    <div class="sec-label"><span class="sec-no">04</span> 試單建議 · MICRO PICK</div>
+    <div class="micro-pick">
+      <div class="mp-tag">⚐ 小量試單（非正式進場）</div>
+      <div class="prose" id="micro-body"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER NAV -->
+  <nav class="foot-nav">
+    <a class="home" href="https://ianian22493.github.io/">← 柚子首頁</a>
+    <span class="fn-spacer"></span>
+    <a href="#" id="prev-pick">← 前一筆</a>
+    <a href="index.html">月曆</a>
+    <a href="#" id="next-pick">下一筆 →</a>
+  </nav>
+
+</div>
+
+<script>
+const SAMPLE = {
+  date: "2026-06-17",
+  regime: "震盪整理",
+  risk_level: "中高",
+  verdict: "空手觀望",
+  context_paragraph: "今日加權指數開高走低，終場小跌，量能萎縮至近月低點。外資轉為小幅賣超，市場觀望氣氛濃厚，等待週四美國 CPI 數據。",
+  why_watching: "今天系統選擇空手，原因有三：第一，量能不足——加權指數成交量只有月均量的 78%，在這種「無量盤」裡突破容易是假動作。第二，最強候選股的風險報酬比不夠乾淨，現在進場等於用 8 分的把握賺 6 分的空間，不划算。第三，週四有 CPI 數據，與其在數據前猜方向，不如等塵埃落定再出手。耐心不是沒事做，是在等一個更好的價格。",
+  reactivation_triggers: [
+    { cond: "外資連續 2 日買超", note: "且單日金額 > 50 億，代表資金回流" },
+    { cond: "加權指數帶量站回月線", note: "成交量需 > 月均量 1.1x" },
+    { cond: "CPI 數據公布後波動收斂", note: "VIX 回落至 18 以下" },
+    { cond: "出現 ≥ 2 檔 scanner_score ≥ 7 的候選", note: "目前最高僅 5 分" }
+  ],
+  scanner_top1: {
+    code: "3017", name: "奇鋐", score: 5,
+    what_scanner_sees: "散熱題材龍頭，近期帶量突破前高，外資連 3 日小幅買超，技術面與題材面都站在多方。",
+    what_we_dont_like: "已經連漲 5 天，短線乖離過大，現在追等於買在情緒高點。風險報酬比只有 1.8，低於系統 2.5 的門檻。寧可等它回測均線再說。"
+  },
+  micro_pick: null
+};
+
+let DATA;
+{
+  const raw = (document.getElementById('pick-data')?.textContent || '').trim();
+  if (!raw || raw.startsWith('{{')) {
+    // Mockup mode: template opened directly, token unreplaced → demo data.
+    DATA = SAMPLE;
+  } else {
+    try { DATA = JSON.parse(raw); }
+    catch(e){
+      // Real page with broken data: never silently show SAMPLE as if it
+      // were today's analysis — render an explicit error state instead.
+      DATA = {};
+      document.body.insertAdjacentHTML('afterbegin',
+        '<div style="background:#8a2222;color:#fff;padding:14px 20px;font-size:15px;line-height:1.6">' +
+        '⚠ 本頁資料載入失敗（pick-data JSON 解析錯誤）。以下欄位皆為空白佔位，' +
+        '不是今日實際分析——請檢查 picks/generate.py 的輸出。</div>');
+    }
+  }
+}
+
+const f = (v, dflt='—') => (v === undefined || v === null || v === '') ? dflt : v;
+const WD = ['日','一','二','三','四','五','六'];
+function fmtDate(iso){
+  if(!iso) return {full:'—', wd:'', mono:'—'};
+  const d = new Date(iso + 'T00:00:00');
+  if(isNaN(d)) return {full:iso, wd:'', mono:iso};
+  return {
+    full: `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`,
+    wd: `星期${WD[d.getDay()]}`,
+    mono: iso.replace(/-/g,' · ')
+  };
+}
+
+const dt = fmtDate(DATA.date);
+document.getElementById('rb-date').textContent = dt.mono;
+document.getElementById('hero-date').innerHTML = `<span>${dt.full}</span><span class="weekday">${dt.wd}</span>`;
+document.getElementById('hero-verdict').textContent = f(DATA.verdict, '今日觀望');
+document.getElementById('hero-sub').innerHTML =
+  `今天系統選擇<span class="accent"> 不出手</span>。耐心也是一種部位。` + `
+  <span class="hero-chiprow" style="margin-top:14px">
+    <span class="chip regime"><span class="dot"></span>REGIME · ${f(DATA.regime)}</span>
+    <span class="chip risk"><span class="dot"></span>風險 · ${f(DATA.risk_level)}</span>
+  </span>`;
+
+/* 恐慌日 SOP 提示條（連動 #3）— 這天觸發了寶藏系統的恐慌日條件 */
+(function renderPanicStrip(){
+  const p = DATA.panic_sop;
+  if(!p || !p.triggered) return;
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  hero.insertAdjacentHTML('afterend', `
+    <div class="panic-strip">🚨 <b>恐慌日 SOP 條件觸發</b> — ${(p.reasons||[]).join(' · ')}。
+    Swing 停開新倉；長波買點窗口 → 寶藏股研究室「恐慌日SOP.md」照表操課。</div>`);
+})();
+
+/* Swing book (波段在倉部位) — 有部位才顯示 */
+(function renderSwingBook(){
+  const ops = DATA.open_positions;
+  if(!ops || !ops.length) return;
+  const sec = document.getElementById('swing-sec');
+  const box = document.getElementById('swing-book');
+  if(!sec || !box) return;
+  const maxP = DATA.max_positions || 3;
+  const rows = ops.map(p => {
+    const waiting = p.waiting_fill;
+    const cur = waiting ? '待觸價'
+      : (typeof p.current_return_pct === 'number')
+        ? `${p.current_return_pct >= 0 ? '+' : ''}${p.current_return_pct.toFixed(1)}%` : '—';
+    const curCls = waiting ? ''
+      : (typeof p.current_return_pct === 'number')
+        ? (p.current_return_pct >= 0 ? 'up' : 'down') : '';
+    return `
+    <div class="sb-row">
+      <span class="sb-id"><b>${p.stock_code}</b> ${p.stock_name || ''}</span>
+      <span class="sb-date">${waiting ? ('進場區 ' + (p.entry_zone||'—')) : (p.date||'').slice(5) + ' 進'}</span>
+      <span class="sb-cur ${curCls}">${cur}</span>
+      <span class="sb-plan">停損 ${p.stop_loss || '—'} · 目標 ${p.target || '—'} · D+${p.hold_days_actual || 0}</span>
+    </div>`;
+  }).join('');
+  box.innerHTML = `
+    <div class="sb-head">📒 波段在倉 ${ops.length}/${maxP} — 今日重點是照顧它們</div>
+    ${rows}`;
+  sec.style.display = 'block';
+})();
+
+document.getElementById('why-watching').className = 'prose lead-cap';
+document.getElementById('why-watching').innerHTML =
+  (f(DATA.why_watching, DATA.context_paragraph) || '—')
+    .split('\n').filter(Boolean).map(p => `<p>${p}</p>`).join('') || '<p class="empty-field">—</p>';
+
+/* Triggers */
+document.getElementById('trigger-list').innerHTML =
+  (DATA.reactivation_triggers||[]).map(t => `
+    <div class="trigger-row">
+      <span class="tr-arrow">→</span>
+      <div class="tr-text">
+        <div class="tr-cond">${f(t.cond)}</div>
+        ${t.note ? `<div class="tr-note">${t.note}</div>` : ''}
+      </div>
+    </div>`).join('') || '<p class="empty-field">無條件設定。</p>';
+
+/* Scanner */
+const sc = DATA.scanner_top1;
+if(sc && (sc.code || sc.name)){
+  document.getElementById('sc-code').textContent = f(sc.code);
+  document.getElementById('sc-name').textContent = f(sc.name);
+  document.getElementById('sc-score').textContent = `score ${f(sc.score)}`;
+  document.getElementById('sc-sees').textContent = f(sc.what_scanner_sees, '—');
+  document.getElementById('sc-avoid').textContent = f(sc.what_we_dont_like, '—');
+} else {
+  document.getElementById('scanner-sec').style.display = 'none';
+}
+
+/* Micro pick */
+const mp = DATA.micro_pick;
+if(mp && (mp.text || mp.code || typeof mp === 'string')){
+  document.getElementById('micro-sec').style.display = '';
+  const body = typeof mp === 'string' ? mp :
+    `${mp.code ? `<b>${mp.code} ${mp.name||''}</b> · ` : ''}${mp.text || mp.rationale || ''}`;
+  document.getElementById('micro-body').innerHTML = `<p>${body}</p>`;
+}
+
+if(DATA.prev_date) document.getElementById('prev-pick').href = DATA.prev_date + '.html';
+else document.getElementById('prev-pick').style.opacity = '.35';
+if(DATA.next_date) document.getElementById('next-pick').href = DATA.next_date + '.html';
+else document.getElementById('next-pick').style.opacity = '.35';
+
+if(window.applyGlossary) window.applyGlossary();
+</script>
+<script src="glossary.js"></script>
+
+</body>
+</html>

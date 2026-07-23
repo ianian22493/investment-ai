@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-07-22 16:37 +0800",
+ "checked_at": "2026-07-23 16:40 +0800",
  "hit_count": 9,
  "new_hit_count": 0,
  "results": [
@@ -9,7 +9,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 17.5",
+   "detail": "VIX 17.6",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -18,7 +18,7 @@
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
    "hit": false,
-   "detail": "單日 +1.34%",
+   "detail": "單日 +0.06%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -27,7 +27,7 @@
    "name": "台積電",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 2400.00 vs 月線 2415.50",
+   "detail": "現價 2405.00 vs 月線 2416.25",
    "note": "核心加碼窗口：跌破月線（觀察名單：法說或恐慌日跌破月線分批）"
   },
   {
@@ -36,7 +36,7 @@
    "name": "群聯",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 1915.00 vs 月線 2146.25",
+   "detail": "現價 1920.00 vs 月線 2118.50",
    "note": "持倉移動停損警戒：跌破月線＝檢查 NAND 合約價與論述卡"
   },
   {
@@ -45,7 +45,7 @@
    "name": "光聖",
    "rule": "near_52w_low",
    "hit": false,
-   "detail": "現價 1385.00 vs 52週低 562.00（門檻 +3.0%）",
+   "detail": "現價 1390.00 vs 52週低 562.00（門檻 +3.0%）",
    "note": "持倉警戒：再破前低＝論述卡規定無條件出場"
   },
   {
@@ -54,7 +54,7 @@
    "name": "欣陸",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 20.55 vs 月線 20.84",
+   "detail": "現價 20.60 vs 月線 20.80",
    "note": "持倉警戒：Q3 底期限前持續在月線下＝出場倒數"
   },
   {
@@ -63,7 +63,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 6.55 vs 觸發價 6.33",
+   "detail": "現價 6.46 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -72,7 +72,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 6.55 vs 觸發價 5.9",
+   "detail": "現價 6.46 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
   },
   {
@@ -81,7 +81,7 @@
    "name": "SpaceX",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 123.54 vs 觸發價 130.0",
+   "detail": "現價 115.26 vs 觸發價 130.0",
    "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
@@ -90,7 +90,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-07-07（15 天前）",
+   "detail": "_updated=2026-07-07（16 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -126,7 +126,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 29.7%（上限 25%）",
+   "detail": "合計佔 US 部位 29.8%（上限 25%）",
    "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
   },
   {
@@ -135,7 +135,7 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 16.7%（上限 15%）",
+   "detail": "合計佔 US 部位 16.3%（上限 15%）",
    "note": "單一因子上限 15%（論述卡：三檔合併審）"
   }
  ]
