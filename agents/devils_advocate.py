@@ -28,14 +28,31 @@ SYSTEM = """你是一位投資委員會裡的反對派委員，你的唯一職�
 verdict 只能是：強烈反對 / 部分反對 / 有所保留 / 勉強接受（但永遠不會是「同意」）"""
 
 
+def _s(v, n=None) -> str:
+    """把任意 LLM 回傳值安全轉字串再截斷。防 dict/list/None 型別（LLM
+    偶爾把本該是字串的欄位吐成巢狀結構 → 對 dict 做 [:n] 會 KeyError
+    整個 cron 掛掉，見 2026-07-23 事故）。"""
+    if v is None:
+        return ""
+    s = v if isinstance(v, str) else str(v)
+    return s[:n] if n else s
+
+
+def _list3(v) -> list:
+    """安全取前 3 個元素（v 可能不是 list）。"""
+    return v[:3] if isinstance(v, list) else []
+
+
 def run(all_agent_outputs: dict) -> dict:
     summaries = []
     for agent_name, output in all_agent_outputs.items():
-        insights = "; ".join(output.get("key_insights", [])[:3])
-        risks = "; ".join(output.get("risk_flags", [])[:3])
+        if not isinstance(output, dict):
+            continue
+        insights = "; ".join(_s(x) for x in _list3(output.get("key_insights")))
+        risks = "; ".join(_s(x) for x in _list3(output.get("risk_flags")))
         summaries.append(
             f"【{agent_name}】verdict={output.get('verdict')} confidence={output.get('confidence')}\n"
-            f"  摘要: {output.get('summary','')[:120]}\n"
+            f"  摘要: {_s(output.get('summary'), 120)}\n"
             f"  洞察: {insights or '無'}\n"
             f"  風險: {risks or '無'}"
         )
@@ -43,8 +60,15 @@ def run(all_agent_outputs: dict) -> dict:
     # Collect all recommendations
     all_recs = []
     for agent_name, output in all_agent_outputs.items():
-        for rec in output.get("recommendations", []):
-            all_recs.append(f"{agent_name}: {rec.get('action')} {rec.get('target')} — {rec.get('detail','')[:60]}")
+        if not isinstance(output, dict):
+            continue
+        recs = output.get("recommendations", [])
+        if not isinstance(recs, list):
+            continue
+        for rec in recs:
+            if not isinstance(rec, dict):
+                continue
+            all_recs.append(f"{agent_name}: {_s(rec.get('action'))} {_s(rec.get('target'))} — {_s(rec.get('detail'), 60)}")
 
     user_content = f"""其他 Agent 的分析摘要：
 

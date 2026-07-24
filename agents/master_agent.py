@@ -86,7 +86,7 @@ def run(all_outputs: dict) -> dict:
         sections.append(
             f"【{icon} {label}】"
             f"verdict={desk.get('verdict','?')} conf={desk.get('confidence','?')}{liq}\n"
-            f"  摘要: {desk.get('summary','')[:80]}\n"
+            f"  摘要: {str(desk.get('summary') or '')[:80]}\n"
             f"  建議: {recs or '無'}"
         )
 

@@ -201,7 +201,7 @@ def _explain_pick(pick, pick_agent, regime, cf, agents, market_data, candidates)
         f"  verdict: {pick_agent.get('verdict','')} (conf {pick_agent.get('confidence','')})",
         f"  entry: {pick.get('entry_zone')} · stop: {pick.get('stop_loss')} · target: {pick.get('target')} · hold: {pick.get('hold_days')}",
         f"  ref_close: {pick.get('ref_close')} · risk_reward: {pick.get('risk_reward')}",
-        f"  tw_daily_pick summary: {pick_agent.get('summary','')[:300]}",
+        f"  tw_daily_pick summary: {str(pick_agent.get('summary') or '')[:300]}",
         "",
         f"【今日市場 context】",
         f"  regime: {regime.get('market_regime')} ({regime.get('risk_level')})",
@@ -211,7 +211,7 @@ def _explain_pick(pick, pick_agent, regime, cf, agents, market_data, candidates)
         f"  外資: {inst.get('foreign_net_amount',0)/1e8 if inst.get('foreign_net_amount') else '?'}億",
         f"  上漲家數/下跌家數: {breadth.get('advance')}/{breadth.get('decline')}",
         f"  trading_budget: {cf.get('budget',{}).get('trading',0)*100:.0f}%",
-        f"  market_overview: {mo.get('summary','')[:200]}",
+        f"  market_overview: {str(mo.get('summary') or '')[:200]}",
         "",
         f"【signal_fusion 指標】",
         f"  market_regime_score: {sf.get('market_regime_score')}",
@@ -231,7 +231,7 @@ def _explain_pick(pick, pick_agent, regime, cf, agents, market_data, candidates)
     lines.append("")
     lines.append("【Devil's Advocate 的反方論述】")
     lines.append(f"  verdict: {da.get('verdict','')}")
-    lines.append(f"  summary: {da.get('summary','')[:300]}")
+    lines.append(f"  summary: {str(da.get('summary') or '')[:300]}")
     for arg in (da.get('counter_argument') or da.get('counter_arguments') or [])[:3]:
         lines.append(f"  · {arg}")
     for r in (da.get('risk_flags') or [])[:3]:
@@ -263,7 +263,7 @@ def _explain_watch(pick_agent, regime, cf, agents, market_data, candidates):
     lines = [
         f"【今日盤後系統決策：觀望】",
         f"  verdict: {pick_agent.get('verdict', '空手觀望')} (conf {pick_agent.get('confidence','')})",
-        f"  tw_daily_pick summary: {pick_agent.get('summary','')[:400]}",
+        f"  tw_daily_pick summary: {str(pick_agent.get('summary') or '')[:400]}",
         "",
         f"【今日市場 context】",
         f"  regime: {regime.get('market_regime')} ({regime.get('risk_level')})",
@@ -273,7 +273,7 @@ def _explain_watch(pick_agent, regime, cf, agents, market_data, candidates):
         f"  外資: {inst.get('foreign_net_amount',0)/1e8 if inst.get('foreign_net_amount') else '?'}億",
         f"  上漲家數/下跌家數: {breadth.get('advance')}/{breadth.get('decline')}",
         f"  trading_budget: {cf.get('budget',{}).get('trading',0)*100:.0f}%",
-        f"  market_overview: {mo.get('summary','')[:200]}",
+        f"  market_overview: {str(mo.get('summary') or '')[:200]}",
         "",
         f"【signal_fusion 指標】",
         f"  trend_strength: {sf.get('trend_strength')}",
@@ -300,7 +300,7 @@ def _explain_watch(pick_agent, regime, cf, agents, market_data, candidates):
     for f in cf.get("override_flags", [])[:5]:
         lines.append(f"  · {f}")
     if da.get("summary"):
-        lines.append(f"  DA: {da.get('summary','')[:200]}")
+        lines.append(f"  DA: {str(da.get('summary') or '')[:200]}")
 
     user_content = "\n".join(lines) + """
 
