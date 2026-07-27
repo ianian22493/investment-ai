@@ -4,7 +4,7 @@ Sources: 永豐 Shioaji (台股即時), TWSE Open API, FinMind, yfinance, Frankf
 Shioaji is used when SHIOAJI_API_KEY is present; falls back to yfinance automatically.
 """
 
-import json, os, time, requests
+import json, os, time, requests, math
 from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 import yfinance as yf
@@ -17,6 +17,21 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 TWSE_VERIFY = False
 
 TZ = ZoneInfo("Asia/Taipei")
+
+
+def _json_safe(obj):
+    """遞迴把 NaN / Infinity 換成 None。json.dump 預設把 NaN 寫成裸 token `NaN`，
+    這是合法 JS 卻**非法 JSON**，瀏覽器 Response.json() 會整包失敗、dashboard 進不去
+    （2026-07-27 事故：抓價失敗的 close/change_pct 帶 NaN 寫進 market_data.json）。"""
+    if isinstance(obj, float):
+        return obj if math.isfinite(obj) else None
+    if isinstance(obj, dict):
+        return {k: _json_safe(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_json_safe(v) for v in obj]
+    return obj
+
+
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 PORTFOLIO_FILE = os.path.join(DATA_DIR, "portfolio.json")
 MARKET_FILE = os.path.join(DATA_DIR, "market_data.json")
@@ -760,8 +775,8 @@ def run():
         "news": news,
     }
 
-    with open(MARKET_FILE, "w") as f:
-        json.dump(market_data, f, ensure_ascii=False, indent=2)
+    with open(MARKET_FILE, "w", encoding="utf-8") as f:
+        json.dump(_json_safe(market_data), f, ensure_ascii=False, indent=2, allow_nan=False)
 
     print(f"  saved → data/market_data.json")
     print(f"  TAIEX: {indices.get('taiex', {}).get('close')} ({indices.get('taiex', {}).get('change_pct')}%)")

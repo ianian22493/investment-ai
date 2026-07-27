@@ -2,7 +2,7 @@
 Investment AI Orchestrator — 三層 Desk + Capital Flow 架構
 """
 
-import json, os, sys, time
+import json, os, sys, time, math
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -34,9 +34,24 @@ def load_json(path: str) -> dict:
         return json.load(f)
 
 
+def _json_safe(obj):
+    """遞迴把 NaN / Infinity（float('nan') 等）換成 None。Python 的 json.dump
+    預設把 NaN 寫成裸 token `NaN`——這是合法 JS 但**非法 JSON**，瀏覽器的
+    Response.json() 會整包解析失敗、dashboard 卡在載入（見 2026-07-27 事故：
+    抓價失敗的 close/change_pct 帶著 NaN 一路寫進 analysis.json，前端進不去）。
+    load_json 用的 json.load 反而容忍 NaN，所以 cron 全程不報錯 → 只有前端會爆。"""
+    if isinstance(obj, float):
+        return obj if math.isfinite(obj) else None
+    if isinstance(obj, dict):
+        return {k: _json_safe(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_json_safe(v) for v in obj]
+    return obj
+
+
 def save_json(data: dict, path: str):
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        json.dump(_json_safe(data), f, ensure_ascii=False, indent=2, allow_nan=False)
 
 
 def load_candidates() -> list:
