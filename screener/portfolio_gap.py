@@ -63,18 +63,24 @@ FACTOR_MAP = {
     "ZS":    {"geo": "US", "sector": "資安SaaS",    "tags": ["cybersecurity", "AI-software"]},
 }
 
-# 過度集中門檻（單因子/單地區佔總股票部位的上限）
-OVER_LIMITS = {
-    "AI合計(hardware+software)": 40,
-    "US-megacap-tech": 25,
+# ── 又瑄的既定政策（2026-07-27 本人表述）──────────────────────────────
+# 這兩項是「刻意選擇」，不是要修的問題——工具尊重它，列 policy_accepted 不示警：
+#   1) 台股重：房款/近期負債是台幣，資產負債匹配（正確）
+#   2) AI 重：本人信 AI 是長期趨勢，刻意高信念配置
+# 但仍守三條「連 AI 多頭也該同意」的底線 guard（越線才示警）：
+#   Musk 單一個人、cybersecurity 單因子、（單股上限在 watchlist.json position_rules）
+POLICY_ACCEPTED = {
+    "single-geo": 92,   # 台股重可接受到 92%（liquidity/liability matching）；超過才提醒
+    "AI合計": 60,       # AI 高信念可接受到 60%；超過才提醒過熱
+}
+# 真正的 guard（本人也會同意的底線）
+GUARD_LIMITS = {
     "Musk": 20,
     "cybersecurity": 15,
-    "single-geo(US或TW)": 65,
 }
-# 期望但常被忽略的方向（幾乎為 0 就是缺口）
-DESIRED_MIN = {
+# 缺口＝「機會，不是義務」——列出來讓你知道可以往哪分散，要不要補是你的選擇
+OPPORTUNITY_MIN = {
     "EM(新興市場)": 5,
-    "非科技分散(消費/金融/防禦)": 15,
     "非美非台(海外分散)": 10,
 }
 
@@ -151,49 +157,53 @@ def main():
         "非美非台(海外分散)": round(geo["EM"] + geo["DM-ex-US"], 1),
     }
 
-    # 判斷過度集中
-    over = []
-    if ai > OVER_LIMITS["AI合計(hardware+software)"]:
-        over.append({"factor": "AI合計", "now": ai, "limit": OVER_LIMITS["AI合計(hardware+software)"]})
-    for k in ("US-megacap-tech", "Musk", "cybersecurity"):
-        if exposures[k] > OVER_LIMITS[k]:
-            over.append({"factor": k, "now": exposures[k], "limit": OVER_LIMITS[k]})
-    if max(geo["US"], geo["TW"]) > OVER_LIMITS["single-geo(US或TW)"]:
-        over.append({"factor": "單一地區", "now": max(geo["US"], geo["TW"]),
-                     "limit": OVER_LIMITS["single-geo(US或TW)"]})
+    # guard 底線（本人也同意的）——越線才示警
+    guard_breached = []
+    for k in ("Musk", "cybersecurity"):
+        if exposures[k] > GUARD_LIMITS[k]:
+            guard_breached.append({"factor": k, "now": exposures[k], "limit": GUARD_LIMITS[k],
+                                   "why": "Musk=單一個人風險 / cyber=單因子——非「AI 多空」問題，AI 多頭也該守"})
 
-    # 判斷缺口
-    gaps = []
-    if exposures["EM(新興市場)"] < DESIRED_MIN["EM(新興市場)"]:
-        gaps.append({"missing": "EM 新興市場", "now": exposures["EM(新興市場)"],
-                     "desired_min": DESIRED_MIN["EM(新興市場)"],
-                     "note": "拉美/東南亞/印度金融科技與電商（如 NU/SE/STNE）——與 AI/科技不相關"})
-    if non_tech_div < DESIRED_MIN["非科技分散(消費/金融/防禦)"]:
-        gaps.append({"missing": "非科技防禦分散", "now": non_tech_div,
-                     "desired_min": DESIRED_MIN["非科技分散(消費/金融/防禦)"],
-                     "note": "消費/醫療/公用/法規獨佔（如 CAVA/CLH 型）——AI 崩時不跟跌"})
-    if exposures["非美非台(海外分散)"] < DESIRED_MIN["非美非台(海外分散)"]:
-        gaps.append({"missing": "美台以外地區", "now": exposures["非美非台(海外分散)"],
-                     "desired_min": DESIRED_MIN["非美非台(海外分散)"],
-                     "note": "組合幾乎全在美國+台灣，地緣單一"})
+    # 政策接受的集中（刻意選擇，不示警；僅在超出政策上限時提醒）
+    policy_accepted = []
+    top_geo = max(geo["US"], geo["TW"])
+    policy_accepted.append({"factor": "台股重（房款流動性）", "now": top_geo,
+                            "accepted_upto": POLICY_ACCEPTED["single-geo"],
+                            "status": "政策接受" if top_geo <= POLICY_ACCEPTED["single-geo"] else "已超政策上限，可留意"})
+    policy_accepted.append({"factor": "AI 高信念配置", "now": ai,
+                            "accepted_upto": POLICY_ACCEPTED["AI合計"],
+                            "status": "政策接受" if ai <= POLICY_ACCEPTED["AI合計"] else "已超政策上限，可留意過熱"})
+
+    # 缺口＝機會（不是義務）
+    opportunities = []
+    if exposures["EM(新興市場)"] < OPPORTUNITY_MIN["EM(新興市場)"]:
+        opportunities.append({"direction": "EM 新興市場", "now": exposures["EM(新興市場)"],
+                              "suggest": OPPORTUNITY_MIN["EM(新興市場)"],
+                              "note": "拉美/東南亞/印度金融科技與電商（如 NU/SE/STNE）——與 AI/科技不相關，是選項不是義務"})
+    if exposures["非美非台(海外分散)"] < OPPORTUNITY_MIN["非美非台(海外分散)"]:
+        opportunities.append({"direction": "美台以外地區", "now": exposures["非美非台(海外分散)"],
+                              "suggest": OPPORTUNITY_MIN["非美非台(海外分散)"],
+                              "note": "地緣目前集中美+台；想分散地緣風險時可往這找"})
 
     out = {
         "generated_at": datetime.now(TW_TZ).strftime("%Y-%m-%d %H:%M %z"),
         "fx_usd_twd": fx,
         "total_equity_twd": round(total),
-        "doc": "組合缺口透鏡：over=過度集中該減、gaps=缺口該往此方向找分散股。"
-               "掃描器讀 gaps 決定往哪裡獵，而不是又找一堆已超標的 AI/科技。",
+        "doc": "組合缺口透鏡（尊重又瑄政策版）：台股重與AI重是刻意選擇→policy_accepted不示警；"
+               "guard_breached=連AI多頭也該守的底線（Musk單人/單因子）；opportunities=缺口機會（選項非義務）。",
+        "policy_note": "又瑄政策：①台股重=房款台幣負債匹配（正確）②AI重=信長期趨勢的高信念配置。"
+                       "工具只在 Musk/單因子越線、或集中超出政策上限時提醒。",
         "geography": geo,
         "exposures": exposures,
-        "over_concentration": over,
-        "gaps": gaps,
+        "guard_breached": guard_breached,
+        "policy_accepted": policy_accepted,
+        "opportunities": opportunities,
         "untagged": untagged,
     }
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"wrote {OUT.relative_to(ROOT)}")
-    print(f"  地區: TW {geo['TW']}% / US {geo['US']}% / EM {geo['EM']}%")
-    print(f"  AI合計 {ai}% · Musk {exposures['Musk']}% · 資安 {exposures['cybersecurity']}% · 非科技分散 {non_tech_div}%")
-    print(f"  過度集中 {len(over)} 項 · 缺口 {len(gaps)} 項 · untagged {len(untagged)}")
+    print(f"  地區: TW {geo['TW']}% / US {geo['US']}%   AI合計 {ai}% · Musk {exposures['Musk']}% · 資安 {exposures['cybersecurity']}%")
+    print(f"  guard越線 {len(guard_breached)} · 政策接受 {len(policy_accepted)} · 缺口機會 {len(opportunities)} · untagged {len(untagged)}")
 
 
 if __name__ == "__main__":

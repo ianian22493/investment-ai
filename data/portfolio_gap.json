@@ -1,8 +1,9 @@
 {
- "generated_at": "2026-07-27 16:28 +0800",
+ "generated_at": "2026-07-27 17:49 +0800",
  "fx_usd_twd": 32.3533,
  "total_equity_twd": 4205335,
- "doc": "組合缺口透鏡：over=過度集中該減、gaps=缺口該往此方向找分散股。掃描器讀 gaps 決定往哪裡獵，而不是又找一堆已超標的 AI/科技。",
+ "doc": "組合缺口透鏡（尊重又瑄政策版）：台股重與AI重是刻意選擇→policy_accepted不示警；guard_breached=連AI多頭也該守的底線（Musk單人/單因子）；opportunities=缺口機會（選項非義務）。",
+ "policy_note": "又瑄政策：①台股重=房款台幣負債匹配（正確）②AI重=信長期趨勢的高信念配置。工具只在 Musk/單因子越線、或集中超出政策上限時提醒。",
  "geography": {
   "TW": 90.5,
   "US": 9.5,
@@ -22,25 +23,33 @@
   "EM(新興市場)": 0.0,
   "非美非台(海外分散)": 0.0
  },
- "over_concentration": [
+ "guard_breached": [],
+ "policy_accepted": [
   {
-   "factor": "單一地區",
+   "factor": "台股重（房款流動性）",
    "now": 90.5,
-   "limit": 65
-  }
- ],
- "gaps": [
-  {
-   "missing": "EM 新興市場",
-   "now": 0.0,
-   "desired_min": 5,
-   "note": "拉美/東南亞/印度金融科技與電商（如 NU/SE/STNE）——與 AI/科技不相關"
+   "accepted_upto": 92,
+   "status": "政策接受"
   },
   {
-   "missing": "美台以外地區",
+   "factor": "AI 高信念配置",
+   "now": 24.9,
+   "accepted_upto": 60,
+   "status": "政策接受"
+  }
+ ],
+ "opportunities": [
+  {
+   "direction": "EM 新興市場",
    "now": 0.0,
-   "desired_min": 10,
-   "note": "組合幾乎全在美國+台灣，地緣單一"
+   "suggest": 5,
+   "note": "拉美/東南亞/印度金融科技與電商（如 NU/SE/STNE）——與 AI/科技不相關，是選項不是義務"
+  },
+  {
+   "direction": "美台以外地區",
+   "now": 0.0,
+   "suggest": 10,
+   "note": "地緣目前集中美+台；想分散地緣風險時可往這找"
   }
  ],
  "untagged": []
