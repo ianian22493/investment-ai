@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-28T08:34:52+08:00",
+  "generated_at": "2026-07-28T16:38:06+08:00",
   "_doc": "Swing pick 系統記分卡（機器可讀）。讀取者：寶藏股研究室季度審判日（quarterly-holdings-judgment-day 排程）。short_term=改版前(1-3日動能)、swing=2026-07-17 起(10-22 交易日波段)。alpha=vs 0050 同期。",
   "swing_era_start": "2026-07-17",
   "by_era": {
@@ -19,16 +19,16 @@
       }
     },
     "swing": {
-      "total": 1,
-      "traded": 1,
+      "total": 3,
+      "traded": 3,
       "not_filled": 0,
       "wins": 0,
       "win_rate_pct": 0.0,
-      "avg_return_pct": -8.54,
-      "avg_alpha_pct": -12.24,
+      "avg_return_pct": -7.97,
+      "avg_alpha_pct": -5.56,
       "avg_hold_days": 3.0,
       "exit_reasons": {
-        "stop": 1
+        "stop": 3
       }
     }
   },
@@ -49,17 +49,17 @@
       }
     },
     "2026Q3": {
-      "total": 5,
-      "traded": 5,
+      "total": 7,
+      "traded": 7,
       "not_filled": 0,
       "wins": 0,
       "win_rate_pct": 0.0,
-      "avg_return_pct": -3.44,
-      "avg_alpha_pct": -3.34,
-      "avg_hold_days": 1.6,
+      "avg_return_pct": -4.65,
+      "avg_alpha_pct": -2.96,
+      "avg_hold_days": 2.0,
       "exit_reasons": {
         "time": 1,
-        "stop": 4
+        "stop": 6
       }
     }
   },
@@ -68,50 +68,18 @@
       "code": "2887",
       "name": "台新新光金",
       "entry_date": "2026-07-20",
-      "current_return_pct": 0.72,
-      "days_held": 5
+      "current_return_pct": -2.161,
+      "days_held": 6
     },
     {
       "code": "2059",
       "name": "川湖",
       "entry_date": "2026-07-21",
-      "current_return_pct": 4.747,
-      "days_held": 2
-    },
-    {
-      "code": "8028",
-      "name": "昇陽半導體",
-      "entry_date": "2026-07-22",
-      "current_return_pct": 0.81,
+      "current_return_pct": -5.696,
       "days_held": 3
-    },
-    {
-      "code": "6944",
-      "name": "兆聯實業",
-      "entry_date": "2026-07-26",
-      "current_return_pct": 1.419,
-      "days_held": 1
     }
   ],
   "recent_resolved": [
-    {
-      "date": "2026-05-29",
-      "code": "2317",
-      "name": "鴻海",
-      "return_pct": 4.844,
-      "alpha_pct": null,
-      "exit": "target",
-      "days": 1
-    },
-    {
-      "date": "2026-06-02",
-      "code": "2379",
-      "name": "瑞昱",
-      "return_pct": 3.369,
-      "alpha_pct": null,
-      "exit": "target",
-      "days": 1
-    },
     {
       "date": "2026-06-15",
       "code": "6196",
@@ -183,6 +151,24 @@
       "alpha_pct": -12.239,
       "exit": "stop",
       "days": 3
+    },
+    {
+      "date": "2026-07-22",
+      "code": "8028",
+      "name": "昇陽半導體",
+      "return_pct": -7.618,
+      "alpha_pct": -1.166,
+      "exit": "stop",
+      "days": 4
+    },
+    {
+      "date": "2026-07-26",
+      "code": "6944",
+      "name": "兆聯實業",
+      "return_pct": -7.742,
+      "alpha_pct": -3.268,
+      "exit": "stop",
+      "days": 2
     }
   ]
 }
