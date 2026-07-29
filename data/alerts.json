@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-07-28 16:38 +0800",
+ "checked_at": "2026-07-29 08:35 +0800",
  "hit_count": 10,
  "new_hit_count": 1,
  "results": [
@@ -9,7 +9,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 19.0",
+   "detail": "VIX 18.2",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -17,8 +17,8 @@
    "symbol": "^TWII",
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
-   "hit": true,
-   "detail": "單日 -4.65%",
+   "hit": false,
+   "detail": "單日 -0.05%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -62,8 +62,8 @@
    "symbol": "SOUN",
    "name": "SoundHound",
    "rule": "below_price",
-   "hit": false,
-   "detail": "現價 6.41 vs 觸發價 6.33",
+   "hit": true,
+   "detail": "現價 6.24 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -72,7 +72,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 6.41 vs 觸發價 5.9",
+   "detail": "現價 6.24 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
   },
   {
@@ -81,7 +81,7 @@
    "name": "SpaceX",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 113.50 vs 觸發價 130.0",
+   "detail": "現價 116.41 vs 觸發價 130.0",
    "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
@@ -90,7 +90,7 @@
    "name": "CAVA",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 64.54 vs 觸發價 55.0",
+   "detail": "現價 65.00 vs 觸發價 55.0",
    "note": "美股寶藏分散器加碼區：跌破 $55（~$62 已是可接受小起始）。Q2財報看同店/展店/利潤率"
   },
   {
@@ -99,7 +99,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-07-24（4 天前）",
+   "detail": "_updated=2026-07-24（5 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -135,7 +135,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 29.7%（上限 25%）",
+   "detail": "合計佔 US 部位 29.3%（上限 25%）",
    "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
   },
   {
