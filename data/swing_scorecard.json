@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-29T08:35:17+08:00",
+  "generated_at": "2026-07-29T16:38:13+08:00",
   "_doc": "Swing pick 系統記分卡（機器可讀）。讀取者：寶藏股研究室季度審判日（quarterly-holdings-judgment-day 排程）。short_term=改版前(1-3日動能)、swing=2026-07-17 起(10-22 交易日波段)。alpha=vs 0050 同期。",
   "swing_era_start": "2026-07-17",
   "by_era": {
@@ -19,16 +19,16 @@
       }
     },
     "swing": {
-      "total": 3,
-      "traded": 3,
+      "total": 5,
+      "traded": 5,
       "not_filled": 0,
       "wins": 0,
       "win_rate_pct": 0.0,
-      "avg_return_pct": -7.97,
-      "avg_alpha_pct": -5.56,
-      "avg_hold_days": 3.0,
+      "avg_return_pct": -7.69,
+      "avg_alpha_pct": -3.42,
+      "avg_hold_days": 4.0,
       "exit_reasons": {
-        "stop": 3
+        "stop": 5
       }
     }
   },
@@ -49,55 +49,22 @@
       }
     },
     "2026Q3": {
-      "total": 7,
-      "traded": 7,
+      "total": 9,
+      "traded": 9,
       "not_filled": 0,
       "wins": 0,
       "win_rate_pct": 0.0,
-      "avg_return_pct": -4.65,
-      "avg_alpha_pct": -2.96,
-      "avg_hold_days": 2.0,
+      "avg_return_pct": -5.23,
+      "avg_alpha_pct": -2.28,
+      "avg_hold_days": 2.8,
       "exit_reasons": {
         "time": 1,
-        "stop": 6
+        "stop": 8
       }
     }
   },
-  "open_positions": [
-    {
-      "code": "2887",
-      "name": "台新新光金",
-      "entry_date": "2026-07-20",
-      "current_return_pct": -2.161,
-      "days_held": 6
-    },
-    {
-      "code": "2059",
-      "name": "川湖",
-      "entry_date": "2026-07-21",
-      "current_return_pct": -5.696,
-      "days_held": 3
-    }
-  ],
+  "open_positions": [],
   "recent_resolved": [
-    {
-      "date": "2026-06-15",
-      "code": "6196",
-      "name": "帆宣",
-      "return_pct": -2.269,
-      "alpha_pct": null,
-      "exit": "stop",
-      "days": 1
-    },
-    {
-      "date": "2026-06-19",
-      "code": "2492",
-      "name": "華新科",
-      "return_pct": 6.061,
-      "alpha_pct": null,
-      "exit": "target",
-      "days": 1
-    },
     {
       "date": "2026-06-22",
       "code": "6719",
@@ -151,6 +118,24 @@
       "alpha_pct": -12.239,
       "exit": "stop",
       "days": 3
+    },
+    {
+      "date": "2026-07-20",
+      "code": "2887",
+      "name": "台新新光金",
+      "return_pct": -6.34,
+      "alpha_pct": -0.796,
+      "exit": "stop",
+      "days": 7
+    },
+    {
+      "date": "2026-07-21",
+      "code": "2059",
+      "name": "川湖",
+      "return_pct": -8.228,
+      "alpha_pct": 0.357,
+      "exit": "stop",
+      "days": 4
     },
     {
       "date": "2026-07-22",
