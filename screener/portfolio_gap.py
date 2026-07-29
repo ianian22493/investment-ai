@@ -48,6 +48,10 @@ FACTOR_MAP = {
     "3703":  {"geo": "TW", "sector": "營建",        "tags": ["cyclical-traditional"]},
     "6442":  {"geo": "TW", "sector": "光通訊",      "tags": ["AI-hardware", "optical"]},
     "8299":  {"geo": "TW", "sector": "記憶體IC",    "tags": ["AI-hardware", "memory-cycle"]},
+    "2308":  {"geo": "TW", "sector": "AI電源散熱",  "tags": ["AI-hardware"]},
+    "3661":  {"geo": "TW", "sector": "AI-ASIC設計", "tags": ["AI-hardware", "semis"]},
+    "00675L": {"geo": "TW", "sector": "2X槓桿ETF",  "tags": ["leveraged-TW-index"]},
+    "00685L": {"geo": "TW", "sector": "2X槓桿ETF",  "tags": ["leveraged-TW-index"]},
     # US
     "AMZN":  {"geo": "US", "sector": "科技電商",    "tags": ["US-megacap-tech"]},
     "CAVA":  {"geo": "US", "sector": "餐飲",        "tags": ["consumer-discretionary"]},
