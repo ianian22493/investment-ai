@@ -1,7 +1,7 @@
 {
- "checked_at": "2026-07-30 08:35 +0800",
- "hit_count": 12,
- "new_hit_count": 2,
+ "checked_at": "2026-07-30 16:44 +0800",
+ "hit_count": 11,
+ "new_hit_count": 0,
  "results": [
   {
    "key": "panic|vix",
@@ -9,7 +9,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 20.7",
+   "detail": "VIX 19.6",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -17,8 +17,8 @@
    "symbol": "^TWII",
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
-   "hit": true,
-   "detail": "單日 -4.65%",
+   "hit": false,
+   "detail": "單日 -0.26%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -27,7 +27,7 @@
    "name": "台積電",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 2200.00 vs 月線 2394.00",
+   "detail": "現價 2205.00 vs 月線 2381.00",
    "note": "核心加碼窗口：跌破月線（觀察名單：法說或恐慌日跌破月線分批）"
   },
   {
@@ -36,7 +36,7 @@
    "name": "群聯",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 1515.00 vs 月線 1993.75",
+   "detail": "現價 1495.00 vs 月線 1956.50",
    "note": "持倉移動停損警戒：跌破月線＝檢查 NAND 合約價與論述卡"
   },
   {
@@ -45,7 +45,7 @@
    "name": "光聖",
    "rule": "near_52w_low",
    "hit": false,
-   "detail": "現價 1110.00 vs 52週低 590.00（門檻 +3.0%）",
+   "detail": "現價 1050.00 vs 52週低 590.00（門檻 +3.0%）",
    "note": "持倉警戒：再破前低＝論述卡規定無條件出場"
   },
   {
@@ -54,7 +54,7 @@
    "name": "欣陸",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 20.45 vs 月線 20.64",
+   "detail": "現價 20.60 vs 月線 20.65",
    "note": "持倉警戒：Q3 底期限前持續在月線下＝出場倒數"
   },
   {
@@ -99,7 +99,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-07-29（1 天前）",
+   "detail": "_updated=2026-07-30（0 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -108,16 +108,7 @@
    "name": "3293 鈊象",
    "rule": "position_over_limit",
    "hit": true,
-   "detail": "佔 TW 部位 19.8%＞上限 10%",
-   "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
-  },
-  {
-   "key": "pos|tw|1104",
-   "symbol": "1104",
-   "name": "1104 環泥",
-   "rule": "position_over_limit",
-   "hit": true,
-   "detail": "佔 TW 部位 15.4%＞上限 10%",
+   "detail": "佔 TW 部位 20.5%＞上限 10%",
    "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
   },
   {
@@ -126,7 +117,16 @@
    "name": "2211 長榮鋼",
    "rule": "position_over_limit",
    "hit": true,
-   "detail": "佔 TW 部位 12.2%＞上限 10%",
+   "detail": "佔 TW 部位 12.7%＞上限 10%",
+   "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
+  },
+  {
+   "key": "pos|tw|1104",
+   "symbol": "1104",
+   "name": "1104 環泥",
+   "rule": "position_over_limit",
+   "hit": true,
+   "detail": "佔 TW 部位 12.4%＞上限 10%",
    "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
   },
   {
@@ -135,7 +135,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 28.8%（上限 25%）",
+   "detail": "合計佔 US 部位 30.2%（上限 25%）",
    "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
   },
   {
@@ -144,7 +144,7 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 18.9%（上限 15%）",
+   "detail": "合計佔 US 部位 18.3%（上限 15%）",
    "note": "單一因子上限 15%（論述卡：三檔合併審）"
   }
  ]
