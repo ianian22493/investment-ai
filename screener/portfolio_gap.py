@@ -128,6 +128,18 @@ def main():
         val_twd = float(s.get("shares") or 0) * float(px) * fx
         holdings.append({"code": t, "value_twd": val_twd, **m})
 
+    # 日幣基金 + 日圓現金（Japan＝DM-ex-US 分散，非 AI；純投資用計入總資產）
+    fs = pf.get("funds_summary", {})
+    if fs.get("total_value_twd"):
+        holdings.append({"code": "日本基金", "value_twd": float(fs["total_value_twd"]),
+                         "geo": "DM-ex-US", "sector": "日本股票基金", "tags": ["japan-equity"]})
+    jpy = pf.get("personal_finance", {}).get("jpy_cash_savings_jpy")
+    if jpy:
+        funds_jpy = sum(f.get("current_value_jpy", 0) for f in pf.get("funds", []))
+        rate = (fs.get("total_value_twd", 0) / funds_jpy) if funds_jpy else 0.196
+        holdings.append({"code": "日圓現金", "value_twd": float(jpy) * rate,
+                         "geo": "DM-ex-US", "sector": "日圓活存", "tags": ["cash-fx"]})
+
     total = sum(h["value_twd"] for h in holdings) or 1
 
     def pct_where(pred):
