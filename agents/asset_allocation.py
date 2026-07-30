@@ -9,22 +9,22 @@ from zoneinfo import ZoneInfo
 
 TZ = ZoneInfo("Asia/Taipei")
 
-SYSTEM = """你是一位偏執的資產配置風控專家，你的工作就是找出資產組合的潛在危機。
+SYSTEM = """你是一位校準過的資產配置風控專家：找真正的風險，但不把「正常現象」當危機嚇人。
 
-【角色偏見 — 超悲觀風控】
-- 假設最壞情況：台股跌40%、美股跌30%、房價跌20% 會怎樣？
-- 對槓桿（房貸）極度警惕
-- 認為集中度超過50%就是風險
-- 對「未實現收益」非常不信任
+【風控原則 — 校準版】
+- 壓力測試最壞情況：台股跌40%、美股跌30%、房價跌20%
+- **正常房貸槓桿不是危機**：首購族貸7-8成、房貸大於淨資產是常態；只要 LTV 正常(≤80%)且月付可負擔(≤月收入40%)就是健康的，**絕不要拿「房貸/淨資產比」當紅燈嚇人**
+- **真正該警惕的槓桿**：在房貸之上「疊加」的投資槓桿（正二/槓桿ETF/融資）、單一個股或因子過度集中、現金流缺口——這些才是問題
+- 對「未實現收益」保持務實，但不偏執
 
 【分析框架】
-1. 資產分布：房產/台股/美股/基金/現金各佔多少？
-2. 槓桿分析：房貸對比淨資產比例
-3. 壓力測試：若各類資產同時下跌，淨資產剩多少？
-4. 流動性：緊急時能快速變現的資產有多少？
-5. 現金時間軸：未來 24 個月每筆現金需求清單
+1. 資產分布：各類資產佔比
+2. 房貸健康度：看 LTV 與 月付/月收入（不是帳面槓桿比）
+3. 疊加槓桿：房貸之上有無投資槓桿或集中賭注
+4. 流動性與現金時間軸：未來現金需求 vs 可用資金
+5. 壓力測試：極端下跌後淨資產
 
-verdict 只能是：安全 / 稍微過度集中 / 明顯過度集中 / 高風險 / 危險"""
+verdict 只能是：安全 / 正常 / 稍微過度集中 / 明顯過度集中 / 高風險 / 危險"""
 
 
 def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentiment: dict = {}, regime: dict = None) -> dict:
@@ -44,6 +44,19 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
     # 用個人持份就地重算配置%（fetch_market_data 的 allocation_pct 是全額，會高估房產）
     alloc = {"real_estate": round(re_val/total*100, 1), "tw_stocks": round(tw_val/total*100, 1),
              "us_stocks": round(us_val/total*100, 1), "funds": round(fund_val/total*100, 1)}
+
+    # ── 房貸的「有意義」指標：LTV + 月付負擔（不是帳面槓桿比）─────────────────
+    pf_inc = portfolio.get("personal_finance", {}).get("monthly_income_twd", 0)
+    full_house = re.get("total_price", 22000000)
+    full_loan  = re.get("loan_amount", 15400000)
+    ltv = full_loan / full_house * 100 if full_house else 0            # 貸款成數（房價層級，全額）
+    r_m = re.get("mortgage_rate", 0.021) / 12                          # 年利率預設 2.1%
+    n_m = re.get("mortgage_term_years", 30) * 12
+    monthly_pay_full = (full_loan * r_m / (1 - (1 + r_m) ** -n_m)) if r_m else full_loan / n_m
+    monthly_pay = monthly_pay_full * personal_share                   # 你的一半月付（估）
+    dti = monthly_pay / pf_inc * 100 if pf_inc else 0                 # 月付/月收入
+    inv_leverage = sum(s.get("value", 0) for s in portfolio.get("tw_stocks", [])
+                       if s.get("type") == "leveraged_ETF")           # 房貸之上疊加的投資槓桿
 
     # ── Personal finance (cash savings + income) ─────────────────────────────
     pf       = portfolio.get("personal_finance", {})
@@ -72,11 +85,14 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
         f"美股: NT${us_val:,} ({alloc.get('us_stocks','?')}%)",
         f"日幣基金: NT${fund_val:,} ({alloc.get('funds','?')}%)",
         f"總資產（毛額）: NT${total:,}",
-        f"房貸負債: NT${loan:,}",
+        f"房貸負債（你的一半）: NT${loan:,}",
         f"淨資產: NT${net:,}",
-        f"\n【槓桿分析】",
-        f"房貸/淨資產比: {loan/net*100:.1f}%",
-        f"房貸/總資產比: {loan/total*100:.1f}%",
+        f"\n【房貸健康度（用有意義的指標，不是帳面槓桿）】",
+        f"貸款成數 LTV: {ltv:.0f}%  ({'✅正常（首購常見7-8成）' if ltv <= 80 else '偏高' if ltv <= 85 else '⚠️過高'})",
+        f"月付(你的一半,估@2.1%/30yr): NT${monthly_pay:,.0f} / 月收入 NT${pf_inc:,} = {dti:.0f}%  ({'✅可負擔' if dti <= 40 else '⚠️吃緊'})",
+        f"（參考,別當紅燈）房貸/淨資產: {loan/net*100:.0f}% — 首購族此比例天生>100%是正常的",
+        f"疊加投資槓桿（正二/槓桿ETF）: NT${inv_leverage:,}  ← 房貸之上真正該警惕的疊加"
+        + ("（目前小額,OK）" if inv_leverage < total * 0.05 else " ⚠️ 已不小,別再加"),
         f"\n【現金需求時間軸（從 portfolio.json 動態讀取）】",
     ]
 
@@ -124,13 +140,13 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
 
     user_content = "\n".join(lines) + f"""
 
-請以偏執風控專家角色分析：
-1. 房產是最大部位（{re_val/total*100:.0f}%），槓桿 {loan/net*100:.0f}%，這個風險水位如何？
-2. 未來 12 個月現金需求 NT${next_12m_total:,} vs 可變現資產，流動性是否充足？
-3. 裝潢與家具費用（你的一半 NT${int((re.get('renovation_budget',0)+re.get('furniture_budget',0))*personal_share):,}）是否已納入計劃？
-4. 台股三檔持續虧損是否影響整體配置健康度？
-5. 壓力測試結果：最壞情況下淨資產還剩多少？能否承受？
+請以「校準過」的風控專家角色分析（重要：正常房貸槓桿是首購常態，**不要拿它當危機嚇人**）：
+1. 房貸健康度：LTV {ltv:.0f}%、月付佔收入 {dti:.0f}% — 這兩個才是關鍵，健康嗎？（「房貸/淨資產>100%」對首購是正常的，別當紅燈）
+2. 真正該警惕的疊加：房貸之上有沒有投資槓桿（正二 NT${inv_leverage:,}）、單一個股/因子過度集中？這才是問題所在
+3. 未來 12 個月現金需求 NT${next_12m_total:,} vs 可用資金（存款+薪資 NT${total_available_12m:,}），流動性夠嗎？
+4. 裝潢與家具費用（你的一半 NT${int((re.get('renovation_budget',0)+re.get('furniture_budget',0))*personal_share):,}）是否已納入計劃？
+5. 壓力測試：最壞情況下淨資產還剩多少、能否承受？
 
-注意：你的工作是找問題，不是給安慰。"""
+注意：找**真正的**風險（疊加槓桿、過度集中、現金缺口），不要把「正常房貸」當危機來嚇人。"""
 
     return call_llm(SYSTEM, user_content, "asset_allocation")
