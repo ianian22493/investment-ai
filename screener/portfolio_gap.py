@@ -54,6 +54,7 @@ FACTOR_MAP = {
     "00685L": {"geo": "TW", "sector": "2X槓桿ETF",  "tags": ["leveraged-TW-index"]},
     # US
     "AMZN":  {"geo": "US", "sector": "科技電商",    "tags": ["US-megacap-tech"]},
+    "DRAM":  {"geo": "US", "sector": "記憶體ETF",   "tags": ["AI-hardware", "memory-cycle"]},
     "CAVA":  {"geo": "US", "sector": "餐飲",        "tags": ["consumer-discretionary"]},
     "CELH":  {"geo": "US", "sector": "飲料",        "tags": ["consumer-staples"]},
     "GOOGL": {"geo": "US", "sector": "科技",        "tags": ["US-megacap-tech", "AI-software"]},
