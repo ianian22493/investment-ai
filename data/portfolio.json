@@ -350,7 +350,7 @@
     "renovation_budget": 1200000,
     "furniture_budget": 920000,
     "personal_share_pct": 0.5,
-    "_share_note": "夫妻各付一半，payment_schedule 為全額，計算時乘 0.5",
+    "_share_note": "夫妻各付一半：房產/房貸/自備/裝潢家具/payment_schedule 皆為全額，個人持份 = ×0.5。asset_allocation.py 已修正為乘 0.5 計算佔比與槓桿（2026-07-30）",
     "payment_schedule": [
       {
         "name": "外牆裝修完工款",
@@ -376,6 +376,13 @@
         "amount": 920000,
         "category": "furniture"
       }
-    ]
+    ],
+    "_personal_half": {
+      "house_value": 11000000,
+      "loan": 7700000,
+      "down_payment": 3300000,
+      "down_payment_paid": 2530000,
+      "note": "總價2200萬/貸1540萬的一半；先估，改再說"
+    }
   }
 }

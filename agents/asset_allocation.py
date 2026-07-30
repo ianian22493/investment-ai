@@ -33,14 +33,17 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
     fx  = market_data.get("fx", {})
     now = datetime.now(TZ)
 
+    personal_share = re.get("personal_share_pct", 1.0)  # 夫妻各付一半 = 0.5；房產/房貸只計個人持份
     tw_val   = pv.get("tw_stocks_twd", 3344205)
     us_val   = pv.get("us_stocks_twd", 0)
     fund_val = pv.get("funds_twd", 128233)
-    re_val   = re.get("total_price", 22000000)
-    loan     = re.get("loan_amount", 15400000)
+    re_val   = int(re.get("total_price", 22000000) * personal_share)   # 個人持份房產市值
+    loan     = int(re.get("loan_amount", 15400000) * personal_share)   # 個人持份房貸
     total    = tw_val + us_val + fund_val + re_val
     net      = total - loan
-    alloc    = pv.get("allocation_pct", {})
+    # 用個人持份就地重算配置%（fetch_market_data 的 allocation_pct 是全額，會高估房產）
+    alloc = {"real_estate": round(re_val/total*100, 1), "tw_stocks": round(tw_val/total*100, 1),
+             "us_stocks": round(us_val/total*100, 1), "funds": round(fund_val/total*100, 1)}
 
     # ── Personal finance (cash savings + income) ─────────────────────────────
     pf       = portfolio.get("personal_finance", {})
@@ -52,7 +55,6 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
 
     # ── Dynamic payment schedule (reads from portfolio.json) ─────────────────
     payment_schedule = re.get("payment_schedule", [])
-    personal_share = re.get("personal_share_pct", 1.0)  # 夫妻各付一半時 = 0.5
     upcoming_total = sum(p["amount"] * personal_share for p in payment_schedule)
     next_12m_total = sum(
         p["amount"] * personal_share for p in payment_schedule
@@ -125,7 +127,7 @@ def run(market_data: dict, portfolio: dict, market_overview: dict, news_sentimen
 請以偏執風控專家角色分析：
 1. 房產是最大部位（{re_val/total*100:.0f}%），槓桿 {loan/net*100:.0f}%，這個風險水位如何？
 2. 未來 12 個月現金需求 NT${next_12m_total:,} vs 可變現資產，流動性是否充足？
-3. 裝潢與家具費用（NT${re.get('renovation_budget',0)+re.get('furniture_budget',0):,}）是否已納入計劃？
+3. 裝潢與家具費用（你的一半 NT${int((re.get('renovation_budget',0)+re.get('furniture_budget',0))*personal_share):,}）是否已納入計劃？
 4. 台股三檔持續虧損是否影響整體配置健康度？
 5. 壓力測試結果：最壞情況下淨資產還剩多少？能否承受？
 
