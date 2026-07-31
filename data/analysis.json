@@ -1,26 +1,24 @@
 {
-  "generated_at": "2026-07-30T16:31:31.746375+08:00",
+  "generated_at": "2026-07-31T08:31:27.406311+08:00",
   "market_snapshot": {
     "taiex": {
-      "close": 39933.3,
-      "prev_close": 40039.18,
-      "change": -105.88,
-      "change_pct": -0.26
+      "close": 40039.18,
+      "change_pct": 0
     },
     "sp500": {
-      "close": 7316.15,
-      "prev_close": 7428.78,
-      "change": -112.63,
-      "change_pct": -1.52
+      "close": 7437.63,
+      "prev_close": 7316.15,
+      "change": 121.48,
+      "change_pct": 1.66
     },
     "vix": {
-      "close": 19.79,
+      "close": 17.09,
       "prev_close": 20.66,
-      "change": -0.87,
-      "change_pct": -4.21
+      "change": -3.57,
+      "change_pct": -17.28
     },
     "usd_twd": 32.0,
-    "jpy_per_usd": 163.67,
+    "jpy_per_usd": 162.87,
     "twd_per_jpy": null
   },
   "portfolio_value": {
@@ -226,20 +224,20 @@
       "total_pnl_pct": 11.65,
       "broker": "國泰證券"
     },
-    "us_stocks_twd": 402549,
-    "us_stocks_usd": 12579.67,
+    "us_stocks_twd": 417743,
+    "us_stocks_usd": 13054.47,
     "us_stocks_live": [
       {
         "ticker": "AMZN",
         "name": "Amazon",
         "shares": 2,
         "avg_cost": 201.5,
-        "close": 226.65,
-        "value_usd": 453.3,
+        "close": 235.5,
+        "value_usd": 471.0,
         "cost_usd": 403.0,
-        "pnl_usd": 50.3,
-        "pnl_pct": 12.48,
-        "change_pct": -1.82
+        "pnl_usd": 68.0,
+        "pnl_pct": 16.87,
+        "change_pct": 3.9
       },
       {
         "ticker": "CAVA",
@@ -258,12 +256,12 @@
         "name": "Celsius",
         "shares": 9,
         "avg_cost": 31.47,
-        "close": 28.88,
-        "value_usd": 259.92,
+        "close": 29.35,
+        "value_usd": 264.15,
         "cost_usd": 283.2,
-        "pnl_usd": -23.28,
-        "pnl_pct": -8.22,
-        "change_pct": -1.94
+        "pnl_usd": -19.05,
+        "pnl_pct": -6.73,
+        "change_pct": 1.63
       },
       {
         "ticker": "DRAM",
@@ -282,139 +280,139 @@
         "name": "Alphabet",
         "shares": 7.00298,
         "avg_cost": 291.74,
-        "close": 336.71,
-        "value_usd": 2357.97,
+        "close": 333.66,
+        "value_usd": 2336.61,
         "cost_usd": 2043.07,
-        "pnl_usd": 314.9,
-        "pnl_pct": 15.41,
-        "change_pct": 0.9
+        "pnl_usd": 293.54,
+        "pnl_pct": 14.37,
+        "change_pct": -0.91
       },
       {
         "ticker": "MSFT",
         "name": "Microsoft",
         "shares": 6.0081,
         "avg_cost": 377.52,
-        "close": 390.54,
-        "value_usd": 2346.4,
+        "close": 451.1,
+        "value_usd": 2710.25,
         "cost_usd": 2268.18,
-        "pnl_usd": 78.22,
-        "pnl_pct": 3.45,
-        "change_pct": -0.71
+        "pnl_usd": 442.07,
+        "pnl_pct": 19.49,
+        "change_pct": 15.51
       },
       {
         "ticker": "NVDA",
         "name": "Nvidia",
         "shares": 4.00367,
         "avg_cost": 172.52,
-        "close": 190.01,
-        "value_usd": 760.74,
+        "close": 195.04,
+        "value_usd": 780.88,
         "cost_usd": 690.71,
-        "pnl_usd": 70.03,
-        "pnl_pct": 10.14,
-        "change_pct": -3.55
+        "pnl_usd": 90.17,
+        "pnl_pct": 13.05,
+        "change_pct": 2.65
       },
       {
         "ticker": "ONDS",
         "name": "Ondas Holdings",
         "shares": 11,
         "avg_cost": 8.72,
-        "close": 6.8,
-        "value_usd": 74.8,
+        "close": 7.58,
+        "value_usd": 83.38,
         "cost_usd": 95.9,
-        "pnl_usd": -21.1,
-        "pnl_pct": -22.0,
-        "change_pct": -13.49
+        "pnl_usd": -12.52,
+        "pnl_pct": -13.06,
+        "change_pct": 11.47
       },
       {
         "ticker": "RBRK",
         "name": "Rubrik",
         "shares": 9,
         "avg_cost": 47.06,
-        "close": 71.91,
-        "value_usd": 647.19,
+        "close": 71.58,
+        "value_usd": 644.22,
         "cost_usd": 423.5,
-        "pnl_usd": 223.69,
-        "pnl_pct": 52.82,
-        "change_pct": 0.64
+        "pnl_usd": 220.72,
+        "pnl_pct": 52.12,
+        "change_pct": -0.46
       },
       {
         "ticker": "S",
         "name": "SentinelOne",
         "shares": 1,
         "avg_cost": 12.0,
-        "close": 18.52,
-        "value_usd": 18.52,
+        "close": 18.4,
+        "value_usd": 18.4,
         "cost_usd": 12.0,
-        "pnl_usd": 6.52,
-        "pnl_pct": 54.33,
-        "change_pct": 0.98
+        "pnl_usd": 6.4,
+        "pnl_pct": 53.33,
+        "change_pct": -0.65
       },
       {
         "ticker": "SOUN",
         "name": "SoundHound AI",
         "shares": 16,
         "avg_cost": 6.22,
-        "close": 5.7,
-        "value_usd": 91.2,
+        "close": 6.14,
+        "value_usd": 98.24,
         "cost_usd": 99.6,
-        "pnl_usd": -8.4,
-        "pnl_pct": -8.43,
-        "change_pct": -8.65
+        "pnl_usd": -1.36,
+        "pnl_pct": -1.37,
+        "change_pct": 7.72
       },
       {
         "ticker": "TSLA",
         "name": "Tesla",
         "shares": 13,
         "avg_cost": 361.23,
-        "close": 298.32,
-        "value_usd": 3878.16,
+        "close": 308.85,
+        "value_usd": 4015.05,
         "cost_usd": 4696.0,
-        "pnl_usd": -817.84,
-        "pnl_pct": -17.42,
-        "change_pct": -2.97
+        "pnl_usd": -680.95,
+        "pnl_pct": -14.5,
+        "change_pct": 3.53
       },
       {
         "ticker": "ZS",
         "name": "Zscaler",
         "shares": 11,
         "avg_cost": 141.33,
-        "close": 153.77,
-        "value_usd": 1691.47,
+        "close": 148.39,
+        "value_usd": 1632.29,
         "cost_usd": 1554.66,
-        "pnl_usd": 136.81,
-        "pnl_pct": 8.8,
-        "change_pct": 1.41
+        "pnl_usd": 77.63,
+        "pnl_pct": 4.99,
+        "change_pct": -3.5
       }
     ],
     "us_cost_usd": 12848.72,
-    "us_pnl_usd": -269.05,
-    "us_pnl_pct": -2.09,
+    "us_pnl_usd": 205.75,
+    "us_pnl_pct": 1.6,
     "funds_twd": 170085,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 10729193,
-    "total_gross_twd": 26129193,
+    "net_assets_twd": 10744387,
+    "total_gross_twd": 26144387,
     "allocation_pct": {
       "tw_stocks": 13.6,
-      "us_stocks": 1.5,
+      "us_stocks": 1.6,
       "funds": 0.7,
-      "real_estate": 84.2
+      "real_estate": 84.1
     }
   },
   "regime": {
-    "market_regime": "區間盤",
+    "market_regime": "資金輪動",
     "risk_level": "moderate",
-    "short_term_trading_favorable": false,
+    "short_term_trading_favorable": true,
     "swing_trading_favorable": true,
-    "confidence": 0.6,
+    "confidence": 0.65,
     "regime_factors": {
-      "vix": 19.79,
-      "taiex_chg_pct": -0.26,
-      "nasdaq_chg_pct": -1.74,
-      "sp500_chg_pct": -1.52,
+      "vix": 17.09,
+      "taiex_chg_pct": 0.0,
+      "nasdaq_chg_pct": 2.78,
+      "sp500_chg_pct": 1.66,
       "ai_keyword_hits": 1
     },
-    "regime_summary": "市場體制：區間盤｜VIX=19.8｜台股-0.26%｜NASDAQ-1.74%｜AI話題度=1｜短線：✗｜波段：✓"
+    "regime_summary": "市場體制：資金輪動｜VIX=17.1｜台股+0.00%｜NASDAQ+2.78%｜AI話題度=1｜短線：✓｜波段：✓"
   },
   "capital_flow": {
     "budget": {
@@ -833,17 +831,17 @@
     },
     "hit_target_count": 0,
     "hit_stop_count": 8,
-    "watch_days": 18,
-    "analysis_days": 27,
+    "watch_days": 17,
+    "analysis_days": 26,
     "pick_days": 9,
-    "watch_rate": 66.7,
+    "watch_rate": 65.4,
     "watch_streak": 4
   },
   "panic_sop": {
     "triggered": false,
     "reasons": [],
-    "vix": 19.79,
-    "taiex_chg_pct": -0.26,
+    "vix": 17.09,
+    "taiex_chg_pct": 0.0,
     "rules": {
       "vix_above": 25,
       "twii_daily_drop_pct_below": -2.5
@@ -851,195 +849,165 @@
     "cooldown": {
       "active": true,
       "last_panic": "2026-07-28",
-      "trading_days_since": 2,
+      "trading_days_since": 3,
       "required": 3
     }
   },
   "agents": {
     "market_overview": {
-      "verdict": "積極防守",
-      "confidence": 0.85,
-      "summary": "美股主要指數顯著下跌，VIX恐慌指數逼近20，顯示市場風險情緒明顯升溫。台股雖跌幅相對較小，但仍處於歷史高位區間盤整，建議採取積極防守策略以應對潛在的系統性風險。",
+      "verdict": "小心進攻",
+      "confidence": 0.75,
+      "summary": "全球市場在美股科技股的強勁帶動下，呈現明顯的風險偏好格局，VIX恐慌指數維持低位。然而，台股今日表現持平，且兩大市場指數皆已處於相對高位，需謹慎面對潛在的市場震盪與修正風險，不宜盲目追高。",
       "key_insights": [
-        "美股S&P 500及NASDAQ指數跌幅均超過1.5%，顯示市場出現明顯的風險關閉（Risk-Off）訊號。",
-        "VIX恐慌指數上升至19.79，接近20的警戒線，反映市場不確定性及避險情緒增強。",
-        "台股加權指數儘管跌幅不大，但仍處於歷史高點區間，在高波動環境下更容易受到全球市場拖累。",
-        "AI話題度下降，可能預示前期強勢板塊動能減弱，市場追漲意願降低。"
+        "美股（S&P 500, NASDAQ）大幅上漲，顯示市場資金流向風險資產，AI話題度高。",
+        "VIX恐慌指數維持在17.09的低位，表明市場情緒目前偏向樂觀。",
+        "台股加權指數雖處於歷史高點，但今日表現持平，未跟隨美股漲勢，可能存在資金觀望或局部壓力。",
+        "「資金輪動」機制仍在運作，但需留意高位換手或板塊輪動過快帶來的風險。"
       ],
       "recommendations": [
         {
-          "action": "CUT",
-          "target": "Overall Portfolio Risk Exposure",
-          "detail": "考慮降低整體持股水位，特別是風險性資產及前期漲幅較大的部位，以減少市場下跌的衝擊。",
-          "urgency": "HIGH"
+          "action": "WATCH",
+          "target": "TAIEX",
+          "detail": "觀察台股是否能補漲跟上美股強勢，若持續橫盤或走弱，應警惕資金可能轉向或獲利了結壓力。",
+          "urgency": "MED"
         },
         {
-          "action": "ADD",
-          "target": "Cash Position",
-          "detail": "增加現金儲備，提高投資組合的彈性，以便在市場觸底時有能力重新布局。",
-          "urgency": "HIGH"
+          "action": "HOLD",
+          "target": "US Tech Stocks (existing positions)",
+          "detail": "美股科技股動能強勁，現有部位可續抱觀察，但需設定明確停利點，以防高位回調。",
+          "urgency": "MED"
+        },
+        {
+          "action": "CUT",
+          "target": "High-beta / speculative assets",
+          "detail": "在市場處於高位且情緒過熱時，逐步降低高風險、高波動部位的曝險，保留彈性。",
+          "urgency": "MED"
         },
         {
           "action": "WATCH",
-          "target": "Global Market Indices & VIX",
-          "detail": "密切關注美股後續動向及VIX指數變化，評估市場止穩訊號出現時機。",
-          "urgency": "HIGH"
+          "target": "Cash/Low-volatility assets",
+          "detail": "適度提高現金或低波動資產比重，等待市場回調後再尋機會，符合謹慎原則。",
+          "urgency": "LOW"
         }
       ],
       "risk_flags": [
-        "美股自高點顯著回落，可能引發連鎖效應，導致全球市場修正。",
-        "VIX指數持續升高，預示市場恐慌情緒可能進一步蔓延。",
-        "台股及美股目前仍處於歷史相對高位，存在較大的獲利了結壓力。"
+        "全球股市主要指數（台股與美股）皆位於歷史或階段性高點，存在較大的修正風險。",
+        "台股今日未能參與美股的顯著漲勢，可能暗示內部動能不足或資金有所疑慮。",
+        "AI題材熱度持續高漲，需警惕潛在的過熱和泡沫化風險，可能導致快速修正。",
+        "匯率波動（USD/JPY維持高位）可能引發資本流動變化，需持續關注。"
       ],
-      "agent_note": "本判斷秉持中立偏謹慎原則，優先考慮系統性風險，不追漲。僅就大盤總體趨勢提供指引，不評論個股。"
+      "agent_note": "本判斷秉持中立偏謹慎原則，優先考慮系統性風險，不追漲殺跌，建議採取有防備的進攻策略。"
     },
     "news_sentiment": {
-      "verdict": "負面",
-      "confidence": 0.9,
-      "summary": "全球股市今日面臨顯著下行壓力。台灣市場遭遇外資連日大幅提款、指數重挫與違約交割金額飆升，顯示恐慌情緒瀰漫。美國股市則出現「科技股慘劇」及資金從AI板塊流出跡象，加上油價跳漲及聯準會會議臨近，加劇了整體市場的不確定性與風險。",
+      "verdict": "觀望",
+      "confidence": 0.8,
+      "summary": "台灣股市面臨極度負面的情緒，經歷大規模重挫、外資大幅撤出及違約交割金額飆升，國安基金表態可能進場。美國市場則呈現高度震盪，科技巨頭如微軟和亞馬遜在財報後有所反彈，但同時也有「高成長股歷史性崩盤」和「AI股下跌」的警訊，整體市場瀰漫著高度不確定性與潛在風險。",
       "key_insights": [
-        "全球市場普遍承壓，尤以科技股及AI相關板塊為甚，直接衝擊美股核心持倉如NVDA、MSFT、GOOGL、AMZN。",
-        "台股面臨外資持續大幅流出、指數重挫近3600點及違約交割金額飆升，市場流動性與情緒極度脆弱。",
-        "油價上漲與聯準會政策不明確，增添宏觀層面的通膨與地緣政治風險，對全球股市構成額外壓力。"
+        "台股經歷大規模修正，兩日蒸發逾3500點並失守4萬點，顯示市場恐慌情緒濃烈。",
+        "外資大幅提款台股，對AI相關股票進行拋售，且違約交割金額創新高，反映市場流動性壓力與信心潰散。",
+        "美股科技板塊走勢分歧，部分大型科技股（如MSFT、AMZN）受財報提振上漲，但整體「高飛股票」和「AI股」面臨下跌壓力及市場對反彈的警戒，凸顯板塊內部分化與整體脆弱性。",
+        "國安基金表示會適度處理台股若失序狀況，為市場提供一定心理支撐，但短期內難以改變普遍的悲觀氛圍。"
       ],
       "recommendations": [
         {
-          "action": "HOLD",
+          "action": "WATCH",
           "target": "台積電(2330)",
-          "detail": "台灣市場外資持續提款且全球科技股承壓，台積電短期表現預期將受到拖累，需密切關注其股價穩定性與資金流向。",
+          "detail": "受台股整體崩跌及全球半導體市場跌幅消息影響，應密切關注。",
           "urgency": "HIGH"
-        },
-        {
-          "action": "HOLD",
-          "target": "00692",
-          "detail": "台灣股市整體重挫，ETF短期淨值將受影響，若為長期投資者可維持既有策略，但需忍受波動。",
-          "urgency": "MED"
-        },
-        {
-          "action": "HOLD",
-          "target": "00915",
-          "detail": "台灣股市整體重挫，ETF短期淨值將受影響，若為長期投資者可維持既有策略，但需忍受波動。",
-          "urgency": "MED"
         },
         {
           "action": "WATCH",
-          "target": "2834, 3293, 3703, 4588, 4707",
-          "detail": "台灣市場流動性壓力及恐慌情緒可能波及各類股，這些個股需密切觀察其抗跌性與個別基本面消息，警惕市場恐慌的傳導效應。",
+          "target": "00692, 00915, 2834, 3293, 3703, 4588, 4707",
+          "detail": "台股全面性的賣壓和流動性風險，持有這些台股資產需保持高度警惕。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "WATCH",
+          "target": "NVDA, TSLA",
+          "detail": "美股「AI股下跌」及「高飛股票歷史性崩盤」的警訊，雖有晶片類股反彈消息，但整體風險增高，需嚴密觀察。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "HOLD",
+          "target": "AMZN, MSFT",
+          "detail": "新聞提及亞馬遜因財報上漲，微軟亦有拉升，顯示個別利好消息支撐，暫時維持持有。",
           "urgency": "MED"
-        },
-        {
-          "action": "HOLD",
-          "target": "NVDA",
-          "detail": "美股科技及AI板塊面臨「資金逃離AI」與「科技股慘劇」的明確信號，NVDA作為核心AI股將直接承受壓力，需密切關注後續動態。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "HOLD",
-          "target": "TSLA",
-          "detail": "身為大型科技股，亦受美股「科技股慘劇」氛圍影響，雖然非純AI，但成長股屬性使其面臨類似資金壓力。",
-          "urgency": "HIGH"
         },
         {
           "action": "HOLD",
           "target": "GOOGL",
-          "detail": "作為AI重要參與者，面臨與NVDA相似的AI板塊資金流出壓力，短期股價表現可能承壓。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "HOLD",
-          "target": "AMZN",
-          "detail": "身為大型科技股與雲端服務提供商，亦受科技板塊整體修正影響，且油價上漲可能影響其物流成本。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "HOLD",
-          "target": "MSFT",
-          "detail": "作為AI領域的領頭羊之一，同樣面臨AI板塊獲利了結的壓力，短期表現預計將受市場情緒影響。",
-          "urgency": "HIGH"
-        }
-      ],
-      "risk_flags": [
-        "台灣市場外資持續大幅提款，可能導致指數進一步下探，影響整體持倉。",
-        "美國AI及科技股出現資金輪動與獲利了結壓力，核心持倉面臨修正風險。",
-        "台灣「違約交割」金額飆升，暗示市場槓桿過高，潛在流動性風險與連鎖反應加劇。",
-        "油價上漲與聯準會政策不確定性，可能惡化通膨預期並影響全球股市估值。"
-      ],
-      "agent_note": "本分析已避免技術分析及提供具體進出場價位，僅聚焦新聞標題對當前持倉的直接情緒與事件風險影響，並綜合判斷而非過度解讀單一標題。"
-    },
-    "tw_short_term": {
-      "verdict": "進攻",
-      "confidence": 0.7,
-      "summary": "儘管市場整體趨於負面，且VIX恐慌指數逼近20，但本交易員透過技術面和籌碼面，已識別出少數具備相對強勢的多頭排列或強勁反彈訊號的個股，值得採取短線進攻策略。同時，對於技術面轉弱的持倉，應果斷停損，避免擴大虧損。",
-      "key_insights": [
-        "市場總體趨勢偏弱，但部分個股展現出強勁的相對強度。",
-        "環泥(1104)與臺企銀(2834)呈現明確的多頭均線排列，顯示買盤動能。",
-        "鈊象(3293)雖均線未完全多頭排列，但股價強勢站上重要均線並大漲，具備短線追價潛力。",
-        "多數持倉個股均線下彎，顯示弱勢，需嚴格執行停損。",
-        "量化掃描器波段候選股因缺乏具體價位，無法給予明確操作建議。"
-      ],
-      "recommendations": [
-        {
-          "action": "ADD",
-          "target": "環泥(1104)",
-          "detail": "環泥(1104) MA5 > MA20，股價站穩MA5之上，多頭排列明顯。可於27.0 - 27.2區間積極加碼或建立新倉。停損點設定於26.5，目標價位28.5。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "ADD",
-          "target": "臺企銀(2834)",
-          "detail": "臺企銀(2834) MA5 > MA20，股價站穩MA5之上，多頭排列明確。可於18.0 - 18.1區間積極加碼或建立新倉。停損點設定於17.8，目標價位19.0。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "BUY",
-          "target": "鈊象(3293)",
-          "detail": "鈊象(3293)今日強勢上漲2.04%，股價站上MA5及MA20，顯示強勁買盤。雖MA5尚未黃金交叉MA20，但股價的積極表現是強勢訊號。可於740 - 749區間積極進場。停損點設定於730，目標價位786。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "CUT",
-          "target": "富邦公司治理(00692)",
-          "detail": "富邦公司治理(00692) 股價80.65遠低於MA5(83.76)與MA20(88.78)，均線空頭排列，跌勢確立。立即停損，停損價位80.5。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "CUT",
-          "target": "凱基優選高股息30(00915)",
-          "detail": "凱基優選高股息30(00915) 股價30.07遠低於MA5(30.67)與MA20(31.4)，均線空頭排列，跌勢確立。立即停損，停損價位30.0。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "CUT",
-          "target": "長榮鋼(2211)",
-          "detail": "長榮鋼(2211) 股價88.4低於MA20(92.05)，均線下彎。立即停損，停損價位88.0。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "CUT",
-          "target": "台積電(2330)",
-          "detail": "台積電(2330) 股價2205.0遠低於MA5(2277.0)與MA20(2383.5)，均線空頭排列，跌勢確立。立即停損，停損價位2200.0。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "CUT",
-          "target": "欣陸(3703)",
-          "detail": "欣陸(3703) 股價20.6低於MA5(20.65)與MA20(20.64)，顯示弱勢。立即停損，停損價位20.5。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "WATCH",
-          "target": "00675L, 00685L, 2308, 3491, 3661, 3665, 6442, 8299, 2801, 6243, 1476, 2892, 6214, 3231, 1101, 2812",
-          "detail": "因缺乏詳細的即時收盤價、均線數據或籌碼資料，無法給予精確的進場、停損與目標價位建議。在獲得完整數據前，保持觀望，不進行操作。",
+          "detail": "未有直接利空或利多消息，但應留意整體科技股波動。",
           "urgency": "MED"
         }
       ],
       "risk_flags": [
-        "VIX恐慌指數逼近20，市場波動性高。",
-        "NASDAQ大幅下跌，全球股市負面情緒蔓延。",
-        "台股整體市場處於區間盤整，操作難度增加。",
-        "部分持倉個股缺乏完整技術與籌碼數據，無法給予精確判斷。"
+        "台股違約交割金額飆升，顯示市場流動性壓力與強制平倉風險極高。",
+        "外資大規模撤離台股，可能導致長期資金動能不足。",
+        "美股AI與高成長股面臨修正壓力，且市場對反彈存有「陷阱」的疑慮，可能影響核心持股。",
+        "全球股市（日韓）同步重挫，暗示當前市場下跌為全球性趨勢，而非單一區域問題。"
       ],
-      "agent_note": "本交易員嚴格遵守不看基本面、不給長期建議、不說廢話的原則。所有建議均基於提供的技術面和籌碼面數據，並給出具體價位。未提供完整數據的標的，一律不給出操作建議。"
+      "agent_note": "本分析僅基於新聞標題提取情緒訊號，不涉及任何技術分析或價格預測。所有建議均為客觀評估當前消息面影響，不構成具體買賣指導。"
+    },
+    "tw_short_term": {
+      "verdict": "進攻",
+      "confidence": 0.7,
+      "summary": "台股大盤今日持平，市場情緒偏向觀望，但仍有部分個股展現強勁的短線動能。依據技術面與籌碼分析，我們將果斷停損弱勢持倉，並積極追逐具備明確多頭訊號的強勢標的，把握資金輪動機會。",
+      "key_insights": [
+        "臺企銀(2834)技術面呈現多頭排列，MA5向上穿越MA20，股價站穩關鍵支撐，顯示強勢。",
+        "鈊象(3293)今日強勢拉升，股價站上MA20，展現短線爆發力，但MA5尚未形成完全多頭排列，需嚴格停損。",
+        "多數現有持倉如富邦公司治理(00692)、凱基優選高股息30(00915)、長榮鋼(2211)及台積電(2330)均線呈現空頭排列或股價跌破關鍵均線，技術面極度疲弱，需立即停損出場。",
+        "量化掃描器候選雖具備中期潛力，但因缺乏即時收盤價、MA5、MA20及量能數據，無法給出精確短線交易點位，本次不予納入操作建議。"
+      ],
+      "recommendations": [
+        {
+          "action": "BUY",
+          "target": "2834 (臺企銀)",
+          "detail": "股價18.1，MA5 (18.07) > MA20 (17.99)，多頭排列確立。進場區間18.00-18.15，停損設於17.85 (跌破MA20)，目標價18.55。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "BUY",
+          "target": "3293 (鈊象)",
+          "detail": "股價749.0，今日強漲站上MA20 (733.85)，短線動能強勁。進場區間748.0-750.0，停損設於733.0 (跌破MA20)，目標價768.0。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "00692 (富邦公司治理)",
+          "detail": "股價80.65，MA5 (83.76) < MA20 (88.78)，空頭排列明顯，已跌破所有關鍵均線，立即停損。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "00915 (凱基優選高股息30)",
+          "detail": "股價30.07，MA5 (30.67) < MA20 (31.4)，空頭排列明顯，已跌破所有關鍵均線，立即停損。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "2211 (長榮鋼)",
+          "detail": "股價88.4，MA5 (88.16) < MA20 (92.05)，未能站回關鍵均線，技術面偏弱，立即停損。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "2330 (台積電)",
+          "detail": "股價2205.0，MA5 (2277.0) < MA20 (2383.5)，空頭排列明顯，已跌破所有關鍵均線，立即停損。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "CUT",
+          "target": "3703 (欣陸)",
+          "detail": "股價20.6，雖然MA5 (20.65) 略大於MA20 (20.64)，但股價已跌破兩條均線，顯示上攻無力，短線轉弱，建議停損。",
+          "urgency": "MED"
+        }
+      ],
+      "risk_flags": [
+        "市場總覽情緒顯示『小心進攻』，且新聞情緒為『觀望』，整體大盤仍有潛在震盪風險。",
+        "多數持倉股表現疲軟，反映市場資金流向快速變動，需持續警惕並嚴格執行停損。",
+        "本次分析缺乏成交量比與三大法人籌碼的詳細數據，影響判斷的全面性，進場後務必緊盯盤勢變化。"
+      ],
+      "agent_note": "本分析嚴格遵循技術面與籌碼面，排除基本面考量。所有建議均包含具體價位，不提供模糊答案及長期建議。對於資訊不足的標的，不給予操作建議。"
     },
     "tw_long_term": {
       "verdict": "持倉不動",
@@ -1279,161 +1247,86 @@
     "devils_advocate": {
       "verdict": "強烈反對",
       "confidence": 0.95,
-      "summary": "委員會的分析呈現出危險的矛盾：在普遍看空與VIX高漲的背景下，仍有數個分析建議採取短線進攻或特定資產加碼。這種忽視宏觀警訊，僅憑微觀技術或跌深反彈邏輯進行操作，極易讓投資組合暴露於系統性崩跌的風險之中。",
+      "summary": "整體分析在多處顯示出過度樂觀與矛盾之處，尤其在面對台股極端負面情緒與潛在流動性風險時，仍建議採『進攻』策略，令人高度質疑。此外，多項關鍵宏觀尾部風險被嚴重低估，未充分反映市場脆弱性，可能導致投資組合遭受無法預期的衝擊。",
       "key_insights": [
-        "在市場恐慌指數逼近20且美股領跌的環境下，短線進攻策略（tw_short_term）過度依賴技術面且嚴重低估宏觀系統性風險，所謂「相對強勢」的個股，在流動性枯竭或信心崩潰時，往往是補跌最劇烈者。",
-        "美股投資組合（us_portfolio）在VIX未達「極度恐慌」區間（25）時，即建議對TSLA等高波動性個股「小幅加碼」，可能過早承接下跌中的刀子，且忽略了科技股「慘劇」可能演變為更深層修正的風險。",
-        "日幣定額加碼（fx_fund）的建議，假設了日幣必然反轉，忽略了全球流動性緊縮、地緣政治變數可能導致日幣作為避險或套利貨幣的意外表現，甚至持續弱勢的潛在風險。",
-        "大部分分析都指向防守，卻有代理人逆勢建議進攻或加碼，這種「特立獨行」的理由在當前市場環境下顯得脆弱，缺乏對「如果市場打臉所有看空者」或「如果市場打臉所有看多者」的全面風險評估，極易落入群體思維的陷阱。",
-        "長線分析（tw_long_term）的「持倉不動」雖有其道理，但也可能是一種對既有論述的僵化堅持，未能充分考慮到外部環境變化可能對公司基本面造成結構性衝擊，形成被動樂觀。"
+        "台股短線『進攻』建議，完全忽略新聞情緒中『大規模重挫、外資大幅撤出及違約交割金額飆升』的極度負面信號，僅依賴技術指標追逐強勢股，風險極高。",
+        "『小心進攻』的綜合判斷本質上是自相矛盾，未能提供清晰的市場方向，模糊了潛在的高點修正風險與市場脆弱性。",
+        "日幣『增加定額』的判斷過於依賴『歷史極度弱勢』，未能充分考量日本央行政策的長期不確定性，以及全球主要央行政策分化可能導致日幣持續偏弱的尾部風險。",
+        "美股『小幅加碼』特定標的，在VIX未達恐慌區間且全球股市面臨下行壓力的背景下，假設當前回撤即是機會，可能過早承擔更大下行風險。"
       ],
       "recommendations": [],
       "risk_flags": [
-        "台灣「違約交割金額飆升」可能引爆流動性危機，與外資持續提款形成共振，恐引發連鎖去槓桿與強制平倉，導致台股全面性崩潰。",
-        "全球科技/AI泡沫破裂風險，目前賣壓可能不僅是獲利了結，而是對AI估值過高、實質盈利兌現速度不足的重新評估，恐引爆全球科技股的系統性重估。",
-        "地緣政治風險（如中東、烏克蘭戰事擴大，或兩岸、南海局勢升級）可能引發能源危機或供應鏈斷裂，導致全球經濟陷入停滯性通膨，徹底打亂央行政策與市場預期。",
-        "主要央行（特別是聯準會）若在通膨與成長之間進退失據，最終採取過度緊縮政策導致經濟硬著陸，或因應危機反應過慢導致通膨失控，都將對股市造成毀滅性打擊。",
-        "日幣作為全球主要套利貨幣，若在極端風險事件下，因避險情緒或日本央行意外干預而快速反彈，恐迫使全球投資者大規模平倉日幣套利交易，引發流動性緊縮與全球資產拋售潮。"
+        "全球性流動性危機：台股違約交割金額飆升，可能僅是冰山一角，若引發連鎖效應或強制平倉潮，恐蔓延至全球金融體系。",
+        "地緣政治衝突加劇：台灣周邊地緣政治緊張態勢並未被充分納入考量，任何突發事件都可能引發台股甚至全球市場的斷崖式下跌。",
+        "AI泡沫破裂加速：當前市場對AI題材的高度集中與追捧，存在巨大泡沫風險。一旦信心動搖，可能導致科技股全面性崩盤，遠超當前預期的『修正』。",
+        "主要央行政策錯誤：若聯準會或日本央行在通膨與經濟成長之間誤判，可能導致嚴重經濟衰退或長期滯漲，對資產價格造成深遠打擊。"
       ],
-      "agent_note": "作為反對派委員，我的職責是質疑所有結論，不給出操作建議，並專注於被忽略的風險。本次分析嚴格遵守角色偏見與禁止事項。"
+      "agent_note": "本委員堅決採取極度懷疑主義立場，絕不認同任何結論，也不提供任何操作建議。所有質疑皆有具體論點支持，旨在揭示其他分析中未被觸及的盲點與尾部風險。本次分析主要質疑了tw_short_term的過度進攻傾向。"
     },
     "signal_fusion": {
-      "market_regime_score": 0.0,
-      "trend_strength": 0.387,
-      "risk_pressure": 0.468,
-      "volatility_risk": 0.248,
-      "confidence_score": 0.85,
+      "market_regime_score": 0.3,
+      "trend_strength": 0.58,
+      "risk_pressure": 0.333,
+      "volatility_risk": 0.165,
+      "confidence_score": 0.8,
       "scanner_momentum": 1.0,
-      "ai_sector_strength": 0.386,
+      "ai_sector_strength": 0.4,
       "foreign_flow_strength": 0.017,
       "breadth_score": 0.224,
-      "liquidity_score": 1.0,
+      "liquidity_score": 0.759,
       "_sources": {
-        "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
-        "trend_strength": "taiex_chg=-0.26%→base=0.457 market_overview_adj=-0.07",
-        "risk_pressure": "vix=19.8→0.389 tw_verdict_adj=-0.064 da_conf=0.95→0.142",
-        "volatility_risk": "vix=19.8→0.326×0.7 taiex_abs=0.26%→0.065×0.3",
-        "confidence_score": "avg_agent_conf=0.850 error_agents=0 degraded=0 penalty=0.00",
-        "scanner_momentum": "top10_avg=7.10/6.0",
-        "ai_sector_strength": "basket 7檔 avg=-0.98% → 0.39",
+        "market_regime_score": "regime=資金輪動(base=+0.3) risk_level=moderate(delta=+0.00)",
+        "trend_strength": "taiex_chg=+0.00%→base=0.500 market_overview_adj=+0.08",
+        "risk_pressure": "vix=17.1→0.255 tw_verdict_adj=-0.064 da_conf=0.95→0.142",
+        "volatility_risk": "vix=17.1→0.236×0.7 taiex_abs=0.00%→0.000×0.3",
+        "confidence_score": "avg_agent_conf=0.800 error_agents=0 degraded=0 penalty=0.00",
+        "scanner_momentum": "top10_avg=6.90/6.0",
+        "ai_sector_strength": "basket data unavailable → fallback news_hits=0",
         "foreign_flow_strength": "BFI82U_foreign_net=-483.1億元 → normalized=0.017 (÷500億 clamp±0.5)",
         "breadth_score": "MI_INDEX advance=224(+2漲停) decline=775(+25跌停) advance_ratio=0.224",
-        "liquidity_score": "margin_balance=5070億元 變化=-7.06% → score=1.000 (-2%→0.7, +2%→0.3)"
+        "liquidity_score": "margin_balance=4939億元 變化=-2.59% → score=0.759 (-2%→0.7, +2%→0.3)"
       },
-      "_data_gaps": [],
-      "_computed_at": "2026-07-30T16:38:27.423981+08:00"
-    },
-    "tw_daily_pick": {
-      "verdict": "空手觀望",
-      "confidence": 1.0,
-      "pick": {
-        "name": "—",
-        "code": "—",
-        "entry_zone": "—",
-        "stop_loss": "—",
-        "target": "—",
-        "risk_reward": "—",
-        "ref_close": "—",
-        "hold_days": "—"
-      },
-      "market_regime": "區間盤",
-      "risk_appetite": "中性",
-      "suitable_for_trading": false,
-      "summary": "恐慌冷卻期：2026-07-28 觸發恐慌日條件，目前為其後第 2 個交易日（需滿 3 個交易日才恢復開倉）。崩盤餘波的震盪期勝率偏低，波段系統暫停開新倉；長波買點窗口請照寶藏股研究室「恐慌日SOP.md」另行操作。",
-      "core_logic": {},
-      "risk_flags": [
-        "恐慌冷卻期——餘波震盪未平，新倉勝率偏低"
+      "_data_gaps": [
+        "ai_sector_strength"
       ],
-      "counter_argument": "",
-      "agent_note": "panic-cooldown gate (rule-based, no LLM call)",
-      "panic_cooldown": true,
-      "open_positions": [],
-      "max_positions": 5,
-      "soft_cap": 3,
-      "correlation": {
-        "pick_code": "—",
-        "pick_sector": null,
-        "pick_sector_family": null,
-        "matches": [],
-        "family_exposure_pct": 0.0,
-        "exact_exposure_pct": 0.0,
-        "warning_level": "none",
-        "summary": ""
-      }
-    },
-    "reflection": {
-      "verdict": "策略暫停",
-      "overall_win_rate": 0.0,
-      "confidence": 0.0,
-      "summary": "近期9筆推薦全數失敗，整體勝率為0.0%，顯示當前策略在各種市場體制下均未能捕捉到有效買點。損失幅度從輕微到顯著，策略表現極度不佳。需要立即停止並進行徹底檢討與修正。",
-      "key_findings": [
-        "發現1：在區間盤、趨勢多頭和資金輪動體制下，勝率均為0.0%，資料顯示無任何市場體制是有效的。",
-        "發現2：所有測試的信號，包括trend_up, above_ma60, pullback_buy等，勝率均為0.0%，且多數信號樣本數過少（<5筆）難以判斷其獨立可靠性，但目前無一可靠。",
-        "發現3：最近失敗案例的共同模式是所有推薦均以虧損收場，這表示當前策略的進場邏輯在過去一個月內是完全無效的，無法產生任何正報酬交易。"
-      ],
-      "effective_conditions": [],
-      "ineffective_conditions": [
-        "區間盤 (勝率0.0%, 4次)",
-        "趨勢多頭 (勝率0.0%, 2次, 樣本不足)",
-        "資金輪動 (勝率0.0%, 3次)",
-        "所有信號組合"
-      ],
-      "watch_discipline": "空手率66.7%在健康範圍內（30-70%），表明策略並未過度頻繁出手。然而，出手後的勝率為0%，顯示問題不在於出手次數，而在於出手品質極差。",
-      "adjustments": [
-        {
-          "action": "暫停",
-          "target": "所有推薦策略及信號",
-          "reason": "整體勝率為0.0%，策略已完全失效。在未找到任何有效模式前，應立即停止所有推薦，以避免進一步虧損。"
-        },
-        {
-          "action": "增加",
-          "target": "深度回溯測試與市場環境分析",
-          "reason": "需對過去的數據進行更廣泛、更深入的回溯測試，找出當前策略在何種市場情境下會失效，並探究市場是否發生結構性變化，導致原有邏輯不再適用。"
-        },
-        {
-          "action": "降低",
-          "target": "當前信號權重與依賴性",
-          "reason": "由於所有信號表現皆為0%勝率，必須假設所有當前信號都不可靠，需重新評估其有效性或尋找新的、未經測試的信號指標。"
-        }
-      ],
-      "agent_note": "本次分析基於9筆已結算推薦記錄，時間範圍約為一個月（2026-06-22至2026-07-26）。樣本數相對較少，尤其各別市場體制和信號的樣本數更低，限制了更細緻的統計推論。然而，整體0.0%的勝率已明確指出策略存在嚴重問題。"
+      "_computed_at": "2026-07-31T08:33:43.519868+08:00"
     },
     "trading_master": {
-      "verdict": "信號混亂",
-      "confidence": 0.8,
-      "summary": "市場信號存在顯著分歧。波段策略的核心系統因處於「恐慌冷卻期」而暫停開新倉，明確建議空手觀望。然而，短線交易員識別出數個具備多頭排列或強勁反彈的個股，建議積極加碼或建立部位，這與波段系統的保守立場相悖。",
+      "verdict": "信號偏多",
+      "confidence": 0.65,
+      "summary": "儘管台股大盤今日持平，但市場展現資金輪動跡象，部分個股呈現強勁的短線多頭動能。短線訊號傾向於積極進場追逐強勢標的，並果斷停損弱勢部位，為波段操作創造有利的佈局機會。綜合評估，本交易桌對CIO的建議是**交易風險為中等 (Medium)**。",
       "key_insights": [
-        "波段交易系統正處於「恐慌冷卻期」的第二天，依規定暫停開立新倉，以規避崩盤餘波的震盪風險。",
-        "VIX恐慌指數接近20，且台股與NASDAQ呈現負向走勢，市場整體氛圍偏向謹慎或負面。",
-        "短線交易訊號雖顯示市場整體負面，仍透過技術與籌碼面篩選出具多頭排列或強勁反彈的個股，建議採取進攻策略。",
-        "不同時間框架的交易信號方向高度不一致，導致整體操作指引缺乏明確性。"
+        "台股整體市場趨於平靜，但資金活躍於特定板塊，顯示擇優佈局的重要性。",
+        "短線Agent推薦的強勢個股（臺企銀、鈊象）具有明確的技術面多頭訊號，其動能有機會延續成波段上漲。",
+        "VIX維持中等水平，NASDAQ強勢表現為科技相關個股提供正面支撐，對鈊象等相關標的構成潛在利好。",
+        "快速停損弱勢部位（如富邦公司治理ETF）符合有效的風險管理原則，有助於釋放資金至更具潛力的機會，維持策略彈性。"
       ],
       "recommendations": [
         {
-          "action": "WAIT",
-          "target": "Overall Swing Portfolio",
-          "detail": "基於波段系統處於「恐慌冷卻期」且明確暫停開新倉的指令，今日不建議為波段策略建立任何新部位。應等待恐慌期條件結束或市場情勢更趨穩定。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "CUT",
-          "target": "弱勢持倉",
-          "detail": "對於目前持有的波段部位中，若技術面轉弱或跌破停損點，應果斷執行停損，以避免在市場不確定時期擴大虧損。",
-          "urgency": "HIGH"
-        },
-        {
-          "action": "WATCH",
-          "target": "環泥(1104), 臺企銀(2834), 鈊象(3293)",
-          "detail": "儘管短線交易員提出這些股票具備進攻潛力，但考量波段系統的停倉指令，這些標的目前不建議作為波段新開倉的目標。可列入觀察清單，待波段系統恢復開倉後再評估。",
+          "action": "BUY",
+          "target": "2834 (臺企銀)",
+          "detail": "股價突破均線，多頭排列確立，短線強勢有望延續為波段行情。建議在回檔或盤整結束後尋找波段進場機會。",
           "urgency": "MED"
+        },
+        {
+          "action": "BUY",
+          "target": "3293 (鈊象)",
+          "detail": "今日強勢站上MA20，展現強勁短線動能。考量NASDAQ強勢背景，此動能有機會延伸為波段行情，建議觀察其動能延續性以尋求波段佈局。",
+          "urgency": "MED"
+        },
+        {
+          "action": "SELL",
+          "target": "00692 (富邦公司治理)",
+          "detail": "技術面顯示空頭排列，已跌破所有關鍵均線。為有效管理風險並優化資金配置，建議立即出場，將資金轉移至更具潛力的機會。",
+          "urgency": "HIGH"
         }
       ],
       "risk_flags": [
-        "市場處於「恐慌冷卻期」，崩盤餘波的震盪期勝率偏低，波段策略風險高。",
-        "VIX恐慌指數接近20，顯示市場仍存在較高程度的不確定性與波動。",
-        "不同交易框架的信號方向衝突，增加決策的複雜性和潛在風險。"
+        "台股大盤缺乏明確方向，市場主要由資金輪動驅動，波段操作需嚴格篩選個股並關注資金流向。",
+        "VIX處於中等水平，市場仍存在一定的不確定性，突發事件可能影響短期走勢及波段策略的執行。",
+        "短線動能雖強，但若無法維持，可能導致波段策略提前結束，需設好風險控制點位。"
       ],
-      "agent_note": "本委員會嚴格遵循只輸出信號強度、方向、風險觀點及建議行動方向的職責，未提供任何資金分配或部位比例建議。對來自『台股短線 Agent』的進攻型信號，已根據『每日精選 Agent』中針對波段策略的『暫停開新倉』指令進行風險調整與整合，優先考量波段策略的明確限制。"
+      "agent_note": "本委員會的職責嚴格限於整合信號、提供方向及風險觀點，不涉及任何資本配置比例或部位調整建議，亦不會override其他交易桌的決策。"
     },
     "portfolio_master": {
       "verdict": "部分隱憂",
@@ -1539,41 +1432,86 @@
     },
     "master": {
       "verdict": "局部進攻",
-      "confidence": 0.85,
-      "summary": "短線市場信號顯示強勁個股動能，應積極鎖定並加碼交易機會；長線持倉維持穩定，但須密切關注部分標的資訊完整性；整體財務流動性充裕，為投資決策提供堅實後盾。",
+      "confidence": 0.75,
+      "summary": "受市場資金輪動與特定個股強勁動能推動，短線操作應積極捕捉波段機會。長期持倉雖整體穩健，但部分部位論述待釐清，需持續關注並管理潛在風險。財務結構穩固，短期流動性無虞，可專注於投資策略執行。",
       "key_insights": [
-        "量化掃描器與短線交易員信號高度一致，顯示市場存在明確的短線進攻機會。",
-        "Capital Flow Engine 指示『trading_selective』，支持在短線預算內進行精選個股交易。",
-        "儘管市場整體趨勢信號仍有分歧，但系統高置信度 (0.85) 和強勁的掃描器動能 (1.00) 提供了執行局部進攻的基礎。"
+        "市場信心高昂且掃描器動能極強，為特定個股創造短線交易機會。",
+        "資本流動引擎明確導向「選擇性交易」，支持捕捉個別強勢標的策略。",
+        "長期持倉中存在資訊不完整標的，形成潛在風險點，需主動監控。",
+        "財務流動性充裕，雖資產集中於房產，但不影響短期投資決策與現金流穩定性。"
       ],
       "recommendations": [
         {
           "action": "BUY",
-          "target": "彰銀(2801)",
-          "detail": "基於強勁的量化信號（趨勢向上、回檔買入、突破平台、量能積累、強勢相對強度），積極於35%交易預算內建立短線部位。",
+          "target": "2834 (臺企銀)",
+          "detail": "根據交易台訊號，捕捉具強勁短線多頭動能的個股。",
           "urgency": "HIGH"
         },
         {
           "action": "BUY",
-          "target": "迅杰(6243)",
-          "detail": "依循量化掃描器高分信號，加碼具有良好動能的個股，作為短線交易組合配置。",
+          "target": "3293 (鈊象)",
+          "detail": "根據交易台訊號，捕捉具強勁短線多頭動能的個股。",
           "urgency": "HIGH"
         },
         {
-          "action": "BUY",
-          "target": "儒鴻(1476)",
-          "detail": "根據量化動能和技術形態判斷，進行短線策略性加碼，把握反彈機會。",
-          "urgency": "HIGH"
+          "action": "WATCH",
+          "target": "2536 (宏普)",
+          "detail": "監控長期持倉中資訊不完整、論述待釐清的潛在風險部位。",
+          "urgency": "MED"
+        },
+        {
+          "action": "WATCH",
+          "target": "4588 (玖鼎電力)",
+          "detail": "監控長期持倉中資訊不完整、論述待釐清的潛在風險部位。",
+          "urgency": "MED"
         }
       ],
       "risk_flags": [
-        "部分長線台股部位（宏普(2536)、玖鼎電力(4588)）因資訊不完整，其持倉論述未能充分驗證，構成潛在風險點，需持續追蹤。",
-        "市場整體趨勢信號仍屬混亂，儘管有局部進攻機會，但需保持警惕，嚴格執行停損。"
+        "部分台股長線持倉因資訊不完整，論述未能充分驗證，構成潛在風險。",
+        "資產結構高度集中於房產，儘管短期無流動性壓力，仍為長期結構性風險。"
       ],
-      "agent_note": "已嚴格遵守 Capital Flow 預算分配 (交易:35%, 配置:55%, 現金:10%)，並在獨立判斷下整合各 Desk 觀點，避免直接採納建議，確保短線與長線決策分離。",
+      "agent_note": "所有決策均在Capital Flow Engine設定的資金預算內進行，並獨立於各Desk建議做出最終判斷。已將短線與長線考量分離，不互相影響。",
       "_raw_verdict": "局部進攻",
       "constraint_violations": [],
       "constraints_triggered": false
+    },
+    "tw_daily_pick": {
+      "verdict": "空手觀望",
+      "confidence": 1.0,
+      "pick": {
+        "name": "—",
+        "code": "—",
+        "entry_zone": "—",
+        "stop_loss": "—",
+        "target": "—",
+        "risk_reward": "—",
+        "ref_close": "—",
+        "hold_days": "—"
+      },
+      "market_regime": "區間盤",
+      "risk_appetite": "中性",
+      "suitable_for_trading": false,
+      "summary": "恐慌冷卻期：2026-07-28 觸發恐慌日條件，目前為其後第 2 個交易日（需滿 3 個交易日才恢復開倉）。崩盤餘波的震盪期勝率偏低，波段系統暫停開新倉；長波買點窗口請照寶藏股研究室「恐慌日SOP.md」另行操作。",
+      "core_logic": {},
+      "risk_flags": [
+        "恐慌冷卻期——餘波震盪未平，新倉勝率偏低"
+      ],
+      "counter_argument": "",
+      "agent_note": "panic-cooldown gate (rule-based, no LLM call)",
+      "panic_cooldown": true,
+      "open_positions": [],
+      "max_positions": 5,
+      "soft_cap": 3,
+      "correlation": {
+        "pick_code": "—",
+        "pick_sector": null,
+        "pick_sector_family": null,
+        "matches": [],
+        "family_exposure_pct": 0.0,
+        "exact_exposure_pct": 0.0,
+        "warning_level": "none",
+        "summary": ""
+      }
     }
   }
 }
