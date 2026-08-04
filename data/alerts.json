@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-08-04 08:35 +0800",
+ "checked_at": "2026-08-04 16:36 +0800",
  "hit_count": 10,
  "new_hit_count": 0,
  "results": [
@@ -9,7 +9,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 15.9",
+   "detail": "VIX 15.7",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -18,7 +18,7 @@
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
    "hit": false,
-   "detail": "單日 +7.98%",
+   "detail": "單日 +0.56%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -27,7 +27,7 @@
    "name": "台積電",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 2370.00 vs 月線 2375.50",
+   "detail": "現價 2320.00 vs 月線 2369.50",
    "note": "核心加碼窗口：跌破月線（觀察名單：法說或恐慌日跌破月線分批）"
   },
   {
@@ -36,7 +36,7 @@
    "name": "群聯",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 1760.00 vs 月線 1897.25",
+   "detail": "現價 1820.00 vs 月線 1881.00",
    "note": "持倉移動停損警戒：跌破月線＝檢查 NAND 合約價與論述卡"
   },
   {
@@ -45,7 +45,7 @@
    "name": "光聖",
    "rule": "near_52w_low",
    "hit": false,
-   "detail": "現價 1270.00 vs 52週低 592.00（門檻 +3.0%）",
+   "detail": "現價 1395.00 vs 52週低 592.00（門檻 +3.0%）",
    "note": "持倉警戒：再破前低＝論述卡規定無條件出場"
   },
   {
@@ -54,7 +54,7 @@
    "name": "欣陸",
    "rule": "below_ma20",
    "hit": true,
-   "detail": "現價 20.50 vs 月線 20.62",
+   "detail": "現價 20.40 vs 月線 20.60",
    "note": "持倉警戒：Q3 底期限前持續在月線下＝出場倒數"
   },
   {
@@ -63,7 +63,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 6.10 vs 觸發價 6.33",
+   "detail": "現價 6.13 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -72,7 +72,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 6.10 vs 觸發價 5.9",
+   "detail": "現價 6.13 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
   },
   {
@@ -81,7 +81,7 @@
    "name": "SpaceX",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 114.53 vs 觸發價 130.0",
+   "detail": "現價 108.37 vs 觸發價 130.0",
    "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
@@ -90,7 +90,7 @@
    "name": "CAVA",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 64.47 vs 觸發價 55.0",
+   "detail": "現價 65.23 vs 觸發價 55.0",
    "note": "美股寶藏分散器加碼區：跌破 $55（~$62 已是可接受小起始）。Q2財報看同店/展店/利潤率"
   },
   {
