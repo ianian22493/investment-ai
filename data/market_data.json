@@ -1,25 +1,27 @@
 {
-  "fetched_at": "2026-08-04T16:31:11.528219+08:00",
+  "fetched_at": "2026-08-05T08:31:20.079439+08:00",
   "indices": {
     "taiex": {
-      "close": 43360.66,
+      "close": 43386.41,
       "change_pct": 0
     },
     "sp500": {
-      "close": null,
-      "prev_close": 7489.72,
-      "change": null,
-      "change_pct": null
+      "close": 7736.52,
+      "prev_close": 7600.5,
+      "change": 136.02,
+      "change_pct": 1.79
     },
     "nasdaq": {
-      "close": null,
-      "prev_close": 25373.85,
-      "change": null,
-      "change_pct": null
+      "close": 26584.99,
+      "prev_close": 25913.9,
+      "change": 671.09,
+      "change_pct": 2.59
     },
     "vix": {
-      "close": 15.72,
-      "change_pct": 0
+      "close": 16.5,
+      "prev_close": 15.86,
+      "change": 0.64,
+      "change_pct": 4.04
     }
   },
   "tw_stocks": {
@@ -120,7 +122,7 @@
         "ma60": 2349.58,
         "above_ma20": false,
         "above_ma60": false,
-        "vol_5d_avg": 52970031.0
+        "vol_5d_avg": 53044231.0
       }
     },
     "2536": {
@@ -246,58 +248,58 @@
   },
   "us_stocks": {
     "AMZN": {
-      "close": null,
-      "change_pct": null
+      "close": 277.42,
+      "change_pct": -2.32
     },
     "CELH": {
-      "close": null,
-      "change_pct": null
+      "close": 29.54,
+      "change_pct": 4.64
     },
     "GOOGL": {
-      "close": null,
-      "change_pct": null
+      "close": 377.65,
+      "change_pct": 1.11
     },
     "MELI": {
-      "close": null,
-      "change_pct": null
+      "close": 1888.5,
+      "change_pct": -0.54
     },
     "MSFT": {
-      "close": null,
-      "change_pct": null
+      "close": 492.81,
+      "change_pct": 1.06
     },
     "NVDA": {
-      "close": null,
-      "change_pct": null
+      "close": 211.94,
+      "change_pct": 2.56
     },
     "ONDS": {
-      "close": null,
-      "change_pct": null
+      "close": 8.86,
+      "change_pct": 5.85
     },
     "RBRK": {
-      "close": null,
-      "change_pct": null
+      "close": 80.99,
+      "change_pct": 8.36
     },
     "S": {
-      "close": null,
-      "change_pct": null
+      "close": 20.98,
+      "change_pct": 4.64
     },
     "SOUN": {
-      "close": null,
-      "change_pct": null
+      "close": 6.51,
+      "change_pct": 6.72
     },
     "TSLA": {
-      "close": null,
-      "change_pct": null
+      "close": 327.35,
+      "change_pct": 1.64
     },
     "ZS": {
-      "close": null,
-      "change_pct": null
+      "close": 163.22,
+      "change_pct": 5.67
     }
   },
   "fx": {
     "usd_twd": 32.0,
     "twd_per_jpy": null,
-    "jpy_per_usd": 156.74
+    "jpy_per_usd": 157.48
   },
   "portfolio_value": {
     "tw_stocks_twd": 3538187,
@@ -502,20 +504,20 @@
       "total_pnl_pct": 12.55,
       "broker": "國泰證券"
     },
-    "us_stocks_twd": 0,
-    "us_stocks_usd": 0,
+    "us_stocks_twd": 456872,
+    "us_stocks_usd": 14277.25,
     "us_stocks_live": [
       {
         "ticker": "AMZN",
         "name": "Amazon",
         "shares": 2,
         "avg_cost": 201.5,
-        "close": null,
-        "value_usd": null,
+        "close": 277.42,
+        "value_usd": 554.84,
         "cost_usd": 403.0,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": 151.84,
+        "pnl_pct": 37.68,
+        "change_pct": -2.32
       },
       {
         "ticker": "CAVA",
@@ -534,12 +536,12 @@
         "name": "Celsius",
         "shares": 9,
         "avg_cost": 31.47,
-        "close": null,
-        "value_usd": null,
+        "close": 29.54,
+        "value_usd": 265.86,
         "cost_usd": 283.2,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": -17.34,
+        "pnl_pct": -6.12,
+        "change_pct": 4.64
       },
       {
         "ticker": "DRAM",
@@ -558,123 +560,123 @@
         "name": "Alphabet",
         "shares": 7.00298,
         "avg_cost": 291.74,
-        "close": null,
-        "value_usd": null,
+        "close": 377.65,
+        "value_usd": 2644.68,
         "cost_usd": 2043.07,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": 601.61,
+        "pnl_pct": 29.45,
+        "change_pct": 1.11
       },
       {
         "ticker": "MSFT",
         "name": "Microsoft",
         "shares": 6.0081,
         "avg_cost": 377.52,
-        "close": null,
-        "value_usd": null,
+        "close": 492.81,
+        "value_usd": 2960.85,
         "cost_usd": 2268.18,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": 692.67,
+        "pnl_pct": 30.54,
+        "change_pct": 1.06
       },
       {
         "ticker": "NVDA",
         "name": "Nvidia",
         "shares": 4.00367,
         "avg_cost": 172.52,
-        "close": null,
-        "value_usd": null,
+        "close": 211.94,
+        "value_usd": 848.54,
         "cost_usd": 690.71,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": 157.83,
+        "pnl_pct": 22.85,
+        "change_pct": 2.56
       },
       {
         "ticker": "ONDS",
         "name": "Ondas Holdings",
         "shares": 11,
         "avg_cost": 8.72,
-        "close": null,
-        "value_usd": null,
+        "close": 8.86,
+        "value_usd": 97.46,
         "cost_usd": 95.9,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": 1.56,
+        "pnl_pct": 1.63,
+        "change_pct": 5.85
       },
       {
         "ticker": "RBRK",
         "name": "Rubrik",
         "shares": 9,
         "avg_cost": 47.06,
-        "close": null,
-        "value_usd": null,
+        "close": 80.99,
+        "value_usd": 728.91,
         "cost_usd": 423.5,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": 305.41,
+        "pnl_pct": 72.12,
+        "change_pct": 8.36
       },
       {
         "ticker": "S",
         "name": "SentinelOne",
         "shares": 1,
         "avg_cost": 12.0,
-        "close": null,
-        "value_usd": null,
+        "close": 20.98,
+        "value_usd": 20.98,
         "cost_usd": 12.0,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": 8.98,
+        "pnl_pct": 74.83,
+        "change_pct": 4.64
       },
       {
         "ticker": "SOUN",
         "name": "SoundHound AI",
         "shares": 16,
         "avg_cost": 6.22,
-        "close": null,
-        "value_usd": null,
+        "close": 6.51,
+        "value_usd": 104.16,
         "cost_usd": 99.6,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": 4.56,
+        "pnl_pct": 4.58,
+        "change_pct": 6.72
       },
       {
         "ticker": "TSLA",
         "name": "Tesla",
         "shares": 13,
         "avg_cost": 361.23,
-        "close": null,
-        "value_usd": null,
+        "close": 327.35,
+        "value_usd": 4255.55,
         "cost_usd": 4696.0,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": -440.45,
+        "pnl_pct": -9.38,
+        "change_pct": 1.64
       },
       {
         "ticker": "ZS",
         "name": "Zscaler",
         "shares": 11,
         "avg_cost": 141.33,
-        "close": null,
-        "value_usd": null,
+        "close": 163.22,
+        "value_usd": 1795.42,
         "cost_usd": 1554.66,
-        "pnl_usd": null,
-        "pnl_pct": null,
-        "change_pct": null
+        "pnl_usd": 240.76,
+        "pnl_pct": 15.49,
+        "change_pct": 5.67
       }
     ],
     "us_cost_usd": 12848.72,
-    "us_pnl_usd": -12848.72,
-    "us_pnl_pct": -100.0,
+    "us_pnl_usd": 1428.53,
+    "us_pnl_pct": 11.12,
     "funds_twd": 170085,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 10308272,
-    "total_gross_twd": 25708272,
+    "net_assets_twd": 10765144,
+    "total_gross_twd": 26165144,
     "allocation_pct": {
-      "tw_stocks": 13.8,
-      "us_stocks": 0.0,
+      "tw_stocks": 13.5,
+      "us_stocks": 1.7,
       "funds": 0.7,
-      "real_estate": 85.6
+      "real_estate": 84.1
     }
   },
   "tw_positions_live": [],
@@ -689,24 +691,24 @@
   },
   "institutional_market": {
     "foreign_net_amount": -5731532826,
-    "trust_net_amount": 25270089871,
+    "trust_net_amount": 27165160060,
     "dealer_net_amount": -19428736709,
-    "total_institutional_net": 109820336,
+    "total_institutional_net": 2004890525,
     "foreign_net_positive": false,
     "date": "20260804",
     "foreign_net_shares": -5731532826,
-    "trust_net_shares": 25270089871,
+    "trust_net_shares": 27165160060,
     "dealer_net_shares": -19428736709,
     "unit": "TWD"
   },
   "margin_balance": {
-    "margin_balance_amount": 514755393000,
-    "margin_prev_balance": 507462771000,
-    "margin_change_amount": 7292622000,
-    "margin_change_pct": 1.437,
-    "short_balance_units": 185322,
-    "short_prev_units": 188324,
-    "date": "20260803"
+    "margin_balance_amount": 521134665000,
+    "margin_prev_balance": 514755353000,
+    "margin_change_amount": 6379312000,
+    "margin_change_pct": 1.239,
+    "short_balance_units": 196970,
+    "short_prev_units": 185322,
+    "date": "20260804"
   },
   "ai_sector": {
     "constituents": {
@@ -735,40 +737,40 @@
         "change_pct": 4.31
       },
       "00891": {
-        "close": 33.86,
-        "change_pct": 0.42
+        "close": null,
+        "change_pct": null
       }
     },
-    "avg_change_pct": 2.587,
-    "median_change_pct": 1.96,
+    "avg_change_pct": null,
+    "median_change_pct": 4.31,
     "count": 7
   },
   "news": {
     "tw": [
-      "【Follow法人】投信續挺台股！外資連2賣 今再提款57億元 - Yahoo股市",
+      "【Follow法人】台積電遭外資提款288億元！彰銀賣超3.7萬張居冠 金融股成重災區 - Yahoo股市",
       "台股「關禁閉」規定鬆綁 新制三變革10日上路 - udn",
       "台股周一漲還是跌？台積電、欣興、南亞…8月V轉機率多高？先看股市老手16檔口袋名單「甜甜價浮現」 - 今周刊",
-      "台股明天漲還跌？專家揭8月股市就看這2檔 - 東森新聞",
-      "台股明天慘兮兮？台指期夜盤失守4.3萬點大關「一度大跌近千點」 - Yahoo股市",
+      "荷莫茲海峽重啟有望歐股收漲- 股市爆料同學會 - CMoney",
+      "0050沒擠進前10！今年最會漲台股ETF 最強狂飆84% - Yahoo股市",
+      "台股信用交易完整「亮牌」 金管會研議Q3推儀表板 - rti.org.tw",
+      "明天台股反彈有望？台指期夜盤重返4.4萬點大關「勁揚近700點」 - Yahoo股市",
+      "全民瘋股市！他用房貸套現投資 專家曝「1情況」風險最大 - TVBS新聞網",
       "【Hot台股】國巨終止連燈還翻黑...網驚「8zz一買瞬間變超重」 分析師喊免驚 - Yahoo股市",
-      "00685L、00919、0050全上榜！台股ETF受益人7月增124萬人續創高 - Yahoo股市",
-      "「關禁閉時間縮短！」證交所公布調整處置3大新制 8/10上路 - Yahoo股市",
-      "台股不到2個月跌近20%！苦主虧120萬嘆「一堆個股腰斬」：快畢業了 - Yahoo股市",
-      "【Hot台股】台股一度漲逾600點！網驚問「夜盤不是跌千點」分析師看法曝 - Yahoo股市",
-      "【Yahoo早盤】台積電熄火...台股震盪力守4萬3 分析師張家豪揭外資攻防點位 - Yahoo股市",
+      "台股明天慘兮兮？台指期夜盤失守4.3萬點大關「一度大跌近千點」 - Yahoo股市",
+      "台股開戶攀1460萬人 7月股市震盪仍增11.8萬 - Yahoo股市",
       "台股大跌怎麼辦？5 步驟自救指南，判斷你要抄底、續抱或減碼｜股市話題｜豐雲學堂2026 年 08 月 - sinotrade.com.tw"
     ],
     "us": [
-      "Oil prices gain and Asian shares are mixed after a rally on Wall Street - Newsday",
-      "Wall Street rallies, Dow closes at record on Iran talks optimism - Reuters",
       "Wall Street bulls are starting to admit the earnings bubble is real—and the 60/40 portfolio may be the first casualty - Fortune",
-      "Jim Cramer says Wall Street's latest trading trend is creating buying opportunities - CNBC",
-      "The Stock Market Is Doing Something Observed Only 6 Times Since 1871 -- and the Previous 5 Occurrences Ended in Disaster for Wall Street - Yahoo Finance",
       "US stocks rally near a record as falling oil prices ease Wall Street’s worries about inflation - AP News",
-      "3 Wall Street strategists on the question every investor is asking: Is the worst over for the stock market? - MarketWatch",
+      "Mystery Buyer Just Bet $20 Million SpaceX Could Nearly Triple by Friday. One Analyst Thinks It Could Be a Big Wall Street Bank. - Yahoo Finance",
+      "Wall Street Is Bullish on SpaceX, Despite Recent Stock Weakness - WSJ",
+      "Wall Street climbs after Bessent signals Hormuz deal is near, upbeat earnings (DJI:) - Seeking Alpha",
+      "President Trump Buys 2 AI Stocks That Wall Street Says Are Undervalued - The Motley Fool",
+      "ASX 200 gains 1.4 per cent to five-month high — as it happened - abc.net.au",
       "Top Wall Street Veteran: The Stock Market Is “Shrugging Off” Every Major Headwind. Here’s Why - 24/7 Wall St.",
-      "Apple Shed $426 Billion in Market Cap in 2 Days. Here's What Wall Street Is Getting Wrong. - The Motley Fool",
-      "Dallas debuts new ‘Tex-ee’ stock exchange, plans to rival Wall Street - New York Post"
+      "Oil rebounds as markets trade mixed following Wall Street rally - Euronews.com",
+      "Ken Griffin deal exposes Wall Street’s biggest investing edge - thestreet.com"
     ]
   }
 }
