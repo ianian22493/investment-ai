@@ -1,26 +1,28 @@
 {
-  "market_regime_score": 0.9,
-  "trend_strength": 1.0,
-  "risk_pressure": 0.268,
-  "volatility_risk": 0.355,
-  "confidence_score": 0.8,
+  "market_regime_score": 0.0,
+  "trend_strength": 0.43,
+  "risk_pressure": 0.326,
+  "volatility_risk": 0.136,
+  "confidence_score": 0.787,
   "scanner_momentum": 1.0,
-  "ai_sector_strength": 0.95,
+  "ai_sector_strength": 0.4,
   "foreign_flow_strength": 1.0,
   "breadth_score": 0.701,
-  "liquidity_score": 0.376,
+  "liquidity_score": 0.455,
   "_sources": {
-    "market_regime_score": "regime=趨勢多頭(base=+0.8) risk_level=low(delta=+0.10)",
-    "trend_strength": "taiex_chg=+2.88%→base=0.980 market_overview_adj=+0.08",
-    "risk_pressure": "vix=15.9→0.197 tw_verdict_adj=-0.064 da_conf=0.90→0.135",
-    "volatility_risk": "vix=15.9→0.198×0.7 taiex_abs=2.88%→0.720×0.3",
-    "confidence_score": "avg_agent_conf=0.800 error_agents=0 degraded=0 penalty=0.00",
-    "scanner_momentum": "top10_avg=7.00/6.0",
-    "ai_sector_strength": "basket 7檔 avg=+3.86% → 0.95",
+    "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
+    "trend_strength": "taiex_chg=+0.00%→base=0.500 market_overview_adj=-0.07",
+    "risk_pressure": "vix=15.8→0.191 tw_verdict_adj=-0.000 da_conf=0.90→0.135",
+    "volatility_risk": "vix=15.8→0.194×0.7 taiex_abs=0.00%→0.000×0.3",
+    "confidence_score": "avg_agent_conf=0.787 error_agents=0 degraded=0 penalty=0.00",
+    "scanner_momentum": "top10_avg=7.10/6.0",
+    "ai_sector_strength": "basket data unavailable → fallback news_hits=0",
     "foreign_flow_strength": "BFI82U_foreign_net=+903.1億元 → normalized=1.000 (÷500億 clamp±0.5)",
     "breadth_score": "MI_INDEX advance=686(+43漲停) decline=293(+1跌停) advance_ratio=0.701",
-    "liquidity_score": "margin_balance=5211億元 變化=+1.24% → score=0.376 (-2%→0.7, +2%→0.3)"
+    "liquidity_score": "margin_balance=5235億元 變化=+0.45% → score=0.455 (-2%→0.7, +2%→0.3)"
   },
-  "_data_gaps": [],
-  "_computed_at": "2026-08-05T16:33:53.991639+08:00"
+  "_data_gaps": [
+    "ai_sector_strength"
+  ],
+  "_computed_at": "2026-08-06T08:35:48.767272+08:00"
 }
