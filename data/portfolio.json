@@ -1,9 +1,11 @@
 {
   "_comment": "Static portfolio snapshot | 2026-06-03 賣出 2536/4588/4707 | 2026-07-07 更新持股（新增 2603/3491/3665/6442/8299 + 加碼 3293/2211/1104）+ 每檔加 sector 欄位 (for Task C) | 2026-07-23 買 MSFT+1/CELH+2/SOUN+1/TSLA+1/GOOGL+1，賣 MELI 清倉 | 2026-07-24 新建 CAVA 3股@62.63 + CELH+1@26.60(→9股) + SOUN+1@6.10(→12股) | 2026-07-28 恐慌日(台股-4.65%)：新建台達電10@1600/世芯5@3210 + 群聯+10@1650(→100股,avg2310) + 00675L 100股(2X槓桿,進場價待補) | 2026-07-29 全持股對帳(截圖)：TW 重建16檔(世芯20/群聯130/台達50/00675L 200/新增00685L 1000/賣出2603長榮) + US SOUN→13 | 2026-07-30 US:ONDS+1/SOUN+3(→16)/TSLA+1(→13)/新增DRAM 2股@45.5；TW:環泥賣5000(→16000,實現約+17k)",
-  "_updated": "2026-07-31",
+  "_updated": "2026-08-07",
   "_comment2": "2026-07-31 環泥再賣2,000股(1000@27.5+1000@27.45)→14,000股，實現+13,119(+31.54%)。續籌50萬房款",
+  "_comment3": "2026-08-07 長榮鋼賣100股零股@87.5(入袋8,750,實現約+666)→5,000股。湊房款首筆，缺口31萬→約30.1萬",
+  "_comment4": "2026-08-07 CELH加碼2股(1@24.20+1@24.45)→11股,均價31.47→30.17。Q2營收miss後低接;毛利率48%止跌+Alani整合達標,但屬觀察區的接刀",
   "personal_finance": {
-    "cash_savings_twd": 1065043,
+    "cash_savings_twd": 1073793,
     "monthly_income_twd": 110000,
     "investment_style": "aggressive",
     "_style_note": "aggressive=高交易比例低現金 / moderate=均衡 / conservative=低交易高現金",
@@ -75,10 +77,10 @@
     {
       "code": "2211",
       "name": "長榮鋼",
-      "shares": 5100,
-      "value": 446817,
-      "cost": 412292,
-      "pnl": 34525,
+      "shares": 5000,
+      "value": 438055,
+      "cost": 404208,
+      "pnl": 33847,
       "pnl_pct": 8.37,
       "type": "stock",
       "strategy": "both",
@@ -206,12 +208,12 @@
     }
   ],
   "tw_summary": {
-    "total_value": 3475323,
-    "total_cost": 3143791,
-    "total_pnl": 331532,
+    "total_value": 3466561,
+    "total_cost": 3135707,
+    "total_pnl": 330854,
     "total_pnl_pct": 10.55,
     "broker": "國泰證券",
-    "_updated": "2026-07-31"
+    "_updated": "2026-08-07"
   },
   "us_stocks": [
     {
@@ -231,8 +233,8 @@
     {
       "ticker": "CELH",
       "name": "Celsius",
-      "shares": 9,
-      "avg_cost_usd": 31.46667,
+      "shares": 11,
+      "avg_cost_usd": 30.16818,
       "strategy": "long"
     },
     {
@@ -307,12 +309,12 @@
     }
   ],
   "us_summary": {
-    "total_value_usd": 13002.0,
-    "total_cost_usd": 12848.72,
+    "total_value_usd": 13050.65,
+    "total_cost_usd": 12897.37,
     "total_pnl_usd": 153.28,
     "total_pnl_pct": 1.19,
     "broker": "Firstrade",
-    "_updated": "2026-07-30",
+    "_updated": "2026-08-07",
     "_note": "市值含2026-07-30新買(近似成本)；即時價由 dashboard 抓"
   },
   "funds": [
