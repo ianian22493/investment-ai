@@ -508,8 +508,19 @@ def run_all():
             }
 
         print("  tw_daily_pick...")
+        import swing_probation
+        prob = swing_probation.status()
+        print(f"    [swing C1 試用期] {prob['badge']} — {prob['status']}")
         n_open = len(open_positions)
-        if n_open >= HARD_CAP_POSITIONS:
+        if prob["status"] == "suspended":
+            # 波段 C1 止血開關：上線後 live alpha 轉負 → 後端強制暫停開新倉（不 call LLM）
+            outputs["tw_daily_pick"] = _rule_based_watch(
+                f"波段 C1 止血開關觸發：{prob['reason']}",
+                f"C1 暫停開新倉（{prob['badge']}）",
+                "swing-probation gate (rule-based, no LLM call)",
+            )
+            outputs["tw_daily_pick"]["swing_suspended"] = True
+        elif n_open >= HARD_CAP_POSITIONS:
             outputs["tw_daily_pick"] = _rule_based_watch(
                 f"波段倉位已達絕對上限（{n_open}/{HARD_CAP_POSITIONS} 檔在倉），"
                 f"今日不開新倉。專注管理現有部位：依既定停損 / 目標紀律執行。",
@@ -595,6 +606,7 @@ def run_all():
         pick["open_positions"] = open_positions
         pick["max_positions"] = HARD_CAP_POSITIONS
         pick["soft_cap"] = SOFT_CAP_POSITIONS
+        pick["probation"] = prob   # 波段 C1 試用期體檢徽章（連動止血開關）
         print(f"    → {pick.get('verdict')} | {pick.get('pick',{}).get('name','?')}({pick.get('pick',{}).get('code','?')})")
 
         # Holdings correlation (Task C) — 純 Python，不 call LLM。

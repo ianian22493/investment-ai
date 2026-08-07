@@ -213,12 +213,13 @@ const SAMPLE = {
     { time: "收盤", action: "若收 285 以下 → 記錄，準備隔日減半" }
   ],
   watchlist_zones: [
-    { code:"3546", name:"宇峻", px:71.0, start:72, add:64, status:"起手區", hit:true, days_in_zone:2, note:"遊戲收稅口、連年配股、財報加速股價沒動" },
-    { code:"2755", name:"揚秦", px:103.5, start:105, add:92, status:"起手區", hit:true, days_in_zone:1, thin:true, vol:55, note:"餐飲展店成長+配股大方、超秦雞肉鏈護城河" },
-    { code:"4571", name:"鈞興-KY", px:163.0, start:160, add:142, status:"接近", hit:false },
-    { code:"5306", name:"桂盟", px:94.5, start:88, add:82, status:"還遠", hit:false },
-    { code:"6534", name:"正瀚", px:95.0, start:92, add:82, status:"還遠", hit:false }
-  ]
+    { code:"3546", name:"宇峻", px:71.0, start:72, add:64, status:"起手區", hit:true, days_in_zone:2, note:"遊戲收稅口、連年配股、財報加速股價沒動", rev:{yoy:44,trend:"高檔穩健",signal:"confirm",brief:"6月營收 YoY +44%（高檔穩健、連5月正、累計+48%）"} },
+    { code:"2755", name:"揚秦", px:103.5, start:105, add:92, status:"起手區", hit:true, days_in_zone:1, thin:true, vol:55, note:"餐飲展店成長+配股大方、超秦雞肉鏈護城河", rev:{yoy:18,trend:"持平",signal:"neutral",brief:"6月營收 YoY +18%（持平、連6月正、累計+19%）"} },
+    { code:"4571", name:"鈞興-KY", px:163.0, start:160, add:142, status:"接近", hit:false, rev:{yoy:6,trend:"持平",signal:"neutral",brief:"6月營收 YoY +6%（持平、連3月正、累計-1%）"} },
+    { code:"5306", name:"桂盟", px:94.5, start:88, add:82, status:"還遠", hit:false, rev:{yoy:32,trend:"🔥加速",signal:"confirm",brief:"6月營收 YoY +32%（🔥加速、連4月正、累計+8%）"} },
+    { code:"6534", name:"正瀚", px:95.0, start:92, add:82, status:"還遠", hit:false, rev:{yoy:29,trend:"🔥加速",signal:"confirm",brief:"6月營收 YoY +29%（🔥加速、連6月正、累計+4%）"} }
+  ],
+  probation: { status:"probation", badge:"試用期 0/10", n:0, mean_alpha:null, reason:"C1 上線 0.0 週、尚無結案實單。累積中——先讓它跑、別當主力。" }
 };
 
 /* ════════════════════════════════════════════════════════════════
@@ -331,26 +332,44 @@ if(DATA.code && DATA.code !== '—'){
     if(s==='接近')  return '<span style="color:#C9A84C;font-size:11px;font-weight:600">接近</span>';
     return '<span style="color:var(--text3,#8a8a8a);font-size:11px">還遠</span>';
   };
+  const revColor = {confirm:'#1E8449', warn:'#C0392B', caution:'#B9770E', neutral:'var(--text3,#8a8a8a)'};
+  const revTail = {confirm:' ← 論述兌現', warn:' ← 論述亮紅燈', caution:'', neutral:''};
   const rows = zs.map(z=>{
     const hit = z.status==='加碼區' || z.status==='起手區';
     const bg = hit ? 'background:rgba(201,168,76,0.15);' : '';
     const thinMark = z.thin ? ' <span style="color:#C0392B;font-size:10px">💧薄量</span>' : '';
     const sub = hit ? `<div style="font-size:10.5px;color:var(--text3,#8a8a8a);padding:0 8px 5px;line-height:1.35">🎯 進場區第 ${z.days_in_zone||1} 天 · ${(z.note||'').slice(0,64)}</div>` : '';
+    const rev = z.rev ? `<div style="font-size:10.5px;padding:0 8px 5px;line-height:1.3;color:${revColor[z.rev.signal]||revColor.neutral};font-weight:${(z.rev.signal==='warn'||z.rev.signal==='confirm')?600:400}">📈 ${z.rev.brief}${revTail[z.rev.signal]||''}</div>` : '';
     return `<div style="margin-top:3px;border-radius:5px;${bg}">
-      <div style="display:flex;align-items:center;gap:8px;padding:5px 8px;line-height:1.4">
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 8px 3px;line-height:1.4">
         <span style="flex:1;font-size:12px"><b>${z.code}</b> ${z.name}${thinMark}</span>
         <span style="font-size:12px;${hit?'color:#C9A84C;font-weight:700':''}">現 ${z.px??'—'}</span>
         <span style="font-size:11px;color:var(--text3,#8a8a8a)">起手≤${z.start??'—'} · 加碼≤${z.add??'—'}</span>
         <span style="min-width:60px;text-align:right">${badge(z.status)}</span>
-      </div>${sub}
+      </div>${rev}${sub}
     </div>`;
   }).join('');
   const anyHit = zs.some(z=>z.status==='加碼區'||z.status==='起手區');
   hero.insertAdjacentHTML('afterend', `
     <div style="max-width:760px;margin:14px auto 0;padding:10px 14px;border:1px solid rgba(201,168,76,${anyHit?0.65:0.35});border-radius:8px;background:rgba(201,168,76,0.05)">
       <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:#C9A84C">⭐ 寶藏觀察名單 · 入場區${anyHit?' &nbsp;—&nbsp; 🎯 有標的到價！':''}</div>
-      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin:2px 0 3px">長波埋伏，與今日波段 pick 是兩套獨立紀律 · 掛限價分批、別市價追</div>
+      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin:2px 0 3px">長波埋伏，與今日波段 pick 是兩套獨立紀律 · 掛限價分批、別市價追 · 📈=月營收動能（論述追蹤器）</div>
       ${rows}
+    </div>`);
+})();
+
+/* 波段 C1 試用期體檢徽章（止血開關）— 副菜別當主力、別默默失血 */
+(function renderProbation(){
+  const p = DATA.probation;
+  if(!p || !p.badge) return;
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  const c = p.status==='suspended' ? {bg:'rgba(192,57,43,0.12)',bd:'#C0392B',fg:'#C0392B'}
+          : p.status==='active_pass' ? {bg:'rgba(30,132,73,0.10)',bd:'rgba(30,132,73,0.5)',fg:'#1E8449'}
+          : {bg:'rgba(138,138,138,0.08)',bd:'rgba(138,138,138,0.35)',fg:'var(--text3,#8a8a8a)'};
+  hero.insertAdjacentHTML('afterend', `
+    <div style="max-width:760px;margin:10px auto 0;padding:7px 12px;border:1px solid ${c.bd};border-radius:8px;background:${c.bg};font-size:11px;color:${c.fg};line-height:1.4">
+      🎲 <b>波段 C1</b> · ${p.badge}<span style="color:var(--text3,#8a8a8a)"> — ${p.reason||''}</span>
     </div>`);
 })();
 

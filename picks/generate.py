@@ -154,6 +154,7 @@ def _load_watchlist_zones() -> list:
                 "vol": a.get("vol"),
                 "thin": bool(a.get("thin")),
                 "days_in_zone": a.get("days_in_zone", 0),
+                "rev": a.get("rev"),  # 月營收動能（論述追蹤器）：{yoy, trend, signal, brief, ...}
             })
     out.sort(key=lambda x: order.get(x.get("status"), 9))
     return out
@@ -218,6 +219,8 @@ def build_pick_data(analysis: dict, market_data: dict, candidates: list, explain
         "position_sizing":   pick_agent.get("position_sizing"),
         # 寶藏觀察名單·入場區（連動 #4：全名單＋現價＋起手/加碼＋狀態 → pick 頁）
         "watchlist_zones":   _load_watchlist_zones(),
+        # 波段 C1 試用期體檢徽章（止血開關）
+        "probation":         pick_agent.get("probation"),
     }
 
 
@@ -245,6 +248,8 @@ def build_watch_data(analysis: dict, market_data: dict, candidates: list, explai
         "panic_sop":        analysis.get("panic_sop"),
         # 寶藏觀察名單·入場區（連動 #4：全名單＋現價＋起手/加碼＋狀態 → 觀望日頁）
         "watchlist_zones":  _load_watchlist_zones(),
+        # 波段 C1 試用期體檢徽章（止血開關）
+        "probation":        pick_agent.get("probation"),
     }
 
 

@@ -32,6 +32,13 @@ WATCHLIST = ROOT / "data" / "watchlist.json"
 ALERTS = ROOT / "data" / "alerts.json"
 TW_TZ = timezone(timedelta(hours=8))
 
+# 寶藏接月營收：純本地讀 history 快照算營收動能（論述追蹤器）。抓不到就降級不掛。
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+try:
+    from rev_momentum import rev_momentum
+except Exception:  # noqa: BLE001
+    rev_momentum = None
+
 
 def _alt_symbol(symbol):
     """.TW <-> .TWO 互換（上市/上櫃後綴猜錯時的 fallback）。"""
@@ -266,6 +273,21 @@ def main():
         elif entry.get("rule") == "zone":
             failed.append(f"{entry.get('symbol')} {entry.get('name', '')}".strip())
     results.extend(check_positions(cfg))
+
+    # 寶藏接月營收：對每個 zone 檔附掛「月營收年增趨勢」＝論述兌現/亮紅的真訊號
+    # （收稅口/雙擊靠營收連續加速，不是價格）。純本地、零網路呼叫。
+    if rev_momentum:
+        zone_codes = [r["symbol"].split(".")[0] for r in results if r.get("rule") == "zone"]
+        if zone_codes:
+            try:
+                rev = rev_momentum(zone_codes)
+                for r in results:
+                    if r.get("rule") == "zone":
+                        code = r["symbol"].split(".")[0]
+                        if code in rev:
+                            r["rev"] = rev[code]
+            except Exception as e:  # noqa: BLE001
+                print(f"  [warn] rev_momentum attach failed: {e}")
 
     hits = [r for r in results if r["hit"]]
     new_hits = [r for r in hits if r["key"] not in prev_hits]
