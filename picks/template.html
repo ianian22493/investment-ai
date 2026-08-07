@@ -211,6 +211,9 @@ const SAMPLE = {
     { time: "09:30", action: "若量達 5 日均量 1.2x 且價在 286–290 → 進場" },
     { time: "盤中", action: "設好 282 停損單，放著不動" },
     { time: "收盤", action: "若收 285 以下 → 記錄，準備隔日減半" }
+  ],
+  watchlist_hits: [
+    { code: "4571", name: "鈞興-KY", detail: "現價 155.00 ≤ 起手區 160 ✓ 進場區", note: "機器人齒輪雙擊。起手 150-160、加碼 135-142。本業齒輪在賺＝有地板" }
   ]
 };
 
@@ -309,6 +312,26 @@ if(DATA.code && DATA.code !== '—'){
   hero.insertAdjacentHTML('afterend', `
     <div class="panic-strip">🚨 <b>恐慌日 SOP 條件觸發</b> — ${(p.reasons||[]).join(' · ')}。
     Swing 停開新倉；長波買點窗口 → 寶藏股研究室「恐慌日SOP.md」照表操課。</div>`);
+})();
+
+/* 寶藏觀察名單·到入場區（連動 #4）— 哨兵 zone 到價才顯示。
+   長波埋伏，與今日波段 pick 是兩套獨立紀律（不同持有期）。 */
+(function renderWatchlistHits(){
+  const hits = DATA.watchlist_hits;
+  if(!hits || !hits.length) return;
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  const rows = hits.map(h => `
+    <div style="border-left:3px solid #C9A84C;padding:6px 10px;margin-top:6px;background:rgba(201,168,76,0.08);line-height:1.5">
+      <div style="font-size:13px;font-weight:700;color:#C9A84C">🎯 ${h.code} ${h.name} — ${h.detail}</div>
+      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin-top:2px">${h.note||''}</div>
+    </div>`).join('');
+  hero.insertAdjacentHTML('afterend', `
+    <div style="max-width:760px;margin:14px auto 0;padding:10px 14px;border:1px solid rgba(201,168,76,0.4);border-radius:8px;background:rgba(201,168,76,0.05)">
+      <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:#C9A84C">⭐ 寶藏觀察名單 · 到入場區</div>
+      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin:2px 0 4px">長波埋伏，與今日波段 pick 是兩套獨立紀律 · 掛限價分批、別市價追</div>
+      ${rows}
+    </div>`);
 })();
 
 /* 寶藏雷達收斂徽章（連動 #2）— pick 命中寶藏觀察名單時顯示 */

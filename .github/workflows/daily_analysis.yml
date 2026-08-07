@@ -116,17 +116,9 @@ jobs:
           GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
           PYTHONUNBUFFERED: "1"
 
-      - name: Generate daily pick page
-        if: steps.skip.outputs.skip != 'true'
-        # Only runs after Phase 4 produced tw_daily_pick. generate.py skips
-        # itself if no pick data exists (pre-market run).
-        run: python picks/generate.py
-        env:
-          GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
-          PYTHONUNBUFFERED: "1"
-        continue-on-error: true   # pick page is non-critical; analysis still commits even if this breaks
-
+      # 哨兵先跑：寫 data/alerts.json（含 zone 到價）→ generate.py 隨後讀它，
+      # 把「⭐ 寶藏觀察名單·到入場區」放進當天 pick 頁（2026-08-06 連動 #4）。
+      # 兩步都 continue-on-error，哨兵故障不影響 pick 頁生成（讀到舊 alerts 而已）。
       - name: Watchlist watcher (price/panic alerts)
         if: steps.skip.outputs.skip != 'true'
         # 寶藏股哨兵：檢查 data/watchlist.json 的價格/指數觸發，
@@ -137,6 +129,17 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           PYTHONUNBUFFERED: "1"
         continue-on-error: true   # 哨兵故障不影響主分析
+
+      - name: Generate daily pick page
+        if: steps.skip.outputs.skip != 'true'
+        # Only runs after Phase 4 produced tw_daily_pick. generate.py skips
+        # itself if no pick data exists (pre-market run). 讀哨兵剛寫的 alerts.json。
+        run: python picks/generate.py
+        env:
+          GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
+          PYTHONUNBUFFERED: "1"
+        continue-on-error: true   # pick page is non-critical; analysis still commits even if this breaks
 
       - name: Portfolio gap lens (組合缺口/分散透鏡)
         if: steps.skip.outputs.skip != 'true'

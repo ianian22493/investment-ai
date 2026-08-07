@@ -12,11 +12,20 @@ watchlist_watcher.py — 觀察名單哨兵（每日隨 daily_analysis 執行）
 
 import json
 import os
+import sys
 import urllib.request
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 import yfinance as yf
+
+# Windows 主控台預設 cp950，印不出 ≤/✓/🔥 等字元會 UnicodeEncodeError；
+# CI(Linux) 為 utf-8 不受影響。reconfigure 讓本機執行也不因 print 崩潰
+# （alerts.json 寫檔本就指定 utf-8，資料一向正確）。
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 
 ROOT = Path(__file__).resolve().parent.parent
 WATCHLIST = ROOT / "data" / "watchlist.json"
@@ -53,6 +62,17 @@ def check_stock(entry):
         pct = entry.get("pct", 3.0)
         hit = px <= low * (1 + pct / 100)
         detail = f"現價 {px:.2f} vs 52週低 {low:.2f}（門檻 +{pct}%）"
+    elif rule == "zone":
+        # 寶藏股入場區：start=起手上緣、add=加碼上緣（更深）。到區間才 hit，
+        # 顯示在每日 pick 頁與 hub 面板（entry-zone 提醒）。
+        start = entry.get("start")
+        add = entry.get("add")
+        if add is not None and px <= add:
+            hit, detail = True, f"現價 {px:.2f} ≤ 加碼區 {add} 🔥深回檔"
+        elif start is not None and px <= start:
+            hit, detail = True, f"現價 {px:.2f} ≤ 起手區 {start} ✓ 進場區"
+        else:
+            hit, detail = False, f"現價 {px:.2f}（等 ≤{start} 進起手區）"
     key = f"{entry['symbol']}|{rule}|{entry.get('value', '')}"
     return {"key": key, "symbol": entry["symbol"], "name": entry["name"],
             "rule": rule, "hit": hit, "detail": detail, "note": entry["note"]}

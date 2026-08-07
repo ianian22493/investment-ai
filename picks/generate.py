@@ -132,6 +132,23 @@ def _format_budget(cf: dict, pf: dict) -> str:
     return f"{trading_pct*100:.0f}%" + (f" · ~NT$ {int(cash * trading_pct):,}" if cash else "")
 
 
+def _load_watchlist_hits() -> list:
+    """讀 data/alerts.json（哨兵輸出），抽出 rule=zone 且已到入場區的寶藏股，
+    給 pick / watch 頁的「⭐ 寶藏觀察名單·到入場區」區塊。長波埋伏，與波段
+    pick 是兩套獨立紀律——只顯示 hit（起手區或加碼區）。"""
+    alerts = _load_json(os.path.join(DATA_DIR, "alerts.json"))
+    out = []
+    for a in (alerts.get("results") or []):
+        if a.get("hit") and a.get("rule") == "zone":
+            out.append({
+                "code": str(a.get("symbol", "")).split(".")[0],
+                "name": a.get("name", ""),
+                "detail": a.get("detail", ""),
+                "note": a.get("note", ""),
+            })
+    return out
+
+
 def build_pick_data(analysis: dict, market_data: dict, candidates: list, explainer: dict, date_str: str) -> dict:
     """組裝 PICK day 完整 data dict（給 template.html 用）。"""
     agents = analysis.get("agents", {})
@@ -189,6 +206,8 @@ def build_pick_data(analysis: dict, market_data: dict, candidates: list, explain
         "panic_sop":         analysis.get("panic_sop"),
         # 部位大小建議（2026-07-24 風險基準法）
         "position_sizing":   pick_agent.get("position_sizing"),
+        # 寶藏觀察名單·到入場區（連動 #4：哨兵 zone 到價 → pick 頁）
+        "watchlist_hits":    _load_watchlist_hits(),
     }
 
 
@@ -214,6 +233,8 @@ def build_watch_data(analysis: dict, market_data: dict, candidates: list, explai
         "max_positions":    pick_agent.get("max_positions", 3),
         # 恐慌日 SOP（連動 #3）
         "panic_sop":        analysis.get("panic_sop"),
+        # 寶藏觀察名單·到入場區（連動 #4：哨兵 zone 到價 → 也顯示在觀望日頁）
+        "watchlist_hits":   _load_watchlist_hits(),
     }
 
 
