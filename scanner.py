@@ -218,6 +218,10 @@ def calc_signals(df: pd.DataFrame, code: str, taiex_close: pd.Series = None) -> 
     score = sum([trend_up, above_ma60, pullback_buy, not_extended,
                  base_breakout, vol_accumulate, rsi_swing, rs_20d_strong])
 
+    # C1 setup（2026-08 回測：這組合 alpha +1.07%、433 筆；突破/高分反而負 alpha）：
+    # 回檔買點 + RS 強於大盤 + 趨勢確立 + 站季線 + 未追高。波段只做這個。
+    c1_setup = pullback_buy and rs_20d_strong and trend_up and above_ma60 and not_extended
+
     return {
         "trend_up":       bool(trend_up),
         "above_ma60":     bool(above_ma60),
@@ -230,6 +234,7 @@ def calc_signals(df: pd.DataFrame, code: str, taiex_close: pd.Series = None) -> 
         "rsi_swing":      bool(rsi_swing),
         "rs_20d":         float(rs_20d),
         "rs_20d_strong":  bool(rs_20d_strong),
+        "c1_setup":       bool(c1_setup),
         "dist_ma20_pct":  float(round(dist_ma20_pct, 1)),
         "score":          int(score),
         "last_close":     float(round(last_close, 2)),
@@ -304,6 +309,15 @@ def run_scanner() -> list[dict]:
     except Exception as e:
         print(f"[scanner] TAIEX extraction failed: {e}")
 
+    # C1 體制閘門（2026-08）：加權跌破季線(MA60)＝弱勢/震盪，波段一律空手不開新倉。
+    # live 數據：區間盤 0 勝 4；弱勢盤開倉是主要虧損來源。趨勢多頭才做。
+    if taiex_close is not None and len(taiex_close) >= 60:
+        t_ma60 = float(taiex_close.tail(60).mean())
+        if float(taiex_close.iloc[-1]) < t_ma60:
+            print(f"[scanner] 加權 {float(taiex_close.iloc[-1]):.0f} < 季線 {t_ma60:.0f} "
+                  f"— 弱勢體制，C1 空手不開新倉")
+            return []
+
     candidates = []
     for s in top_stocks:
         code = s["code"]
@@ -331,12 +345,15 @@ def run_scanner() -> list[dict]:
         except Exception:
             continue
 
-    # Sort: score desc, then 20 日相對強度 desc as tiebreaker
-    # （波段版 tiebreaker 從 vol_ratio 改 rs_20d：資金持續性 > 單日爆量）
-    candidates.sort(key=lambda x: (x["score"], x.get("rs_20d", 0)), reverse=True)
-    result = candidates[:CANDIDATES]
+    # C1（2026-08 回測）：只留有 edge 的 setup（回檔+RS+趨勢，alpha +1.07%）。
+    # 依相對強度 rs_20d 排序——**不用 score**，因為回測顯示 score 越高越差（score 7
+    # alpha -1.33%＝訊號全滿=乖離過大追高）。突破型 alpha 負，c1_setup 已排除。
+    c1 = [c for c in candidates if c.get("c1_setup")]
+    c1.sort(key=lambda x: x.get("rs_20d", 0), reverse=True)
+    result = c1[:CANDIDATES]
 
-    print(f"[scanner] Found {len(candidates)} qualifying stocks, returning top {len(result)}")
+    print(f"[scanner] {len(candidates)} 檔達 score≥{MIN_SCORE}，其中 {len(c1)} 檔符合 C1 setup"
+          f"（回檔+RS+趨勢），回傳 top {len(result)}")
     return result
 
 
