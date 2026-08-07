@@ -63,19 +63,24 @@ def check_stock(entry):
         hit = px <= low * (1 + pct / 100)
         detail = f"現價 {px:.2f} vs 52週低 {low:.2f}（門檻 +{pct}%）"
     elif rule == "zone":
-        # 寶藏股入場區：start=起手上緣、add=加碼上緣（更深）。到區間才 hit，
-        # 顯示在每日 pick 頁與 hub 面板（entry-zone 提醒）。
+        # 寶藏股入場區：start=起手上緣、add=加碼上緣（更深）。每日 pick 頁永遠列出
+        # 全部名單＋現價＋起手/加碼價，到區間者明顯標示。zstatus 供前端分級渲染。
         start = entry.get("start")
         add = entry.get("add")
         if add is not None and px <= add:
-            hit, detail = True, f"現價 {px:.2f} ≤ 加碼區 {add} 🔥深回檔"
+            hit, zstatus, detail = True, "加碼區", f"現價 {px:.2f} ≤ 加碼區 {add} 🔥深回檔"
         elif start is not None and px <= start:
-            hit, detail = True, f"現價 {px:.2f} ≤ 起手區 {start} ✓ 進場區"
+            hit, zstatus, detail = True, "起手區", f"現價 {px:.2f} ≤ 起手區 {start} ✓ 進場區"
+        elif start is not None and px <= start * 1.10:
+            hit, zstatus, detail = False, "接近", f"現價 {px:.2f}（距起手 {start} 之上 {(px/start-1)*100:.0f}%）"
         else:
-            hit, detail = False, f"現價 {px:.2f}（等 ≤{start} 進起手區）"
+            hit, zstatus, detail = False, "還遠", f"現價 {px:.2f}（等 ≤{start} 進起手區）"
     key = f"{entry['symbol']}|{rule}|{entry.get('value', '')}"
-    return {"key": key, "symbol": entry["symbol"], "name": entry["name"],
-            "rule": rule, "hit": hit, "detail": detail, "note": entry["note"]}
+    out = {"key": key, "symbol": entry["symbol"], "name": entry["name"],
+           "rule": rule, "hit": hit, "detail": detail, "note": entry["note"]}
+    if rule == "zone":
+        out.update({"px": round(px, 2), "start": start, "add": add, "status": zstatus})
+    return out
 
 
 def check_panic(cfg):

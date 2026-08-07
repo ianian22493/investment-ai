@@ -132,20 +132,27 @@ def _format_budget(cf: dict, pf: dict) -> str:
     return f"{trading_pct*100:.0f}%" + (f" · ~NT$ {int(cash * trading_pct):,}" if cash else "")
 
 
-def _load_watchlist_hits() -> list:
-    """讀 data/alerts.json（哨兵輸出），抽出 rule=zone 且已到入場區的寶藏股，
-    給 pick / watch 頁的「⭐ 寶藏觀察名單·到入場區」區塊。長波埋伏，與波段
-    pick 是兩套獨立紀律——只顯示 hit（起手區或加碼區）。"""
+def _load_watchlist_zones() -> list:
+    """讀 data/alerts.json（哨兵輸出），回傳「全部」rule=zone 的寶藏股（含未到價），
+    給 pick / watch 頁「⭐ 寶藏觀察名單·入場區」面板：永遠列出全名單＋現價＋
+    起手/加碼價＋狀態，到起手/加碼區者明顯標示。長波埋伏，與波段 pick 是兩套
+    獨立紀律。依狀態排序（到價的排前面）。"""
     alerts = _load_json(os.path.join(DATA_DIR, "alerts.json"))
+    order = {"加碼區": 0, "起手區": 1, "接近": 2, "還遠": 3}
     out = []
     for a in (alerts.get("results") or []):
-        if a.get("hit") and a.get("rule") == "zone":
+        if a.get("rule") == "zone":
             out.append({
                 "code": str(a.get("symbol", "")).split(".")[0],
                 "name": a.get("name", ""),
-                "detail": a.get("detail", ""),
+                "px": a.get("px"),
+                "start": a.get("start"),
+                "add": a.get("add"),
+                "status": a.get("status", ""),
+                "hit": bool(a.get("hit")),
                 "note": a.get("note", ""),
             })
+    out.sort(key=lambda x: order.get(x.get("status"), 9))
     return out
 
 
@@ -206,8 +213,8 @@ def build_pick_data(analysis: dict, market_data: dict, candidates: list, explain
         "panic_sop":         analysis.get("panic_sop"),
         # 部位大小建議（2026-07-24 風險基準法）
         "position_sizing":   pick_agent.get("position_sizing"),
-        # 寶藏觀察名單·到入場區（連動 #4：哨兵 zone 到價 → pick 頁）
-        "watchlist_hits":    _load_watchlist_hits(),
+        # 寶藏觀察名單·入場區（連動 #4：全名單＋現價＋起手/加碼＋狀態 → pick 頁）
+        "watchlist_zones":   _load_watchlist_zones(),
     }
 
 
@@ -233,8 +240,8 @@ def build_watch_data(analysis: dict, market_data: dict, candidates: list, explai
         "max_positions":    pick_agent.get("max_positions", 3),
         # 恐慌日 SOP（連動 #3）
         "panic_sop":        analysis.get("panic_sop"),
-        # 寶藏觀察名單·到入場區（連動 #4：哨兵 zone 到價 → 也顯示在觀望日頁）
-        "watchlist_hits":   _load_watchlist_hits(),
+        # 寶藏觀察名單·入場區（連動 #4：全名單＋現價＋起手/加碼＋狀態 → 觀望日頁）
+        "watchlist_zones":  _load_watchlist_zones(),
     }
 
 
