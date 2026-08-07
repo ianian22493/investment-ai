@@ -151,6 +151,9 @@ def _load_watchlist_zones() -> list:
                 "status": a.get("status", ""),
                 "hit": bool(a.get("hit")),
                 "note": a.get("note", ""),
+                "vol": a.get("vol"),
+                "thin": bool(a.get("thin")),
+                "days_in_zone": a.get("days_in_zone", 0),
             })
     out.sort(key=lambda x: order.get(x.get("status"), 9))
     return out

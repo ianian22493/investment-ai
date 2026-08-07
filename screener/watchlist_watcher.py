@@ -33,18 +33,40 @@ ALERTS = ROOT / "data" / "alerts.json"
 TW_TZ = timezone(timedelta(hours=8))
 
 
+def _alt_symbol(symbol):
+    """.TW <-> .TWO 互換（上市/上櫃後綴猜錯時的 fallback）。"""
+    if symbol.endswith(".TWO"):
+        return symbol[:-4] + ".TW"
+    if symbol.endswith(".TW"):
+        return symbol[:-3] + ".TWO"
+    return None
+
+
+def fetch_hist(symbol, period="1y"):
+    """抓歷史。#1 資料 sanity：給定後綴抓不到就自動試另一個(.TW<->.TWO)，
+    回傳 (closes, volumes, used_symbol)；全失敗回 (None, None, None)。
+    避免「後綴猜錯→靜默消失」——主流程會把 fetch 失敗的檔列出來。"""
+    for sym in (symbol, _alt_symbol(symbol)):
+        if not sym:
+            continue
+        try:
+            df = yf.Ticker(sym).history(period=period, auto_adjust=False)
+            closes = df["Close"].dropna()
+            if len(closes):
+                vols = df["Volume"].reindex(closes.index)
+                return closes, vols, sym
+        except Exception as e:  # noqa: BLE001
+            print(f"  [warn] {sym}: {e}")
+    return None, None, None
+
+
 def last_closes(symbol, period="1y"):
-    try:
-        df = yf.Ticker(symbol).history(period=period, auto_adjust=False)
-        closes = df["Close"].dropna()
-        return closes if len(closes) else None
-    except Exception as e:  # noqa: BLE001
-        print(f"  [warn] {symbol}: {e}")
-        return None
+    closes, _, _ = fetch_hist(symbol, period)
+    return closes
 
 
-def check_stock(entry):
-    closes = last_closes(entry["symbol"])
+def check_stock(entry, prev_zone_since=None):
+    closes, vols, _ = fetch_hist(entry["symbol"])
     if closes is None or len(closes) < 25:
         return None
     px = float(closes.iloc[-1])
@@ -79,7 +101,26 @@ def check_stock(entry):
     out = {"key": key, "symbol": entry["symbol"], "name": entry["name"],
            "rule": rule, "hit": hit, "detail": detail, "note": entry["note"]}
     if rule == "zone":
-        out.update({"px": round(px, 2), "start": start, "add": add, "status": zstatus})
+        # #5 流動性守門：近20日均量(張)，<30張標薄量(死因之一)
+        try:
+            avgvol = int(vols.tail(20).mean() / 1000) if vols is not None else None
+        except Exception:  # noqa: BLE001
+            avgvol = None
+        thin = avgvol is not None and avgvol < 30
+        # #4 在區間幾天：hit(起手/加碼) 才計；沿用上次的 zone_since，離開就清空
+        today = datetime.now(TW_TZ).strftime("%Y-%m-%d")
+        zsince = (prev_zone_since or today) if hit else None
+        days = 0
+        if zsince:
+            try:
+                days = (datetime.strptime(today, "%Y-%m-%d").date()
+                        - datetime.strptime(zsince, "%Y-%m-%d").date()).days + 1
+            except ValueError:
+                days = 1
+        out.update({"px": round(px, 2), "start": start, "add": add, "status": zstatus,
+                    "vol": avgvol, "thin": thin, "zone_since": zsince, "days_in_zone": days})
+        if thin:
+            out["detail"] += f"  💧薄量~{avgvol}張(小量掛限價)"
     return out
 
 
@@ -202,20 +243,29 @@ def discord_notify(new_hits):
 
 def main():
     cfg = json.loads(WATCHLIST.read_text(encoding="utf-8"))
-    results = check_panic(cfg["panic"])
-    for entry in cfg["stocks"]:
-        r = check_stock(entry)
-        if r:
-            results.append(r)
-    results.extend(check_positions(cfg))
 
-    prev_hits = set()
+    # 先讀上次 alerts：prev_hits(新觸發判定) + zone_since(在區間幾天延續) 對照表
+    prev_hits, prev_zone_since = set(), {}
     if ALERTS.exists():
         try:
             prev = json.loads(ALERTS.read_text(encoding="utf-8"))
-            prev_hits = {a["key"] for a in prev.get("results", []) if a.get("hit")}
+            for a in prev.get("results", []):
+                if a.get("hit"):
+                    prev_hits.add(a["key"])
+                if a.get("rule") == "zone" and a.get("zone_since"):
+                    prev_zone_since[a.get("symbol")] = a["zone_since"]
         except Exception:  # noqa: BLE001
             pass
+
+    results = check_panic(cfg["panic"])
+    failed = []  # #1 fetch 失敗的檔（後綴猜錯/下市）— 浮現而非靜默消失
+    for entry in cfg["stocks"]:
+        r = check_stock(entry, prev_zone_since.get(entry.get("symbol")))
+        if r:
+            results.append(r)
+        elif entry.get("rule") == "zone":
+            failed.append(f"{entry.get('symbol')} {entry.get('name', '')}".strip())
+    results.extend(check_positions(cfg))
 
     hits = [r for r in results if r["hit"]]
     new_hits = [r for r in hits if r["key"] not in prev_hits]
@@ -224,10 +274,13 @@ def main():
         "checked_at": datetime.now(TW_TZ).strftime("%Y-%m-%d %H:%M %z"),
         "hit_count": len(hits),
         "new_hit_count": len(new_hits),
+        "failed": failed,
         "results": results,
     }, ensure_ascii=False, indent=1), encoding="utf-8")
 
     print(f"checked {len(results)} rules: {len(hits)} hit ({len(new_hits)} new)")
+    if failed:
+        print(f"  [FETCH 失敗 ×{len(failed)}] {', '.join(failed)} — 檢查代號/後綴/是否下市")
     for a in hits:
         marker = "NEW" if a in new_hits else "ongoing"
         print(f"  [{marker}] {a['name']} {a['detail']} -> {a['note']}")

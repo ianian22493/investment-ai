@@ -198,11 +198,15 @@ document.getElementById('hero-sub').innerHTML =
   const rows = zs.map(z=>{
     const hit = z.status==='加碼區' || z.status==='起手區';
     const bg = hit ? 'background:rgba(201,168,76,0.15);' : '';
-    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;margin-top:3px;border-radius:5px;${bg}line-height:1.4">
-      <span style="flex:1;font-size:12px"><b>${z.code}</b> ${z.name}</span>
-      <span style="font-size:12px;${hit?'color:#C9A84C;font-weight:700':''}">現 ${z.px??'—'}</span>
-      <span style="font-size:11px;color:var(--text3,#8a8a8a)">起手≤${z.start??'—'} · 加碼≤${z.add??'—'}</span>
-      <span style="min-width:60px;text-align:right">${badge(z.status)}</span>
+    const thinMark = z.thin ? ' <span style="color:#C0392B;font-size:10px">💧薄量</span>' : '';
+    const sub = hit ? `<div style="font-size:10.5px;color:var(--text3,#8a8a8a);padding:0 8px 5px;line-height:1.35">🎯 進場區第 ${z.days_in_zone||1} 天 · ${(z.note||'').slice(0,64)}</div>` : '';
+    return `<div style="margin-top:3px;border-radius:5px;${bg}">
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 8px;line-height:1.4">
+        <span style="flex:1;font-size:12px"><b>${z.code}</b> ${z.name}${thinMark}</span>
+        <span style="font-size:12px;${hit?'color:#C9A84C;font-weight:700':''}">現 ${z.px??'—'}</span>
+        <span style="font-size:11px;color:var(--text3,#8a8a8a)">起手≤${z.start??'—'} · 加碼≤${z.add??'—'}</span>
+        <span style="min-width:60px;text-align:right">${badge(z.status)}</span>
+      </div>${sub}
     </div>`;
   }).join('');
   const anyHit = zs.some(z=>z.status==='加碼區'||z.status==='起手區');
