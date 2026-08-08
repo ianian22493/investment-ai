@@ -281,13 +281,50 @@ def main():
         if zone_codes:
             try:
                 rev = rev_momentum(zone_codes)
-                for r in results:
-                    if r.get("rule") == "zone":
-                        code = r["symbol"].split(".")[0]
-                        if code in rev:
-                            r["rev"] = rev[code]
+                zone_rows = [r for r in results if r.get("rule") == "zone"]
+                for r in zone_rows:
+                    code = r["symbol"].split(".")[0]
+                    if code in rev:
+                        r["rev"] = rev[code]
+                # ── warn escalation ─────────────────────────────────────
+                # 營收轉負＝論述正在破，比「價格到區間」更該喊——升級成 alert 事件
+                # （進 hits/new_hits → 推播＋提醒去審），而不是只把面板變紅。獨立 key
+                # 讓它只在「轉負當下」推一次，不每天洗版。
+                for r in zone_rows:
+                    rv = r.get("rev")
+                    if rv and rv.get("signal") == "warn":
+                        results.append({
+                            "key": f"{r['symbol']}|rev_warn",
+                            "symbol": r["symbol"], "name": r["name"],
+                            "rule": "rev_warn", "hit": True,
+                            "detail": f"🔴 論述亮紅燈：{rv.get('brief', '月營收轉負')}",
+                            "note": "月營收轉負＝收稅口/雙擊論述正在破。去審：是一次性還是趨勢？"
+                                    "是→從入場區撤出、記分卡標壞；否→續觀察。",
+                        })
             except Exception as e:  # noqa: BLE001
                 print(f"  [warn] rev_momentum attach failed: {e}")
+
+    # 事件行事曆 heads-up（財報/法說事前提醒）：rev_momentum 是事後抓到，這補事前。
+    upcoming = []
+    today_d = datetime.now(TW_TZ).date()
+    for ev in cfg.get("events", []):
+        try:
+            d = datetime.strptime(ev["date"], "%Y-%m-%d").date()
+        except Exception:  # noqa: BLE001
+            continue
+        days = (d - today_d).days
+        if -1 <= days <= 14:  # 未來兩週內（保留昨天，交易日落差容錯）
+            upcoming.append({**ev, "days_away": days})
+            if 0 <= days <= 3:  # 迫近 → 也推播一次（獨立 key 不洗版）
+                when = "今天" if days == 0 else f"還{days}天"
+                results.append({
+                    "key": f"{ev.get('symbol', '')}|event|{ev['date']}",
+                    "symbol": ev.get("symbol", ""), "name": ev.get("name", ""),
+                    "rule": "event", "hit": True,
+                    "detail": f"📅 {ev['date']}（{when}）{ev.get('type', '')}",
+                    "note": ev.get("note", ""),
+                })
+    upcoming.sort(key=lambda e: e["days_away"])
 
     hits = [r for r in results if r["hit"]]
     new_hits = [r for r in hits if r["key"] not in prev_hits]
@@ -297,6 +334,7 @@ def main():
         "hit_count": len(hits),
         "new_hit_count": len(new_hits),
         "failed": failed,
+        "upcoming_events": upcoming,
         "results": results,
     }, ensure_ascii=False, indent=1), encoding="utf-8")
 

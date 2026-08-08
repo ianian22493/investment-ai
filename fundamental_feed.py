@@ -48,10 +48,13 @@ def _latest_fin_file() -> str | None:
     return os.path.join(HIST_DIR, fins[-1]) if fins else None
 
 
-def get_fundamentals(codes: list[str], streak_months: int = 6) -> dict[str, dict]:
-    """回傳 {code: {rev_yoy, rev_mom, cum_yoy, yoy_streak, gm, eps, industry, data_month}}。
+def get_fundamentals(codes: list[str], streak_months: int = 15) -> dict[str, dict]:
+    """回傳 {code: {rev_yoy, rev_mom, cum_yoy, yoy_streak, yoy_series, gm, eps, industry, data_month}}。
 
     yoy_streak：從最新月往回數，連續 YoY > 0 的月數（最多看 streak_months 個月）。
+    yoy_series：近 streak_months 個月的 YoY（由舊到新），供呼叫端算加速/減速趨勢。
+    預設 15＝載入全部可用歷史（目前 13 個月）：streak 不被上限截斷（否則「連N月正」
+    永遠 ≤ 上限、且 streak≥12 的分類永遠觸不到＝死碼）。
     找不到資料的 code 不會出現在結果裡（呼叫端顯示「無資料」）。
     """
     rev_files = _rev_files_sorted()
@@ -78,7 +81,7 @@ def get_fundamentals(codes: list[str], streak_months: int = 6) -> dict[str, dict
         row = latest.get(code)
         if not row:
             continue
-        # 連續正成長月數
+        # 連續正成長月數（從最新往回數）
         streak = 0
         for m in monthly:
             r = m.get(code)
@@ -86,6 +89,12 @@ def get_fundamentals(codes: list[str], streak_months: int = 6) -> dict[str, dict
                 streak += 1
             else:
                 break
+        # 近幾月 YoY 序列（由舊到新）— 供呼叫端算加速/減速
+        series = []
+        for m in reversed(monthly):
+            r = m.get(code)
+            if r and isinstance(r.get("yoy"), (int, float)):
+                series.append(round(r["yoy"], 1))
         f = fin.get(code) or {}
         out[code] = {
             "industry":   row.get("industry", ""),
@@ -93,6 +102,7 @@ def get_fundamentals(codes: list[str], streak_months: int = 6) -> dict[str, dict
             "rev_mom":    round(row["mom"], 1) if isinstance(row.get("mom"), (int, float)) else None,
             "cum_yoy":    round(row["cum_yoy"], 1) if isinstance(row.get("cum_yoy"), (int, float)) else None,
             "yoy_streak": streak,
+            "yoy_series": series,
             "gm":         f.get("gm"),
             "eps":        f.get("eps"),
             "data_month": latest_month,   # 民國年月，e.g. 11506 = 2026-06

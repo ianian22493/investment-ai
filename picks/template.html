@@ -213,12 +213,13 @@ const SAMPLE = {
     { time: "收盤", action: "若收 285 以下 → 記錄，準備隔日減半" }
   ],
   watchlist_zones: [
-    { code:"3546", name:"宇峻", px:71.0, start:72, add:64, status:"起手區", hit:true, days_in_zone:2, note:"遊戲收稅口、連年配股、財報加速股價沒動", rev:{yoy:44,trend:"高檔穩健",signal:"confirm",brief:"6月營收 YoY +44%（高檔穩健、連5月正、累計+48%）"} },
-    { code:"2755", name:"揚秦", px:103.5, start:105, add:92, status:"起手區", hit:true, days_in_zone:1, thin:true, vol:55, note:"餐飲展店成長+配股大方、超秦雞肉鏈護城河", rev:{yoy:18,trend:"持平",signal:"neutral",brief:"6月營收 YoY +18%（持平、連6月正、累計+19%）"} },
+    { code:"3546", name:"宇峻", px:71.0, start:72, add:64, status:"起手區", hit:true, days_in_zone:2, note:"遊戲收稅口、連年配股、財報加速股價沒動", rev:{yoy:44,month:"6月",trend:"高檔穩健",signal:"confirm",brief:"6月營收 YoY +44%（高檔穩健、連5月正、累計+48%、毛利89%🏰）"} },
+    { code:"2755", name:"揚秦", px:103.5, start:105, add:92, status:"起手區", hit:true, days_in_zone:1, thin:true, vol:55, note:"餐飲展店成長+配股大方、超秦雞肉鏈護城河", rev:{yoy:18,trend:"穩定高成長",signal:"confirm",brief:"6月營收 YoY +18%（穩定高成長、連13月正、累計+19%）"} },
     { code:"4571", name:"鈞興-KY", px:163.0, start:160, add:142, status:"接近", hit:false, rev:{yoy:6,trend:"持平",signal:"neutral",brief:"6月營收 YoY +6%（持平、連3月正、累計-1%）"} },
     { code:"5306", name:"桂盟", px:94.5, start:88, add:82, status:"還遠", hit:false, rev:{yoy:32,trend:"🔥加速",signal:"confirm",brief:"6月營收 YoY +32%（🔥加速、連4月正、累計+8%）"} },
-    { code:"6534", name:"正瀚", px:95.0, start:92, add:82, status:"還遠", hit:false, rev:{yoy:29,trend:"🔥加速",signal:"confirm",brief:"6月營收 YoY +29%（🔥加速、連6月正、累計+4%）"} }
+    { code:"6534", name:"正瀚", px:95.0, start:92, add:82, status:"還遠", hit:false, rev:{yoy:29,trend:"🔥加速",signal:"confirm",brief:"6月營收 YoY +29%（🔥加速、連13月正、累計+4%）"} }
   ],
+  watchlist_events: [ { symbol:"3546.TWO", name:"宇峻", date:"2026-08-11", type:"Q2財報", days_away:4, note:"檢驗遊戲營收持續性、毛利89%守不守得住" } ],
   probation: { status:"probation", badge:"試用期 0/10", n:0, mean_alpha:null, reason:"C1 上線 0.0 週、尚無結案實單。累積中——先讓它跑、別當主力。" }
 };
 
@@ -350,11 +351,14 @@ if(DATA.code && DATA.code !== '—'){
     </div>`;
   }).join('');
   const anyHit = zs.some(z=>z.status==='加碼區'||z.status==='起手區');
+  const asOf = (zs.find(z=>z.rev)||{}).rev; const asOfTxt = asOf&&asOf.month ? ` · 營收截至${asOf.month}` : '';
+  const evs = DATA.watchlist_events || [];
+  const evLine = evs.length ? `<div style="font-size:11px;color:#C9A84C;margin:3px 0 1px;padding:5px 8px;background:rgba(201,168,76,0.10);border-radius:5px">📅 近期財報/事件 &nbsp;${evs.map(e=>`${(e.date||'').slice(5)} <b>${e.name}</b> ${e.type||''}${e.days_away===0?'（今天）':e.days_away>0?`（還${e.days_away}天）`:'（剛過）'}`).join(' &nbsp;·&nbsp; ')}</div>` : '';
   hero.insertAdjacentHTML('afterend', `
     <div style="max-width:760px;margin:14px auto 0;padding:10px 14px;border:1px solid rgba(201,168,76,${anyHit?0.65:0.35});border-radius:8px;background:rgba(201,168,76,0.05)">
       <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:#C9A84C">⭐ 寶藏觀察名單 · 入場區${anyHit?' &nbsp;—&nbsp; 🎯 有標的到價！':''}</div>
-      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin:2px 0 3px">長波埋伏，與今日波段 pick 是兩套獨立紀律 · 掛限價分批、別市價追 · 📈=月營收動能（論述追蹤器）</div>
-      ${rows}
+      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin:2px 0 3px">長波埋伏，與今日波段 pick 是兩套獨立紀律 · 掛限價分批、別市價追 · 📈=月營收動能（論述追蹤器）${asOfTxt}</div>
+      ${evLine}${rows}
     </div>`);
 })();
 

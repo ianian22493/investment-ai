@@ -160,6 +160,13 @@ def _load_watchlist_zones() -> list:
     return out
 
 
+def _load_watchlist_events() -> list:
+    """讀 alerts.json 的 upcoming_events（哨兵算好的未來14天寶藏事件）→ pick 頁事前提醒。"""
+    alerts = _load_json(os.path.join(DATA_DIR, "alerts.json"))
+    evs = alerts.get("upcoming_events") or []
+    return sorted(evs, key=lambda e: e.get("days_away", 99))
+
+
 def build_pick_data(analysis: dict, market_data: dict, candidates: list, explainer: dict, date_str: str) -> dict:
     """組裝 PICK day 完整 data dict（給 template.html 用）。"""
     agents = analysis.get("agents", {})
@@ -219,6 +226,8 @@ def build_pick_data(analysis: dict, market_data: dict, candidates: list, explain
         "position_sizing":   pick_agent.get("position_sizing"),
         # 寶藏觀察名單·入場區（連動 #4：全名單＋現價＋起手/加碼＋狀態 → pick 頁）
         "watchlist_zones":   _load_watchlist_zones(),
+        # 寶藏事件行事曆（財報/法說事前 heads-up）
+        "watchlist_events":  _load_watchlist_events(),
         # 波段 C1 試用期體檢徽章（止血開關）
         "probation":         pick_agent.get("probation"),
     }
@@ -248,6 +257,8 @@ def build_watch_data(analysis: dict, market_data: dict, candidates: list, explai
         "panic_sop":        analysis.get("panic_sop"),
         # 寶藏觀察名單·入場區（連動 #4：全名單＋現價＋起手/加碼＋狀態 → 觀望日頁）
         "watchlist_zones":  _load_watchlist_zones(),
+        # 寶藏事件行事曆（財報/法說事前 heads-up）
+        "watchlist_events": _load_watchlist_events(),
         # 波段 C1 試用期體檢徽章（止血開關）
         "probation":        pick_agent.get("probation"),
     }
