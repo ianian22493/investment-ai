@@ -64,19 +64,20 @@ def rev_momentum(codes: list[str]) -> dict:
         trend, signal = _classify(latest, series, streak)
 
         gm = f.get("gm")
+        gmq = f.get("gm_quarter")
         cum = f.get("cum_yoy")
         month = _roc_to_label(f.get("data_month"))
         streak_txt = f"、連{streak}月正" if streak >= 3 else ""
         cum_txt = f"、累計{cum:+.0f}%" if isinstance(cum, (int, float)) else ""
         gm_txt = ""
         if isinstance(gm, (int, float)):
-            gm_txt = f"、毛利{gm:.0f}%" + ("🏰" if gm >= 50 else "")  # ≥50%＝收稅口級高毛利
+            gm_txt = f"、毛利{gm:.0f}%" + ("🏰" if gm >= 50 else "") + (f"·{gmq}" if gmq else "")
         brief = f"{month}營收 YoY {latest:+.0f}%（{trend}{streak_txt}{cum_txt}{gm_txt}）"
 
         out[code] = {
             "month": month, "yoy": round(latest, 1),
             "cum_yoy": round(cum, 1) if isinstance(cum, (int, float)) else None,
-            "streak": streak, "gm": gm, "eps": f.get("eps"),
+            "streak": streak, "gm": gm, "gm_quarter": gmq, "eps": f.get("eps"),
             "trend": trend, "signal": signal, "brief": brief,
             "as_of": f.get("data_month"),
         }

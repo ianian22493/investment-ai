@@ -73,7 +73,14 @@ def get_fundamentals(codes: list[str], streak_months: int = 15) -> dict[str, dic
     latest = monthly[0]
     latest_month = re.search(r"rev_(\d{5})", rev_files[0]).group(1)  # e.g. "11506"
 
-    fin = _load_json(_latest_fin_file()) or {}
+    fin_path = _latest_fin_file()
+    fin = _load_json(fin_path) or {}
+    # 毛利率所屬季別（附時效，避免在 Q3 看 Q1 毛利卻不知道是舊的）
+    fin_q = None
+    if fin_path:
+        m = re.search(r"fin_(\d{3})Q(\d)", fin_path)
+        if m:
+            fin_q = f"{int(m.group(1)) + 1911 - 2000:02d}Q{m.group(2)}"  # 115Q1 → 26Q1
 
     out: dict[str, dict] = {}
     for code in codes:
@@ -104,6 +111,7 @@ def get_fundamentals(codes: list[str], streak_months: int = 15) -> dict[str, dic
             "yoy_streak": streak,
             "yoy_series": series,
             "gm":         f.get("gm"),
+            "gm_quarter": fin_q,          # 毛利率所屬季別，e.g. "26Q1"
             "eps":        f.get("eps"),
             "data_month": latest_month,   # 民國年月，e.g. 11506 = 2026-06
         }
@@ -124,7 +132,8 @@ def format_for_prompt(code: str, fund: dict | None) -> str:
     if fund.get("cum_yoy") is not None:
         parts.append(f"累計YoY{fund['cum_yoy']:+.1f}%")
     if fund.get("gm") is not None:
-        parts.append(f"毛利率{fund['gm']:.1f}%")
+        gmq = f"({fund['gm_quarter']})" if fund.get("gm_quarter") else ""
+        parts.append(f"毛利率{fund['gm']:.1f}%{gmq}")
     if fund.get("eps") is not None:
         parts.append(f"季EPS {fund['eps']}")
     return "基本面：" + "、".join(parts) if parts else "基本面：無月營收資料"
