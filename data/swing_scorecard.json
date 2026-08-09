@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-07T08:35:17+08:00",
+  "generated_at": "2026-08-09T16:39:20+08:00",
   "_doc": "Swing pick 系統記分卡（機器可讀）。讀取者：寶藏股研究室季度審判日（quarterly-holdings-judgment-day 排程）。short_term=改版前(1-3日動能)、swing=2026-07-17 起(10-22 交易日波段)。alpha=vs 0050 同期。",
   "swing_era_start": "2026-07-17",
   "by_era": {
@@ -19,16 +19,17 @@
       }
     },
     "swing": {
-      "total": 5,
+      "total": 6,
       "traded": 5,
-      "not_filled": 0,
+      "not_filled": 1,
       "wins": 0,
       "win_rate_pct": 0.0,
       "avg_return_pct": -7.69,
       "avg_alpha_pct": -3.42,
       "avg_hold_days": 4.0,
       "exit_reasons": {
-        "stop": 5
+        "stop": 5,
+        "not_filled": 1
       }
     }
   },
@@ -49,9 +50,9 @@
       }
     },
     "2026Q3": {
-      "total": 9,
+      "total": 10,
       "traded": 9,
-      "not_filled": 0,
+      "not_filled": 1,
       "wins": 0,
       "win_rate_pct": 0.0,
       "avg_return_pct": -5.23,
@@ -59,7 +60,8 @@
       "avg_hold_days": 2.8,
       "exit_reasons": {
         "time": 1,
-        "stop": 8
+        "stop": 8,
+        "not_filled": 1
       }
     }
   },
@@ -68,41 +70,25 @@
       "code": "6214",
       "name": "精誠",
       "entry_date": "2026-08-03",
-      "current_return_pct": -1.356,
-      "days_held": 3
-    },
-    {
-      "code": "2395",
-      "name": "研華",
-      "entry_date": "2026-08-04",
-      "current_return_pct": null,
-      "days_held": 0
+      "current_return_pct": -0.678,
+      "days_held": 4
     },
     {
       "code": "2618",
       "name": "長榮航",
       "entry_date": "2026-08-05",
-      "current_return_pct": null,
-      "days_held": 0
+      "current_return_pct": 3.738,
+      "days_held": 1
     },
     {
       "code": "2359",
       "name": "所羅門",
       "entry_date": "2026-08-06",
-      "current_return_pct": null,
-      "days_held": null
+      "current_return_pct": 2.135,
+      "days_held": 1
     }
   ],
   "recent_resolved": [
-    {
-      "date": "2026-06-22",
-      "code": "6719",
-      "name": "力智",
-      "return_pct": -3.846,
-      "alpha_pct": null,
-      "exit": "stop",
-      "days": 1
-    },
     {
       "date": "2026-07-01",
       "code": "3706",
@@ -183,6 +169,15 @@
       "alpha_pct": -3.268,
       "exit": "stop",
       "days": 2
+    },
+    {
+      "date": "2026-08-04",
+      "code": "2395",
+      "name": "研華",
+      "return_pct": null,
+      "alpha_pct": null,
+      "exit": "not_filled",
+      "days": 0
     }
   ]
 }
