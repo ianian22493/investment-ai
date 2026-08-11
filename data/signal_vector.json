@@ -1,26 +1,26 @@
 {
-  "market_regime_score": 0.9,
-  "trend_strength": 0.845,
-  "risk_pressure": 0.25,
-  "volatility_risk": 0.246,
-  "confidence_score": 0.85,
-  "scanner_momentum": 0.983,
+  "market_regime_score": 0.0,
+  "trend_strength": 0.5,
+  "risk_pressure": 0.244,
+  "volatility_risk": 0.127,
+  "confidence_score": 0.762,
+  "scanner_momentum": 0.5,
   "ai_sector_strength": 0.477,
   "foreign_flow_strength": 1.0,
   "breadth_score": 0.746,
-  "liquidity_score": 0.409,
+  "liquidity_score": 0.358,
   "_sources": {
-    "market_regime_score": "regime=趨勢多頭(base=+0.8) risk_level=low(delta=+0.10)",
-    "trend_strength": "taiex_chg=+1.59%→base=0.765 market_overview_adj=+0.08",
-    "risk_pressure": "vix=15.4→0.171 tw_verdict_adj=-0.064 da_conf=0.95→0.142",
-    "volatility_risk": "vix=15.4→0.181×0.7 taiex_abs=1.59%→0.398×0.3",
-    "confidence_score": "avg_agent_conf=0.850 error_agents=0 degraded=0 penalty=0.00",
-    "scanner_momentum": "top10_avg=5.90/6.0",
+    "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
+    "trend_strength": "taiex_chg=+0.00%→base=0.500 market_overview_adj=+0.00",
+    "risk_pressure": "vix=15.5→0.173 tw_verdict_adj=-0.064 da_conf=0.90→0.135",
+    "volatility_risk": "vix=15.5→0.182×0.7 taiex_abs=0.00%→0.000×0.3",
+    "confidence_score": "avg_agent_conf=0.762 error_agents=0 degraded=0 penalty=0.00",
+    "scanner_momentum": "no candidates loaded",
     "ai_sector_strength": "basket 7檔 avg=-0.20% → 0.48",
-    "foreign_flow_strength": "BFI82U_foreign_net=+517.1億元 → normalized=1.000 (÷500億 clamp±0.5)",
+    "foreign_flow_strength": "BFI82U_foreign_net=+517.4億元 → normalized=1.000 (÷500億 clamp±0.5)",
     "breadth_score": "MI_INDEX advance=747(+48漲停) decline=254(+1跌停) advance_ratio=0.746",
-    "liquidity_score": "margin_balance=5377億元 變化=+0.91% → score=0.409 (-2%→0.7, +2%→0.3)"
+    "liquidity_score": "margin_balance=5453億元 變化=+1.42% → score=0.358 (-2%→0.7, +2%→0.3)"
   },
   "_data_gaps": [],
-  "_computed_at": "2026-08-10T17:56:39.582992+08:00"
+  "_computed_at": "2026-08-11T08:33:51.650888+08:00"
 }
