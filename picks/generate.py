@@ -155,8 +155,10 @@ def _load_watchlist_zones() -> list:
                 "thin": bool(a.get("thin")),
                 "days_in_zone": a.get("days_in_zone", 0),
                 "rev": a.get("rev"),  # 月營收動能（論述追蹤器）：{yoy, trend, signal, brief, ...}
+                "priority": a.get("priority"),  # 週檢維護的買進優先序（1=最優先）
             })
-    out.sort(key=lambda x: order.get(x.get("status"), 9))
+    # 依「買進優先序」排（週檢重排）；無 priority 者殿後、同序再依到價狀態
+    out.sort(key=lambda x: (x.get("priority") or 99, order.get(x.get("status"), 9)))
     return out
 
 

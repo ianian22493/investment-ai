@@ -121,9 +121,9 @@ const SAMPLE = {
   },
   micro_pick: null,
   watchlist_zones: [
-    { code:"3546", name:"宇峻", px:71.0, start:72, add:64, status:"起手區", hit:true, rev:{yoy:44,month:"6月",trend:"高檔穩健",signal:"confirm",brief:"6月營收 YoY +44%（高檔穩健、連5月正、累計+48%、毛利89%🏰·26Q1）"} },
-    { code:"4571", name:"鈞興-KY", px:163.0, start:160, add:142, status:"接近", hit:false, rev:{yoy:6,trend:"持平",signal:"neutral",brief:"6月營收 YoY +6%（持平、連3月正、累計-1%）"} },
-    { code:"5306", name:"桂盟", px:94.5, start:88, add:82, status:"還遠", hit:false, rev:{yoy:32,trend:"🔥加速",signal:"confirm",brief:"6月營收 YoY +32%（🔥加速、連4月正、累計+8%）"} }
+    { code:"3546", name:"宇峻", priority:5, px:71.0, start:72, add:64, status:"起手區", hit:true, rev:{yoy:44,month:"6月",trend:"高檔穩健",signal:"confirm",brief:"6月營收 YoY +44%（高檔穩健、連5月正、累計+48%、毛利89%🏰·26Q1）"} },
+    { code:"5306", name:"桂盟", priority:6, px:94.5, start:88, add:82, status:"還遠", hit:false, rev:{yoy:32,trend:"🔥加速",signal:"confirm",brief:"6月營收 YoY +32%（🔥加速、連4月正、累計+8%）"} },
+    { code:"4571", name:"鈞興-KY", priority:8, px:163.0, start:160, add:142, status:"接近", hit:false, rev:{yoy:6,trend:"持平",signal:"neutral",brief:"6月營收 YoY +6%（持平、連3月正、累計-1%）"} }
   ],
   watchlist_events: [ { symbol:"3546.TWO", name:"宇峻", date:"2026-08-11", type:"Q2財報", days_away:4, note:"檢驗遊戲營收持續性、毛利89%守不守得住" } ],
   probation: { status:"probation", badge:"試用期 0/10", n:0, mean_alpha:null, reason:"C1 上線 0.0 週、尚無結案實單。累積中——先讓它跑、別當主力。" }
@@ -199,6 +199,11 @@ document.getElementById('hero-sub').innerHTML =
   };
   const revColor = {confirm:'#1E8449', warn:'#C0392B', caution:'#B9770E', neutral:'var(--text3,#8a8a8a)'};
   const revTail = {confirm:' ← 論述兌現', warn:' ← 論述亮紅燈', caution:'', neutral:''};
+  const prioBadge = p => {
+    if(!p) return '';
+    const t = p<=3?{t:'主菜',c:'#1E8449'}:p<=5?{t:'時機',c:'#C9A84C'}:p<=7?{t:'配菜',c:'#8a8a8a'}:{t:'彩券',c:'#B9770E'};
+    return `<span style="display:inline-block;font-size:10px;font-weight:700;color:${t.c};border:1px solid ${t.c};border-radius:4px;padding:0 4px;margin-right:5px">#${p} ${t.t}</span>`;
+  };
   const rows = zs.map(z=>{
     const hit = z.status==='加碼區' || z.status==='起手區';
     const bg = hit ? 'background:rgba(201,168,76,0.15);' : '';
@@ -207,7 +212,7 @@ document.getElementById('hero-sub').innerHTML =
     const rev = z.rev ? `<div style="font-size:10.5px;padding:0 8px 5px;line-height:1.3;color:${revColor[z.rev.signal]||revColor.neutral};font-weight:${(z.rev.signal==='warn'||z.rev.signal==='confirm')?600:400}">📈 ${z.rev.brief}${revTail[z.rev.signal]||''}</div>` : '';
     return `<div style="margin-top:3px;border-radius:5px;${bg}">
       <div style="display:flex;align-items:center;gap:8px;padding:5px 8px 3px;line-height:1.4">
-        <span style="flex:1;font-size:12px"><b>${z.code}</b> ${z.name}${thinMark}</span>
+        <span style="flex:1;font-size:12px">${prioBadge(z.priority)}<b>${z.code}</b> ${z.name}${thinMark}</span>
         <span style="font-size:12px;${hit?'color:#C9A84C;font-weight:700':''}">現 ${z.px??'—'}</span>
         <span style="font-size:11px;color:var(--text3,#8a8a8a)">起手≤${z.start??'—'} · 加碼≤${z.add??'—'}</span>
         <span style="min-width:60px;text-align:right">${badge(z.status)}</span>
@@ -221,7 +226,7 @@ document.getElementById('hero-sub').innerHTML =
   hero.insertAdjacentHTML('afterend', `
     <div style="max-width:760px;margin:14px auto 0;padding:10px 14px;border:1px solid rgba(201,168,76,${anyHit?0.65:0.35});border-radius:8px;background:rgba(201,168,76,0.05)">
       <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:#C9A84C">⭐ 寶藏觀察名單 · 入場區${anyHit?' &nbsp;—&nbsp; 🎯 有標的到價！':''}</div>
-      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin:2px 0 3px">長波埋伏，與今日出不出手無關 · 掛限價分批、別市價追 · 📈=月營收動能（論述追蹤器）${asOfTxt}</div>
+      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin:2px 0 3px">依 <b>#買進優先序</b>排（主菜🟢>時機🟡>配菜⚪>彩券🟠，週檢更新）· 到價金底醒目 · 📈=月營收動能 · 掛限價分批別市價追${asOfTxt}</div>
       ${evLine}${rows}
     </div>`);
 })();

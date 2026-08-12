@@ -125,7 +125,8 @@ def check_stock(entry, prev_zone_since=None):
             except ValueError:
                 days = 1
         out.update({"px": round(px, 2), "start": start, "add": add, "status": zstatus,
-                    "vol": avgvol, "thin": thin, "zone_since": zsince, "days_in_zone": days})
+                    "vol": avgvol, "thin": thin, "zone_since": zsince, "days_in_zone": days,
+                    "priority": entry.get("priority")})
         if thin:
             out["detail"] += f"  💧薄量~{avgvol}張(小量掛限價)"
     return out
