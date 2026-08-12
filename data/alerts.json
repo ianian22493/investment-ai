@@ -1,6 +1,6 @@
 {
- "checked_at": "2026-08-11 16:36 +0800",
- "hit_count": 8,
+ "checked_at": "2026-08-12 08:36 +0800",
+ "hit_count": 7,
  "new_hit_count": 0,
  "failed": [],
  "upcoming_events": [
@@ -10,7 +10,7 @@
    "date": "2026-08-11",
    "type": "Q2財報",
    "note": "檢驗遊戲營收持續性(FFXIV繁中/中國IP授權)、毛利89%守不守得住、盈轉增有無稀釋",
-   "days_away": 0
+   "days_away": -1
   }
  ],
  "results": [
@@ -20,7 +20,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 15.5",
+   "detail": "VIX 15.3",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -74,7 +74,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 7.46 vs 觸發價 6.33",
+   "detail": "現價 7.41 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -83,7 +83,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 7.46 vs 觸發價 5.9",
+   "detail": "現價 7.41 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
   },
   {
@@ -92,7 +92,7 @@
    "name": "SpaceX",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 138.74 vs 觸發價 130.0",
+   "detail": "現價 133.29 vs 觸發價 130.0",
    "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
@@ -101,7 +101,7 @@
    "name": "CAVA",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 61.58 vs 觸發價 55.0",
+   "detail": "現價 60.81 vs 觸發價 55.0",
    "note": "美股寶藏分散器加碼區：跌破 $55（~$62 已是可接受小起始）。Q2財報看同店/展店/利潤率"
   },
   {
@@ -116,7 +116,7 @@
    "start": 160,
    "add": 142,
    "status": "接近",
-   "vol": 298,
+   "vol": 297,
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
@@ -239,7 +239,7 @@
    "vol": 53,
    "thin": false,
    "zone_since": "2026-08-09",
-   "days_in_zone": 3,
+   "days_in_zone": 4,
    "rev": {
     "month": "6月",
     "yoy": 18.3,
@@ -255,12 +255,42 @@
    }
   },
   {
+   "key": "6902.TW|zone|",
+   "symbol": "6902.TW",
+   "name": "GOGOLOOK",
+   "rule": "zone",
+   "hit": false,
+   "detail": "現價 128.00（距起手 118 之上 8%）",
+   "note": "寶藏起手區·防詐信任科技收稅口(信驊profile最強)：走著瞧GOGOLOOK、Whoscall母公司、毛利90%、三率三升、2026Q1單季獲利超2025全年。護城河=26億筆電話資料庫+台灣無同業對手+東亞東南亞寡占；金融科技(反詐信用服務)是最快新稅腿。2025/5/16已從創新板轉一般上市(6902.TW)可正常買。起手 ≤118(PE~18)、加碼 ≤100(PE~15回掛牌基期)。死因：員工認股稀釋(董事會已通過限制員工權利新股)、掛牌2025/5 track record短、估值靠fintech續兌現、Google/電信潛在綁caller ID競爭、量~106張薄(小量限價)",
+   "px": 128.0,
+   "start": 118,
+   "add": 100,
+   "status": "接近",
+   "vol": 105,
+   "thin": false,
+   "zone_since": null,
+   "days_in_zone": 0,
+   "rev": {
+    "month": "6月",
+    "yoy": 36.5,
+    "cum_yoy": 27.5,
+    "streak": 13,
+    "gm": null,
+    "gm_quarter": "26Q2",
+    "eps": null,
+    "trend": "🔥加速",
+    "signal": "confirm",
+    "brief": "6月營收 YoY +36%（🔥加速、連13月正、累計+28%）",
+    "as_of": "11506"
+   }
+  },
+  {
    "key": "pos|staleness",
    "symbol": "portfolio.json",
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-08-07（4 天前）",
+   "detail": "_updated=2026-08-11（1 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -269,7 +299,7 @@
    "name": "3293 鈊象",
    "rule": "position_over_limit",
    "hit": true,
-   "detail": "佔 TW 部位 20.9%＞上限 10%",
+   "detail": "佔 TW 部位 21.7%＞上限 10%",
    "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
   },
   {
@@ -278,7 +308,7 @@
    "name": "2211 長榮鋼",
    "rule": "position_over_limit",
    "hit": true,
-   "detail": "佔 TW 部位 12.6%＞上限 10%",
+   "detail": "佔 TW 部位 13.1%＞上限 10%",
    "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
   },
   {
@@ -287,7 +317,7 @@
    "name": "1104 環泥",
    "rule": "position_over_limit",
    "hit": true,
-   "detail": "佔 TW 部位 11.1%＞上限 10%",
+   "detail": "佔 TW 部位 11.5%＞上限 10%",
    "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
   },
   {
@@ -296,7 +326,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 28.8%（上限 25%）",
+   "detail": "合計佔 US 部位 29.1%（上限 25%）",
    "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
   },
   {
@@ -305,17 +335,8 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 19.1%（上限 15%）",
+   "detail": "合計佔 US 部位 19.3%（上限 15%）",
    "note": "單一因子上限 15%（論述卡：三檔合併審）"
-  },
-  {
-   "key": "3546.TWO|event|2026-08-11",
-   "symbol": "3546.TWO",
-   "name": "宇峻",
-   "rule": "event",
-   "hit": true,
-   "detail": "📅 2026-08-11（今天）Q2財報",
-   "note": "檢驗遊戲營收持續性(FFXIV繁中/中國IP授權)、毛利89%守不守得住、盈轉增有無稀釋"
   }
  ]
 }
