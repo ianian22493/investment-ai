@@ -1,28 +1,26 @@
 {
-  "market_regime_score": 0.3,
-  "trend_strength": 0.5,
-  "risk_pressure": 0.079,
-  "volatility_risk": 0.106,
-  "confidence_score": 0.575,
-  "scanner_momentum": 0.983,
-  "ai_sector_strength": 0.4,
-  "foreign_flow_strength": 0.61,
-  "breadth_score": 0.625,
+  "market_regime_score": 0.9,
+  "trend_strength": 0.765,
+  "risk_pressure": 0.205,
+  "volatility_risk": 0.192,
+  "confidence_score": 0.8,
+  "scanner_momentum": 1.0,
+  "ai_sector_strength": 0.949,
+  "foreign_flow_strength": 1.0,
+  "breadth_score": 0.45,
   "liquidity_score": 0.428,
   "_sources": {
-    "market_regime_score": "regime=資金輪動(base=+0.3) risk_level=moderate(delta=+0.00)",
-    "trend_strength": "taiex_chg=+0.00%→base=0.500 market_overview_adj=+0.00",
-    "risk_pressure": "vix=14.6→0.128 tw_verdict_adj=-0.064 da_conf=0.10→0.015",
-    "volatility_risk": "vix=14.6→0.152×0.7 taiex_abs=0.00%→0.000×0.3",
-    "confidence_score": "avg_agent_conf=0.575 error_agents=0 degraded=0 penalty=0.00",
-    "scanner_momentum": "top10_avg=5.90/6.0",
-    "ai_sector_strength": "basket data unavailable → fallback news_hits=0",
-    "foreign_flow_strength": "BFI82U_foreign_net=+110.2億元 → normalized=0.610 (÷500億 clamp±0.5)",
-    "breadth_score": "MI_INDEX advance=615(+22漲停) decline=369(+0跌停) advance_ratio=0.625",
+    "market_regime_score": "regime=趨勢多頭(base=+0.8) risk_level=low(delta=+0.10)",
+    "trend_strength": "taiex_chg=+1.11%→base=0.685 market_overview_adj=+0.08",
+    "risk_pressure": "vix=14.7→0.134 tw_verdict_adj=-0.064 da_conf=0.90→0.135",
+    "volatility_risk": "vix=14.7→0.156×0.7 taiex_abs=1.11%→0.278×0.3",
+    "confidence_score": "avg_agent_conf=0.800 error_agents=0 degraded=0 penalty=0.00",
+    "scanner_momentum": "top10_avg=6.00/6.0",
+    "ai_sector_strength": "basket 7檔 avg=+3.85% → 0.95",
+    "foreign_flow_strength": "BFI82U_foreign_net=+756.9億元 → normalized=1.000 (÷500億 clamp±0.5)",
+    "breadth_score": "MI_INDEX advance=442(+21漲停) decline=541(+1跌停) advance_ratio=0.450",
     "liquidity_score": "margin_balance=5481億元 變化=+0.72% → score=0.428 (-2%→0.7, +2%→0.3)"
   },
-  "_data_gaps": [
-    "ai_sector_strength"
-  ],
-  "_computed_at": "2026-08-13T08:35:30.680771+08:00"
+  "_data_gaps": [],
+  "_computed_at": "2026-08-13T16:33:49.006984+08:00"
 }
