@@ -1,18 +1,9 @@
 {
- "checked_at": "2026-08-12 16:37 +0800",
+ "checked_at": "2026-08-13 08:37 +0800",
  "hit_count": 7,
  "new_hit_count": 0,
  "failed": [],
- "upcoming_events": [
-  {
-   "symbol": "3546.TWO",
-   "name": "宇峻",
-   "date": "2026-08-11",
-   "type": "Q2財報",
-   "note": "檢驗遊戲營收持續性(FFXIV繁中/中國IP授權)、毛利89%守不守得住、盈轉增有無稀釋",
-   "days_away": -1
-  }
- ],
+ "upcoming_events": [],
  "results": [
   {
    "key": "panic|vix",
@@ -20,7 +11,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 15.3",
+   "detail": "VIX 14.6",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -29,7 +20,7 @@
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
    "hit": false,
-   "detail": "單日 +0.88%",
+   "detail": "單日 +0.43%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -74,7 +65,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 7.46 vs 觸發價 6.33",
+   "detail": "現價 7.40 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -83,7 +74,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 7.46 vs 觸發價 5.9",
+   "detail": "現價 7.40 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
   },
   {
@@ -92,7 +83,7 @@
    "name": "SpaceX",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 138.74 vs 觸發價 130.0",
+   "detail": "現價 146.15 vs 觸發價 130.0",
    "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
@@ -101,7 +92,7 @@
    "name": "CAVA",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 61.58 vs 觸發價 55.0",
+   "detail": "現價 69.47 vs 觸發價 55.0",
    "note": "美股寶藏分散器加碼區：跌破 $55（~$62 已是可接受小起始）。Q2財報看同店/展店/利潤率"
   },
   {
@@ -116,10 +107,11 @@
    "start": 160,
    "add": 142,
    "status": "接近",
-   "vol": 300,
+   "vol": 299,
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
+   "priority": 8,
    "rev": {
     "month": "6月",
     "yoy": 5.5,
@@ -150,6 +142,7 @@
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
+   "priority": 6,
    "rev": {
     "month": "6月",
     "yoy": 31.7,
@@ -176,10 +169,11 @@
    "start": 72,
    "add": 64,
    "status": "接近",
-   "vol": 162,
+   "vol": 161,
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
+   "priority": 5,
    "rev": {
     "month": "6月",
     "yoy": 44.4,
@@ -210,6 +204,7 @@
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
+   "priority": 3,
    "rev": {
     "month": "6月",
     "yoy": 28.6,
@@ -239,7 +234,8 @@
    "vol": 44,
    "thin": false,
    "zone_since": "2026-08-09",
-   "days_in_zone": 4,
+   "days_in_zone": 5,
+   "priority": 7,
    "rev": {
     "month": "6月",
     "yoy": 18.3,
@@ -270,6 +266,7 @@
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
+   "priority": 1,
    "rev": {
     "month": "6月",
     "yoy": 36.5,
@@ -300,6 +297,7 @@
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
+   "priority": 2,
    "rev": {
     "month": "6月",
     "yoy": 52.3,
@@ -315,12 +313,43 @@
    }
   },
   {
+   "key": "7749.TW|zone|",
+   "symbol": "7749.TW",
+   "name": "意騰-KY",
+   "rule": "zone",
+   "hit": false,
+   "detail": "現價 359.50（距起手 340 之上 6%）",
+   "note": "寶藏起手區·AI邊緣聲學IP收稅口(品質對但別付貴,買在回檔)：AI IP授權占營收60%(recurring權利金收過路費)+Edge ASIC 40%、毛利70%🏰。聰明錢=聯發科(2454)入股+策略夥伴(車電IP整進SoC)。稅基=Switch2 GameChat AI聲學ASIC放量+手機/筆電AI IP滲透+TWS耳機/會議音箱。營收2026年5月+73.7%/累計+64%、2025全年+85%。**PE28=成長溢價非誤殺**,現~360、近3月-24%(從545崩到300再彈)波動大。起手 ≤340、加碼 ≤290(往近期低300靠、別追PE28)。死因:Switch2客戶集中(遊戲機週期)、2025/6才上市track record短+鎖股解禁賣壓、聯發科依賴(大腿也是天花板)、ASIC占比升則毛利稀釋、量~139張(小量限價)",
+   "px": 359.5,
+   "start": 340,
+   "add": 290,
+   "status": "接近",
+   "vol": 138,
+   "thin": false,
+   "zone_since": null,
+   "days_in_zone": 0,
+   "priority": 4,
+   "rev": {
+    "month": "6月",
+    "yoy": 64.5,
+    "cum_yoy": 64.1,
+    "streak": 13,
+    "gm": null,
+    "gm_quarter": "26Q2",
+    "eps": null,
+    "trend": "高檔穩健",
+    "signal": "confirm",
+    "brief": "6月營收 YoY +64%（高檔穩健、連13月正、累計+64%）",
+    "as_of": "11506"
+   }
+  },
+  {
    "key": "pos|staleness",
    "symbol": "portfolio.json",
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-08-11（1 天前）",
+   "detail": "_updated=2026-08-11（2 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -356,7 +385,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 29.1%（上限 25%）",
+   "detail": "合計佔 US 部位 29.3%（上限 25%）",
    "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
   },
   {
@@ -365,7 +394,7 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 19.3%（上限 15%）",
+   "detail": "合計佔 US 部位 18.3%（上限 15%）",
    "note": "單一因子上限 15%（論述卡：三檔合併審）"
   }
  ]
