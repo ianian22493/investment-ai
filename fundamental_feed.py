@@ -98,15 +98,19 @@ def get_fundamentals(codes: list[str], streak_months: int = 15) -> dict[str, dic
                 break
         # 近幾月 YoY 序列（由舊到新）— 供呼叫端算加速/減速
         series = []
+        rev_series = []
         for m in reversed(monthly):
             r = m.get(code)
             if r and isinstance(r.get("yoy"), (int, float)):
                 series.append(round(r["yoy"], 1))
+            if r and isinstance(r.get("rev"), (int, float)):
+                rev_series.append(r["rev"])   # 月營收(千元)由舊到新，供算季環比QoQ
         f = fin.get(code) or {}
         out[code] = {
             "industry":   row.get("industry", ""),
             "rev_yoy":    round(row["yoy"], 1) if isinstance(row.get("yoy"), (int, float)) else None,
             "rev_mom":    round(row["mom"], 1) if isinstance(row.get("mom"), (int, float)) else None,
+            "rev_series": rev_series,
             "cum_yoy":    round(row["cum_yoy"], 1) if isinstance(row.get("cum_yoy"), (int, float)) else None,
             "yoy_streak": streak,
             "yoy_series": series,

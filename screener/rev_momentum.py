@@ -63,6 +63,24 @@ def rev_momentum(codes: list[str]) -> dict:
         streak = f.get("yoy_streak") or 0
         trend, signal = _classify(latest, series, streak)
 
+        # 季環比 QoQ：近3月營收 vs 前3月營收——抓「YoY還漂亮但季環比在減速」的陷阱
+        # （rev_momentum 原本只看 YoY，宇峻 Q2 QoQ-21% 就漏掉了）。
+        rs = f.get("rev_series") or []
+        qoq = None
+        if len(rs) >= 6:
+            recent3, prior3 = sum(rs[-3:]), sum(rs[-6:-3])
+            if prior3:
+                qoq = round((recent3 / prior3 - 1) * 100, 0)
+        qoq_txt = ""
+        if qoq is not None and qoq <= -15:
+            qoq_txt = f"、🔻季環比{qoq:+.0f}%"
+            # YoY 正但季環比明顯減速→降級 caution。但「長連續(streak≥12)」的老成長股
+            # 單季 QoQ 多為季節性(如農業/遊戲lumpy)，只亮旗標不降級、避免誤殺好檔。
+            if signal == "confirm" and streak < 12:
+                signal = "caution"
+        elif qoq is not None and qoq <= -8:
+            qoq_txt = f"、季環比{qoq:+.0f}%"
+
         gm = f.get("gm")
         gmq = f.get("gm_quarter")
         cum = f.get("cum_yoy")
@@ -72,12 +90,12 @@ def rev_momentum(codes: list[str]) -> dict:
         gm_txt = ""
         if isinstance(gm, (int, float)):
             gm_txt = f"、毛利{gm:.0f}%" + ("🏰" if gm >= 50 else "") + (f"·{gmq}" if gmq else "")
-        brief = f"{month}營收 YoY {latest:+.0f}%（{trend}{streak_txt}{cum_txt}{gm_txt}）"
+        brief = f"{month}營收 YoY {latest:+.0f}%（{trend}{streak_txt}{qoq_txt}{cum_txt}{gm_txt}）"
 
         out[code] = {
             "month": month, "yoy": round(latest, 1),
             "cum_yoy": round(cum, 1) if isinstance(cum, (int, float)) else None,
-            "streak": streak, "gm": gm, "gm_quarter": gmq, "eps": f.get("eps"),
+            "streak": streak, "qoq": qoq, "gm": gm, "gm_quarter": gmq, "eps": f.get("eps"),
             "trend": trend, "signal": signal, "brief": brief,
             "as_of": f.get("data_month"),
         }
