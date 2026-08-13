@@ -38,6 +38,10 @@ try:
     from rev_momentum import rev_momentum
 except Exception:  # noqa: BLE001
     rev_momentum = None
+try:
+    from chip_momentum import chip_momentum  # 大戶籌碼動能（聰明錢·台股版，讀TDCC快取）
+except Exception:  # noqa: BLE001
+    chip_momentum = None
 
 
 def _alt_symbol(symbol):
@@ -304,6 +308,23 @@ def main():
                         })
             except Exception as e:  # noqa: BLE001
                 print(f"  [warn] rev_momentum attach failed: {e}")
+
+    # 大戶籌碼動能（聰明錢·台股版）：讀 TDCC 集保快取（週檢 refresh）附掛到 zone 檔。
+    # 大戶(≥400張)% 上升＝主力/隱形大戶累積＝起漲前訊號，補寶藏系統「進場計時」。零網路。
+    if chip_momentum:
+        zcodes = [r["symbol"].split(".")[0] for r in results if r.get("rule") == "zone"]
+        if zcodes:
+            try:
+                import chip_momentum as _cm
+                _cm.refresh_if_stale()   # TDCC 週更：快取過期自動抓（靠GH cron自我更新）
+                chip = chip_momentum(zcodes)
+                for r in results:
+                    if r.get("rule") == "zone":
+                        code = r["symbol"].split(".")[0]
+                        if code in chip:
+                            r["chip"] = chip[code]
+            except Exception as e:  # noqa: BLE001
+                print(f"  [warn] chip_momentum attach failed: {e}")
 
     # 事件行事曆 heads-up（財報/法說事前提醒）：rev_momentum 是事後抓到，這補事前。
     upcoming = []

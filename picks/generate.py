@@ -155,6 +155,7 @@ def _load_watchlist_zones() -> list:
                 "thin": bool(a.get("thin")),
                 "days_in_zone": a.get("days_in_zone", 0),
                 "rev": a.get("rev"),  # 月營收動能（論述追蹤器）：{yoy, trend, signal, brief, ...}
+                "chip": a.get("chip"),  # 大戶籌碼動能（聰明錢）：{big, k1000, retail, trend_pp, signal, brief}
                 "priority": a.get("priority"),  # 週檢維護的買進優先序（1=最優先）
             })
     # 依「買進優先序」排（週檢重排）；無 priority 者殿後、同序再依到價狀態
