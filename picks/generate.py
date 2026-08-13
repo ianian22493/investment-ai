@@ -139,13 +139,28 @@ def _load_watchlist_zones() -> list:
     獨立紀律。依狀態排序（到價的排前面）。"""
     alerts = _load_json(os.path.join(DATA_DIR, "alerts.json"))
     order = {"加碼區": 0, "起手區": 1, "接近": 2, "還遠": 3}
+    # 持股交叉比對：買了的寶藏在面板標「✅持有+損益」，框架從「起手」轉「加碼監測」
+    portfolio = _load_json(os.path.join(DATA_DIR, "portfolio.json"))
+    held = {}
+    for s in (portfolio.get("tw_stocks") or []):
+        sh = s.get("shares") or 0
+        cost = s.get("cost") or 0
+        if sh and cost:
+            held[str(s.get("code"))] = {"shares": sh, "avg_cost": round(cost / sh, 2)}
     out = []
     for a in (alerts.get("results") or []):
         if a.get("rule") == "zone":
+            code = str(a.get("symbol", "")).split(".")[0]
+            px = a.get("px")
+            h = None
+            if code in held:
+                h = dict(held[code])
+                if px and h["avg_cost"]:
+                    h["pnl_pct"] = round((px / h["avg_cost"] - 1) * 100, 1)  # 用即時價算損益
             out.append({
-                "code": str(a.get("symbol", "")).split(".")[0],
+                "code": code,
                 "name": a.get("name", ""),
-                "px": a.get("px"),
+                "px": px,
                 "start": a.get("start"),
                 "add": a.get("add"),
                 "status": a.get("status", ""),
@@ -157,6 +172,7 @@ def _load_watchlist_zones() -> list:
                 "rev": a.get("rev"),  # 月營收動能（論述追蹤器）：{yoy, trend, signal, brief, ...}
                 "chip": a.get("chip"),  # 大戶籌碼動能（聰明錢）：{big, k1000, retail, trend_pp, signal, brief}
                 "priority": a.get("priority"),  # 週檢維護的買進優先序（1=最優先）
+                "held": h,  # 已持有＝{shares, avg_cost, pnl_pct}；未持有=None
             })
     # 依「買進優先序」排（週檢重排）；無 priority 者殿後、同序再依到價狀態
     out.sort(key=lambda x: (x.get("priority") or 99, order.get(x.get("status"), 9)))

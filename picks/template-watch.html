@@ -121,7 +121,7 @@ const SAMPLE = {
   },
   micro_pick: null,
   watchlist_zones: [
-    { code:"3546", name:"宇峻", priority:5, px:71.0, start:72, add:64, status:"起手區", hit:true, rev:{yoy:44,month:"6月",trend:"高檔穩健",signal:"confirm",brief:"6月營收 YoY +44%（高檔穩健、連5月正、累計+48%、毛利89%🏰·26Q1）"}, chip:{big:34,k1000:23,retail:20,signal:"neutral",brief:"大戶34%·千張23%·散戶20%（散戶多籌碼鬆、趨勢累積中）"} },
+    { code:"3546", name:"宇峻", priority:5, px:71.0, start:72, add:64, status:"起手區", hit:true, rev:{yoy:44,month:"6月",trend:"高檔穩健",signal:"confirm",brief:"6月營收 YoY +44%（高檔穩健、連5月正、累計+48%、毛利89%🏰·26Q1）"}, chip:{big:34,k1000:23,retail:20,signal:"neutral",brief:"大戶34%·千張23%·散戶20%（散戶多籌碼鬆、趨勢累積中）"}},
     { code:"5306", name:"桂盟", priority:6, px:94.5, start:88, add:82, status:"還遠", hit:false, rev:{yoy:32,trend:"🔥加速",signal:"confirm",brief:"6月營收 YoY +32%（🔥加速、連4月正、累計+8%）"} },
     { code:"4571", name:"鈞興-KY", priority:8, px:163.0, start:160, add:142, status:"接近", hit:false, rev:{yoy:6,trend:"持平",signal:"neutral",brief:"6月營收 YoY +6%（持平、連3月正、累計-1%）"} }
   ],
@@ -206,18 +206,22 @@ document.getElementById('hero-sub').innerHTML =
   };
   const rows = zs.map(z=>{
     const hit = z.status==='加碼區' || z.status==='起手區';
-    const bg = hit ? 'background:rgba(201,168,76,0.15);' : '';
+    const owned = !!z.held;
+    const bg = owned ? 'background:rgba(30,132,73,0.10);border-left:3px solid #1E8449;'
+             : hit ? 'background:rgba(201,168,76,0.15);' : '';
+    const heldBadge = owned ? `<span style="display:inline-block;font-size:10px;font-weight:700;color:#fff;background:${(z.held.pnl_pct??0)>=0?'#1E8449':'#C0392B'};border-radius:4px;padding:0 5px;margin-left:5px">✅持有 ${z.held.shares}股 ${(z.held.pnl_pct??0)>=0?'+':''}${z.held.pnl_pct??''}%</span>` : '';
     const thinMark = z.thin ? ' <span style="color:#C0392B;font-size:10px">💧薄量</span>' : '';
     const sub = hit ? `<div style="font-size:10.5px;color:var(--text3,#8a8a8a);padding:0 8px 5px;line-height:1.35">🎯 進場區第 ${z.days_in_zone||1} 天 · ${(z.note||'').slice(0,64)}</div>` : '';
     const rev = z.rev ? `<div style="font-size:10.5px;padding:0 8px 5px;line-height:1.3;color:${revColor[z.rev.signal]||revColor.neutral};font-weight:${(z.rev.signal==='warn'||z.rev.signal==='confirm')?600:400}">📈 ${z.rev.brief}${revTail[z.rev.signal]||''}</div>` : '';
     const chipColor = {accumulate:'#1E8449', distribute:'#C0392B', neutral:'var(--text3,#8a8a8a)'};
     const chip = z.chip ? `<div style="font-size:10.5px;padding:0 8px 5px;line-height:1.3;color:${chipColor[z.chip.signal]||chipColor.neutral};font-weight:${(z.chip.signal==='accumulate'||z.chip.signal==='distribute')?600:400}">💰 聰明錢：${z.chip.brief}</div>` : '';
+    const zoneLabel = owned ? `加碼≤${z.add??'—'}（持有中，跌到加碼區才補）` : `起手≤${z.start??'—'} · 加碼≤${z.add??'—'}`;
     return `<div style="margin-top:3px;border-radius:5px;${bg}">
       <div style="display:flex;align-items:center;gap:8px;padding:5px 8px 3px;line-height:1.4">
-        <span style="flex:1;font-size:12px">${prioBadge(z.priority)}<b>${z.code}</b> ${z.name}${thinMark}</span>
+        <span style="flex:1;font-size:12px">${prioBadge(z.priority)}<b>${z.code}</b> ${z.name}${heldBadge}${thinMark}</span>
         <span style="font-size:12px;${hit?'color:#C9A84C;font-weight:700':''}">現 ${z.px??'—'}</span>
-        <span style="font-size:11px;color:var(--text3,#8a8a8a)">起手≤${z.start??'—'} · 加碼≤${z.add??'—'}</span>
-        <span style="min-width:60px;text-align:right">${badge(z.status)}</span>
+        <span style="font-size:11px;color:var(--text3,#8a8a8a)">${zoneLabel}</span>
+        <span style="min-width:60px;text-align:right">${owned?'':badge(z.status)}</span>
       </div>${rev}${chip}${sub}
     </div>`;
   }).join('');
