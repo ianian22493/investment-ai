@@ -1,6 +1,6 @@
 {
   "_doc": "機器可讀觀察名單（價格/指數觸發專用）。人讀的完整版含事件觸發在 Cowork\\寶藏股研究室\\觀察名單.md——兩邊的價格觸發必須同步維護，事件型觸發（認證公告、財報條件）無法自動監測，只存在 md。rule=zone：start=起手上緣、add=加碼上緣（更深），到區間會顯示在每日 pick 頁與 hub。",
-  "updated": "2026-08-06",
+  "updated": "2026-08-15",
   "panic": {
     "vix_above": 25,
     "twii_daily_drop_pct_below": -2.5,
@@ -31,9 +31,7 @@
     }
   ],
   "_events_doc": "寶藏名單的事前事件行事曆（財報/法說/除權息等）。rev_momentum 是財報出來『後』才抓到動能，這裡補『事前 heads-up』。哨兵每日算未來14天內的事件貼到 pick 頁；≤3天迫近會推播。日期靠人工/週檢維護（無自動源）。過期的手動移除。",
-  "events": [
-    {"symbol": "3546.TWO", "name": "宇峻", "date": "2026-08-11", "type": "Q2財報", "note": "檢驗遊戲營收持續性(FFXIV繁中/中國IP授權)、毛利89%守不守得住、盈轉增有無稀釋"}
-  ],
+  "events": [],
   "stocks": [
     {
       "symbol": "2330.TW",
@@ -100,7 +98,7 @@
     {
       "symbol": "5306.TW",
       "name": "桂盟",
-      "priority": 6,
+      "priority": 5,
       "rule": "zone",
       "start": 88,
       "add": 82,
@@ -109,7 +107,7 @@
     {
       "symbol": "3546.TWO",
       "name": "宇峻",
-      "priority": 5,
+      "priority": 6,
       "rule": "zone",
       "start": 72,
       "add": 64,
