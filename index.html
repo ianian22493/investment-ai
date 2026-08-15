@@ -4962,9 +4962,21 @@ function showStaleBanner(timestamp, fetchFailed=false){
   el.id = 'stale-banner';
   const ageMin = Math.floor((Date.now() - timestamp) / 60000);
   const ageStr = ageMin < 60 ? `${ageMin}m` : `${Math.floor(ageMin/60)}h${ageMin%60}m`;
-  el.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid '+(fetchFailed?'var(--orange)':'var(--yellow)')+';color:'+(fetchFailed?'var(--orange)':'var(--yellow)')+';padding:7px 16px;border-radius:5px;font-size:10px;letter-spacing:1px;z-index:200;font-family:monospace;box-shadow:0 6px 20px rgba(0,0,0,.5)';
-  el.textContent = fetchFailed ? `⚠ OFFLINE · 顯示 ${ageStr} 前快取資料` : `↻ LOADING FRESH DATA · 暫顯 ${ageStr} 前快取`;
+  el.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid '+(fetchFailed?'var(--orange)':'var(--yellow)')+';color:'+(fetchFailed?'var(--orange)':'var(--yellow)')+';padding:7px 16px;border-radius:5px;font-size:10px;letter-spacing:1px;z-index:200;font-family:monospace;box-shadow:0 6px 20px rgba(0,0,0,.5);display:flex;align-items:center;gap:12px';
+  const msg = document.createElement('span');
+  msg.textContent = fetchFailed ? `⚠ OFFLINE · 顯示 ${ageStr} 前快取資料` : `↻ LOADING FRESH DATA · 暫顯 ${ageStr} 前快取`;
+  const btn = document.createElement('button');
+  btn.textContent = '清除快取';
+  btn.style.cssText = 'background:none;border:1px solid currentColor;color:inherit;padding:2px 8px;border-radius:3px;font-size:10px;font-family:monospace;cursor:pointer;letter-spacing:1px';
+  btn.onclick = () => { localStorage.removeItem(CACHE_KEY); location.reload(); };
+  el.appendChild(msg);
+  el.appendChild(btn);
   document.body.appendChild(el);
+}
+
+function clearCacheAndReload(){
+  localStorage.removeItem(CACHE_KEY);
+  location.reload();
 }
 
 function hideStaleBanner(){
