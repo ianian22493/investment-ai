@@ -32,7 +32,7 @@ jobs:
           git diff --staged --quiet || git commit -m "chore: smart-money radar $(TZ='Asia/Taipei' date '+%Y-%m')"
           for a in 1 2 3; do
             git push 2>&1 && { echo "pushed on $a"; break; }
-            git pull --rebase --no-edit origin main || { git rebase --abort 2>/dev/null||true; exit 1; }
+            git pull --rebase --autostash --no-edit origin main || { git rebase --abort 2>/dev/null||true; exit 1; }
             [ "$a" = 3 ] && { echo "push failed x3"; exit 1; }
             sleep 5
           done

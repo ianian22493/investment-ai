@@ -214,7 +214,7 @@ jobs:
               break
             fi
             echo "Push attempt $attempt rejected — rebasing on origin/main and retrying..."
-            git pull --rebase --no-edit origin main || {
+            git pull --rebase --autostash --no-edit origin main || {
               echo "✗ Rebase failed (conflict?); aborting"
               git rebase --abort 2>/dev/null || true
               exit 1
