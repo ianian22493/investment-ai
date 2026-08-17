@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-08-16 22:25 +0800",
+ "checked_at": "2026-08-17 08:37 +0800",
  "hit_count": 7,
  "new_hit_count": 0,
  "failed": [],
@@ -152,7 +152,7 @@
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
-   "priority": 5,
+   "priority": 6,
    "rev": {
     "month": "6月",
     "yoy": 31.7,
@@ -193,7 +193,7 @@
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
-   "priority": 6,
+   "priority": 5,
    "rev": {
     "month": "6月",
     "yoy": 44.4,
@@ -274,7 +274,7 @@
    "vol": 35,
    "thin": false,
    "zone_since": "2026-08-09",
-   "days_in_zone": 8,
+   "days_in_zone": 9,
    "priority": 7,
    "rev": {
     "month": "6月",
@@ -429,7 +429,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-08-11（5 天前）",
+   "detail": "_updated=2026-08-11（6 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -438,7 +438,7 @@
    "name": "3293 鈊象",
    "rule": "position_over_limit",
    "hit": true,
-   "detail": "佔 TW 部位 21.7%＞上限 10%",
+   "detail": "佔 TW 部位 21.5%＞上限 10%",
    "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
   },
   {
@@ -447,7 +447,7 @@
    "name": "2211 長榮鋼",
    "rule": "position_over_limit",
    "hit": true,
-   "detail": "佔 TW 部位 13.1%＞上限 10%",
+   "detail": "佔 TW 部位 13.0%＞上限 10%",
    "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
   },
   {
@@ -456,7 +456,7 @@
    "name": "1104 環泥",
    "rule": "position_over_limit",
    "hit": true,
-   "detail": "佔 TW 部位 11.5%＞上限 10%",
+   "detail": "佔 TW 部位 11.4%＞上限 10%",
    "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
   },
   {
