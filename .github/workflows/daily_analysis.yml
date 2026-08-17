@@ -47,20 +47,22 @@ jobs:
           DATE=$(TZ='Asia/Taipei' date +%Y-%m-%d)
           echo "Taipei $(TZ='Asia/Taipei' date '+%a %H:%M') · DOW=$DOW HR=$HR DATE=$DATE"
 
-          # ── Backup-cron guard ──────────────────────────────────────────────
-          # 主力 = cron-job.org（workflow_dispatch）。GitHub 內建 cron 只是備援。
-          # 若 cron-job.org 今天已成功跑過，repo 會有一筆日期=今天的 "update
-          # analysis" commit → 備援直接略過，避免重跑並重複消耗 Gemini 免費額度
-          # （~20 RPD）。只有「今天還沒有 analysis commit」時，備援才真的補跑。
-          # 只對 schedule（GitHub cron）啟用；workflow_dispatch（主力）永遠照跑。
+          # ── Backup-cron guard（盯真正的產出：次日 pick 頁，不是「今天有無 commit」）──
+          # 主力 = cron-job.org（workflow_dispatch）；GitHub 內建 cron 只是備援，
+          # 兩者的盤後 run 任務都是「產生次一交易日的 pick 頁」。早盤資料 run 也會
+          # commit 但『不』產生次日 pick，故不能用「今天有無 analysis commit」判斷
+          # 盤後跑了沒。改看已發布的 picks/latest.json 日期：
+          #   已 > 今天 ＝ 盤後那次已成功（次日 pick 出爐）→ 備援略過，不重燒 Gemini。
+          #   ≤ 今天    ＝ 盤後尚未成功（含盤後 run 失敗、早盤只 commit 資料）→ 接手補跑。
+          # 只對 schedule 啟用；workflow_dispatch（主力）永遠照跑。python3 已由下方
+          # holiday check 證實在 setup-python 前即可用（ubuntu-latest 內建）。
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            LASTRUN=$(TZ='Asia/Taipei' git log --grep='update analysis' -1 \
-                      --format=%cd --date=format-local:%Y-%m-%d 2>/dev/null || echo "")
-            if [ "$LASTRUN" = "$DATE" ]; then
-              echo "cron-job.org 今天($DATE)已跑過 — 備援 cron 略過"
+            PICKDATE=$(python3 -c "import json;print(json.load(open('picks/latest.json',encoding='utf-8')).get('date',''))" 2>/dev/null || echo "")
+            if [ -n "$PICKDATE" ] && [[ "$PICKDATE" > "$DATE" ]]; then
+              echo "次日 pick（$PICKDATE）已發布 > 今天($DATE) — 盤後那次已成功，備援略過"
               echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
             fi
-            echo "今天尚無 analysis commit — 備援 cron 接手補跑"
+            echo "尚無次日 pick（latest=$PICKDATE、今天=$DATE）— 備援接手補跑"
           fi
 
           # TW holiday check — data/tw_holidays.json is the source of truth.
