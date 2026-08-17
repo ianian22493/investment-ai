@@ -1,11 +1,22 @@
 name: 每日投資 AI 分析
 
 on:
-  workflow_dispatch:   # 由 cron-job.org 觸發，不使用 GitHub 內建 cron
+  workflow_dispatch:   # 主力：由 cron-job.org 觸發
+  schedule:
+    # 備援：GitHub 內建 cron。cron-job.org 掛掉時由這裡補跑。
+    # 若 cron-job.org 當天已跑（repo 已有今日 analysis commit），下方
+    # skip-check 的 backup-cron guard 會自動略過 → 不重跑、不重複燒 Gemini 額度。
+    - cron: '0 10 * * *'   # UTC 10:00 = 台灣 18:00（收盤後，晚 cron-job.org 約 90 分）
+    - cron: '0 12 * * *'   # UTC 12:00 = 台灣 20:00（第二層備援）
 
 permissions:
   contents: write
   pages: write
+
+# 備援與主力若時間撞在一起：排隊執行、不並跑，避免兩個 run 同時 git push 相撞。
+concurrency:
+  group: daily-analysis
+  cancel-in-progress: false
 
 jobs:
   analyze:
@@ -15,6 +26,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 50   # backup-cron guard 要用 git log --grep 找「今日是否已跑過」
 
       # ── Skip weekends + Fri PM + Sun AM + TW holidays ──────────────────
       # Post-market cron produces the NEXT trading day's pick, so we only
@@ -33,6 +46,22 @@ jobs:
           HR=$(TZ='Asia/Taipei' date +%H)
           DATE=$(TZ='Asia/Taipei' date +%Y-%m-%d)
           echo "Taipei $(TZ='Asia/Taipei' date '+%a %H:%M') · DOW=$DOW HR=$HR DATE=$DATE"
+
+          # ── Backup-cron guard ──────────────────────────────────────────────
+          # 主力 = cron-job.org（workflow_dispatch）。GitHub 內建 cron 只是備援。
+          # 若 cron-job.org 今天已成功跑過，repo 會有一筆日期=今天的 "update
+          # analysis" commit → 備援直接略過，避免重跑並重複消耗 Gemini 免費額度
+          # （~20 RPD）。只有「今天還沒有 analysis commit」時，備援才真的補跑。
+          # 只對 schedule（GitHub cron）啟用；workflow_dispatch（主力）永遠照跑。
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            LASTRUN=$(TZ='Asia/Taipei' git log --grep='update analysis' -1 \
+                      --format=%cd --date=format-local:%Y-%m-%d 2>/dev/null || echo "")
+            if [ "$LASTRUN" = "$DATE" ]; then
+              echo "cron-job.org 今天($DATE)已跑過 — 備援 cron 略過"
+              echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            echo "今天尚無 analysis commit — 備援 cron 接手補跑"
+          fi
 
           # TW holiday check — data/tw_holidays.json is the source of truth.
           # A date under "holidays" (and not under "special_trading_days")
