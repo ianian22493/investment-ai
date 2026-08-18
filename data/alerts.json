@@ -1,7 +1,7 @@
 {
- "checked_at": "2026-08-17 20:49 +0800",
+ "checked_at": "2026-08-18 08:34 +0800",
  "hit_count": 9,
- "new_hit_count": 2,
+ "new_hit_count": 0,
  "failed": [],
  "upcoming_events": [],
  "results": [
@@ -11,7 +11,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 15.0",
+   "detail": "VIX 15.2",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -20,7 +20,7 @@
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
    "hit": false,
-   "detail": "單日 +0.10%",
+   "detail": "單日 -0.46%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -65,7 +65,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 7.43 vs 觸發價 6.33",
+   "detail": "現價 7.04 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -74,7 +74,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 7.43 vs 觸發價 5.9",
+   "detail": "現價 7.04 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
   },
   {
@@ -83,7 +83,7 @@
    "name": "SpaceX",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 140.00 vs 觸發價 130.0",
+   "detail": "現價 146.23 vs 觸發價 130.0",
    "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
@@ -92,7 +92,7 @@
    "name": "CAVA",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 74.42 vs 觸發價 55.0",
+   "detail": "現價 71.02 vs 觸發價 55.0",
    "note": "美股寶藏分散器加碼區：跌破 $55（~$62 已是可接受小起始）。Q2財報看同店/展店/利潤率"
   },
   {
@@ -233,7 +233,7 @@
    "vol": 128,
    "thin": false,
    "zone_since": "2026-08-17",
-   "days_in_zone": 1,
+   "days_in_zone": 2,
    "priority": 3,
    "rev": {
     "month": "6月",
@@ -274,7 +274,7 @@
    "vol": 34,
    "thin": false,
    "zone_since": "2026-08-09",
-   "days_in_zone": 9,
+   "days_in_zone": 10,
    "priority": 9,
    "rev": {
     "month": "6月",
@@ -438,7 +438,7 @@
    "vol": 1104,
    "thin": false,
    "zone_since": "2026-08-17",
-   "days_in_zone": 1,
+   "days_in_zone": 2,
    "priority": 7,
    "rev": {
     "month": "6月",
@@ -461,7 +461,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-08-17（0 天前）",
+   "detail": "_updated=2026-08-17（1 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -506,7 +506,7 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 18.6%（上限 15%）",
+   "detail": "合計佔 US 部位 18.8%（上限 15%）",
    "note": "單一因子上限 15%（論述卡：三檔合併審）"
   }
  ]
