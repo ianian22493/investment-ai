@@ -40,12 +40,23 @@ def _rev_files_sorted() -> list[str]:
     return [p for _, p in files]
 
 
-def _latest_fin_file() -> str | None:
-    """fin_115Q1.json → 取字典序最大（年+季遞增，字典序即時間序）。"""
+def _fin_files_sorted() -> list[str]:
+    """fin_115Q1.json ... → 按時間新→舊排序（年+季遞增，字典序即時間序）。"""
     if not os.path.isdir(HIST_DIR):
+        return []
+    fins = sorted(
+        (f for f in os.listdir(HIST_DIR) if re.match(r"^fin_\d{3}Q\d\.json$", f)),
+        reverse=True,
+    )
+    return [os.path.join(HIST_DIR, f) for f in fins]
+
+
+def _fin_q_label(path: str | None) -> str | None:
+    """fin_115Q1.json → '26Q1'（西元兩位年 + 季）。"""
+    if not path:
         return None
-    fins = sorted(f for f in os.listdir(HIST_DIR) if re.match(r"^fin_\d{3}Q\d\.json$", f))
-    return os.path.join(HIST_DIR, fins[-1]) if fins else None
+    m = re.search(r"fin_(\d{3})Q(\d)", path)
+    return f"{int(m.group(1)) + 1911 - 2000:02d}Q{m.group(2)}" if m else None
 
 
 def get_fundamentals(codes: list[str], streak_months: int = 15) -> dict[str, dict]:
@@ -73,14 +84,12 @@ def get_fundamentals(codes: list[str], streak_months: int = 15) -> dict[str, dic
     latest = monthly[0]
     latest_month = re.search(r"rev_(\d{5})", rev_files[0]).group(1)  # e.g. "11506"
 
-    fin_path = _latest_fin_file()
+    fin_files = _fin_files_sorted()
+    fin_path = fin_files[0] if fin_files else None
     fin = _load_json(fin_path) or {}
-    # 毛利率所屬季別（附時效，避免在 Q3 看 Q1 毛利卻不知道是舊的）
-    fin_q = None
-    if fin_path:
-        m = re.search(r"fin_(\d{3})Q(\d)", fin_path)
-        if m:
-            fin_q = f"{int(m.group(1)) + 1911 - 2000:02d}Q{m.group(2)}"  # 115Q1 → 26Q1
+    fin_q = _fin_q_label(fin_path)  # 115Q1 → 26Q1（毛利率所屬季別）
+    # 近幾季毛利率快照（新→舊），供每檔算 gm_series＝「毛利率連兩季回落」偵測
+    fin_snaps = [_load_json(p) or {} for p in fin_files[:4]]
 
     out: dict[str, dict] = {}
     for code in codes:
@@ -106,6 +115,12 @@ def get_fundamentals(codes: list[str], streak_months: int = 15) -> dict[str, dic
             if r and isinstance(r.get("rev"), (int, float)):
                 rev_series.append(r["rev"])   # 月營收(千元)由舊到新，供算季環比QoQ
         f = fin.get(code) or {}
+        # 近幾季毛利率序列（由舊到新）——供 rev_momentum 偵測「毛利率連兩季回落」
+        gm_series = []
+        for snap in reversed(fin_snaps):
+            g = (snap.get(code) or {}).get("gm")
+            if isinstance(g, (int, float)):
+                gm_series.append(round(g, 1))
         out[code] = {
             "industry":   row.get("industry", ""),
             "rev_yoy":    round(row["yoy"], 1) if isinstance(row.get("yoy"), (int, float)) else None,
@@ -115,6 +130,7 @@ def get_fundamentals(codes: list[str], streak_months: int = 15) -> dict[str, dic
             "yoy_streak": streak,
             "yoy_series": series,
             "gm":         f.get("gm"),
+            "gm_series":  gm_series,       # 近幾季毛利率(舊→新)，供偵測連兩季回落
             "gm_quarter": fin_q,          # 毛利率所屬季別，e.g. "26Q1"
             "eps":        f.get("eps"),
             "data_month": latest_month,   # 民國年月，e.g. 11506 = 2026-06

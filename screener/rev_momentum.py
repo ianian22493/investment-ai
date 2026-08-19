@@ -83,6 +83,20 @@ def rev_momentum(codes: list[str]) -> dict:
 
         gm = f.get("gm")
         gmq = f.get("gm_quarter")
+        gm_series = f.get("gm_series") or []
+        gm_warn = False
+        gm_dir_txt = ""
+        # 毛利率連兩季回落 = 方法論真正的賣出訊號（論述失效／護城河鬆動的直接證據）。
+        # 營收動能只是一維，這裡把毛利也自動盯上：連兩季降→override 成 warn（比營收
+        # 轉負更該喊）。需 ≥3 季 fin 才觸發（目前累積中，Q3 到齊後生效）。
+        if len(gm_series) >= 3 and gm_series[-1] < gm_series[-2] < gm_series[-3]:
+            gm_warn = True
+            signal = "warn"
+            trend = "⚠️毛利連2季降"
+            gm_dir_txt = f"、🔴毛利連2季降{gm_series[-3]:.1f}→{gm_series[-2]:.1f}→{gm_series[-1]:.1f}%"
+        elif len(gm_series) >= 2 and gm_series[-2] - gm_series[-1] >= 1.5:
+            # 單季有感回落(≥1.5pp)＝早期留意(非賣訊)；<1.5pp 視為季節性雜訊不亮旗
+            gm_dir_txt = f"、毛利季降{gm_series[-2]:.1f}→{gm_series[-1]:.1f}%⚠️留意"
         cum = f.get("cum_yoy")
         month = _roc_to_label(f.get("data_month"))
         streak_txt = f"、連{streak}月正" if streak >= 3 else ""
@@ -90,12 +104,13 @@ def rev_momentum(codes: list[str]) -> dict:
         gm_txt = ""
         if isinstance(gm, (int, float)):
             gm_txt = f"、毛利{gm:.0f}%" + ("🏰" if gm >= 50 else "") + (f"·{gmq}" if gmq else "")
-        brief = f"{month}營收 YoY {latest:+.0f}%（{trend}{streak_txt}{qoq_txt}{cum_txt}{gm_txt}）"
+        brief = f"{month}營收 YoY {latest:+.0f}%（{trend}{streak_txt}{qoq_txt}{cum_txt}{gm_txt}{gm_dir_txt}）"
 
         out[code] = {
             "month": month, "yoy": round(latest, 1),
             "cum_yoy": round(cum, 1) if isinstance(cum, (int, float)) else None,
             "streak": streak, "qoq": qoq, "gm": gm, "gm_quarter": gmq, "eps": f.get("eps"),
+            "gm_series": gm_series, "gm_warn": gm_warn,
             "trend": trend, "signal": signal, "brief": brief,
             "as_of": f.get("data_month"),
         }
