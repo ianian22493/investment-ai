@@ -137,19 +137,11 @@ jobs:
         env:
           PYTHONUNBUFFERED: "1"
 
-      - name: Run investment agents
-        if: steps.skip.outputs.skip != 'true'
-        run: python run_agents.py
-        env:
-          GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
-          # Optional second key (round-robin to double free-tier 20 RPD → 40 RPD).
-          # Set this secret in repo settings if/when you have a second key.
-          GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
-          PYTHONUNBUFFERED: "1"
-
-      # 哨兵先跑：寫 data/alerts.json（含 zone 到價）→ generate.py 隨後讀它，
+      # ── 主菜(寶藏雷達)先落地，再跑實驗性副菜(AI波段) ──────────────────
+      # 寶藏哨兵是純價格/資料(不吃 LLM)，排在 run_agents 之前，確保寶藏
+      # 入場區/alerts/價格先寫好；下游 AI 波段步驟就算失敗也不影響它。
+      # 哨兵寫 data/alerts.json（含 zone 到價）→ generate.py 隨後讀它，
       # 把「⭐ 寶藏觀察名單·到入場區」放進當天 pick 頁（2026-08-06 連動 #4）。
-      # 兩步都 continue-on-error，哨兵故障不影響 pick 頁生成（讀到舊 alerts 而已）。
       - name: Watchlist watcher (price/panic alerts)
         if: steps.skip.outputs.skip != 'true'
         # 寶藏股哨兵：檢查 data/watchlist.json 的價格/指數觸發，
@@ -160,6 +152,21 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           PYTHONUNBUFFERED: "1"
         continue-on-error: true   # 哨兵故障不影響主分析
+
+      # 波段/AI 副菜：run_agents 吃 Gemini。加 continue-on-error＝它掛掉
+      # （額度爆/LLM 錯）也不 abort 整條——上游寶藏雷達已落地，下游
+      # generate/commit 照跑（產出觀望日頁＋寶藏面板）。主菜不再被試用期
+      # 副菜(C1)當人質；哪天要收掉波段，停用這一步即可、不牽動寶藏系統。
+      - name: Run investment agents
+        if: steps.skip.outputs.skip != 'true'
+        run: python run_agents.py
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
+          # Optional second key (round-robin to double free-tier 20 RPD → 40 RPD).
+          # Set this secret in repo settings if/when you have a second key.
+          GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
+          PYTHONUNBUFFERED: "1"
 
       - name: Generate daily pick page
         if: steps.skip.outputs.skip != 'true'
