@@ -252,6 +252,30 @@ document.getElementById('hero-sub').innerHTML =
     </div>`);
 })();
 
+/* 波段全紀錄（不限 C1 上線日）— 讓照紀律做的每一筆都看得到 alpha（含精誠/所羅門） */
+(function renderSwingRecord(){
+  const r = DATA.swing_record;
+  if(!r || !r.trades || !r.trades.length) return;
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  const rows = r.trades.slice().reverse().map(t=>{
+    const col = t.win ? '#1E8449' : '#C0392B';
+    const era = t.era==='new' ? '新C1' : '舊C1';
+    const rt = (t.ret>0?'+':'')+t.ret;
+    const al = (t.alpha>0?'+':'')+t.alpha;
+    return `<div style="display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-top:1px solid rgba(138,138,138,0.15)">
+      <span>${t.date.slice(5)} <b>${t.code} ${t.name||''}</b> <span style="color:var(--text3,#8a8a8a);font-size:9px">${era}</span></span>
+      <span style="color:${col};font-weight:600;white-space:nowrap">${rt}% <span style="opacity:.7">(α ${al}%)</span></span>
+    </div>`;
+  }).join('');
+  const ma = (r.mean_alpha>0?'+':'')+r.mean_alpha;
+  hero.insertAdjacentHTML('afterend', `
+    <details style="max-width:760px;margin:8px auto 0;padding:7px 12px;border:1px solid rgba(138,138,138,0.35);border-radius:8px;background:rgba(138,138,138,0.05);font-size:11px">
+      <summary style="cursor:pointer;color:var(--text2,#555)">📒 <b>波段全紀錄</b> · ${r.n} 筆結案 · 勝率 ${r.win_rate}% · 平均 alpha ${ma}%<span style="color:var(--text3,#8a8a8a)">（含 8/7 改版前，判對錯用 alpha）</span></summary>
+      <div style="margin-top:6px">${rows}</div>
+    </details>`);
+})();
+
 /* Swing book (波段在倉部位) — 有部位才顯示 */
 (function renderSwingBook(){
   const ops = DATA.open_positions;

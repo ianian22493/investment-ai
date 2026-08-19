@@ -249,6 +249,8 @@ def build_pick_data(analysis: dict, market_data: dict, candidates: list, explain
         "watchlist_events":  _load_watchlist_events(),
         # 波段 C1 試用期體檢徽章（止血開關）
         "probation":         pick_agent.get("probation"),
+        # 波段全紀錄（不限 C1 上線日，含 8/7 前的精誠/所羅門）
+        "swing_record":      _swing_all_time(),
     }
 
 
@@ -280,6 +282,8 @@ def build_watch_data(analysis: dict, market_data: dict, candidates: list, explai
         "watchlist_events": _load_watchlist_events(),
         # 波段 C1 試用期體檢徽章（止血開關）
         "probation":        pick_agent.get("probation"),
+        # 波段全紀錄（不限 C1 上線日，含 8/7 前的精誠/所羅門）
+        "swing_record":     _swing_all_time(),
     }
 
 
@@ -296,6 +300,50 @@ def _strip_md(v):
     if isinstance(v, dict):
         return {k: _strip_md(x) for k, x in v.items()}
     return v
+
+
+def _swing_all_time() -> dict | None:
+    """全部已結案波段的成績（不限 C1 上線日）——讓使用者照紀律做的每一筆
+    （含 8/7 改版前的精誠/所羅門）都算得到、看得到 alpha。結算不再只給
+    新 C1 的日期切片。判對錯用 alpha（贏大盤）。"""
+    import sqlite3
+    db = os.path.join(DATA_DIR, "alpha.db")
+    if not os.path.exists(db):
+        return None
+    try:
+        conn = sqlite3.connect(db)
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(
+            "SELECT date, stock_code, stock_name, return_pct, alpha_pct "
+            "FROM picks WHERE resolved=1 AND stock_code != 'NONE' "
+            "AND alpha_pct IS NOT NULL "
+            "AND (exit_reason IS NULL OR exit_reason != 'not_filled') "
+            "ORDER BY date"
+        ).fetchall()
+        conn.close()
+    except Exception as e:  # noqa: BLE001
+        print(f"  [generate.py] swing_all_time skip: {e}")
+        return None
+    if not rows:
+        return None
+    launch = "2026-08-07"
+    alphas = [r["alpha_pct"] for r in rows]
+    rets = [r["return_pct"] for r in rows if r["return_pct"] is not None]
+    n = len(alphas)
+    trades = [{
+        "date": r["date"], "code": r["stock_code"], "name": r["stock_name"],
+        "ret": round(r["return_pct"], 1) if r["return_pct"] is not None else None,
+        "alpha": round(r["alpha_pct"], 1),
+        "win": bool(r["alpha_pct"] > 0),
+        "era": "new" if r["date"] >= launch else "old",
+    } for r in rows]
+    return {
+        "n": n,
+        "win_rate": round(100 * sum(1 for a in alphas if a > 0) / n),
+        "mean_alpha": round(sum(alphas) / n, 1),
+        "mean_return": round(sum(rets) / len(rets), 1) if rets else None,
+        "trades": trades,
+    }
 
 
 PICK_DATA_TAG = '<script id="pick-data" type="application/json">'
