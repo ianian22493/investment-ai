@@ -1,7 +1,7 @@
 {
- "checked_at": "2026-08-19 16:36 +0800",
+ "checked_at": "2026-08-20 08:31 +0800",
  "hit_count": 12,
- "new_hit_count": 1,
+ "new_hit_count": 0,
  "failed": [],
  "upcoming_events": [],
  "results": [
@@ -11,7 +11,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 15.8",
+   "detail": "VIX 14.9",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -20,7 +20,7 @@
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
    "hit": false,
-   "detail": "單日 -1.30%",
+   "detail": "單日 -1.20%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -65,7 +65,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 6.99 vs 觸發價 6.33",
+   "detail": "現價 7.16 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -74,7 +74,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 6.99 vs 觸發價 5.9",
+   "detail": "現價 7.16 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
   },
   {
@@ -83,7 +83,7 @@
    "name": "SpaceX",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 143.34 vs 觸發價 130.0",
+   "detail": "現價 139.65 vs 觸發價 130.0",
    "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
@@ -92,8 +92,26 @@
    "name": "CAVA",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 68.24 vs 觸發價 55.0",
+   "detail": "現價 71.57 vs 觸發價 55.0",
    "note": "美股寶藏分散器加碼區：跌破 $55（~$62 已是可接受小起始）。Q2財報看同店/展店/利潤率"
+  },
+  {
+   "key": "FPS|below_price|33.0",
+   "symbol": "FPS",
+   "name": "Forgent Power",
+   "rule": "below_price",
+   "hit": false,
+   "detail": "現價 34.46 vs 觸發價 33.0",
+   "note": "美股誤殺·AI資料中心電力軍火商起手區：跌破 $33 起手。Q2營收+69%有機/backlog$19.8億/FY26 guide上調+73%=需求爆發，崩45%($65→$36)是稀釋overhang非需求。fwd PE31配+73%成長=PEG~0.4。死因：連續大額增資稀釋(可能再增)、AI capex循環、毛利34%。交屋期小倉、別追(現$36門口)"
+  },
+  {
+   "key": "FPS|below_price|29.0",
+   "symbol": "FPS",
+   "name": "Forgent Power",
+   "rule": "below_price",
+   "hit": false,
+   "detail": "現價 34.46 vs 觸發價 29.0",
+   "note": "美股誤殺·加碼區：跌破 $29 加碼（更深稀釋恐慌）。目標~$60。進攻型誤殺非壓艙、單檔≤1%"
   },
   {
    "key": "4571.TW|zone|",
@@ -107,24 +125,28 @@
    "start": 160,
    "add": 142,
    "status": "接近",
-   "vol": 304,
+   "vol": 303,
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
    "priority": 8,
    "rev": {
-    "month": "6月",
-    "yoy": 5.5,
-    "cum_yoy": -1.1,
-    "streak": 3,
-    "qoq": -7.0,
+    "month": "7月",
+    "yoy": 36.1,
+    "cum_yoy": 3.9,
+    "streak": 4,
+    "qoq": 19.0,
     "gm": null,
     "gm_quarter": "26Q2",
     "eps": null,
-    "trend": "持平",
-    "signal": "neutral",
-    "brief": "6月營收 YoY +6%（持平、連3月正、累計-1%）",
-    "as_of": "11506"
+    "gm_series": [
+     34.5
+    ],
+    "gm_warn": false,
+    "trend": "🔥加速",
+    "signal": "confirm",
+    "brief": "7月營收 YoY +36%（🔥加速、連4月正、累計+4%）",
+    "as_of": "11507"
    },
    "chip": {
     "big": 66.3,
@@ -154,18 +176,22 @@
    "days_in_zone": 0,
    "priority": 6,
    "rev": {
-    "month": "6月",
-    "yoy": 31.7,
-    "cum_yoy": 8.4,
-    "streak": 4,
+    "month": "7月",
+    "yoy": 27.1,
+    "cum_yoy": 10.9,
+    "streak": 5,
     "qoq": 11.0,
     "gm": null,
     "gm_quarter": "26Q2",
     "eps": null,
+    "gm_series": [
+     41.8
+    ],
+    "gm_warn": false,
     "trend": "🔥加速",
     "signal": "confirm",
-    "brief": "6月營收 YoY +32%（🔥加速、連4月正、累計+8%）",
-    "as_of": "11506"
+    "brief": "7月營收 YoY +27%（🔥加速、連5月正、累計+11%）",
+    "as_of": "11507"
    },
    "chip": {
     "big": 69.5,
@@ -189,24 +215,28 @@
    "start": 72,
    "add": 64,
    "status": "起手區",
-   "vol": 160,
+   "vol": 159,
    "thin": false,
    "zone_since": "2026-08-18",
-   "days_in_zone": 2,
+   "days_in_zone": 3,
    "priority": 5,
    "rev": {
-    "month": "6月",
-    "yoy": 44.4,
-    "cum_yoy": 47.8,
-    "streak": 5,
-    "qoq": -21.0,
+    "month": "7月",
+    "yoy": 21.9,
+    "cum_yoy": 43.5,
+    "streak": 6,
+    "qoq": -16.0,
     "gm": null,
     "gm_quarter": "26Q2",
     "eps": null,
-    "trend": "高檔穩健",
+    "gm_series": [
+     88.6
+    ],
+    "gm_warn": false,
+    "trend": "🔻減速",
     "signal": "caution",
-    "brief": "6月營收 YoY +44%（高檔穩健、連5月正、🔻季環比-21%、累計+48%）",
-    "as_of": "11506"
+    "brief": "7月營收 YoY +22%（🔻減速、連6月正、🔻季環比-16%、累計+44%）",
+    "as_of": "11507"
    },
    "chip": {
     "big": 34.0,
@@ -233,21 +263,26 @@
    "vol": 120,
    "thin": false,
    "zone_since": "2026-08-17",
-   "days_in_zone": 3,
+   "days_in_zone": 4,
    "priority": 3,
    "rev": {
-    "month": "6月",
-    "yoy": 28.6,
-    "cum_yoy": 4.3,
-    "streak": 13,
-    "qoq": -47.0,
+    "month": "7月",
+    "yoy": 22.7,
+    "cum_yoy": 5.0,
+    "streak": 14,
+    "qoq": -67.0,
     "gm": 85.73,
     "gm_quarter": "26Q2",
     "eps": 5.65,
+    "gm_series": [
+     86.2,
+     85.7
+    ],
+    "gm_warn": false,
     "trend": "🔥加速",
     "signal": "confirm",
-    "brief": "6月營收 YoY +29%（🔥加速、連13月正、🔻季環比-47%、累計+4%、毛利86%🏰·26Q2）",
-    "as_of": "11506"
+    "brief": "7月營收 YoY +23%（🔥加速、連14月正、🔻季環比-67%、累計+5%、毛利86%🏰·26Q2）",
+    "as_of": "11507"
    },
    "chip": {
     "big": 83.5,
@@ -274,21 +309,25 @@
    "vol": 31,
    "thin": false,
    "zone_since": "2026-08-09",
-   "days_in_zone": 11,
+   "days_in_zone": 12,
    "priority": 9,
    "rev": {
-    "month": "6月",
-    "yoy": 18.3,
-    "cum_yoy": 19.1,
-    "streak": 13,
-    "qoq": 7.0,
+    "month": "7月",
+    "yoy": 20.3,
+    "cum_yoy": 19.3,
+    "streak": 14,
+    "qoq": 13.0,
     "gm": null,
     "gm_quarter": "26Q2",
     "eps": null,
-    "trend": "穩定高成長",
+    "gm_series": [
+     27.3
+    ],
+    "gm_warn": false,
+    "trend": "高檔穩健",
     "signal": "confirm",
-    "brief": "6月營收 YoY +18%（穩定高成長、連13月正、累計+19%）",
-    "as_of": "11506"
+    "brief": "7月營收 YoY +20%（高檔穩健、連14月正、累計+19%）",
+    "as_of": "11507"
    },
    "chip": {
     "big": 63.4,
@@ -318,18 +357,22 @@
    "days_in_zone": 0,
    "priority": 1,
    "rev": {
-    "month": "6月",
-    "yoy": 36.5,
-    "cum_yoy": 27.5,
-    "streak": 13,
-    "qoq": 2.0,
+    "month": "7月",
+    "yoy": 30.8,
+    "cum_yoy": 28.0,
+    "streak": 14,
+    "qoq": 8.0,
     "gm": null,
     "gm_quarter": "26Q2",
     "eps": null,
-    "trend": "🔥加速",
+    "gm_series": [
+     89.1
+    ],
+    "gm_warn": false,
+    "trend": "高檔穩健",
     "signal": "confirm",
-    "brief": "6月營收 YoY +36%（🔥加速、連13月正、累計+28%）",
-    "as_of": "11506"
+    "brief": "7月營收 YoY +31%（高檔穩健、連14月正、累計+28%）",
+    "as_of": "11507"
    },
    "chip": {
     "big": 70.9,
@@ -359,18 +402,22 @@
    "days_in_zone": 0,
    "priority": 2,
    "rev": {
-    "month": "6月",
-    "yoy": 52.3,
-    "cum_yoy": 47.5,
-    "streak": 9,
-    "qoq": 32.0,
+    "month": "7月",
+    "yoy": 22.0,
+    "cum_yoy": 41.9,
+    "streak": 10,
+    "qoq": 45.0,
     "gm": null,
     "gm_quarter": "26Q2",
     "eps": null,
-    "trend": "高檔穩健",
-    "signal": "confirm",
-    "brief": "6月營收 YoY +52%（高檔穩健、連9月正、累計+48%）",
-    "as_of": "11506"
+    "gm_series": [
+     30.4
+    ],
+    "gm_warn": false,
+    "trend": "🔻減速",
+    "signal": "caution",
+    "brief": "7月營收 YoY +22%（🔻減速、連10月正、累計+42%）",
+    "as_of": "11507"
    },
    "chip": {
     "big": 59.9,
@@ -394,24 +441,28 @@
    "start": 340,
    "add": 290,
    "status": "起手區",
-   "vol": 132,
+   "vol": 131,
    "thin": false,
    "zone_since": "2026-08-18",
-   "days_in_zone": 2,
+   "days_in_zone": 3,
    "priority": 4,
    "rev": {
-    "month": "6月",
-    "yoy": 64.5,
-    "cum_yoy": 64.1,
-    "streak": 13,
-    "qoq": 3.0,
+    "month": "7月",
+    "yoy": 42.7,
+    "cum_yoy": 60.2,
+    "streak": 14,
+    "qoq": 5.0,
     "gm": null,
     "gm_quarter": "26Q2",
     "eps": null,
-    "trend": "高檔穩健",
-    "signal": "confirm",
-    "brief": "6月營收 YoY +64%（高檔穩健、連13月正、累計+64%）",
-    "as_of": "11506"
+    "gm_series": [
+     70.2
+    ],
+    "gm_warn": false,
+    "trend": "🔻減速",
+    "signal": "caution",
+    "brief": "7月營收 YoY +43%（🔻減速、連14月正、累計+60%）",
+    "as_of": "11507"
    },
    "chip": {
     "big": 49.2,
@@ -438,21 +489,26 @@
    "vol": 994,
    "thin": false,
    "zone_since": "2026-08-17",
-   "days_in_zone": 3,
+   "days_in_zone": 4,
    "priority": 7,
    "rev": {
-    "month": "6月",
-    "yoy": 14.5,
-    "cum_yoy": 9.4,
-    "streak": 10,
-    "qoq": 13.0,
+    "month": "7月",
+    "yoy": 35.8,
+    "cum_yoy": 12.7,
+    "streak": 11,
+    "qoq": 17.0,
     "gm": 57.41,
     "gm_quarter": "26Q2",
     "eps": 3.27,
+    "gm_series": [
+     51.3,
+     57.4
+    ],
+    "gm_warn": false,
     "trend": "🔥加速",
     "signal": "confirm",
-    "brief": "6月營收 YoY +14%（🔥加速、連10月正、累計+9%、毛利57%🏰·26Q2）",
-    "as_of": "11506"
+    "brief": "7月營收 YoY +36%（🔥加速、連11月正、累計+13%、毛利57%🏰·26Q2）",
+    "as_of": "11507"
    },
    "chip": {
     "big": 88.7,
@@ -470,7 +526,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-08-17（2 天前）",
+   "detail": "_updated=2026-08-17（3 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -506,7 +562,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 29.7%（上限 25%）",
+   "detail": "合計佔 US 部位 30.5%（上限 25%）",
    "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
   },
   {
@@ -515,7 +571,7 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 18.9%（上限 15%）",
+   "detail": "合計佔 US 部位 18.5%（上限 15%）",
    "note": "單一因子上限 15%（論述卡：三檔合併審）"
   }
  ]
