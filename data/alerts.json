@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-08-20 16:31 +0800",
+ "checked_at": "2026-08-21 08:31 +0800",
  "hit_count": 9,
  "new_hit_count": 0,
  "failed": [],
@@ -11,7 +11,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 15.2",
+   "detail": "VIX 16.0",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -65,7 +65,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 7.16 vs 觸發價 6.33",
+   "detail": "現價 6.97 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -74,7 +74,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 7.16 vs 觸發價 5.9",
+   "detail": "現價 6.97 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
   },
   {
@@ -83,7 +83,7 @@
    "name": "SpaceX",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 139.65 vs 觸發價 130.0",
+   "detail": "現價 134.00 vs 觸發價 130.0",
    "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
@@ -92,26 +92,26 @@
    "name": "CAVA",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 71.57 vs 觸發價 55.0",
+   "detail": "現價 72.03 vs 觸發價 55.0",
    "note": "美股寶藏分散器加碼區：跌破 $55（~$62 已是可接受小起始）。Q2財報看同店/展店/利潤率"
   },
   {
-   "key": "FPS|below_price|33.0",
-   "symbol": "FPS",
-   "name": "Forgent Power",
+   "key": "CRH|below_price|90.0",
+   "symbol": "CRH",
+   "name": "CRH plc",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 34.46 vs 觸發價 33.0",
-   "note": "美股誤殺·AI資料中心電力軍火商起手區：跌破 $33 起手。Q2營收+69%有機/backlog$19.8億/FY26 guide上調+73%=需求爆發，崩45%($65→$36)是稀釋overhang非需求。fwd PE31配+73%成長=PEG~0.4。死因：連續大額增資稀釋(可能再增)、AI capex循環、毛利34%。交屋期小倉、別追(現$36門口)"
+   "detail": "現價 93.09 vs 觸發價 90.0",
+   "note": "美股誤殺·北美建材骨材寡占雙擊(等確認)：跌破 $90 才起手（8/20季掃紀律：訊號優先序毛利連2季>一季，CRH只有一季margin改善、還可能是Arcosa併購並表灌的會計效果非結構性→需Q3拆organic vs併購確認連兩季上移再起始）。Q2淨利+13%基本面好、跌-28%是guidance維持+Arcosa($85億)暫停回購的失望非惡化;收稅口=骨材運費高→地區定價權;順風IIJA基建+資料中心混凝土;13F Durable+80%/Baillie近乎從零建倉。可替換環泥(退場候選)的建材曝險。死因：Arcosa灌margin歸因錯誤、循環股(住宅軟/升息)、IIJA撥款慢、併整風險。目標$115~120"
   },
   {
-   "key": "FPS|below_price|29.0",
-   "symbol": "FPS",
-   "name": "Forgent Power",
+   "key": "CRH|below_price|85.0",
+   "symbol": "CRH",
+   "name": "CRH plc",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 34.46 vs 觸發價 29.0",
-   "note": "美股誤殺·加碼區：跌破 $29 加碼（更深稀釋恐慌）。目標~$60。進攻型誤殺非壓艙、單檔≤1%"
+   "detail": "現價 93.09 vs 觸發價 85.0",
+   "note": "美股誤殺·加碼區：跌破 $85（破區間底更深）。品質收稅口·防禦-循環兼具、比FPS穩比ACN多護城河+聰明錢"
   },
   {
    "key": "4571.TW|zone|",
@@ -306,10 +306,10 @@
    "start": 105,
    "add": 92,
    "status": "起手區",
-   "vol": 33,
+   "vol": 32,
    "thin": false,
    "zone_since": "2026-08-09",
-   "days_in_zone": 12,
+   "days_in_zone": 13,
    "priority": 9,
    "rev": {
     "month": "7月",
@@ -351,7 +351,7 @@
    "start": 118,
    "add": 100,
    "status": "接近",
-   "vol": 109,
+   "vol": 108,
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
@@ -444,7 +444,7 @@
    "vol": 131,
    "thin": false,
    "zone_since": "2026-08-18",
-   "days_in_zone": 3,
+   "days_in_zone": 4,
    "priority": 4,
    "rev": {
     "month": "7月",
@@ -489,7 +489,7 @@
    "vol": 993,
    "thin": false,
    "zone_since": "2026-08-17",
-   "days_in_zone": 4,
+   "days_in_zone": 5,
    "priority": 7,
    "rev": {
     "month": "7月",
@@ -526,7 +526,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-08-17（3 天前）",
+   "detail": "_updated=2026-08-17（4 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -571,7 +571,7 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 18.5%（上限 15%）",
+   "detail": "合計佔 US 部位 18.0%（上限 15%）",
    "note": "單一因子上限 15%（論述卡：三檔合併審）"
   }
  ]
