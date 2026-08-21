@@ -1,6 +1,6 @@
 {
   "_doc": "機器可讀觀察名單（價格/指數觸發專用）。人讀的完整版含事件觸發在 Cowork\\寶藏股研究室\\觀察名單.md——兩邊的價格觸發必須同步維護，事件型觸發（認證公告、財報條件）無法自動監測，只存在 md。rule=zone：start=起手上緣、add=加碼上緣（更深），到區間會顯示在每日 pick 頁與 hub。",
-  "updated": "2026-08-17",
+  "updated": "2026-08-21",
   "panic": {
     "vix_above": 25,
     "twii_daily_drop_pct_below": -2.5,
@@ -17,7 +17,10 @@
       "type": "group_max_pct",
       "market": "us",
       "name": "Musk桶",
-      "symbols": ["TSLA", "SPCX"],
+      "symbols": [
+        "TSLA",
+        "SPCX"
+      ],
       "max": 25,
       "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
     },
@@ -25,7 +28,11 @@
       "type": "group_max_pct",
       "market": "us",
       "name": "資安因子",
-      "symbols": ["ZS", "RBRK", "S"],
+      "symbols": [
+        "ZS",
+        "RBRK",
+        "S"
+      ],
       "max": 15,
       "note": "單一因子上限 15%（論述卡：三檔合併審）"
     }
@@ -103,7 +110,7 @@
     {
       "symbol": "4571.TW",
       "name": "鈞興-KY",
-      "priority": 8,
+      "priority": 6,
       "rule": "zone",
       "start": 160,
       "add": 142,
@@ -112,7 +119,7 @@
     {
       "symbol": "5306.TW",
       "name": "桂盟",
-      "priority": 6,
+      "priority": 4,
       "rule": "zone",
       "start": 88,
       "add": 82,
@@ -121,7 +128,7 @@
     {
       "symbol": "3546.TWO",
       "name": "宇峻",
-      "priority": 5,
+      "priority": 9,
       "rule": "zone",
       "start": 72,
       "add": 64,
@@ -139,7 +146,7 @@
     {
       "symbol": "2755.TWO",
       "name": "揚秦",
-      "priority": 9,
+      "priority": 8,
       "rule": "zone",
       "start": 105,
       "add": 92,
@@ -148,7 +155,7 @@
     {
       "symbol": "6902.TW",
       "name": "GOGOLOOK",
-      "priority": 1,
+      "priority": 2,
       "rule": "zone",
       "start": 118,
       "add": 100,
@@ -157,7 +164,7 @@
     {
       "symbol": "1256.TW",
       "name": "鮮活果汁-KY",
-      "priority": 2,
+      "priority": 7,
       "rule": "zone",
       "start": 175,
       "add": 155,
@@ -166,7 +173,7 @@
     {
       "symbol": "7749.TW",
       "name": "意騰-KY",
-      "priority": 4,
+      "priority": 5,
       "rule": "zone",
       "start": 340,
       "add": 290,
@@ -175,7 +182,7 @@
     {
       "symbol": "1736.TW",
       "name": "喬山",
-      "priority": 7,
+      "priority": 1,
       "rule": "zone",
       "start": 132,
       "add": 118,
