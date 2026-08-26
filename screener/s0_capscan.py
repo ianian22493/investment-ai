@@ -1,8 +1,12 @@
 """
-s0_capscan.py — S0 領先訊號①：聰明錢籌碼累積 × 高毛利低基期
+s0_capscan.py — S0 領先訊號①聰明錢籌碼累積 ×③虧損收窄 × 高毛利低基期
 =====================================================================
 月營收螺絲是 S1 財報漏斗（只找財報已動的收稅口/雙擊）。S0（成長前·賭拐點）
-的證據不在損益表裡——這支補「世芯 cap-table 訊號的資料版」：
+的證據不在損益表裡——這支疊兩個領先訊號：
+  ①籌碼累積（大戶趨勢↑＝聰明錢財報動前先卡位·世芯 cap-table 的資料版）
+  ③虧損收窄（eps 逐季往上逼近損平＝盈餘拐點前·分得出「拐點近」vs「還在燒」）
+  **①×③同時亮＝⭐黃金組合**（聰明錢在累積、且真的要轉盈了）。
+以下第①條說明：
 
   在「高毛利(收稅口/IP DNA) 但 EPS 在虧/趴（低基期）」的科技股裡，
   找「大戶(≥400張)籌碼正在累積(趨勢↑)」的 —— 聰明錢在財報動之前先卡位。
@@ -50,14 +54,42 @@ def _is_tech(sector: str) -> bool:
     return bool(sector) and any(k in sector for k in TECH_KEYWORDS)
 
 
+def _fin_files() -> list:
+    """所有季損益快照路徑，舊→新排序。"""
+    return sorted(glob.glob(os.path.join(FIN_DIR, "fin_*.json")))
+
+
 def _latest_fin() -> tuple[str, dict]:
     """回傳 (檔名tag, {code:{revenue,gm,eps}})，取最新一季 fin_*.json。"""
-    files = sorted(glob.glob(os.path.join(FIN_DIR, "fin_*.json")))
+    files = _fin_files()
     if not files:
         return "", {}
     p = files[-1]
     tag = os.path.basename(p).replace("fin_", "").replace(".json", "")
     return tag, json.load(open(p, encoding="utf-8"))
+
+
+def eps_trend(code: str) -> dict | None:
+    """S0 領先訊號③：虧損收窄 trend（逼近損平＝盈餘拐點前）。
+    讀最近兩季 fin_*.json 的 eps，回傳 {prev,cur,delta,label}。
+    label：轉正🟢(虧→賺)／收窄🟢(仍虧但↑逼近損平)／惡化🔴(虧擴大or賺變虧)／持平。"""
+    files = _fin_files()
+    if len(files) < 2:
+        return None
+    cur = json.load(open(files[-1], encoding="utf-8")).get(str(code), {}).get("eps")
+    prev = json.load(open(files[-2], encoding="utf-8")).get(str(code), {}).get("eps")
+    if cur is None or prev is None:
+        return None
+    delta = round(cur - prev, 2)
+    if prev <= 0 < cur:
+        label = "轉正🟢"
+    elif cur <= 0 and delta > 0.02:
+        label = "虧損收窄🟢"      # 仍虧但往上＝逼近損平拐點
+    elif delta < -0.02:
+        label = "惡化🔴"
+    else:
+        label = "持平"
+    return {"prev": prev, "cur": cur, "delta": delta, "label": label}
 
 
 def s0_universe(gm_min: float = GM_MIN, eps_max: float = EPS_MAX,
@@ -129,12 +161,16 @@ def scan() -> list:
             signal = "distribute"
         else:
             signal = "neutral"
+        et = eps_trend(c)   # ③虧損收窄
+        narrowing = bool(et and et["label"] in ("轉正🟢", "虧損收窄🟢"))
+        golden = (signal == "accumulate") and narrowing   # ①×③黃金組合
         out.append({"code": c, "gm": u["gm"], "eps": u["eps"], "sector": u.get("sector", ""),
                     "big": big, "k1000": ch.get("k1000", 0), "trend_pp": trend_pp,
-                    "signal": signal, "weeks": len(dates)})
-    # accumulate 優先(有趨勢且↑)，其次大戶%水平高
-    out.sort(key=lambda x: (x["signal"] != "accumulate", -(x["trend_pp"] or -99),
-                            -x["big"]))
+                    "signal": signal, "eps_trend": et, "narrowing": narrowing,
+                    "golden": golden, "weeks": len(dates)})
+    # 排序：黃金組合(①累積×③收窄)→其次收窄→其次大戶累積→其次大戶%水平
+    out.sort(key=lambda x: (not x["golden"], not x["narrowing"],
+                            x["signal"] != "accumulate", -(x["trend_pp"] or -99), -x["big"]))
     return out
 
 
@@ -155,4 +191,7 @@ if __name__ == "__main__":
         for r in res[:25]:
             t = f"{r['trend_pp']:+.1f}pp" if r["trend_pp"] is not None else "—"
             mark = "🟢累積" if r["signal"] == "accumulate" else ("🔴派發" if r["signal"] == "distribute" else "")
-            print(f"  {r['code']} [{r['sector']}] gm{r['gm']:.0f}% eps{r['eps']:+.2f} | 大戶{r['big']:.1f}% 千張{r['k1000']:.1f}% 趨勢{t} {mark}")
+            et = r["eps_trend"]
+            etxt = f"eps{et['prev']:+.2f}→{et['cur']:+.2f} {et['label']}" if et else "eps趨勢—"
+            gold = "⭐黃金" if r["golden"] else ""
+            print(f"  {r['code']} [{r['sector']}] gm{r['gm']:.0f}% | 大戶{r['big']:.1f}% 趨勢{t}{mark} | {etxt} {gold}")
