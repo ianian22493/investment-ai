@@ -201,10 +201,13 @@ document.getElementById('hero-sub').innerHTML =
   };
   const revColor = {confirm:'var(--text3,#8a8a8a)', warn:'#C0392B', caution:'var(--text3,#8a8a8a)', neutral:'var(--text3,#8a8a8a)'};
   const revTail = {confirm:'', warn:' ← 論述亮紅燈', caution:'', neutral:''};
-  const prioBadge = p => {
+  const prioBadge = z => {
+    const p = z.priority;
     if(!p) return '';
-    const t = (p<=3?{t:'主菜'}:p<=5?{t:'時機'}:p<=7?{t:'配菜'}:{t:'彩券'}); t.c='var(--text3,#8a8a8a)';
-    return `<span style="display:inline-block;font-size:10px;font-weight:700;color:${t.c};border:1px solid ${t.c};border-radius:4px;padding:0 4px;margin-right:5px">#${p} ${t.t}</span>`;
+    // 彩券只給明確標記的 Stage-0 題材股(z.tier)；否則照排名分主菜/時機/配菜(尾端歸配菜、不再自動變彩券)
+    const tierName = z.tier ? z.tier : (p<=3?'主菜':p<=6?'時機':'配菜');
+    const c='var(--text3,#8a8a8a)';
+    return `<span style="display:inline-block;font-size:10px;font-weight:700;color:${c};border:1px solid ${c};border-radius:4px;padding:0 4px;margin-right:5px">#${p} ${tierName}</span>`;
   };
   const rows = zs.map(z=>{
     const hit = z.status==='加碼區' || z.status==='起手區';
@@ -220,7 +223,7 @@ document.getElementById('hero-sub').innerHTML =
     const zoneLabel = owned ? `加碼≤${z.add??'—'}（持有中，跌到加碼區才補）` : `起手≤${z.start??'—'} · 加碼≤${z.add??'—'}`;
     return `<div style="margin-top:3px;border-radius:5px;${bg}">
       <div style="display:flex;align-items:center;gap:8px;padding:5px 8px 3px;line-height:1.4">
-        <span style="flex:1;font-size:12px">${prioBadge(z.priority)}<b>${z.code}</b> ${z.name}${heldBadge}${thinMark}</span>
+        <span style="flex:1;font-size:12px">${prioBadge(z)}<b>${z.code}</b> ${z.name}${heldBadge}${thinMark}</span>
         <span style="font-size:12px;${hit?'color:#C9A84C;font-weight:700':''}">現 ${z.px??'—'}</span>
         <span style="font-size:11px;color:var(--text3,#8a8a8a)">${zoneLabel}</span>
         <span style="min-width:60px;text-align:right">${owned?'':badge(z.status)}</span>

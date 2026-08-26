@@ -172,6 +172,7 @@ def _load_watchlist_zones() -> list:
                 "rev": a.get("rev"),  # 月營收動能（論述追蹤器）：{yoy, trend, signal, brief, ...}
                 "chip": a.get("chip"),  # 大戶籌碼動能（聰明錢）：{big, k1000, retail, trend_pp, signal, brief}
                 "priority": a.get("priority"),  # 週檢維護的買進優先序（1=最優先）
+                "tier": a.get("tier"),  # 明確標記「彩券」給真Stage-0題材股；省略=照priority分主菜/時機/配菜
                 "held": h,  # 已持有＝{shares, avg_cost, pnl_pct}；未持有=None
             })
     # 依「買進優先序」排（週檢重排）；無 priority 者殿後、同序再依到價狀態
