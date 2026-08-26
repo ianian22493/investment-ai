@@ -328,16 +328,16 @@ if(DATA.code && DATA.code !== '—'){
   const hero = document.querySelector('.hero');
   if(!hero) return;
   const badge = s => {
-    if(s==='加碼區') return '<span style="background:#C0392B;color:#fff;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700">🔥 加碼區</span>';
+    if(s==='加碼區') return '<span style="background:#A67C00;color:#fff;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700">🔥 加碼區</span>';
     if(s==='起手區') return '<span style="background:#C9A84C;color:#1a1a1a;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700">🎯 起手區</span>';
     if(s==='接近')  return '<span style="color:#C9A84C;font-size:11px;font-weight:600">接近</span>';
     return '<span style="color:var(--text3,#8a8a8a);font-size:11px">還遠</span>';
   };
-  const revColor = {confirm:'#1E8449', warn:'#C0392B', caution:'#B9770E', neutral:'var(--text3,#8a8a8a)'};
-  const revTail = {confirm:' ← 論述兌現', warn:' ← 論述亮紅燈', caution:'', neutral:''};
+  const revColor = {confirm:'var(--text3,#8a8a8a)', warn:'#C0392B', caution:'var(--text3,#8a8a8a)', neutral:'var(--text3,#8a8a8a)'};
+  const revTail = {confirm:'', warn:' ← 論述亮紅燈', caution:'', neutral:''};
   const prioBadge = p => {
     if(!p) return '';
-    const t = p<=3?{t:'主菜',c:'#1E8449'}:p<=5?{t:'時機',c:'#C9A84C'}:p<=7?{t:'配菜',c:'#8a8a8a'}:{t:'彩券',c:'#B9770E'};
+    const t = (p<=3?{t:'主菜'}:p<=5?{t:'時機'}:p<=7?{t:'配菜'}:{t:'彩券'}); t.c='var(--text3,#8a8a8a)';
     return `<span style="display:inline-block;font-size:10px;font-weight:700;color:${t.c};border:1px solid ${t.c};border-radius:4px;padding:0 4px;margin-right:5px">#${p} ${t.t}</span>`;
   };
   const rows = zs.map(z=>{
@@ -349,8 +349,8 @@ if(DATA.code && DATA.code !== '—'){
     const thinMark = z.thin ? ' <span style="color:#C0392B;font-size:10px">💧薄量</span>' : '';
     const sub = hit ? `<div style="font-size:10.5px;color:var(--text3,#8a8a8a);padding:0 8px 5px;line-height:1.35">🎯 進場區第 ${z.days_in_zone||1} 天 · ${(z.note||'').slice(0,64)}</div>` : '';
     const rev = z.rev ? `<div style="font-size:10.5px;padding:0 8px 5px;line-height:1.3;color:${revColor[z.rev.signal]||revColor.neutral};font-weight:${(z.rev.signal==='warn'||z.rev.signal==='confirm')?600:400}">📈 ${z.rev.brief}${revTail[z.rev.signal]||''}</div>` : '';
-    const chipColor = {accumulate:'#1E8449', distribute:'#C0392B', neutral:'var(--text3,#8a8a8a)'};
-    const chip = z.chip ? `<div style="font-size:10.5px;padding:0 8px 5px;line-height:1.3;color:${chipColor[z.chip.signal]||chipColor.neutral};font-weight:${(z.chip.signal==='accumulate'||z.chip.signal==='distribute')?600:400}">💰 聰明錢：${z.chip.brief}</div>` : '';
+    const chipColor = {accumulate:'var(--text3,#8a8a8a)', distribute:'#C0392B', neutral:'var(--text3,#8a8a8a)'};
+    const chip = (z.chip && (z.chip.signal==='accumulate'||z.chip.signal==='distribute')) ? `<div style="font-size:10.5px;padding:0 8px 5px;line-height:1.3;color:${chipColor[z.chip.signal]||chipColor.neutral};font-weight:600">💰 聰明錢：${z.chip.brief}</div>` : '';
     const zoneLabel = owned ? `加碼≤${z.add??'—'}（持有中，跌到加碼區才補）` : `起手≤${z.start??'—'} · 加碼≤${z.add??'—'}`;
     return `<div style="margin-top:3px;border-radius:5px;${bg}">
       <div style="display:flex;align-items:center;gap:8px;padding:5px 8px 3px;line-height:1.4">
@@ -368,7 +368,7 @@ if(DATA.code && DATA.code !== '—'){
   hero.insertAdjacentHTML('afterend', `
     <div style="max-width:760px;margin:14px auto 0;padding:10px 14px;border:1px solid rgba(201,168,76,${anyHit?0.65:0.35});border-radius:8px;background:rgba(201,168,76,0.05)">
       <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:#C9A84C">⭐ 寶藏觀察名單 · 入場區${anyHit?' &nbsp;—&nbsp; 🎯 有標的到價！':''}</div>
-      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin:2px 0 3px">依 <b>#買進優先序</b>排（主菜🟢>時機🟡>配菜⚪>彩券🟠，週檢更新）· 到價金底醒目 · 📈=月營收動能 · 💰=大戶籌碼(聰明錢) · 掛限價分批別市價追${asOfTxt}</div>
+      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin:2px 0 3px">依 <b>#買進優先序</b>排（週檢更新）· <span style="color:#C9A84C;font-weight:700">金＝到價可買</span> · <span style="color:#C0392B;font-weight:700">紅＝警訊</span> · <span style="color:#1E8449;font-weight:700">綠＝持有中</span> · 📈月營收 💰大戶籌碼 · 掛限價分批別市價追${asOfTxt}</div>
       ${evLine}${rows}
     </div>`);
 })();
