@@ -102,8 +102,17 @@ def _chip_overlay(recs: list) -> None:
         if base and r["code"] in qhist.get(base, {}):
             tp = round(cur["big"] - qhist[base][r["code"]]["big"], 1)
         r["chip_trend"] = tp
-        r["chip_sig"] = ("累積🟢" if tp is not None and tp >= 1 else
-                         "派發🔴" if tp is not None and tp <= -1 else "")
+        big = cur["big"]
+        # 訊號優先序：正在累積(買在當下)>本來就集中(籌碼鎖定·支撐·即使趨勢平)>中性>派發
+        # ★高水平不扣分、算正面(使用者2026-08-28釐清)；但趨勢↑>水平高，因「正在買」訊息更強
+        if tp is not None and tp >= 1:
+            r["chip_sig"] = "累積🟢"
+        elif tp is not None and tp <= -1:
+            r["chip_sig"] = "派發🔴"          # 唯一負面：大戶在減
+        elif big >= 55:
+            r["chip_sig"] = "集中🔒"          # 水平高=籌碼鎖定/集中=支撐(⚠️>80%可能董監鎖·資訊較少但仍非負面)
+        else:
+            r["chip_sig"] = ""
 
 
 def scan(eps_min=EPS_MIN, gm_min=GM_MIN, drop_min=DROP_MIN) -> dict:
@@ -174,8 +183,10 @@ if __name__ == "__main__":
             ch = f" |大戶{x['big']:.0f}%{('趨勢%+.1fpp' % tp if tp is not None else '')}{x.get('chip_sig','')}"
         return (f"  {x['code']} {x['name'][:8]:8}[{(x['sector'] or '')[:8]:8}] 現{x['px']:7.0f} "
                 f"距高{x['from_high']:+3}% |{ry} {gd} eps:{x['eps_label']}{dip}{ch}")
-    # clean 內：大戶累積🟢優先，其次💠暫時毛利dip型(營收強+Q2毛利被咬·嘉澤型)，其次跌最深
-    clean = sorted(r["clean"], key=lambda x: (x.get("chip_sig") != "累積🟢", not x.get("margin_dip"), x["from_high"]))
+    # clean 排序：籌碼(累積🟢>集中🔒>中性>派發🔴) > 💠毛利dip型 > 跌最深
+    _cp = {"累積🟢": 0, "集中🔒": 1, "": 2, "派發🔴": 3}
+    clean = sorted(r["clean"], key=lambda x: (_cp.get(x.get("chip_sig", ""), 2),
+                                              not x.get("margin_dip"), x["from_high"]))
     print(f"🟢 乾淨誤殺候選（營收正+非循環）{len(r['clean'])} 檔——只深挖這批（💠毛利dip強誤殺·大戶累積🟢優先）：")
     for x in clean[:14]:
         print(_fmt(x, chip=True))
