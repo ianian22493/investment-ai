@@ -76,22 +76,48 @@ def _latest_fin() -> tuple[str, dict]:
     return tag, json.load(open(p, encoding="utf-8"))
 
 
+def _single_eps() -> dict:
+    """把累計 eps 去累計成單季：{code: [(year,q,single_eps), ...] 舊→新}。
+    ⚠️台股綜合損益 eps 是累計（Q2檔=H1累計）；單季 = 本季累計 − 同年前一季累計，
+    Q1 本身即單季、跨年 Q1 重置。（否則虧損股會永遠看起來像惡化＝加了一季虧損）"""
+    cum = {}   # code -> {(y,q): cum_eps}
+    for p in _fin_files():
+        tag = os.path.basename(p).replace("fin_", "").replace(".json", "")  # e.g. 115Q2
+        try:
+            y, q = int(tag.split("Q")[0]), int(tag.split("Q")[1])
+        except (ValueError, IndexError):
+            continue
+        for c, v in json.load(open(p, encoding="utf-8")).items():
+            e = v.get("eps")
+            if e is not None:
+                cum.setdefault(str(c), {})[(y, q)] = e
+    out = {}
+    for c, m in cum.items():
+        seq = []
+        for (y, q) in sorted(m):
+            single = m[(y, q)] if q == 1 else (
+                round(m[(y, q)] - m[(y, q - 1)], 2) if (y, q - 1) in m else None)
+            if single is not None:
+                seq.append((y, q, single))
+        if seq:
+            out[c] = seq
+    return out
+
+
 def eps_trend(code: str) -> dict | None:
-    """S0 領先訊號③：虧損收窄 trend（逼近損平＝盈餘拐點前）。
-    讀最近兩季 fin_*.json 的 eps，回傳 {prev,cur,delta,label}。
-    label：轉正🟢(虧→賺)／收窄🟢(仍虧但↑逼近損平)／惡化🔴(虧擴大or賺變虧)／持平。"""
-    files = _fin_files()
-    if len(files) < 2:
+    """S0 領先訊號③：虧損收窄 trend（用去累計後的**單季** eps 比較，逼近損平＝拐點前）。
+    label：轉正🟢(單季虧→賺)／虧損收窄🟢(仍虧但單季往上)／惡化🔴／持平。"""
+    seq = _single_eps().get(str(code))
+    if not seq or len(seq) < 2:
         return None
-    cur = json.load(open(files[-1], encoding="utf-8")).get(str(code), {}).get("eps")
-    prev = json.load(open(files[-2], encoding="utf-8")).get(str(code), {}).get("eps")
-    if cur is None or prev is None:
-        return None
+    prev, cur = seq[-2][2], seq[-1][2]
     delta = round(cur - prev, 2)
     if prev <= 0 < cur:
         label = "轉正🟢"
     elif cur <= 0 and delta > 0.02:
-        label = "虧損收窄🟢"      # 仍虧但往上＝逼近損平拐點
+        label = "虧損收窄🟢"      # 仍虧但單季往上＝逼近損平拐點
+    elif cur > 0 and delta > 0.02:
+        label = "獲利擴大🟢"
     elif delta < -0.02:
         label = "惡化🔴"
     else:
