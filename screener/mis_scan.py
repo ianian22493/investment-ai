@@ -29,7 +29,8 @@ import warnings
 
 import yfinance as yf
 
-import s0_capscan as s0   # 重用去累計單季 eps_trend
+import chip_momentum as cm   # ③大戶籌碼(TDCC)
+import s0_capscan as s0      # 重用去累計單季 eps_trend + 品質池大戶%歷史
 
 warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -72,6 +73,37 @@ def _is_cyclical(code: str, sector: str) -> bool:
     if code in CYCLICAL_CODES:
         return True
     return bool(sector) and any(k in sector for k in CYCLICAL_SECTORS)
+
+
+def _chip_overlay(recs: list) -> None:
+    """③聰明錢疊加：抓當前大戶%(水平)＋讀 quality_chip_history 算 4週趨勢。
+    跌深+大戶累積🟢=高信念誤殺(有人在撿)；跌深+大戶派發🔴=陷阱警訊(FPS/CBRS反面)。
+    趨勢需 s0_capscan 每週snapshot 累積約5週才成熟；未熟只顯示水平。"""
+    if not recs:
+        return
+    try:
+        _, allc = cm._fetch_tdcc()
+    except Exception:  # noqa: BLE001
+        return
+    qhist = {}
+    if os.path.exists(s0.QUALITY_CHIP_HISTORY):
+        try:
+            qhist = json.load(open(s0.QUALITY_CHIP_HISTORY, encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            qhist = {}
+    dates = sorted(qhist)
+    base = dates[-5] if len(dates) >= 5 else None      # ~4週前(需5筆才算趨勢)
+    for r in recs:
+        cur = allc.get(r["code"])
+        if not cur:
+            continue
+        r["big"] = cur["big"]
+        tp = None
+        if base and r["code"] in qhist.get(base, {}):
+            tp = round(cur["big"] - qhist[base][r["code"]]["big"], 1)
+        r["chip_trend"] = tp
+        r["chip_sig"] = ("累積🟢" if tp is not None and tp >= 1 else
+                         "派發🔴" if tp is not None and tp <= -1 else "")
 
 
 def scan(eps_min=EPS_MIN, gm_min=GM_MIN, drop_min=DROP_MIN) -> dict:
@@ -123,6 +155,7 @@ def scan(eps_min=EPS_MIN, gm_min=GM_MIN, drop_min=DROP_MIN) -> dict:
                 break
     for k in out:
         out[k].sort(key=lambda x: x["from_high"])          # 跌最深優先
+    _chip_overlay(out["clean"])                            # ③只對乾淨誤殺池疊大戶籌碼
     return out
 
 
@@ -131,17 +164,21 @@ if __name__ == "__main__":
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     r = scan()
-    def _fmt(x):
+    def _fmt(x, chip=False):
         ry = f"營收{x['rev_yoy']:+.0f}%" if x["rev_yoy"] is not None else "營收—"
         gd = f"毛利{x['gm_dir']:+.1f}pp"
-        dip = " 💠暫時毛利dip型(強誤殺)" if x.get("margin_dip") else ""
+        dip = " 💠暫時毛利dip" if x.get("margin_dip") else ""
+        ch = ""
+        if chip and x.get("big") is not None:
+            tp = x.get("chip_trend")
+            ch = f" |大戶{x['big']:.0f}%{('趨勢%+.1fpp' % tp if tp is not None else '')}{x.get('chip_sig','')}"
         return (f"  {x['code']} {x['name'][:8]:8}[{(x['sector'] or '')[:8]:8}] 現{x['px']:7.0f} "
-                f"距高{x['from_high']:+3}% |{ry} {gd} eps:{x['eps_label']}{dip}")
-    # clean 內：💠暫時毛利dip型(營收強+Q2毛利被咬)排前＝最像嘉澤那種強誤殺
-    clean = sorted(r["clean"], key=lambda x: (not x.get("margin_dip"), x["from_high"]))
-    print(f"🟢 乾淨誤殺候選（營收正+非循環）{len(r['clean'])} 檔——只深挖這批（💠=強誤殺型）：")
+                f"距高{x['from_high']:+3}% |{ry} {gd} eps:{x['eps_label']}{dip}{ch}")
+    # clean 內：大戶累積🟢優先，其次💠暫時毛利dip型(營收強+Q2毛利被咬·嘉澤型)，其次跌最深
+    clean = sorted(r["clean"], key=lambda x: (x.get("chip_sig") != "累積🟢", not x.get("margin_dip"), x["from_high"]))
+    print(f"🟢 乾淨誤殺候選（營收正+非循環）{len(r['clean'])} 檔——只深挖這批（💠毛利dip強誤殺·大戶累積🟢優先）：")
     for x in clean[:14]:
-        print(_fmt(x))
+        print(_fmt(x, chip=True))
     print(f"\n🔄 循環·另眼看（跌深≠誤殺·改看合約價/稼動率月營收）{len(r['cyclical'])} 檔：")
     for x in r["cyclical"][:8]:
         print(_fmt(x))

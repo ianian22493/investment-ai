@@ -231,6 +231,8 @@ jobs:
           [ -f data/chip/latest.json ] && git add data/chip/latest.json data/chip/history.json || true
           # S0 低基期宇宙的大戶%週快照（跨 run 累積＝S0 籌碼累積趨勢的記憶體）
           [ -f data/chip/s0_history.json ] && git add data/chip/s0_history.json || true
+          # 誤殺品質池的大戶%週快照（③聰明錢疊加·mis_scan 讀·趨勢隨週長）
+          [ -f data/chip/quality_chip_history.json ] && git add data/chip/quality_chip_history.json || true
           # S0 宇宙的資產負債表季快照（④capex先行 非流動資產QoQ、⑤庫藏股% QoQ）
           [ -f data/screener/bs_history.json ] && git add data/screener/bs_history.json || true
           # 補抓的當月月營收（refresh_revenue 寫的 rev_YYYMM.json）——寶藏面板即時化

@@ -37,6 +37,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 FIN_DIR = os.path.join(ROOT, "data", "screener", "history")
 S0_HISTORY = os.path.join(ROOT, "data", "chip", "s0_history.json")
+QUALITY_CHIP_HISTORY = os.path.join(ROOT, "data", "chip", "quality_chip_history.json")
 BS_HISTORY = os.path.join(ROOT, "data", "screener", "bs_history.json")
 SECTOR_MAP = os.path.join(ROOT, "data", "sector_map_auto.json")
 # 資產負債表 OpenAPI（季更）：④capex先行=非流動資產QoQ↑、⑤庫藏股買回=庫藏股%
@@ -229,18 +230,33 @@ def bs_signal(code: str) -> dict | None:
             "quarters": len(periods)}
 
 
+def quality_universe(gm_min: float = 30.0, eps_min: float = 2.0) -> set:
+    """誤殺掃描的品質池（H1累計 eps>eps_min 且 gm>=gm_min）——給 mis_scan 的③大戶籌碼疊加。"""
+    _, fin = _latest_fin()
+    return {str(c) for c, v in fin.items()
+            if (v.get("eps") or 0) > eps_min and (v.get("gm") or 0) >= gm_min}
+
+
 def snapshot() -> str:
     """週跑（掛每日 pipeline）：①抓全市場大戶% 存 s0_history(週·趨勢隨週長)＋
-    ④⑤抓 BS 存 bs_history(季·QoQ 隨季長)。回傳大戶%資料日。"""
-    uni = s0_universe()
+    ③同批存品質池大戶% quality_chip_history(給誤殺掃描)＋④⑤ BS 季快照。回傳資料日。"""
     date, allc = cm._fetch_tdcc()
-    slice_ = {c: allc[c] for c in uni if c in allc}
+    # ① S0 低基期宇宙
     hist = _load_hist()
-    hist[date] = slice_
+    hist[date] = {c: allc[c] for c in s0_universe() if c in allc}
     for k in sorted(hist)[:-20]:
         del hist[k]
     os.makedirs(os.path.dirname(S0_HISTORY), exist_ok=True)
     json.dump(hist, open(S0_HISTORY, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    # ③ 誤殺品質池（同一次 TDCC 抓取、不重抓）→ 大戶累積趨勢隨週長
+    try:
+        qhist = json.load(open(QUALITY_CHIP_HISTORY, encoding="utf-8")) if os.path.exists(QUALITY_CHIP_HISTORY) else {}
+        qhist[date] = {c: allc[c] for c in quality_universe() if c in allc}
+        for k in sorted(qhist)[:-20]:
+            del qhist[k]
+        json.dump(qhist, open(QUALITY_CHIP_HISTORY, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [s0_capscan] quality_chip snapshot skipped: {e}")
     try:
         bs_snapshot()   # ④⑤ BS 季快照（非致命）
     except Exception as e:  # noqa: BLE001
