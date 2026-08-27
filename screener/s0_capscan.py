@@ -284,10 +284,15 @@ def scan() -> list:
         trend_pp = None
         if base_date and c in hist.get(base_date, {}):
             trend_pp = round(big - hist[base_date][c].get("big", 0), 1)
+        # 訊號優先序(2026-08-28 對齊誤殺/寶藏)：累積(趨勢↑正在買)>集中(水平≥55%鎖定=支撐)
+        #  >中性>派發(唯一負面)。★高水平不扣分、算正面；⚠️S0是pre-rev小公司、深挖個股時
+        #  要多查這高%是創辦人/家族鎖股 還是 法人聰明錢(質化檢查、非計分差別)。
         if trend_pp is not None and trend_pp >= 1.0:
             signal = "accumulate"
         elif trend_pp is not None and trend_pp <= -1.0:
             signal = "distribute"
+        elif big >= 55:
+            signal = "concentrate"
         else:
             signal = "neutral"
         et = eps_trend(c)   # ③虧損收窄
@@ -298,9 +303,10 @@ def scan() -> list:
                     "big": big, "k1000": ch.get("k1000", 0), "trend_pp": trend_pp,
                     "signal": signal, "eps_trend": et, "narrowing": narrowing,
                     "golden": golden, "bs": bs, "weeks": len(dates)})
-    # 排序：黃金組合(①累積×③收窄)→其次收窄→其次大戶累積→其次大戶%水平
+    # 排序：黃金組合(①累積×③收窄)→收窄→籌碼(累積>集中>中性>派發)→趨勢pp→大戶%水平
+    _cp = {"accumulate": 0, "concentrate": 1, "neutral": 2, "distribute": 3}
     out.sort(key=lambda x: (not x["golden"], not x["narrowing"],
-                            x["signal"] != "accumulate", -(x["trend_pp"] or -99), -x["big"]))
+                            _cp.get(x["signal"], 2), -(x["trend_pp"] or -99), -x["big"]))
     return out
 
 
@@ -320,7 +326,7 @@ if __name__ == "__main__":
         print(f"[s0_capscan] S0宇宙 {len(res)} 檔 | {mode} | 大戶%由高到低（accumulate優先）:")
         for r in res[:25]:
             t = f"{r['trend_pp']:+.1f}pp" if r["trend_pp"] is not None else "—"
-            mark = "🟢累積" if r["signal"] == "accumulate" else ("🔴派發" if r["signal"] == "distribute" else "")
+            mark = {"accumulate": "🟢累積", "concentrate": "🔒集中", "distribute": "🔴派發"}.get(r["signal"], "")
             et = r["eps_trend"]
             etxt = f"eps{et['prev']:+.2f}→{et['cur']:+.2f} {et['label']}" if et else "eps趨勢—"
             gold = "⭐黃金" if r["golden"] else ""
