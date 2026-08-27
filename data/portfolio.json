@@ -1,410 +1,399 @@
 {
-  "_comment": "Static portfolio snapshot | 2026-06-03 賣出 2536/4588/4707 | 2026-07-07 更新持股（新增 2603/3491/3665/6442/8299 + 加碼 3293/2211/1104）+ 每檔加 sector 欄位 (for Task C) | 2026-07-23 買 MSFT+1/CELH+2/SOUN+1/TSLA+1/GOOGL+1，賣 MELI 清倉 | 2026-07-24 新建 CAVA 3股@62.63 + CELH+1@26.60(→9股) + SOUN+1@6.10(→12股) | 2026-07-28 恐慌日(台股-4.65%)：新建台達電10@1600/世芯5@3210 + 群聯+10@1650(→100股,avg2310) + 00675L 100股(2X槓桿,進場價待補) | 2026-07-29 全持股對帳(截圖)：TW 重建16檔(世芯20/群聯130/台達50/00675L 200/新增00685L 1000/賣出2603長榮) + US SOUN→13 | 2026-07-30 US:ONDS+1/SOUN+3(→16)/TSLA+1(→13)/新增DRAM 2股@45.5；TW:環泥賣5000(→16000,實現約+17k)",
-  "_updated": "2026-08-17",
-  "_comment2": "2026-07-31 環泥再賣2,000股(1000@27.5+1000@27.45)→14,000股，實現+13,119(+31.54%)。續籌50萬房款",
-  "_comment3": "2026-08-07 長榮鋼賣100股零股@87.5(入袋8,750,實現約+666)→5,000股。湊房款首筆，缺口31萬→約30.1萬",
-  "_comment4": "2026-08-07 CELH加碼2股(1@24.20+1@24.45)→11股,均價31.47→30.17。Q2營收miss後低接;毛利率48%止跌+Alani整合達標,但屬觀察區的接刀",
-  "_comment5": "2026-08-11 TW：3665 貿聯-KY 賣60股@2200 清倉（入袋132,000，實現約+17,072）",
-  "_comment6": "2026-08-17 寶藏起手：買 6534 正瀚 1張@92（起手上緣，農業生技收稅口）+ 3546 宇峻 1張@72.6（貼起手線，遊戲收稅口，8/11 Q2由虧轉盈）。各小倉試錯、趁回檔進；加碼區 正瀚≤82/宇峻≤64 且需論述續兌現才補。決策已在記分卡（加）",
-  "personal_finance": {
-    "cash_savings_twd": 1073793,
-    "monthly_income_twd": 110000,
-    "investment_style": "aggressive",
-    "_style_note": "aggressive=高交易比例低現金 / moderate=均衡 / conservative=低交易高現金",
-    "_note": "現金存款和月薪，影響現金流壓力評估",
-    "jpy_cash_savings_jpy": 138782,
-    "_jpy_note": "日圓活存，純投資用、自己的錢"
+ "_comment": "Static portfolio snapshot | 2026-06-03 賣出 2536/4588/4707 | 2026-07-07 更新持股（新增 2603/3491/3665/6442/8299 + 加碼 3293/2211/1104）+ 每檔加 sector 欄位 (for Task C) | 2026-07-23 買 MSFT+1/CELH+2/SOUN+1/TSLA+1/GOOGL+1，賣 MELI 清倉 | 2026-07-24 新建 CAVA 3股@62.63 + CELH+1@26.60(→9股) + SOUN+1@6.10(→12股) | 2026-07-28 恐慌日(台股-4.65%)：新建台達電10@1600/世芯5@3210 + 群聯+10@1650(→100股,avg2310) + 00675L 100股(2X槓桿,進場價待補) | 2026-07-29 全持股對帳(截圖)：TW 重建16檔(世芯20/群聯130/台達50/00675L 200/新增00685L 1000/賣出2603長榮) + US SOUN→13 | 2026-07-30 US:ONDS+1/SOUN+3(→16)/TSLA+1(→13)/新增DRAM 2股@45.5；TW:環泥賣5000(→16000,實現約+17k)",
+ "_updated": "2026-08-28",
+ "_comment2": "2026-07-31 環泥再賣2,000股(1000@27.5+1000@27.45)→14,000股，實現+13,119(+31.54%)。續籌50萬房款",
+ "_comment3": "2026-08-07 長榮鋼賣100股零股@87.5(入袋8,750,實現約+666)→5,000股。湊房款首筆，缺口31萬→約30.1萬",
+ "_comment4": "2026-08-07 CELH加碼2股(1@24.20+1@24.45)→11股,均價31.47→30.17。Q2營收miss後低接;毛利率48%止跌+Alani整合達標,但屬觀察區的接刀",
+ "_comment5": "2026-08-11 TW：3665 貿聯-KY 賣60股@2200 清倉（入袋132,000，實現約+17,072）",
+ "_comment6": "2026-08-17 寶藏起手：買 6534 正瀚 1張@92（起手上緣，農業生技收稅口）+ 3546 宇峻 1張@72.6（貼起手線，遊戲收稅口，8/11 Q2由虧轉盈）。各小倉試錯、趁回檔進；加碼區 正瀚≤82/宇峻≤64 且需論述續兌現才補。決策已在記分卡（加）",
+ "personal_finance": {
+  "cash_savings_twd": 1186593,
+  "monthly_income_twd": 110000,
+  "investment_style": "aggressive",
+  "_style_note": "aggressive=高交易比例低現金 / moderate=均衡 / conservative=低交易高現金",
+  "_note": "現金存款和月薪，影響現金流壓力評估",
+  "jpy_cash_savings_jpy": 138782,
+  "_jpy_note": "日圓活存，純投資用、自己的錢"
+ },
+ "tw_stocks": [
+  {
+   "code": "00675L",
+   "name": "富邦臺灣加權正2",
+   "shares": 200,
+   "value": 48834,
+   "cost": 51167,
+   "pnl": -2333,
+   "pnl_pct": -4.56,
+   "type": "leveraged_ETF",
+   "strategy": "trade",
+   "sector": "2X槓桿ETF-加權"
   },
-  "tw_stocks": [
-    {
-      "code": "00675L",
-      "name": "富邦臺灣加權正2",
-      "shares": 200,
-      "value": 48834,
-      "cost": 51167,
-      "pnl": -2333,
-      "pnl_pct": -4.56,
-      "type": "leveraged_ETF",
-      "strategy": "trade",
-      "sector": "2X槓桿ETF-加權"
-    },
-    {
-      "code": "00685L",
-      "name": "群益臺灣加權正2",
-      "shares": 1000,
-      "value": 9198,
-      "cost": 9363,
-      "pnl": -165,
-      "pnl_pct": -1.76,
-      "type": "leveraged_ETF",
-      "strategy": "trade",
-      "sector": "2X槓桿ETF-加權(拆分後)"
-    },
-    {
-      "code": "00692",
-      "name": "富邦公司治理",
-      "shares": 6988,
-      "value": 561231,
-      "cost": 253775,
-      "pnl": 307456,
-      "pnl_pct": 121.15,
-      "type": "ETF",
-      "strategy": "long",
-      "sector": "ETF-broad"
-    },
-    {
-      "code": "00915",
-      "name": "凱基優選高股息30",
-      "shares": 2000,
-      "value": 59936,
-      "cost": 15150,
-      "pnl": 44786,
-      "pnl_pct": 295.62,
-      "type": "ETF",
-      "strategy": "long",
-      "sector": "ETF-dividend"
-    },
-    {
-      "code": "1104",
-      "name": "環泥",
-      "shares": 14000,
-      "value": 385000,
-      "cost": 338349,
-      "pnl": 46651,
-      "pnl_pct": 13.79,
-      "type": "stock",
-      "strategy": "long",
-      "sector": "水泥"
-    },
-    {
-      "code": "2211",
-      "name": "長榮鋼",
-      "shares": 5000,
-      "value": 438055,
-      "cost": 404208,
-      "pnl": 33847,
-      "pnl_pct": 8.37,
-      "type": "stock",
-      "strategy": "both",
-      "sector": "鋼鐵"
-    },
-    {
-      "code": "2308",
-      "name": "台達電",
-      "shares": 50,
-      "value": 74425,
-      "cost": 86270,
-      "pnl": -11845,
-      "pnl_pct": -13.73,
-      "type": "stock",
-      "strategy": "long",
-      "sector": "AI電源散熱"
-    },
-    {
-      "code": "2330",
-      "name": "台積電",
-      "shares": 40,
-      "value": 87612,
-      "cost": 71460,
-      "pnl": 16152,
-      "pnl_pct": 22.6,
-      "type": "stock",
-      "strategy": "long",
-      "sector": "半導體-代工"
-    },
-    {
-      "code": "2834",
-      "name": "臺企銀",
-      "shares": 13000,
-      "value": 232335,
-      "cost": 165731,
-      "pnl": 66604,
-      "pnl_pct": 40.19,
-      "type": "stock",
-      "strategy": "long",
-      "sector": "金融-銀行"
-    },
-    {
-      "code": "3293",
-      "name": "鈊象",
-      "shares": 990,
-      "value": 723485,
-      "cost": 628042,
-      "pnl": 95443,
-      "pnl_pct": 15.2,
-      "type": "stock",
-      "strategy": "long",
-      "sector": "遊戲軟體"
-    },
-    {
-      "code": "3491",
-      "name": "昇達科",
-      "shares": 80,
-      "value": 81648,
-      "cost": 106806,
-      "pnl": -25158,
-      "pnl_pct": -23.55,
-      "type": "stock",
-      "strategy": "both",
-      "sector": "通訊網路-微波"
-    },
-    {
-      "code": "3546",
-      "name": "宇峻",
-      "shares": 1000,
-      "value": 72600,
-      "cost": 72600,
-      "pnl": 0,
-      "pnl_pct": 0.0,
-      "type": "stock",
-      "strategy": "long",
-      "sector": "遊戲軟體",
-      "_note": "2026-08-17 寶藏起手 1張@72.6（貼起手上緣72）；遊戲收稅口(宇峻奧汀,毛利89%)，8/11 Q2由虧轉盈；加碼區≤64且需論述續兌現才補"
-    },
-    {
-      "code": "3661",
-      "name": "世芯-KY",
-      "shares": 20,
-      "value": 84200,
-      "cost": 69873,
-      "pnl": 14327,
-      "pnl_pct": 20.5,
-      "type": "stock",
-      "strategy": "long",
-      "sector": "AI-ASIC設計",
-      "_note": "2026-08-16 更正：舊value/pnl為7/31快照(顯示-20%失真)，即時價4210→+20.5%。使用者考慮停利換現金"
-    },
-    {
-      "code": "3703",
-      "name": "欣陸",
-      "shares": 12000,
-      "value": 244320,
-      "cost": 290686,
-      "pnl": -46366,
-      "pnl_pct": -15.95,
-      "type": "stock",
-      "strategy": "long",
-      "sector": "營建-工程"
-    },
-    {
-      "code": "6442",
-      "name": "光聖",
-      "shares": 130,
-      "value": 143678,
-      "cost": 242577,
-      "pnl": -98899,
-      "pnl_pct": -40.77,
-      "type": "stock",
-      "strategy": "both",
-      "sector": "通訊網路-光通訊"
-    },
-    {
-      "code": "6534",
-      "name": "正瀚",
-      "shares": 1000,
-      "value": 91200,
-      "cost": 92000,
-      "pnl": -800,
-      "pnl_pct": -0.87,
-      "type": "stock",
-      "strategy": "long",
-      "sector": "農業生技",
-      "_note": "2026-08-17 寶藏起手 1張@92（起手上緣）；農業生技收稅口(毛利86%,H1 EPS 5.65創高,與Nutrien專屬獨賣,回購庫藏股)；加碼區≤82且需論述續兌現才補"
-    },
-    {
-      "code": "8299",
-      "name": "群聯",
-      "shares": 130,
-      "value": 196094,
-      "cost": 287322,
-      "pnl": -91228,
-      "pnl_pct": -31.75,
-      "type": "stock",
-      "strategy": "long",
-      "sector": "半導體-NAND控制IC"
-    }
-  ],
-  "tw_summary": {
-    "total_value": 3533851,
-    "total_cost": 3185379,
-    "total_pnl": 348472,
-    "total_pnl_pct": 10.94,
-    "broker": "國泰證券",
-    "_updated": "2026-08-17",
-    "_note": "含 8/17 新增 6534 正瀚/3546 宇峻；彙總由各持股 value(混合日期快照)加總、即時損益由 dashboard 抓即時價重算。舊 8/07 彙總含已清倉 3665 故偏高，本次改由現有持股重算"
+  {
+   "code": "00685L",
+   "name": "群益臺灣加權正2",
+   "shares": 1000,
+   "value": 9198,
+   "cost": 9363,
+   "pnl": -165,
+   "pnl_pct": -1.76,
+   "type": "leveraged_ETF",
+   "strategy": "trade",
+   "sector": "2X槓桿ETF-加權(拆分後)"
   },
-  "us_stocks": [
-    {
-      "ticker": "AMZN",
-      "name": "Amazon",
-      "shares": 2,
-      "avg_cost_usd": 201.5,
-      "strategy": "long"
-    },
-    {
-      "ticker": "CAVA",
-      "name": "CAVA Group",
-      "shares": 4,
-      "avg_cost_usd": 62.275,
-      "strategy": "long"
-    },
-    {
-      "ticker": "CELH",
-      "name": "Celsius",
-      "shares": 11,
-      "avg_cost_usd": 30.16818,
-      "strategy": "long"
-    },
-    {
-      "ticker": "DRAM",
-      "name": "Roundhill Memory ETF",
-      "shares": 1,
-      "avg_cost_usd": 45.5,
-      "strategy": "long"
-    },
-    {
-      "ticker": "GOOGL",
-      "name": "Alphabet",
-      "shares": 7.00298,
-      "avg_cost_usd": 291.74294,
-      "strategy": "long"
-    },
-    {
-      "ticker": "MSFT",
-      "name": "Microsoft",
-      "shares": 6.0081,
-      "avg_cost_usd": 377.52035,
-      "strategy": "long"
-    },
-    {
-      "ticker": "NVDA",
-      "name": "Nvidia",
-      "shares": 4.00367,
-      "avg_cost_usd": 172.51921,
-      "strategy": "long"
-    },
-    {
-      "ticker": "ONDS",
-      "name": "Ondas Holdings",
-      "shares": 11,
-      "avg_cost_usd": 8.71818,
-      "strategy": "long"
-    },
-    {
-      "ticker": "RBRK",
-      "name": "Rubrik",
-      "shares": 9,
-      "avg_cost_usd": 47.05556,
-      "strategy": "long"
-    },
-    {
-      "ticker": "S",
-      "name": "SentinelOne",
-      "shares": 1,
-      "avg_cost_usd": 12.0,
-      "strategy": "long"
-    },
-    {
-      "ticker": "SOUN",
-      "name": "SoundHound AI",
-      "shares": 16,
-      "avg_cost_usd": 6.225,
-      "strategy": "long"
-    },
-    {
-      "ticker": "TSLA",
-      "name": "Tesla",
-      "shares": 13,
-      "avg_cost_usd": 361.23077,
-      "strategy": "long"
-    },
-    {
-      "ticker": "ZS",
-      "name": "Zscaler",
-      "shares": 10,
-      "avg_cost_usd": 141.33273,
-      "strategy": "long"
-    }
-  ],
-  "us_summary": {
-    "total_value_usd": 12883.0,
-    "total_cost_usd": 12771.74,
-    "total_pnl_usd": 111.26,
-    "total_pnl_pct": 0.87,
-    "broker": "Firstrade",
-    "_updated": "2026-08-11",
-    "_note": "市值含2026-07-30新買(近似成本)；即時價由 dashboard 抓",
-    "_comment6": "2026-08-11 ZS賣1@178.2(→10)、DRAM賣1@51.0(→1)、CAVA買1@61.2(→4,均價62.28)"
+  {
+   "code": "00692",
+   "name": "富邦公司治理",
+   "shares": 6988,
+   "value": 561231,
+   "cost": 253775,
+   "pnl": 307456,
+   "pnl_pct": 121.15,
+   "type": "ETF",
+   "strategy": "long",
+   "sector": "ETF-broad"
   },
-  "funds": [
-    {
-      "name": "瀚亞日本動力股票基金AJ（日圓）",
-      "currency": "JPY",
-      "current_value_jpy": 547144,
-      "return_pct": 25.78,
-      "monthly_dca_jpy": 60000
-    },
-    {
-      "name": "野村（愛爾蘭）日本策略價值基金（T日圓類股）",
-      "currency": "JPY",
-      "current_value_jpy": 317063,
-      "return_pct": 11.25,
-      "monthly_dca_jpy": 15000
-    }
-  ],
-  "funds_summary": {
-    "total_value_twd": 170085,
-    "total_cost_twd": 141703,
-    "total_return_pct": 20.03,
-    "total_monthly_dca_jpy": 75000,
-    "_updated": "2026-07-30",
-    "_note": "純投資用、自己的錢（非老婆基金、非房款）；JPY報酬+25.78/+11.25% 但TWD僅+20% = 日圓貶值吃掉~5%"
+  {
+   "code": "00915",
+   "name": "凱基優選高股息30",
+   "shares": 2000,
+   "value": 59936,
+   "cost": 15150,
+   "pnl": 44786,
+   "pnl_pct": 295.62,
+   "type": "ETF",
+   "strategy": "long",
+   "sector": "ETF-dividend"
   },
-  "real_estate": {
-    "name": "久泰宸品 B2-13F",
-    "location": "新北市板橋區",
-    "status": "pre_sale",
-    "total_price": 22000000,
-    "down_payment_total": 6600000,
-    "down_payment_paid": 5060000,
-    "loan_amount": 15400000,
-    "delivery_date": "2026-12-01",
-    "renovation_budget": 1200000,
-    "furniture_budget": 920000,
-    "personal_share_pct": 0.5,
-    "_share_note": "夫妻各付一半：房產/房貸/自備/裝潢家具/payment_schedule 皆為全額，個人持份 = ×0.5。asset_allocation.py 已修正為乘 0.5 計算佔比與槓桿（2026-07-30）",
-    "payment_schedule": [
-      {
-        "name": "外牆裝修完工款",
-        "date": "2026-07-01",
-        "amount": 660000,
-        "category": "mortgage"
-      },
-      {
-        "name": "竣工款",
-        "date": "2026-10-01",
-        "amount": 880000,
-        "category": "mortgage"
-      },
-      {
-        "name": "裝潢費用",
-        "date": "2027-01-01",
-        "amount": 1200000,
-        "category": "renovation"
-      },
-      {
-        "name": "家具費用",
-        "date": "2027-03-01",
-        "amount": 920000,
-        "category": "furniture"
-      }
-    ],
-    "_personal_half": {
-      "house_value": 11000000,
-      "loan": 7700000,
-      "down_payment": 3300000,
-      "down_payment_paid": 2530000,
-      "note": "總價2200萬/貸1540萬的一半；先估，改再說"
-    }
+  {
+   "code": "1104",
+   "name": "環泥",
+   "shares": 14000,
+   "value": 385000,
+   "cost": 338349,
+   "pnl": 46651,
+   "pnl_pct": 13.79,
+   "type": "stock",
+   "strategy": "long",
+   "sector": "水泥"
+  },
+  {
+   "code": "2211",
+   "name": "長榮鋼",
+   "shares": 5000,
+   "value": 438055,
+   "cost": 404208,
+   "pnl": 33847,
+   "pnl_pct": 8.37,
+   "type": "stock",
+   "strategy": "both",
+   "sector": "鋼鐵"
+  },
+  {
+   "code": "2308",
+   "name": "台達電",
+   "shares": 50,
+   "value": 74425,
+   "cost": 86270,
+   "pnl": -11845,
+   "pnl_pct": -13.73,
+   "type": "stock",
+   "strategy": "long",
+   "sector": "AI電源散熱"
+  },
+  {
+   "code": "2330",
+   "name": "台積電",
+   "shares": 40,
+   "value": 87612,
+   "cost": 71460,
+   "pnl": 16152,
+   "pnl_pct": 22.6,
+   "type": "stock",
+   "strategy": "long",
+   "sector": "半導體-代工"
+  },
+  {
+   "code": "2834",
+   "name": "臺企銀",
+   "shares": 13000,
+   "value": 232335,
+   "cost": 165731,
+   "pnl": 66604,
+   "pnl_pct": 40.19,
+   "type": "stock",
+   "strategy": "long",
+   "sector": "金融-銀行"
+  },
+  {
+   "code": "3293",
+   "name": "鈊象",
+   "shares": 990,
+   "value": 723485,
+   "cost": 628042,
+   "pnl": 95443,
+   "pnl_pct": 15.2,
+   "type": "stock",
+   "strategy": "long",
+   "sector": "遊戲軟體"
+  },
+  {
+   "code": "3546",
+   "name": "宇峻",
+   "shares": 1000,
+   "value": 72600,
+   "cost": 72600,
+   "pnl": 0,
+   "pnl_pct": 0.0,
+   "type": "stock",
+   "strategy": "long",
+   "sector": "遊戲軟體",
+   "_note": "2026-08-17 寶藏起手 1張@72.6（貼起手上緣72）；遊戲收稅口(宇峻奧汀,毛利89%)，8/11 Q2由虧轉盈；加碼區≤64且需論述續兌現才補"
+  },
+  {
+   "code": "3661",
+   "name": "世芯-KY",
+   "shares": 20,
+   "value": 84200,
+   "cost": 69873,
+   "pnl": 14327,
+   "pnl_pct": 20.5,
+   "type": "stock",
+   "strategy": "long",
+   "sector": "AI-ASIC設計",
+   "_note": "2026-08-16 更正：舊value/pnl為7/31快照(顯示-20%失真)，即時價4210→+20.5%。使用者考慮停利換現金"
+  },
+  {
+   "code": "3703",
+   "name": "欣陸",
+   "shares": 12000,
+   "value": 244320,
+   "cost": 290686,
+   "pnl": -46366,
+   "pnl_pct": -15.95,
+   "type": "stock",
+   "strategy": "long",
+   "sector": "營建-工程"
+  },
+  {
+   "code": "6442",
+   "name": "光聖",
+   "shares": 130,
+   "value": 143678,
+   "cost": 242577,
+   "pnl": -98899,
+   "pnl_pct": -40.77,
+   "type": "stock",
+   "strategy": "both",
+   "sector": "通訊網路-光通訊"
+  },
+  {
+   "code": "6534",
+   "name": "正瀚",
+   "shares": 1000,
+   "value": 91200,
+   "cost": 92000,
+   "pnl": -800,
+   "pnl_pct": -0.87,
+   "type": "stock",
+   "strategy": "long",
+   "sector": "農業生技",
+   "_note": "2026-08-17 寶藏起手 1張@92（起手上緣）；農業生技收稅口(毛利86%,H1 EPS 5.65創高,與Nutrien專屬獨賣,回購庫藏股)；加碼區≤82且需論述續兌現才補"
+  },
+  {
+   "code": "8299",
+   "name": "群聯",
+   "shares": 130,
+   "value": 196094,
+   "cost": 287322,
+   "pnl": -91228,
+   "pnl_pct": -31.75,
+   "type": "stock",
+   "strategy": "long",
+   "sector": "半導體-NAND控制IC"
   }
+ ],
+ "tw_summary": {
+  "total_value": 3452203,
+  "total_cost": 3078573,
+  "total_pnl": 373630,
+  "total_pnl_pct": 12.14,
+  "broker": "國泰證券",
+  "_updated": "2026-08-28",
+  "_note": "含 8/17 新增 6534 正瀚/3546 宇峻；彙總由各持股 value(混合日期快照)加總、即時損益由 dashboard 抓即時價重算。舊 8/07 彙總含已清倉 3665 故偏高，本次改由現有持股重算"
+ },
+ "us_stocks": [
+  {
+   "ticker": "AMZN",
+   "name": "Amazon",
+   "shares": 2,
+   "avg_cost_usd": 201.5,
+   "strategy": "long"
+  },
+  {
+   "ticker": "CAVA",
+   "name": "CAVA Group",
+   "shares": 4,
+   "avg_cost_usd": 62.275,
+   "strategy": "long"
+  },
+  {
+   "ticker": "CELH",
+   "name": "Celsius",
+   "shares": 11,
+   "avg_cost_usd": 30.16818,
+   "strategy": "long"
+  },
+  {
+   "ticker": "DRAM",
+   "name": "Roundhill Memory ETF",
+   "shares": 1,
+   "avg_cost_usd": 45.5,
+   "strategy": "long"
+  },
+  {
+   "ticker": "GOOGL",
+   "name": "Alphabet",
+   "shares": 7.00298,
+   "avg_cost_usd": 291.74294,
+   "strategy": "long"
+  },
+  {
+   "ticker": "MSFT",
+   "name": "Microsoft",
+   "shares": 6.0081,
+   "avg_cost_usd": 377.52035,
+   "strategy": "long"
+  },
+  {
+   "ticker": "NVDA",
+   "name": "Nvidia",
+   "shares": 4.00367,
+   "avg_cost_usd": 172.51921,
+   "strategy": "long"
+  },
+  {
+   "ticker": "ONDS",
+   "name": "Ondas Holdings",
+   "shares": 11,
+   "avg_cost_usd": 8.71818,
+   "strategy": "long"
+  },
+  {
+   "ticker": "RBRK",
+   "name": "Rubrik",
+   "shares": 9,
+   "avg_cost_usd": 47.05556,
+   "strategy": "long"
+  },
+  {
+   "ticker": "S",
+   "name": "SentinelOne",
+   "shares": 1,
+   "avg_cost_usd": 12.0,
+   "strategy": "long"
+  },
+  {
+   "ticker": "SOUN",
+   "name": "SoundHound AI",
+   "shares": 16,
+   "avg_cost_usd": 6.225,
+   "strategy": "long"
+  },
+  {
+   "ticker": "TSLA",
+   "name": "Tesla",
+   "shares": 13,
+   "avg_cost_usd": 361.23077,
+   "strategy": "long"
+  },
+  {
+   "ticker": "ZS",
+   "name": "Zscaler",
+   "shares": 10,
+   "avg_cost_usd": 141.33273,
+   "strategy": "long"
+  }
+ ],
+ "us_summary": {
+  "total_value_usd": 12883.0,
+  "total_cost_usd": 12771.74,
+  "total_pnl_usd": 111.26,
+  "total_pnl_pct": 0.87,
+  "broker": "Firstrade",
+  "_updated": "2026-08-11",
+  "_note": "市值含2026-07-30新買(近似成本)；即時價由 dashboard 抓",
+  "_comment6": "2026-08-11 ZS賣1@178.2(→10)、DRAM賣1@51.0(→1)、CAVA買1@61.2(→4,均價62.28)"
+ },
+ "funds": [
+  {
+   "name": "瀚亞日本動力股票基金AJ（日圓）",
+   "currency": "JPY",
+   "current_value_jpy": 547144,
+   "return_pct": 25.78,
+   "monthly_dca_jpy": 60000
+  },
+  {
+   "name": "野村（愛爾蘭）日本策略價值基金（T日圓類股）",
+   "currency": "JPY",
+   "current_value_jpy": 317063,
+   "return_pct": 11.25,
+   "monthly_dca_jpy": 15000
+  }
+ ],
+ "funds_summary": {
+  "total_value_twd": 170085,
+  "total_cost_twd": 141703,
+  "total_return_pct": 20.03,
+  "total_monthly_dca_jpy": 75000,
+  "_updated": "2026-07-30",
+  "_note": "純投資用、自己的錢（非老婆基金、非房款）；JPY報酬+25.78/+11.25% 但TWD僅+20% = 日圓貶值吃掉~5%"
+ },
+ "real_estate": {
+  "name": "久泰宸品 B2-13F",
+  "location": "新北市板橋區",
+  "status": "pre_sale",
+  "total_price": 22000000,
+  "down_payment_total": 6600000,
+  "down_payment_paid": 5060000,
+  "loan_amount": 15400000,
+  "delivery_date": "2026-12-01",
+  "renovation_budget": 1200000,
+  "furniture_budget": 920000,
+  "personal_share_pct": 0.5,
+  "_share_note": "夫妻各付一半：房產/房貸/自備/裝潢家具/payment_schedule 皆為全額，個人持份 = ×0.5。asset_allocation.py 已修正為乘 0.5 計算佔比與槓桿（2026-07-30）",
+  "payment_schedule": [
+   {
+    "name": "外牆裝修完工款",
+    "date": "2026-07-01",
+    "amount": 660000,
+    "category": "mortgage"
+   },
+   {
+    "name": "竣工款",
+    "date": "2026-10-01",
+    "amount": 880000,
+    "category": "mortgage"
+   },
+   {
+    "name": "裝潢費用",
+    "date": "2027-01-01",
+    "amount": 1200000,
+    "category": "renovation"
+   },
+   {
+    "name": "家具費用",
+    "date": "2027-03-01",
+    "amount": 920000,
+    "category": "furniture"
+   }
+  ],
+  "_personal_half": {
+   "house_value": 11000000,
+   "loan": 7700000,
+   "down_payment": 3300000,
+   "down_payment_paid": 2530000,
+   "note": "總價2200萬/貸1540萬的一半；先估，改再說"
+  }
+ },
+ "_comment7": "2026-08-28 昇達科(3491)停利全出 80股@1410=實現+5,994(+5.6% vs成本1335)、現金+112,800→1,186,593。ONDS續抱未賣(8/16審判日出場判錯·漲了)。ZS維持10股。8/16審判日其餘停利/減碼未執行。"
 }

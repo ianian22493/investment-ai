@@ -76,12 +76,12 @@ FACTOR_MAP = {
 #   Musk 單一個人、cybersecurity 單因子、（單股上限在 watchlist.json position_rules）
 POLICY_ACCEPTED = {
     "single-geo": 92,   # 台股重可接受到 92%（liquidity/liability matching）；超過才提醒
-    "AI合計": 60,       # AI 高信念可接受到 60%；超過才提醒過熱
+    "AI合計": 75,       # 2026-08-28 調高：又瑄刻意要 AI 高集中（信 AI 是趨勢），75% 內不提醒
 }
-# 真正的 guard（本人也會同意的底線）
+# 純資訊上限（2026-08-28 使用者調高：又瑄接受 AI/Musk 高集中·非「該減碼」提醒·真誇張才響）
 GUARD_LIMITS = {
-    "Musk": 20,
-    "cybersecurity": 15,
+    "Musk": 40,
+    "cybersecurity": 30,
 }
 # 缺口＝「機會，不是義務」——列出來讓你知道可以往哪分散，要不要補是你的選擇
 OPPORTUNITY_MIN = {
@@ -179,7 +179,7 @@ def main():
     for k in ("Musk", "cybersecurity"):
         if exposures[k] > GUARD_LIMITS[k]:
             guard_breached.append({"factor": k, "now": exposures[k], "limit": GUARD_LIMITS[k],
-                                   "why": "Musk=單一個人風險 / cyber=單因子——非「AI 多空」問題，AI 多頭也該守"})
+                                   "why": "純資訊·非該減碼：又瑄刻意接受 AI/Musk 高集中(信 AI 是趨勢)，僅在集中到誇張(>40/30%)時提一聲"})
 
     # 政策接受的集中（刻意選擇，不示警；僅在超出政策上限時提醒）
     policy_accepted = []
