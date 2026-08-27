@@ -1,6 +1,6 @@
 {
- "checked_at": "2026-08-26 16:31 +0800",
- "hit_count": 11,
+ "checked_at": "2026-08-27 08:31 +0800",
+ "hit_count": 12,
  "new_hit_count": 1,
  "failed": [],
  "upcoming_events": [],
@@ -11,7 +11,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 15.7",
+   "detail": "VIX 15.2",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -20,7 +20,7 @@
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
    "hit": false,
-   "detail": "單日 +1.47%",
+   "detail": "單日 +0.91%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -65,7 +65,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 7.05 vs 觸發價 6.33",
+   "detail": "現價 7.01 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -74,7 +74,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 7.05 vs 觸發價 5.9",
+   "detail": "現價 7.01 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
   },
   {
@@ -83,7 +83,7 @@
    "name": "SpaceX",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 137.95 vs 觸發價 130.0",
+   "detail": "現價 139.63 vs 觸發價 130.0",
    "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
@@ -92,7 +92,7 @@
    "name": "CAVA",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 69.29 vs 觸發價 55.0",
+   "detail": "現價 67.77 vs 觸發價 55.0",
    "note": "美股寶藏分散器加碼區：跌破 $55（~$62 已是可接受小起始）。Q2財報看同店/展店/利潤率"
   },
   {
@@ -101,7 +101,7 @@
    "name": "CRH plc",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 96.20 vs 觸發價 90.0",
+   "detail": "現價 97.05 vs 觸發價 90.0",
    "note": "美股誤殺·北美建材骨材寡占雙擊(等確認)：跌破 $90 才起手（8/20季掃紀律：訊號優先序毛利連2季>一季，CRH只有一季margin改善、還可能是Arcosa併購並表灌的會計效果非結構性→需Q3拆organic vs併購確認連兩季上移再起始）。Q2淨利+13%基本面好、跌-28%是guidance維持+Arcosa($85億)暫停回購的失望非惡化;收稅口=骨材運費高→地區定價權;順風IIJA基建+資料中心混凝土;13F Durable+80%/Baillie近乎從零建倉。可替換環泥(退場候選)的建材曝險。死因：Arcosa灌margin歸因錯誤、循環股(住宅軟/升息)、IIJA撥款慢、併整風險。目標$115~120"
   },
   {
@@ -110,7 +110,7 @@
    "name": "CRH plc",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 96.20 vs 觸發價 85.0",
+   "detail": "現價 97.05 vs 觸發價 85.0",
    "note": "美股誤殺·加碼區：跌破 $85（破區間底更深）。品質收稅口·防禦-循環兼具、比FPS穩比ACN多護城河+聰明錢"
   },
   {
@@ -128,8 +128,9 @@
    "vol": 280,
    "thin": false,
    "zone_since": "2026-08-23",
-   "days_in_zone": 4,
-   "priority": 6,
+   "days_in_zone": 5,
+   "priority": 7,
+   "tier": null,
    "rev": {
     "month": "7月",
     "yoy": 36.1,
@@ -175,22 +176,24 @@
    "zone_since": null,
    "days_in_zone": 0,
    "priority": 4,
+   "tier": null,
    "rev": {
     "month": "7月",
     "yoy": 27.1,
     "cum_yoy": 10.9,
     "streak": 5,
     "qoq": 11.0,
-    "gm": null,
+    "gm": 42.21,
     "gm_quarter": "26Q2",
-    "eps": null,
+    "eps": 3.94,
     "gm_series": [
-     41.8
+     41.8,
+     42.2
     ],
     "gm_warn": false,
     "trend": "🔥加速",
     "signal": "confirm",
-    "brief": "7月營收 YoY +27%（🔥加速、連5月正、累計+11%）",
+    "brief": "7月營收 YoY +27%（🔥加速、連5月正、累計+11%、毛利42%·26Q2）",
     "as_of": "11507"
    },
    "chip": {
@@ -201,6 +204,44 @@
     "signal": "neutral",
     "brief": "大戶70%·千張64%·散戶8%（集中、大戶+0.1pp持平）",
     "as_of": "20260821"
+   }
+  },
+  {
+   "key": "4966.TWO|zone|",
+   "symbol": "4966.TWO",
+   "name": "譜瑞-KY",
+   "rule": "zone",
+   "hit": false,
+   "detail": "現價 576.00（距起手 540 之上 7%）",
+   "note": "寶藏起手區·誤殺·AI伺服器retimer龍頭(上櫃)：起手≤540、加碼≤470(近6月低456帶)。PCIe4.0 Retimer市場龍頭+PCIe5.0+USB4量產(AMD/高通)，伺服器營收佔55%/+71%正從Apple顯示端分散到AI伺服器。★2026-08-26深挖收進#5：PE河流藍色偏低區/1300腰斬到576=被遺忘的高速傳輸龍頭(真誤殺非假便宜)、近四季EPS33.7。誠實弱項=毛利40-50%波動(fabless賣晶片非純IP·帶硬體循環)、AI最高階PCIe fabric王是Astera Labs(譜瑞利基龍頭非霸主)。驗證點Q3：毛利回不回48-50%/伺服器retimer續增/Astera競爭。設≤540非現追=GM有波動留安全邊際、但已誤殺價不用等腰斬",
+   "px": 576.0,
+   "start": 540,
+   "add": 470,
+   "status": "接近",
+   "vol": 859,
+   "thin": false,
+   "zone_since": null,
+   "days_in_zone": 0,
+   "priority": 5,
+   "tier": null,
+   "rev": {
+    "month": "7月",
+    "yoy": -4.3,
+    "cum_yoy": -0.8,
+    "streak": 0,
+    "qoq": 9.0,
+    "gm": 40.25,
+    "gm_quarter": "26Q2",
+    "eps": 14.43,
+    "gm_series": [
+     40.3,
+     40.2
+    ],
+    "gm_warn": false,
+    "trend": "⚠️轉負",
+    "signal": "warn",
+    "brief": "7月營收 YoY -4%（⚠️轉負、累計-1%、毛利40%·26Q2）",
+    "as_of": "11507"
    }
   },
   {
@@ -218,24 +259,26 @@
    "vol": 137,
    "thin": false,
    "zone_since": "2026-08-23",
-   "days_in_zone": 4,
-   "priority": 9,
+   "days_in_zone": 5,
+   "priority": 10,
+   "tier": null,
    "rev": {
     "month": "7月",
     "yoy": 21.9,
     "cum_yoy": 43.5,
     "streak": 6,
     "qoq": -16.0,
-    "gm": null,
+    "gm": 87.23,
     "gm_quarter": "26Q2",
-    "eps": null,
+    "eps": 3.3,
     "gm_series": [
-     88.6
+     88.6,
+     87.2
     ],
     "gm_warn": false,
     "trend": "🔻減速",
     "signal": "caution",
-    "brief": "7月營收 YoY +22%（🔻減速、連6月正、🔻季環比-16%、累計+44%）",
+    "brief": "7月營收 YoY +22%（🔻減速、連6月正、🔻季環比-16%、累計+44%、毛利87%🏰·26Q2）",
     "as_of": "11507"
    },
    "chip": {
@@ -263,8 +306,9 @@
    "vol": 108,
    "thin": false,
    "zone_since": "2026-08-26",
-   "days_in_zone": 1,
+   "days_in_zone": 2,
    "priority": 3,
+   "tier": null,
    "rev": {
     "month": "7月",
     "yoy": 22.7,
@@ -309,24 +353,26 @@
    "vol": 27,
    "thin": true,
    "zone_since": "2026-08-09",
-   "days_in_zone": 18,
-   "priority": 8,
+   "days_in_zone": 19,
+   "priority": 9,
+   "tier": null,
    "rev": {
     "month": "7月",
     "yoy": 20.3,
     "cum_yoy": 19.3,
     "streak": 14,
     "qoq": 13.0,
-    "gm": null,
+    "gm": 27.57,
     "gm_quarter": "26Q2",
-    "eps": null,
+    "eps": 2.9,
     "gm_series": [
-     27.3
+     27.3,
+     27.6
     ],
     "gm_warn": false,
     "trend": "高檔穩健",
     "signal": "confirm",
-    "brief": "7月營收 YoY +20%（高檔穩健、連14月正、累計+19%）",
+    "brief": "7月營收 YoY +20%（高檔穩健、連14月正、累計+19%、毛利28%·26Q2）",
     "as_of": "11507"
    },
    "chip": {
@@ -356,22 +402,24 @@
    "zone_since": null,
    "days_in_zone": 0,
    "priority": 2,
+   "tier": null,
    "rev": {
     "month": "7月",
     "yoy": 30.8,
     "cum_yoy": 28.0,
     "streak": 14,
     "qoq": 8.0,
-    "gm": null,
+    "gm": 89.34,
     "gm_quarter": "26Q2",
-    "eps": null,
+    "eps": 3.33,
     "gm_series": [
-     89.1
+     89.1,
+     89.3
     ],
     "gm_warn": false,
     "trend": "高檔穩健",
     "signal": "confirm",
-    "brief": "7月營收 YoY +31%（高檔穩健、連14月正、累計+28%）",
+    "brief": "7月營收 YoY +31%（高檔穩健、連14月正、累計+28%、毛利89%🏰·26Q2）",
     "as_of": "11507"
    },
    "chip": {
@@ -400,7 +448,8 @@
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
-   "priority": 7,
+   "priority": 8,
+   "tier": null,
    "rev": {
     "month": "7月",
     "yoy": 22.0,
@@ -445,7 +494,8 @@
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
-   "priority": 5,
+   "priority": 6,
+   "tier": null,
    "rev": {
     "month": "7月",
     "yoy": 42.7,
@@ -489,8 +539,9 @@
    "vol": 929,
    "thin": false,
    "zone_since": "2026-08-17",
-   "days_in_zone": 10,
+   "days_in_zone": 11,
    "priority": 1,
+   "tier": null,
    "rev": {
     "month": "7月",
     "yoy": 35.8,
@@ -526,7 +577,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-08-17（9 天前）",
+   "detail": "_updated=2026-08-17（10 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -562,7 +613,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 30.8%（上限 25%）",
+   "detail": "合計佔 US 部位 30.5%（上限 25%）",
    "note": "Musk 因子上限 25%（TSLA＋未來 SPCX 合計；台股貿聯另計第 2 層）"
   },
   {
@@ -571,8 +622,17 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": true,
-   "detail": "合計佔 US 部位 17.2%（上限 15%）",
+   "detail": "合計佔 US 部位 17.6%（上限 15%）",
    "note": "單一因子上限 15%（論述卡：三檔合併審）"
+  },
+  {
+   "key": "4966.TWO|rev_warn",
+   "symbol": "4966.TWO",
+   "name": "譜瑞-KY",
+   "rule": "rev_warn",
+   "hit": true,
+   "detail": "🔴 論述亮紅燈：7月營收 YoY -4%（⚠️轉負、累計-1%、毛利40%·26Q2）",
+   "note": "月營收轉負＝收稅口/雙擊論述正在破。去審：是一次性還是趨勢？是→從入場區撤出、記分卡標壞；否→續觀察。"
   }
  ]
 }
