@@ -28,13 +28,20 @@ import json
 import os
 from datetime import datetime
 
+import ssl
+import urllib.request
+
 import chip_momentum as cm
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 FIN_DIR = os.path.join(ROOT, "data", "screener", "history")
 S0_HISTORY = os.path.join(ROOT, "data", "chip", "s0_history.json")
+BS_HISTORY = os.path.join(ROOT, "data", "screener", "bs_history.json")
 SECTOR_MAP = os.path.join(ROOT, "data", "sector_map_auto.json")
+# 資產負債表 OpenAPI（季更）：④capex先行=非流動資產QoQ↑、⑤庫藏股買回=庫藏股%
+BS_URLS = ("https://openapi.twse.com.tw/v1/opendata/t187ap07_L_ci",
+           "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_O_ci")
 
 GM_MIN = 55.0      # 收稅口/IP 級毛利
 EPS_MAX = 0.5      # 在虧或趴（低基期）＝S1漏斗踢掉的、S0要的
@@ -120,9 +127,85 @@ def _load_hist() -> dict:
     return {}
 
 
+def _fetch_bs() -> tuple[str, dict]:
+    """抓資產負債表 OpenAPI（上市+上櫃），回傳 (期別YYYQn, {code:{tpct,nca,cap}})。
+    tpct=庫藏股%股本(⑤)、nca=非流動資產千元(④capex先行)、cap=股本千元。"""
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+
+    def f(x):
+        try:
+            return float(str(x).replace(",", "") or 0)
+        except ValueError:
+            return 0.0
+    out, period = {}, ""
+    for url in BS_URLS:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            rows = json.load(urllib.request.urlopen(req, timeout=60, context=ctx))
+        except Exception:  # noqa: BLE001
+            continue
+        for r in rows:
+            c = r.get("公司代號")
+            if not c:
+                continue
+            period = f"{r.get('年度')}Q{r.get('季別')}"
+            tsh = f(r.get("母公司暨子公司所持有之母公司庫藏股股數（單位：股）"))
+            cap = f(r.get("股本"))          # 千元
+            shares = cap * 100               # 股本千元/10面額×1000
+            out[str(c)] = {"tpct": round(tsh / shares * 100, 2) if shares else 0.0,
+                           "nca": f(r.get("非流動資產")), "cap": cap}
+    return period, out
+
+
+def _load_bs_hist() -> dict:
+    if os.path.exists(BS_HISTORY):
+        try:
+            return json.load(open(BS_HISTORY, encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            return {}
+    return {}
+
+
+def bs_snapshot() -> str:
+    """抓 BS、把 S0 宇宙(廣)的 {tpct,nca} 存進 bs_history.json（依期別去重、留8季）。
+    季更＝QoQ 需兩季才成熟（④capex先行↑、⑤庫藏股買回↑）。回傳期別。"""
+    uni = s0_universe()   # 廣（含轉盈邊緣），完整歷史
+    period, bs = _fetch_bs()
+    if not period:
+        return ""
+    slice_ = {c: bs[c] for c in uni if c in bs}
+    hist = _load_bs_hist()
+    hist[period] = slice_
+    for k in sorted(hist)[:-8]:
+        del hist[k]
+    os.makedirs(os.path.dirname(BS_HISTORY), exist_ok=True)
+    json.dump(hist, open(BS_HISTORY, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return period
+
+
+def bs_signal(code: str) -> dict | None:
+    """④capex先行(非流動資產QoQ%)＋⑤庫藏股%(level+QoQ)。需兩季才有QoQ。"""
+    hist = _load_bs_hist()
+    periods = sorted(hist)
+    if not periods:
+        return None
+    cur = hist[periods[-1]].get(str(code))
+    if not cur:
+        return None
+    prev = hist[periods[-2]].get(str(code)) if len(periods) >= 2 else None
+    capex_qoq = None
+    if prev and prev.get("nca"):
+        capex_qoq = round((cur["nca"] / prev["nca"] - 1) * 100, 1)
+    tpct_qoq = round(cur["tpct"] - prev["tpct"], 2) if prev else None
+    return {"tpct": cur["tpct"], "capex_qoq": capex_qoq, "tpct_qoq": tpct_qoq,
+            "quarters": len(periods)}
+
+
 def snapshot() -> str:
-    """抓當週全市場大戶%、把 S0 宇宙那批存進 s0_history.json（依資料日去重、留20週）。
-    週跑（掛在每日 pipeline 的 chip refresh 後）＝趨勢隨週長出來。回傳資料日。"""
+    """週跑（掛每日 pipeline）：①抓全市場大戶% 存 s0_history(週·趨勢隨週長)＋
+    ④⑤抓 BS 存 bs_history(季·QoQ 隨季長)。回傳大戶%資料日。"""
     uni = s0_universe()
     date, allc = cm._fetch_tdcc()
     slice_ = {c: allc[c] for c in uni if c in allc}
@@ -132,6 +215,10 @@ def snapshot() -> str:
         del hist[k]
     os.makedirs(os.path.dirname(S0_HISTORY), exist_ok=True)
     json.dump(hist, open(S0_HISTORY, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    try:
+        bs_snapshot()   # ④⑤ BS 季快照（非致命）
+    except Exception as e:  # noqa: BLE001
+        print(f"  [s0_capscan] bs_snapshot skipped: {e}")
     return date
 
 
@@ -164,10 +251,11 @@ def scan() -> list:
         et = eps_trend(c)   # ③虧損收窄
         narrowing = bool(et and et["label"] in ("轉正🟢", "虧損收窄🟢"))
         golden = (signal == "accumulate") and narrowing   # ①×③黃金組合
+        bs = bs_signal(c)   # ④capex先行 ⑤庫藏股
         out.append({"code": c, "gm": u["gm"], "eps": u["eps"], "sector": u.get("sector", ""),
                     "big": big, "k1000": ch.get("k1000", 0), "trend_pp": trend_pp,
                     "signal": signal, "eps_trend": et, "narrowing": narrowing,
-                    "golden": golden, "weeks": len(dates)})
+                    "golden": golden, "bs": bs, "weeks": len(dates)})
     # 排序：黃金組合(①累積×③收窄)→其次收窄→其次大戶累積→其次大戶%水平
     out.sort(key=lambda x: (not x["golden"], not x["narrowing"],
                             x["signal"] != "accumulate", -(x["trend_pp"] or -99), -x["big"]))
@@ -194,4 +282,11 @@ if __name__ == "__main__":
             et = r["eps_trend"]
             etxt = f"eps{et['prev']:+.2f}→{et['cur']:+.2f} {et['label']}" if et else "eps趨勢—"
             gold = "⭐黃金" if r["golden"] else ""
-            print(f"  {r['code']} [{r['sector']}] gm{r['gm']:.0f}% | 大戶{r['big']:.1f}% 趨勢{t}{mark} | {etxt} {gold}")
+            bs = r.get("bs")
+            btxt = ""
+            if bs:
+                if bs.get("capex_qoq") is not None:
+                    btxt += f" capex{bs['capex_qoq']:+.0f}%QoQ"     # ④
+                if bs.get("tpct", 0) >= 0.5:
+                    btxt += f" 庫藏{bs['tpct']:.1f}%"               # ⑤
+            print(f"  {r['code']} [{r['sector']}] gm{r['gm']:.0f}% | 大戶{r['big']:.1f}% 趨勢{t}{mark} | {etxt}{btxt} {gold}")
