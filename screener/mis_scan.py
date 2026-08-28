@@ -143,24 +143,27 @@ def scan(eps_min=EPS_MIN, gm_min=GM_MIN, drop_min=DROP_MIN) -> dict:
                 if frm >= -drop_min or d20 <= -12:      # 沒跌夠 or 還在急殺
                     break
                 sec = sectors.get(c, "")
-                ryoy = (rev.get(c) or {}).get("yoy")            # 營收燈
+                ryoy = (rev.get(c) or {}).get("yoy")            # 營收燈(單月)
+                rcum = (rev.get(c) or {}).get("cum_yoy")        # 累計YoY(較穩·抓lumpy單月騙過的衰退)
                 gmdir = round((q2.get(c, {}).get("gm") or 0) - (q1.get(c, {}).get("gm") or 0), 1)  # 毛利燈
                 et = s0.eps_trend(c)                            # eps 燈(去累計單季)
                 rec = {"code": c, "name": (rev.get(c) or {}).get("name", "?"), "sector": sec,
                        "px": round(cur, 1), "from_high": round(frm), "d20": round(d20),
                        "rev_yoy": round(ryoy, 1) if ryoy is not None else None,
+                       "rev_cum": round(rcum, 1) if rcum is not None else None,
                        "gm_dir": gmdir, "eps_label": et["eps_label"] if et and "eps_label" in et else (et["label"] if et else "—"),
                        "gm": q2.get(c, {}).get("gm"), "eps_h1": q2.get(c, {}).get("eps")}
                 # ★分類鐵律：需求(營收)才是誤殺 vs 陷阱的分水嶺，不是單季eps。
                 # 「營收強 + Q2毛利/eps dip」= 暫時成本誤殺(嘉澤/穎崴型)＝最強誤殺，留clean。
-                # 「營收轉負」= 需求存疑/衰退＝可能真陷阱，另看。
+                # 需求存疑＝用「累計YoY」判(較穩)：單月會被 lumpy 騙(波力單月+27%但累計-7%在衰退)。
                 rec["margin_dip"] = bool(et and et["label"] == "惡化🔴")  # 標margin dip(強誤殺線索)
+                declining = (rcum is not None and rcum < 0) or (rcum is None and ryoy is not None and ryoy < 0)
                 if _is_cyclical(c, sec):
                     out["cyclical"].append(rec)
-                elif ryoy is not None and ryoy < 0:
-                    out["trap"].append(rec)               # 營收轉負＝需求存疑，別急著當誤殺
+                elif declining:
+                    out["trap"].append(rec)               # 累計營收在衰退＝需求存疑，別急著當誤殺
                 else:
-                    out["clean"].append(rec)              # 🟢營收正+非循環＝誤殺候選(含暫時毛利dip型)
+                    out["clean"].append(rec)              # 🟢累計營收正+非循環＝誤殺候選(含暫時毛利dip型)
                 break
     for k in out:
         out[k].sort(key=lambda x: x["from_high"])          # 跌最深優先
@@ -174,7 +177,8 @@ if __name__ == "__main__":
         sys.stdout.reconfigure(encoding="utf-8")
     r = scan()
     def _fmt(x, chip=False):
-        ry = f"營收{x['rev_yoy']:+.0f}%" if x["rev_yoy"] is not None else "營收—"
+        rc = f"累{x['rev_cum']:+.0f}%" if x.get("rev_cum") is not None else ""
+        ry = (f"營收{x['rev_yoy']:+.0f}%{rc}" if x["rev_yoy"] is not None else "營收—")
         gd = f"毛利{x['gm_dir']:+.1f}pp"
         dip = " 💠暫時毛利dip" if x.get("margin_dip") else ""
         ch = ""
