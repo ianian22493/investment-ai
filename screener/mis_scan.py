@@ -75,6 +75,17 @@ def _is_cyclical(code: str, sector: str) -> bool:
     return bool(sector) and any(k in sector for k in CYCLICAL_SECTORS)
 
 
+def _s1_hot_codes() -> set:
+    """②交叉：S1 月營收螺絲的加速榜(track_a雙擊+track_b收稅口)代號。
+    誤殺又同時在加速榜＝「既跌深又在加速」＝最強誤殺(如嘉澤)。"""
+    p = os.path.join(ROOT, "data", "screener", "latest.json")
+    try:
+        d = json.load(open(p, encoding="utf-8"))
+        return {str(r.get("code")) for r in (d.get("track_a", []) + d.get("track_b", []))}
+    except Exception:  # noqa: BLE001
+        return set()
+
+
 def _chip_overlay(recs: list) -> None:
     """③聰明錢疊加：抓當前大戶%(水平)＋讀 quality_chip_history 算 4週趨勢。
     跌深+大戶累積🟢=高信念誤殺(有人在撿)；跌深+大戶派發🔴=陷阱警訊(FPS/CBRS反面)。
@@ -119,6 +130,7 @@ def scan(eps_min=EPS_MIN, gm_min=GM_MIN, drop_min=DROP_MIN) -> dict:
     q1, q2 = _fin_two()
     rev = _latest_rev()
     sectors = _sectors()
+    s1codes = _s1_hot_codes()   # ②S1加速榜
     pool = [c for c, v in q2.items()
             if (v.get("eps") or 0) > eps_min and (v.get("gm") or 0) >= gm_min and c not in WATCHLIST]
     out = {"clean": [], "cyclical": [], "trap": []}
@@ -147,12 +159,15 @@ def scan(eps_min=EPS_MIN, gm_min=GM_MIN, drop_min=DROP_MIN) -> dict:
                 rcum = (rev.get(c) or {}).get("cum_yoy")        # 累計YoY(較穩·抓lumpy單月騙過的衰退)
                 gmdir = round((q2.get(c, {}).get("gm") or 0) - (q1.get(c, {}).get("gm") or 0), 1)  # 毛利燈
                 et = s0.eps_trend(c)                            # eps 燈(去累計單季)
+                eh1 = q2.get(c, {}).get("eps")
+                pe = round(cur / (eh1 * 2), 1) if eh1 and eh1 > 0 else None   # ①約PE(H1年化·分便宜vs只是跌)
                 rec = {"code": c, "name": (rev.get(c) or {}).get("name", "?"), "sector": sec,
                        "px": round(cur, 1), "from_high": round(frm), "d20": round(d20),
                        "rev_yoy": round(ryoy, 1) if ryoy is not None else None,
                        "rev_cum": round(rcum, 1) if rcum is not None else None,
                        "gm_dir": gmdir, "eps_label": et["eps_label"] if et and "eps_label" in et else (et["label"] if et else "—"),
-                       "gm": q2.get(c, {}).get("gm"), "eps_h1": q2.get(c, {}).get("eps")}
+                       "gm": q2.get(c, {}).get("gm"), "eps_h1": eh1,
+                       "pe": pe, "s1_hot": c in s1codes}
                 # ★分類鐵律：需求(營收)才是誤殺 vs 陷阱的分水嶺，不是單季eps。
                 # 「營收強 + Q2毛利/eps dip」= 暫時成本誤殺(嘉澤/穎崴型)＝最強誤殺，留clean。
                 # 需求存疑＝用「累計YoY」判(較穩)：單月會被 lumpy 騙(波力單月+27%但累計-7%在衰退)。
@@ -180,17 +195,22 @@ if __name__ == "__main__":
         rc = f"累{x['rev_cum']:+.0f}%" if x.get("rev_cum") is not None else ""
         ry = (f"營收{x['rev_yoy']:+.0f}%{rc}" if x["rev_yoy"] is not None else "營收—")
         gd = f"毛利{x['gm_dir']:+.1f}pp"
+        pe = f" PE{x['pe']:.0f}{'✅便宜' if x['pe'] < 18 else ('⚠貴' if x['pe'] >= 30 else '')}" if x.get("pe") else ""
+        hot = " 🔥S1加速榜也中" if x.get("s1_hot") else ""
         dip = " 💠暫時毛利dip" if x.get("margin_dip") else ""
         ch = ""
         if chip and x.get("big") is not None:
             tp = x.get("chip_trend")
             ch = f" |大戶{x['big']:.0f}%{('趨勢%+.1fpp' % tp if tp is not None else '')}{x.get('chip_sig','')}"
         return (f"  {x['code']} {x['name'][:8]:8}[{(x['sector'] or '')[:8]:8}] 現{x['px']:7.0f} "
-                f"距高{x['from_high']:+3}% |{ry} {gd} eps:{x['eps_label']}{dip}{ch}")
-    # clean 排序：籌碼(累積🟢>集中🔒>中性>派發🔴) > 💠毛利dip型 > 跌最深
+                f"距高{x['from_high']:+3}%{pe}{hot} |{ry} {gd} eps:{x['eps_label']}{dip}{ch}")
+    # clean 排序：②S1加速榜也中(最強)>籌碼(累積>集中>中性>派發)>①便宜PE>💠毛利dip>跌最深
     _cp = {"累積🟢": 0, "集中🔒": 1, "": 2, "派發🔴": 3}
-    clean = sorted(r["clean"], key=lambda x: (_cp.get(x.get("chip_sig", ""), 2),
-                                              not x.get("margin_dip"), x["from_high"]))
+    def _pr(x):
+        pe = x.get("pe")
+        return 1 if pe is None else (0 if pe < 18 else (1 if pe < 30 else 2))
+    clean = sorted(r["clean"], key=lambda x: (not x.get("s1_hot"), _cp.get(x.get("chip_sig", ""), 2),
+                                              _pr(x), not x.get("margin_dip"), x["from_high"]))
     print(f"🟢 乾淨誤殺候選（營收正+非循環）{len(r['clean'])} 檔——只深挖這批（💠毛利dip強誤殺·大戶累積🟢優先）：")
     for x in clean[:14]:
         print(_fmt(x, chip=True))
