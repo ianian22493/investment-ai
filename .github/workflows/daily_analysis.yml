@@ -148,6 +148,16 @@ jobs:
           PYTHONUNBUFFERED: "1"
         continue-on-error: true
 
+      # 防「幽靈持倉」：用即時價刷新 portfolio.json 的 value/pnl（只動價格衍生欄位，
+      # shares/cost/_note＝交易紀錄不碰）。整套系統（審判日/gap/規格檢查）讀這個檔，
+      # 靜態快照會漂移失真（2026-08-28 發現群聯顯示-32%實際-2.7%）。天天刷＝下游讀新鮮價。
+      - name: Refresh portfolio prices (防幽靈持倉)
+        if: steps.skip.outputs.skip != 'true'
+        run: python screener/refresh_portfolio.py
+        env:
+          PYTHONUNBUFFERED: "1"
+        continue-on-error: true
+
       # S0 領先訊號①：抓全市場大戶%、存「高毛利低基期」宇宙快照（dedupe by TDCC 週日期
       # ＝冪等，天天跑也只每週增一筆）。跨 run 累積 → 約5週後「大戶籌碼累積趨勢」成熟＝
       # 聰明錢在財報動之前先卡位的資料訊號（月排程 tw-s0-catalyst-scan 讀它）。純資料非致命。
@@ -227,6 +237,8 @@ jobs:
           [ -f data/panic_log.json ] && git add data/panic_log.json || true
           [ -f data/alerts.json ] && git add data/alerts.json || true
           [ -f data/portfolio_gap.json ] && git add data/portfolio_gap.json || true
+          # 持倉帳面即時價刷新（refresh_portfolio 只動 value/pnl，防幽靈持倉；shares/cost 不碰）
+          [ -f data/portfolio.json ] && git add data/portfolio.json || true
           # 大戶籌碼快取（TDCC 集保，哨兵每週自動 refresh；提交才能跨 run 累積趨勢）
           [ -f data/chip/latest.json ] && git add data/chip/latest.json data/chip/history.json || true
           # S0 低基期宇宙的大戶%週快照（跨 run 累積＝S0 籌碼累積趨勢的記憶體）
