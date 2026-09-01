@@ -46,6 +46,8 @@ BS_URLS = ("https://openapi.twse.com.tw/v1/opendata/t187ap07_L_ci",
 
 GM_MIN = 55.0      # 收稅口/IP 級毛利
 EPS_MAX = 0.5      # 在虧或趴（低基期）＝S1漏斗踢掉的、S0要的
+REV_MIN = 20000    # H1累計營收下限(千=20M)＝擋近零營收空殼。空殼「營收144萬卻gm100%」
+                   # 是零基artifact非收稅口、成長率也被零基期灌爆(2026-09-01 富榮綱3115教訓)
 # S0 的 tech-IP/收稅口 論述只在科技類成立；濾掉飯店/資產股/紡織（租金/一次性灌高毛利=假訊號）
 TECH_KEYWORDS = ("半導體", "電子", "光電", "軟體", "電腦", "通信", "通訊",
                  "網通", "網路", "資訊", "IC", "電機")
@@ -127,15 +129,18 @@ def eps_trend(code: str) -> dict | None:
 
 
 def s0_universe(gm_min: float = GM_MIN, eps_max: float = EPS_MAX,
-                tech_only: bool = False) -> dict:
+                tech_only: bool = False, rev_min: float = REV_MIN) -> dict:
     """高毛利低基期宇宙：{code:{gm,eps,revenue,sector}}。
-    tech_only=True 只留科技/IP 類（snapshot 存廣的、scan 顯示窄的科技）。"""
+    tech_only=True 只留科技/IP 類（snapshot 存廣的、scan 顯示窄的科技）。
+    rev_min＝H1累計營收下限，擋近零營收空殼（gm100%是零基artifact·富榮綱3115教訓）。"""
     _, fin = _latest_fin()
     sectors = _load_sectors()
     uni = {}
     for c, v in fin.items():
-        gm, eps = v.get("gm"), v.get("eps")
+        gm, eps, rev = v.get("gm"), v.get("eps"), v.get("revenue")
         if gm is None or eps is None:
+            continue
+        if (rev or 0) < rev_min:          # 近零營收空殼＝gm/成長率全是零基artifact，剔除
             continue
         if gm >= gm_min and eps <= eps_max:
             sec = sectors.get(str(c), "")
