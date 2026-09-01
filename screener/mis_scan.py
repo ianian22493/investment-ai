@@ -157,7 +157,11 @@ def scan(eps_min=EPS_MIN, gm_min=GM_MIN, drop_min=DROP_MIN) -> dict:
                 sec = sectors.get(c, "")
                 ryoy = (rev.get(c) or {}).get("yoy")            # 營收燈(單月)
                 rcum = (rev.get(c) or {}).get("cum_yoy")        # 累計YoY(較穩·抓lumpy單月騙過的衰退)
-                gmdir = round((q2.get(c, {}).get("gm") or 0) - (q1.get(c, {}).get("gm") or 0), 1)  # 毛利燈
+                # 毛利燈=最新季vs前季；★Q1缺(新上市股沒Q1財報)就標None不亂算，
+                # 否則會算成「H1毛利-0=假暴升」製造假訊號(2026-08-31 大鵬科7689被+30.8pp假訊號吸引的教訓)
+                _gm2 = q2.get(c, {}).get("gm")
+                _gm1 = q1.get(c, {}).get("gm")
+                gmdir = round(_gm2 - _gm1, 1) if (_gm1 is not None and _gm2 is not None) else None  # 毛利燈
                 et = s0.eps_trend(c)                            # eps 燈(去累計單季)
                 eh1 = q2.get(c, {}).get("eps")
                 pe = round(cur / (eh1 * 2), 1) if eh1 and eh1 > 0 else None   # ①約PE(H1年化·分便宜vs只是跌)
@@ -194,7 +198,7 @@ if __name__ == "__main__":
     def _fmt(x, chip=False):
         rc = f"累{x['rev_cum']:+.0f}%" if x.get("rev_cum") is not None else ""
         ry = (f"營收{x['rev_yoy']:+.0f}%{rc}" if x["rev_yoy"] is not None else "營收—")
-        gd = f"毛利{x['gm_dir']:+.1f}pp"
+        gd = f"毛利{x['gm_dir']:+.1f}pp" if x.get("gm_dir") is not None else "毛利?(Q1缺)"
         pe = f" PE{x['pe']:.0f}{'✅便宜' if x['pe'] < 18 else ('⚠貴' if x['pe'] >= 30 else '')}" if x.get("pe") else ""
         hot = " 🔥S1加速榜也中" if x.get("s1_hot") else ""
         dip = " 💠暫時毛利dip" if x.get("margin_dip") else ""
