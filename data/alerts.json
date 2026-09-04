@@ -1,7 +1,7 @@
 {
- "checked_at": "2026-09-03 16:32 +0800",
+ "checked_at": "2026-09-04 08:31 +0800",
  "hit_count": 10,
- "new_hit_count": 2,
+ "new_hit_count": 1,
  "failed": [],
  "upcoming_events": [],
  "results": [
@@ -11,7 +11,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 15.2",
+   "detail": "VIX 14.3",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -20,7 +20,7 @@
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
    "hit": false,
-   "detail": "單日 -0.67%",
+   "detail": "單日 -1.67%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -219,7 +219,7 @@
    "start": 540,
    "add": 470,
    "status": "接近",
-   "vol": 768,
+   "vol": 764,
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
@@ -269,7 +269,7 @@
    "vol": 128,
    "thin": false,
    "zone_since": "2026-09-03",
-   "days_in_zone": 1,
+   "days_in_zone": 2,
    "priority": 11,
    "tier": null,
    "rev": {
@@ -316,7 +316,7 @@
    "vol": 78,
    "thin": false,
    "zone_since": "2026-08-30",
-   "days_in_zone": 5,
+   "days_in_zone": 6,
    "priority": 3,
    "tier": null,
    "rev": {
@@ -363,7 +363,7 @@
    "vol": 27,
    "thin": true,
    "zone_since": "2026-08-09",
-   "days_in_zone": 26,
+   "days_in_zone": 27,
    "priority": 10,
    "tier": null,
    "rev": {
@@ -454,7 +454,7 @@
    "start": 1650,
    "add": 1450,
    "status": "接近",
-   "vol": 1631,
+   "vol": 1628,
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
@@ -504,7 +504,7 @@
    "vol": 72,
    "thin": false,
    "zone_since": "2026-09-03",
-   "days_in_zone": 1,
+   "days_in_zone": 2,
    "priority": 9,
    "tier": null,
    "rev": {
@@ -596,7 +596,7 @@
    "vol": 692,
    "thin": false,
    "zone_since": "2026-08-17",
-   "days_in_zone": 18,
+   "days_in_zone": 19,
    "priority": 1,
    "tier": null,
    "rev": {
@@ -661,7 +661,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-09-01（2 天前）",
+   "detail": "_updated=2026-09-01（3 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -670,16 +670,16 @@
    "name": "3293 鈊象",
    "rule": "position_over_limit",
    "hit": true,
-   "detail": "佔 TW 部位 18.9%＞上限 10%",
+   "detail": "佔 TW 部位 19.3%＞上限 10%",
    "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
   },
   {
-   "key": "pos|tw|2211",
-   "symbol": "2211",
-   "name": "2211 長榮鋼",
+   "key": "pos|tw|1104",
+   "symbol": "1104",
+   "name": "1104 環泥",
    "rule": "position_over_limit",
    "hit": true,
-   "detail": "佔 TW 部位 11.3%＞上限 10%",
+   "detail": "佔 TW 部位 10.0%＞上限 10%",
    "note": "台股單一個股上限 10%（方法論；超規格＝檢討減碼路徑，見論述卡）"
   },
   {
@@ -688,7 +688,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": false,
-   "detail": "合計佔 US 部位 31.4%（上限 40%）",
+   "detail": "合計佔 US 部位 30.3%（上限 40%）",
    "note": "Musk 因子上限 40%（純資訊·2026-08-28使用者調高：又瑄刻意接受AI/Musk高集中·信AI是趨勢·非violation。真集中到誇張才提醒）"
   },
   {
@@ -697,7 +697,7 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": false,
-   "detail": "合計佔 US 部位 17.1%（上限 30%）",
+   "detail": "合計佔 US 部位 17.6%（上限 30%）",
    "note": "資安/AI因子上限 30%（純資訊·2026-08-28調高：使用者要AI高集中·非該減碼提醒）"
   },
   {
