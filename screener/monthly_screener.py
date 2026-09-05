@@ -212,6 +212,51 @@ def load_valuations():
 
 # ── 4. 主流程 ────────────────────────────────────────────────────────────────
 
+# ---- 第二層旗標補強（市值/已飛/流動性）----
+# 只跑在「已 capped 的候選」(~80檔)、非全市場1900檔。yfinance 失敗留 None、不擋主流程。
+# 對應：市值(10倍種子要小)、已飛旗標(鐵律#9別追已噴·決策前檢查清單B)、流動性(不可交易警戒)。
+FLEW_POS_PCT = 70    # 52週位置 >70% = 貼近高檔
+FLEW_1Y_PCT = 150    # 一年漲幅 >150% = 已噴(如廣閎科+227%)
+THIN_LOTS = 30       # 近20日均量 <30張 = 薄量不可乾淨進出(創為/鋼聯/邦睿型)
+
+def yf_flags(rows):
+    """對已 capped 的 track 候選補：市值(億)/52週位置/一年漲幅/均量(張)＋已飛、薄量旗標。"""
+    try:
+        import yfinance as yf
+    except Exception:
+        return
+    for r in rows:
+        code, mk = r.get("code"), r.get("market", "twse")
+        sufs = [".TWO", ".TW"] if mk == "tpex" else [".TW", ".TWO"]
+        mcap_e = pos = ret1y = vlots = None
+        for sfx in sufs:
+            try:
+                tk = yf.Ticker(code + sfx)
+                h = tk.history(period="1y")
+                if len(h) < 30:
+                    continue
+                cl = h["Close"]
+                last, hi, lo = float(cl.iloc[-1]), float(cl.max()), float(cl.min())
+                pos = round((last - lo) / (hi - lo) * 100) if hi > lo else None
+                ret1y = round((last / float(cl.iloc[0]) - 1) * 100)
+                vlots = round(float(h["Volume"].iloc[-20:].mean()) / 1000)
+                try:
+                    mc = tk.fast_info["market_cap"]
+                except Exception:
+                    mc = (tk.info or {}).get("marketCap")
+                mcap_e = round(mc / 1e8) if mc else None
+                break
+            except Exception:
+                continue
+        r["mcap_e"] = mcap_e          # 市值(億 TWD)
+        r["pos_52w"] = pos            # 52週位置 %(0=一年低/100=一年高)
+        r["ret_1y"] = ret1y           # 一年漲幅 %
+        r["avg_vol_lots"] = vlots     # 近20日均量(張)
+        r["flew"] = bool((pos is not None and pos > FLEW_POS_PCT)
+                         or (ret1y is not None and ret1y > FLEW_1Y_PCT))   # 🚀已飛
+        r["thin"] = bool(vlots is not None and vlots < THIN_LOTS)          # ⚠️薄量
+
+
 def main():
     HIST_DIR.mkdir(parents=True, exist_ok=True)
     now = datetime.now(TW_TZ)
@@ -293,6 +338,10 @@ def main():
     track_b.sort(key=lambda x: (-(x["gm"]), -(x["rev_yoy"] or -999)))
     track_b = track_b[:TRACK_CAP]
 
+    # 第二層旗標補強（只跑 capped 後的候選）：市值/已飛/流動性
+    yf_flags(track_a)
+    yf_flags(track_b)
+
     out = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M %z"),
         "data_month_roc": data_month,
@@ -302,7 +351,8 @@ def main():
                 else "full（連續3個月以上YoY>0 已啟用）",
         "notes": [
             "金額單位：千元。gm=最新季毛利率%，gm_trend_pp=較前一儲存季的百分點變化（需累積兩季後才有值）",
-            "Track B 未含市值過濾（API 無市值欄位），第二層人工驗證時自行檢查市值<300億與利基獨佔",
+            "第二層旗標(yfinance補·capped後才跑)：mcap_e=市值(億)、pos_52w=52週位置%、ret_1y=一年漲幅%、avg_vol_lots=近20日均量(張)、flew=已飛(位置>70%或一年>150%·別追鐵律#9)、thin=薄量(<30張/日·不可乾淨進出)。值為 null=yfinance當次抓不到",
+            "10倍種子讀法：找 mcap_e 小 × gm_trend_pp>0 × rev_yoy>0 × flew=false × thin=false；flew=true 多是已噴回檔(廣閎科型)、thin=true 多是不可交易(邦睿型)",
             f"one_off_risk=true 表示產業別屬 {sorted(ONE_OFF_INDUSTRIES)}，注意一次性認列",
         ],
         "track_a": track_a,

@@ -7,7 +7,8 @@
  "notes": [
   "金額單位：千元。gm=最新季毛利率%，gm_trend_pp=較前一儲存季的百分點變化（需累積兩季後才有值）",
   "Track B 未含市值過濾（API 無市值欄位），第二層人工驗證時自行檢查市值<300億與利基獨佔",
-  "one_off_risk=true 表示產業別屬 ['存託憑證', '建材營造', '建材營造業', '證券業', '金融保險', '金融保險業', '金融業']，注意一次性認列"
+  "one_off_risk=true 表示產業別屬 ['存託憑證', '建材營造', '建材營造業', '證券業', '金融保險', '金融保險業', '金融業']，注意一次性認列",
+  "第二層旗標(yfinance補·2026-09-05回填):mcap_e市值(億)/pos_52w 52週位置%/ret_1y一年漲幅%/avg_vol_lots均量(張)/flew已飛(位置>70或1年>150)/thin薄量(<30張). null=抓不到"
  ],
  "track_a": [
   {
@@ -25,7 +26,13 @@
    "gm_trend_pp": -2.23,
    "eps": 5.8,
    "pe": 16.63,
-   "pb": 4.78
+   "pb": 4.78,
+   "mcap_e": 79,
+   "pos_52w": 11,
+   "ret_1y": -38,
+   "avg_vol_lots": 220,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6265",
@@ -42,7 +49,13 @@
    "gm_trend_pp": 0.4,
    "eps": 6.44,
    "pe": 7.14,
-   "pb": 3.14
+   "pb": 3.14,
+   "mcap_e": 64,
+   "pos_52w": 82,
+   "ret_1y": 426,
+   "avg_vol_lots": 6866,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "2408",
@@ -59,7 +72,13 @@
    "gm_trend_pp": 7.29,
    "eps": 23.38,
    "pe": 19.79,
-   "pb": 5.46
+   "pb": 5.46,
+   "mcap_e": 15369,
+   "pos_52w": 91,
+   "ret_1y": 932,
+   "avg_vol_lots": 86142,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "5289",
@@ -76,7 +95,13 @@
    "gm_trend_pp": 3.72,
    "eps": 166.45,
    "pe": 8.33,
-   "pb": 6.21
+   "pb": 6.21,
+   "mcap_e": 1337,
+   "pos_52w": 66,
+   "ret_1y": 392,
+   "avg_vol_lots": 2065,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "2451",
@@ -93,7 +118,13 @@
    "gm_trend_pp": 0.37,
    "eps": 46.63,
    "pe": 5.2,
-   "pb": 3.35
+   "pb": 3.35,
+   "mcap_e": 1227,
+   "pos_52w": 74,
+   "ret_1y": 192,
+   "avg_vol_lots": 5612,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "4772",
@@ -110,7 +141,13 @@
    "gm_trend_pp": 0.48,
    "eps": 2.83,
    "pe": 47.11,
-   "pb": 10.42
+   "pb": 10.42,
+   "mcap_e": 366,
+   "pos_52w": 25,
+   "ret_1y": -13,
+   "avg_vol_lots": 614,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "8299",
@@ -127,7 +164,13 @@
    "gm_trend_pp": 2.49,
    "eps": 187.43,
    "pe": 9.74,
-   "pb": 4.6
+   "pb": 4.6,
+   "mcap_e": 4456,
+   "pos_52w": 65,
+   "ret_1y": 325,
+   "avg_vol_lots": 5170,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "6903",
@@ -144,7 +187,13 @@
    "gm_trend_pp": 0.75,
    "eps": 14.14,
    "pe": 14.41,
-   "pb": 5.67
+   "pb": 5.67,
+   "mcap_e": 206,
+   "pos_52w": 62,
+   "ret_1y": 137,
+   "avg_vol_lots": 287,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "3135",
@@ -161,7 +210,13 @@
    "gm_trend_pp": -7.99,
    "eps": 20.87,
    "pe": 7.77,
-   "pb": 3.75
+   "pb": 3.75,
+   "mcap_e": 175,
+   "pos_52w": 67,
+   "ret_1y": 492,
+   "avg_vol_lots": 2295,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "8271",
@@ -178,7 +233,13 @@
    "gm_trend_pp": 1.15,
    "eps": 35.51,
    "pe": 5.72,
-   "pb": 3.13
+   "pb": 3.13,
+   "mcap_e": 281,
+   "pos_52w": 81,
+   "ret_1y": 256,
+   "avg_vol_lots": 4156,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "3260",
@@ -195,7 +256,13 @@
    "gm_trend_pp": -8.06,
    "eps": 62.46,
    "pe": 5.38,
-   "pb": 3.42
+   "pb": 3.42,
+   "mcap_e": 1273,
+   "pos_52w": 74,
+   "ret_1y": 294,
+   "avg_vol_lots": 9562,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "5314",
@@ -212,7 +279,13 @@
    "gm_trend_pp": 0.43,
    "eps": 0.66,
    "pe": 7.46,
-   "pb": 5.58
+   "pb": 5.58,
+   "mcap_e": 385,
+   "pos_52w": 77,
+   "ret_1y": 37,
+   "avg_vol_lots": 6589,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "5475",
@@ -229,7 +302,13 @@
    "gm_trend_pp": 5.11,
    "eps": 1.19,
    "pe": 140.31,
-   "pb": 21.12
+   "pb": 21.12,
+   "mcap_e": 242,
+   "pos_52w": 41,
+   "ret_1y": 300,
+   "avg_vol_lots": 8278,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "2059",
@@ -246,7 +325,13 @@
    "gm_trend_pp": 6.44,
    "eps": 110.96,
    "pe": 78.75,
-   "pb": 40.33
+   "pb": 40.33,
+   "mcap_e": 13208,
+   "pos_52w": 95,
+   "ret_1y": 364,
+   "avg_vol_lots": 523,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "3167",
@@ -263,7 +348,13 @@
    "gm_trend_pp": 1.11,
    "eps": 9.26,
    "pe": 47.27,
-   "pb": 14.05
+   "pb": 14.05,
+   "mcap_e": 725,
+   "pos_52w": 82,
+   "ret_1y": 336,
+   "avg_vol_lots": 3998,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "4739",
@@ -280,7 +371,13 @@
    "gm_trend_pp": -1.21,
    "eps": 3.51,
    "pe": 16.14,
-   "pb": 1.61
+   "pb": 1.61,
+   "mcap_e": 104,
+   "pos_52w": 36,
+   "ret_1y": 44,
+   "avg_vol_lots": 1471,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "3081",
@@ -297,7 +394,13 @@
    "gm_trend_pp": 1.55,
    "eps": 7.75,
    "pe": 280.12,
-   "pb": 63.81
+   "pb": 63.81,
+   "mcap_e": 3226,
+   "pos_52w": 89,
+   "ret_1y": 623,
+   "avg_vol_lots": 3596,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "8996",
@@ -314,7 +417,13 @@
    "gm_trend_pp": -1.22,
    "eps": 8.69,
    "pe": 81.82,
-   "pb": 22.06
+   "pb": 22.06,
+   "mcap_e": 1209,
+   "pos_52w": 77,
+   "ret_1y": 298,
+   "avg_vol_lots": 3425,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "2360",
@@ -331,7 +440,13 @@
    "gm_trend_pp": -1.12,
    "eps": 21.27,
    "pe": 50.13,
-   "pb": 25.23
+   "pb": 25.23,
+   "mcap_e": 8599,
+   "pos_52w": 72,
+   "ret_1y": 277,
+   "avg_vol_lots": 1877,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "6739",
@@ -348,7 +463,13 @@
    "gm_trend_pp": -0.87,
    "eps": 13.31,
    "pe": 42.31,
-   "pb": 22.6
+   "pb": 22.6,
+   "mcap_e": 265,
+   "pos_52w": 50,
+   "ret_1y": 90,
+   "avg_vol_lots": 162,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "3028",
@@ -365,7 +486,13 @@
    "gm_trend_pp": -0.81,
    "eps": 5.24,
    "pe": 9.19,
-   "pb": 2.16
+   "pb": 2.16,
+   "mcap_e": 167,
+   "pos_52w": 64,
+   "ret_1y": 112,
+   "avg_vol_lots": 924,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "7750",
@@ -382,7 +509,13 @@
    "gm_trend_pp": -2.95,
    "eps": 42.53,
    "pe": 40.39,
-   "pb": 12.53
+   "pb": 12.53,
+   "mcap_e": 1732,
+   "pos_52w": 72,
+   "ret_1y": 169,
+   "avg_vol_lots": 385,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "2363",
@@ -399,7 +532,13 @@
    "gm_trend_pp": -0.37,
    "eps": 0.2,
    "pe": 93.33,
-   "pb": 0.53
+   "pb": 0.53,
+   "mcap_e": 261,
+   "pos_52w": 22,
+   "ret_1y": -6,
+   "avg_vol_lots": 3659,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "7769",
@@ -416,7 +555,13 @@
    "gm_trend_pp": -0.09,
    "eps": 56.14,
    "pe": 64.11,
-   "pb": 19.67
+   "pb": 19.67,
+   "mcap_e": 10760,
+   "pos_52w": 66,
+   "ret_1y": 252,
+   "avg_vol_lots": 551,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "2382",
@@ -433,7 +578,13 @@
    "gm_trend_pp": 0.14,
    "eps": 12.93,
    "pe": 14.31,
-   "pb": 5.2
+   "pb": 5.2,
+   "mcap_e": 14143,
+   "pos_52w": 64,
+   "ret_1y": 40,
+   "avg_vol_lots": 15749,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6274",
@@ -450,7 +601,13 @@
    "gm_trend_pp": 2.68,
    "eps": 12.4,
    "pe": 77.7,
-   "pb": 18.96
+   "pb": 18.96,
+   "mcap_e": 3941,
+   "pos_52w": 67,
+   "ret_1y": 347,
+   "avg_vol_lots": 4733,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "7744",
@@ -467,7 +624,13 @@
    "gm_trend_pp": 0.95,
    "eps": 13.46,
    "pe": 22.56,
-   "pb": 5.8
+   "pb": 5.8,
+   "mcap_e": 175,
+   "pos_52w": 83,
+   "ret_1y": 64,
+   "avg_vol_lots": 144,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "2383",
@@ -484,7 +647,13 @@
    "gm_trend_pp": 2.61,
    "eps": 42.46,
    "pe": 87.49,
-   "pb": 34.37
+   "pb": 34.37,
+   "mcap_e": 19403,
+   "pos_52w": 83,
+   "ret_1y": 388,
+   "avg_vol_lots": 1940,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "3231",
@@ -501,7 +670,13 @@
    "gm_trend_pp": 0.23,
    "eps": 7.78,
    "pe": 14.18,
-   "pb": 2.93
+   "pb": 2.93,
+   "mcap_e": 6297,
+   "pos_52w": 100,
+   "ret_1y": 82,
+   "avg_vol_lots": 49030,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "6693",
@@ -518,7 +693,13 @@
    "gm_trend_pp": 1.99,
    "eps": 3.38,
    "pe": 33.73,
-   "pb": 6.07
+   "pb": 6.07,
+   "mcap_e": 82,
+   "pos_52w": 58,
+   "ret_1y": 227,
+   "avg_vol_lots": 1186,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "7822",
@@ -535,7 +716,13 @@
    "gm_trend_pp": 0.25,
    "eps": 10.12,
    "pe": 52.2,
-   "pb": 6.99
+   "pb": 6.99,
+   "mcap_e": 420,
+   "pos_52w": 34,
+   "ret_1y": 65,
+   "avg_vol_lots": 169,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "3290",
@@ -552,7 +739,13 @@
    "gm_trend_pp": 2.37,
    "eps": 4.02,
    "pe": 8.37,
-   "pb": 1.79
+   "pb": 1.79,
+   "mcap_e": 41,
+   "pos_52w": 24,
+   "ret_1y": 17,
+   "avg_vol_lots": 618,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "3528",
@@ -569,7 +762,13 @@
    "gm_trend_pp": -1.38,
    "eps": 5.48,
    "pe": 9.17,
-   "pb": 2.44
+   "pb": 2.44,
+   "mcap_e": 55,
+   "pos_52w": 29,
+   "ret_1y": 23,
+   "avg_vol_lots": 261,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "3017",
@@ -586,7 +785,13 @@
    "gm_trend_pp": 1.4,
    "eps": 44.54,
    "pe": 39.32,
-   "pb": 20.99
+   "pb": 20.99,
+   "mcap_e": 14014,
+   "pos_52w": 100,
+   "ret_1y": 284,
+   "avg_vol_lots": 3980,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "6446",
@@ -603,7 +808,13 @@
    "gm_trend_pp": 3.64,
    "eps": 11.35,
    "pe": 72.97,
-   "pb": 15.12
+   "pb": 15.12,
+   "mcap_e": 5420,
+   "pos_52w": 77,
+   "ret_1y": 211,
+   "avg_vol_lots": 4169,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "3171",
@@ -620,7 +831,13 @@
    "gm_trend_pp": -0.53,
    "eps": 3.76,
    "pe": 10.55,
-   "pb": 3.41
+   "pb": 3.41,
+   "mcap_e": 19,
+   "pos_52w": 64,
+   "ret_1y": 32,
+   "avg_vol_lots": 24,
+   "flew": false,
+   "thin": true
   },
   {
    "code": "2404",
@@ -637,7 +854,13 @@
    "gm_trend_pp": 0.18,
    "eps": 36.23,
    "pe": 16.14,
-   "pb": 11.28
+   "pb": 11.28,
+   "mcap_e": 2021,
+   "pos_52w": 56,
+   "ret_1y": 7,
+   "avg_vol_lots": 1280,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "8021",
@@ -654,7 +877,13 @@
    "gm_trend_pp": 2.99,
    "eps": 3.25,
    "pe": 81.45,
-   "pb": 9.42
+   "pb": 9.42,
+   "mcap_e": 618,
+   "pos_52w": 68,
+   "ret_1y": 434,
+   "avg_vol_lots": 5780,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "2368",
@@ -671,7 +900,13 @@
    "gm_trend_pp": -0.09,
    "eps": 16.17,
    "pe": 34.85,
-   "pb": 11.92
+   "pb": 11.92,
+   "mcap_e": 5349,
+   "pos_52w": 60,
+   "ret_1y": 141,
+   "avg_vol_lots": 10298,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "1785",
@@ -688,7 +923,13 @@
    "gm_trend_pp": -4.4,
    "eps": 3.66,
    "pe": 15.4,
-   "pb": 3.79
+   "pb": 3.79,
+   "mcap_e": 608,
+   "pos_52w": 37,
+   "ret_1y": 84,
+   "avg_vol_lots": 5542,
+   "flew": false,
+   "thin": false
   }
  ],
  "track_b": [
@@ -703,7 +944,13 @@
    "rev_yoy": 23.765016114854966,
    "rev_cum_yoy": 19.718386918531927,
    "pe": 80.85,
-   "pb": 51.61
+   "pb": 51.61,
+   "mcap_e": 1781,
+   "pos_52w": 28,
+   "ret_1y": -3,
+   "avg_vol_lots": 1306,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "7777",
@@ -716,7 +963,13 @@
    "rev_yoy": -229.97494535956073,
    "rev_cum_yoy": 251.11818209107557,
    "pe": 33.2,
-   "pb": 3.32
+   "pb": 3.32,
+   "mcap_e": 73,
+   "pos_52w": 79,
+   "ret_1y": 144,
+   "avg_vol_lots": 2370,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "6901",
@@ -729,7 +982,13 @@
    "rev_yoy": -890.614412893159,
    "rev_cum_yoy": 307.53959204597066,
    "pe": 4.77,
-   "pb": 1.13
+   "pb": 1.13,
+   "mcap_e": 128,
+   "pos_52w": 31,
+   "ret_1y": -27,
+   "avg_vol_lots": 2185,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6423",
@@ -742,7 +1001,13 @@
    "rev_yoy": 47.94073619160941,
    "rev_cum_yoy": 21.27653195826838,
    "pe": 114.37,
-   "pb": 4.74
+   "pb": 4.74,
+   "mcap_e": 26,
+   "pos_52w": 33,
+   "ret_1y": 8,
+   "avg_vol_lots": 56,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6482",
@@ -755,7 +1020,13 @@
    "rev_yoy": -31.73029251363411,
    "rev_cum_yoy": -30.657657261082008,
    "pe": 13.74,
-   "pb": 1.86
+   "pb": 1.86,
+   "mcap_e": 7,
+   "pos_52w": 2,
+   "ret_1y": -45,
+   "avg_vol_lots": 27,
+   "flew": false,
+   "thin": true
   },
   {
    "code": "3293",
@@ -768,7 +1039,13 @@
    "rev_yoy": 25.855787484852694,
    "rev_cum_yoy": 17.132813146408,
    "pe": 16.22,
-   "pb": 13.09
+   "pb": 13.09,
+   "mcap_e": 1998,
+   "pos_52w": 43,
+   "ret_1y": -6,
+   "avg_vol_lots": 3469,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "4162",
@@ -781,7 +1058,13 @@
    "rev_yoy": 4.3744688464463035,
    "rev_cum_yoy": 28.19499859787566,
    "pe": 16.24,
-   "pb": 1.76
+   "pb": 1.76,
+   "mcap_e": 83,
+   "pos_52w": 32,
+   "ret_1y": -13,
+   "avg_vol_lots": 291,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6986",
@@ -794,7 +1077,13 @@
    "rev_yoy": 5.81974011611833,
    "rev_cum_yoy": 9.542843018453878,
    "pe": 18.72,
-   "pb": 2.04
+   "pb": 2.04,
+   "mcap_e": 22,
+   "pos_52w": 1,
+   "ret_1y": -39,
+   "avg_vol_lots": 49,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6446",
@@ -807,7 +1096,13 @@
    "rev_yoy": 92.58697116592172,
    "rev_cum_yoy": 77.46495077474397,
    "pe": 72.97,
-   "pb": 15.12
+   "pb": 15.12,
+   "mcap_e": 5420,
+   "pos_52w": 77,
+   "ret_1y": 211,
+   "avg_vol_lots": 4169,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "7839",
@@ -820,7 +1115,13 @@
    "rev_yoy": 4.541173304628633,
    "rev_cum_yoy": 4.219008305368297,
    "pe": 21.74,
-   "pb": 2.87
+   "pb": 2.87,
+   "mcap_e": 7,
+   "pos_52w": 11,
+   "ret_1y": -30,
+   "avg_vol_lots": 17,
+   "flew": false,
+   "thin": true
   },
   {
    "code": "6902",
@@ -833,7 +1134,13 @@
    "rev_yoy": 30.830670926517573,
    "rev_cum_yoy": 27.998823764908867,
    "pe": 25.99,
-   "pb": 5.45
+   "pb": 5.45,
+   "mcap_e": 44,
+   "pos_52w": 71,
+   "ret_1y": 60,
+   "avg_vol_lots": 82,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "2702",
@@ -846,7 +1153,13 @@
    "rev_yoy": 21.913192838739512,
    "rev_cum_yoy": 7.806064438458779,
    "pe": 15.49,
-   "pb": 0.59
+   "pb": 0.59,
+   "mcap_e": 20,
+   "pos_52w": 23,
+   "ret_1y": 0,
+   "avg_vol_lots": 32,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "3130",
@@ -859,7 +1172,13 @@
    "rev_yoy": 12.447145985550849,
    "rev_cum_yoy": 7.793214568979368,
    "pe": 12.76,
-   "pb": 4.49
+   "pb": 4.49,
+   "mcap_e": 70,
+   "pos_52w": 65,
+   "ret_1y": -2,
+   "avg_vol_lots": 77,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "3546",
@@ -872,7 +1191,13 @@
    "rev_yoy": 21.942508710801395,
    "rev_cum_yoy": 43.503456515045194,
    "pe": 14.32,
-   "pb": 2.67
+   "pb": 2.67,
+   "mcap_e": 44,
+   "pos_52w": 55,
+   "ret_1y": -11,
+   "avg_vol_lots": 124,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "2901",
@@ -885,7 +1210,13 @@
    "rev_yoy": 2.6195581243590937,
    "rev_cum_yoy": 3.56761803147506,
    "pe": 54.09,
-   "pb": 1.99
+   "pb": 1.99,
+   "mcap_e": 17,
+   "pos_52w": 41,
+   "ret_1y": -8,
+   "avg_vol_lots": 6,
+   "flew": false,
+   "thin": true
   },
   {
    "code": "2910",
@@ -898,7 +1229,13 @@
    "rev_yoy": -0.020961430967020682,
    "rev_cum_yoy": 7.48751802766518,
    "pe": 13.22,
-   "pb": 1.53
+   "pb": 1.53,
+   "mcap_e": 41,
+   "pos_52w": 46,
+   "ret_1y": 18,
+   "avg_vol_lots": 14,
+   "flew": false,
+   "thin": true
   },
   {
    "code": "6534",
@@ -911,7 +1248,13 @@
    "rev_yoy": 22.70415204447774,
    "rev_cum_yoy": 5.005306245065494,
    "pe": 15.35,
-   "pb": 3.52
+   "pb": 3.52,
+   "mcap_e": 92,
+   "pos_52w": 43,
+   "ret_1y": -14,
+   "avg_vol_lots": 70,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6906",
@@ -924,7 +1267,13 @@
    "rev_yoy": 14.731902830050345,
    "rev_cum_yoy": 2.748330439626208,
    "pe": 30.17,
-   "pb": 3.36
+   "pb": 3.36,
+   "mcap_e": 27,
+   "pos_52w": 40,
+   "ret_1y": -30,
+   "avg_vol_lots": 95,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "5203",
@@ -937,7 +1286,13 @@
    "rev_yoy": -16.180613647945695,
    "rev_cum_yoy": -6.577805763432873,
    "pe": 13.21,
-   "pb": 1.05
+   "pb": 1.05,
+   "mcap_e": 45,
+   "pos_52w": 4,
+   "ret_1y": -35,
+   "avg_vol_lots": 148,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "3083",
@@ -950,7 +1305,13 @@
    "rev_yoy": -25.084901083499542,
    "rev_cum_yoy": 3.739130014919824,
    "pe": 31.92,
-   "pb": 1.56
+   "pb": 1.56,
+   "mcap_e": 20,
+   "pos_52w": 0,
+   "ret_1y": -31,
+   "avg_vol_lots": 74,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "2059",
@@ -963,7 +1324,13 @@
    "rev_yoy": 355.5224648845101,
    "rev_cum_yoy": 136.58175926893418,
    "pe": 78.75,
-   "pb": 40.33
+   "pb": 40.33,
+   "mcap_e": 13208,
+   "pos_52w": 95,
+   "ret_1y": 364,
+   "avg_vol_lots": 523,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "5604",
@@ -976,7 +1343,13 @@
    "rev_yoy": 2.3699553267206785,
    "rev_cum_yoy": 3.4179878114901645,
    "pe": 29.24,
-   "pb": 1.71
+   "pb": 1.71,
+   "mcap_e": 34,
+   "pos_52w": 18,
+   "ret_1y": -12,
+   "avg_vol_lots": 11,
+   "flew": false,
+   "thin": true
   },
   {
    "code": "6620",
@@ -989,7 +1362,13 @@
    "rev_yoy": 0.5877171448787744,
    "rev_cum_yoy": -51.11272979535207,
    "pe": 26.32,
-   "pb": 2.45
+   "pb": 2.45,
+   "mcap_e": 175,
+   "pos_52w": 52,
+   "ret_1y": 34,
+   "avg_vol_lots": 1255,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "4728",
@@ -1002,7 +1381,13 @@
    "rev_yoy": 49.70260223048327,
    "rev_cum_yoy": 20.849508882785774,
    "pe": 26.85,
-   "pb": 15.23
+   "pb": 15.23,
+   "mcap_e": 217,
+   "pos_52w": 71,
+   "ret_1y": 0,
+   "avg_vol_lots": 5,
+   "flew": true,
+   "thin": true
   },
   {
    "code": "2701",
@@ -1015,7 +1400,13 @@
    "rev_yoy": -11.002559726962458,
    "rev_cum_yoy": -4.18028644717231,
    "pe": 18.05,
-   "pb": 0.57
+   "pb": 0.57,
+   "mcap_e": 47,
+   "pos_52w": 46,
+   "ret_1y": -5,
+   "avg_vol_lots": 63,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6465",
@@ -1028,7 +1419,13 @@
    "rev_yoy": 119.21992024122167,
    "rev_cum_yoy": 85.68706702799693,
    "pe": 13.22,
-   "pb": 3.67
+   "pb": 3.67,
+   "mcap_e": 27,
+   "pos_52w": 55,
+   "ret_1y": 172,
+   "avg_vol_lots": 144,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "6542",
@@ -1041,7 +1438,13 @@
    "rev_yoy": 18.592620294190976,
    "rev_cum_yoy": 19.63565821602399,
    "pe": 103.18,
-   "pb": 2.64
+   "pb": 2.64,
+   "mcap_e": 18,
+   "pos_52w": 6,
+   "ret_1y": -13,
+   "avg_vol_lots": 8,
+   "flew": false,
+   "thin": true
   },
   {
    "code": "7828",
@@ -1054,7 +1457,13 @@
    "rev_yoy": 397.15776149744926,
    "rev_cum_yoy": 235.79712118672478,
    "pe": 160.24,
-   "pb": 12.38
+   "pb": 12.38,
+   "mcap_e": 782,
+   "pos_52w": 80,
+   "ret_1y": 355,
+   "avg_vol_lots": 198,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "4129",
@@ -1067,7 +1476,13 @@
    "rev_yoy": 7.114396966476852,
    "rev_cum_yoy": 14.138856877797211,
    "pe": 14.46,
-   "pb": 2.04
+   "pb": 2.04,
+   "mcap_e": 79,
+   "pos_52w": 1,
+   "ret_1y": -25,
+   "avg_vol_lots": 354,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6712",
@@ -1080,7 +1495,13 @@
    "rev_yoy": 20.722287771709382,
    "rev_cum_yoy": 16.30787525493074,
    "pe": 33.98,
-   "pb": 5.66
+   "pb": 5.66,
+   "mcap_e": 158,
+   "pos_52w": 57,
+   "ret_1y": 8,
+   "avg_vol_lots": 340,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6955",
@@ -1093,7 +1514,13 @@
    "rev_yoy": 21.32505175983437,
    "rev_cum_yoy": 17.695637811429663,
    "pe": 27.59,
-   "pb": 4.53
+   "pb": 4.53,
+   "mcap_e": 31,
+   "pos_52w": 20,
+   "ret_1y": -27,
+   "avg_vol_lots": 10,
+   "flew": false,
+   "thin": true
   },
   {
    "code": "6231",
@@ -1106,7 +1533,13 @@
    "rev_yoy": -6.768716281132215,
    "rev_cum_yoy": 9.233830845771145,
    "pe": 28.65,
-   "pb": 9.12
+   "pb": 9.12,
+   "mcap_e": 97,
+   "pos_52w": 22,
+   "ret_1y": -13,
+   "avg_vol_lots": 190,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "2451",
@@ -1119,7 +1552,13 @@
    "rev_yoy": 307.65627206955537,
    "rev_cum_yoy": 402.6798478136839,
    "pe": 5.2,
-   "pb": 3.35
+   "pb": 3.35,
+   "mcap_e": 1227,
+   "pos_52w": 74,
+   "ret_1y": 192,
+   "avg_vol_lots": 5612,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "4951",
@@ -1132,7 +1571,13 @@
    "rev_yoy": -8.84666318873149,
    "rev_cum_yoy": 0.01824122581037446,
    "pe": 12.37,
-   "pb": 2.87
+   "pb": 2.87,
+   "mcap_e": 27,
+   "pos_52w": 25,
+   "ret_1y": 7,
+   "avg_vol_lots": 155,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "2706",
@@ -1145,7 +1590,13 @@
    "rev_yoy": 0.08845174073025758,
    "rev_cum_yoy": 1.287869495891083,
    "pe": 18.31,
-   "pb": 0.61
+   "pb": 0.61,
+   "mcap_e": 63,
+   "pos_52w": 41,
+   "ret_1y": -4,
+   "avg_vol_lots": 86,
+   "flew": false,
+   "thin": false
   },
   {
    "code": "6925",
@@ -1158,7 +1609,13 @@
    "rev_yoy": -4.582496752096374,
    "rev_cum_yoy": 4.062656072644722,
    "pe": 17.25,
-   "pb": 2.58
+   "pb": 2.58,
+   "mcap_e": 10,
+   "pos_52w": 0,
+   "ret_1y": -63,
+   "avg_vol_lots": 21,
+   "flew": false,
+   "thin": true
   },
   {
    "code": "2408",
@@ -1171,7 +1628,13 @@
    "rev_yoy": 719.6141344528174,
    "rev_cum_yoy": 660.8671990662033,
    "pe": 19.79,
-   "pb": 5.46
+   "pb": 5.46,
+   "mcap_e": 15369,
+   "pos_52w": 91,
+   "ret_1y": 932,
+   "avg_vol_lots": 86142,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "3094",
@@ -1184,7 +1647,13 @@
    "rev_yoy": 32.13118722013797,
    "rev_cum_yoy": 15.28606543850049,
    "pe": 61.85,
-   "pb": 3.07
+   "pb": 3.07,
+   "mcap_e": 39,
+   "pos_52w": 100,
+   "ret_1y": 84,
+   "avg_vol_lots": 3939,
+   "flew": true,
+   "thin": false
   },
   {
    "code": "8272",
@@ -1197,7 +1666,13 @@
    "rev_yoy": -13.240329740012683,
    "rev_cum_yoy": -0.8053486650115423,
    "pe": 13.71,
-   "pb": 2.02
+   "pb": 2.02,
+   "mcap_e": 12,
+   "pos_52w": 10,
+   "ret_1y": -25,
+   "avg_vol_lots": 8,
+   "flew": false,
+   "thin": true
   },
   {
    "code": "6741",
@@ -1210,7 +1685,13 @@
    "rev_yoy": 36.40503933282073,
    "rev_cum_yoy": 32.382006181082836,
    "pe": 12.94,
-   "pb": 2.16
+   "pb": 2.16,
+   "mcap_e": 67,
+   "pos_52w": 23,
+   "ret_1y": -20,
+   "avg_vol_lots": 295,
+   "flew": false,
+   "thin": false
   }
  ]
 }
