@@ -8,7 +8,8 @@
   "金額單位：千元。gm=最新季毛利率%，gm_trend_pp=較前一儲存季的百分點變化（需累積兩季後才有值）",
   "Track B 未含市值過濾（API 無市值欄位），第二層人工驗證時自行檢查市值<300億與利基獨佔",
   "one_off_risk=true 表示產業別屬 ['存託憑證', '建材營造', '建材營造業', '證券業', '金融保險', '金融保險業', '金融業']，注意一次性認列",
-  "第二層旗標(yfinance補·2026-09-05回填):mcap_e市值(億)/pos_52w 52週位置%/ret_1y一年漲幅%/avg_vol_lots均量(張)/flew已飛(位置>70或1年>150)/thin薄量(<30張). null=抓不到"
+  "第二層旗標(yfinance補·2026-09-05回填):mcap_e市值(億)/pos_52w 52週位置%/ret_1y一年漲幅%/avg_vol_lots均量(張)/flew已飛(位置>70或1年>150)/thin薄量(<30張). null=抓不到",
+  "gm_spike=true=單季毛利跳升>8pp:別當結構上移·先拆一次性(退稅/處分/里程碑/並表)vs結構(喬山Q2 51→63=退稅教訓)"
  ],
  "track_a": [
   {
@@ -32,7 +33,8 @@
    "ret_1y": -38,
    "avg_vol_lots": 220,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6265",
@@ -55,7 +57,8 @@
    "ret_1y": 426,
    "avg_vol_lots": 6866,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2408",
@@ -78,7 +81,8 @@
    "ret_1y": 932,
    "avg_vol_lots": 86142,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "5289",
@@ -101,7 +105,8 @@
    "ret_1y": 392,
    "avg_vol_lots": 2065,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2451",
@@ -124,7 +129,8 @@
    "ret_1y": 192,
    "avg_vol_lots": 5612,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "4772",
@@ -147,7 +153,8 @@
    "ret_1y": -13,
    "avg_vol_lots": 614,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "8299",
@@ -170,7 +177,8 @@
    "ret_1y": 325,
    "avg_vol_lots": 5170,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6903",
@@ -193,7 +201,8 @@
    "ret_1y": 137,
    "avg_vol_lots": 287,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3135",
@@ -216,7 +225,8 @@
    "ret_1y": 492,
    "avg_vol_lots": 2295,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "8271",
@@ -239,7 +249,8 @@
    "ret_1y": 256,
    "avg_vol_lots": 4156,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3260",
@@ -262,7 +273,8 @@
    "ret_1y": 294,
    "avg_vol_lots": 9562,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "5314",
@@ -285,7 +297,8 @@
    "ret_1y": 37,
    "avg_vol_lots": 6589,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "5475",
@@ -308,7 +321,8 @@
    "ret_1y": 300,
    "avg_vol_lots": 8278,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2059",
@@ -331,7 +345,8 @@
    "ret_1y": 364,
    "avg_vol_lots": 523,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3167",
@@ -354,7 +369,8 @@
    "ret_1y": 336,
    "avg_vol_lots": 3998,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "4739",
@@ -377,7 +393,8 @@
    "ret_1y": 44,
    "avg_vol_lots": 1471,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3081",
@@ -400,7 +417,8 @@
    "ret_1y": 623,
    "avg_vol_lots": 3596,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "8996",
@@ -423,7 +441,8 @@
    "ret_1y": 298,
    "avg_vol_lots": 3425,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2360",
@@ -446,7 +465,8 @@
    "ret_1y": 277,
    "avg_vol_lots": 1877,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6739",
@@ -469,7 +489,8 @@
    "ret_1y": 90,
    "avg_vol_lots": 162,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3028",
@@ -492,7 +513,8 @@
    "ret_1y": 112,
    "avg_vol_lots": 924,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "7750",
@@ -515,7 +537,8 @@
    "ret_1y": 169,
    "avg_vol_lots": 385,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2363",
@@ -538,7 +561,8 @@
    "ret_1y": -6,
    "avg_vol_lots": 3659,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "7769",
@@ -561,7 +585,8 @@
    "ret_1y": 252,
    "avg_vol_lots": 551,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2382",
@@ -584,7 +609,8 @@
    "ret_1y": 40,
    "avg_vol_lots": 15749,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6274",
@@ -607,7 +633,8 @@
    "ret_1y": 347,
    "avg_vol_lots": 4733,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "7744",
@@ -630,7 +657,8 @@
    "ret_1y": 64,
    "avg_vol_lots": 144,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2383",
@@ -653,7 +681,8 @@
    "ret_1y": 388,
    "avg_vol_lots": 1940,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3231",
@@ -676,7 +705,8 @@
    "ret_1y": 82,
    "avg_vol_lots": 49030,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6693",
@@ -699,7 +729,8 @@
    "ret_1y": 227,
    "avg_vol_lots": 1186,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "7822",
@@ -722,7 +753,8 @@
    "ret_1y": 65,
    "avg_vol_lots": 169,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3290",
@@ -745,7 +777,8 @@
    "ret_1y": 17,
    "avg_vol_lots": 618,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3528",
@@ -768,7 +801,8 @@
    "ret_1y": 23,
    "avg_vol_lots": 261,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3017",
@@ -791,7 +825,8 @@
    "ret_1y": 284,
    "avg_vol_lots": 3980,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6446",
@@ -814,7 +849,8 @@
    "ret_1y": 211,
    "avg_vol_lots": 4169,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3171",
@@ -837,7 +873,8 @@
    "ret_1y": 32,
    "avg_vol_lots": 24,
    "flew": false,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "2404",
@@ -860,7 +897,8 @@
    "ret_1y": 7,
    "avg_vol_lots": 1280,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "8021",
@@ -883,7 +921,8 @@
    "ret_1y": 434,
    "avg_vol_lots": 5780,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2368",
@@ -906,7 +945,8 @@
    "ret_1y": 141,
    "avg_vol_lots": 10298,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "1785",
@@ -929,7 +969,8 @@
    "ret_1y": 84,
    "avg_vol_lots": 5542,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   }
  ],
  "track_b": [
@@ -950,7 +991,8 @@
    "ret_1y": -3,
    "avg_vol_lots": 1306,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "7777",
@@ -969,7 +1011,8 @@
    "ret_1y": 144,
    "avg_vol_lots": 2370,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6901",
@@ -988,7 +1031,8 @@
    "ret_1y": -27,
    "avg_vol_lots": 2185,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6423",
@@ -1007,7 +1051,8 @@
    "ret_1y": 8,
    "avg_vol_lots": 56,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6482",
@@ -1026,7 +1071,8 @@
    "ret_1y": -45,
    "avg_vol_lots": 27,
    "flew": false,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "3293",
@@ -1045,7 +1091,8 @@
    "ret_1y": -6,
    "avg_vol_lots": 3469,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "4162",
@@ -1064,7 +1111,8 @@
    "ret_1y": -13,
    "avg_vol_lots": 291,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6986",
@@ -1083,7 +1131,8 @@
    "ret_1y": -39,
    "avg_vol_lots": 49,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6446",
@@ -1102,7 +1151,8 @@
    "ret_1y": 211,
    "avg_vol_lots": 4169,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "7839",
@@ -1121,7 +1171,8 @@
    "ret_1y": -30,
    "avg_vol_lots": 17,
    "flew": false,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "6902",
@@ -1140,7 +1191,8 @@
    "ret_1y": 60,
    "avg_vol_lots": 82,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2702",
@@ -1159,7 +1211,8 @@
    "ret_1y": 0,
    "avg_vol_lots": 32,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3130",
@@ -1178,7 +1231,8 @@
    "ret_1y": -2,
    "avg_vol_lots": 77,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3546",
@@ -1197,7 +1251,8 @@
    "ret_1y": -11,
    "avg_vol_lots": 124,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2901",
@@ -1216,7 +1271,8 @@
    "ret_1y": -8,
    "avg_vol_lots": 6,
    "flew": false,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "2910",
@@ -1235,7 +1291,8 @@
    "ret_1y": 18,
    "avg_vol_lots": 14,
    "flew": false,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "6534",
@@ -1254,7 +1311,8 @@
    "ret_1y": -14,
    "avg_vol_lots": 70,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6906",
@@ -1273,7 +1331,8 @@
    "ret_1y": -30,
    "avg_vol_lots": 95,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "5203",
@@ -1292,7 +1351,8 @@
    "ret_1y": -35,
    "avg_vol_lots": 148,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3083",
@@ -1311,7 +1371,8 @@
    "ret_1y": -31,
    "avg_vol_lots": 74,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2059",
@@ -1330,7 +1391,8 @@
    "ret_1y": 364,
    "avg_vol_lots": 523,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "5604",
@@ -1349,7 +1411,8 @@
    "ret_1y": -12,
    "avg_vol_lots": 11,
    "flew": false,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "6620",
@@ -1368,7 +1431,8 @@
    "ret_1y": 34,
    "avg_vol_lots": 1255,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "4728",
@@ -1387,7 +1451,8 @@
    "ret_1y": 0,
    "avg_vol_lots": 5,
    "flew": true,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "2701",
@@ -1406,7 +1471,8 @@
    "ret_1y": -5,
    "avg_vol_lots": 63,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6465",
@@ -1425,7 +1491,8 @@
    "ret_1y": 172,
    "avg_vol_lots": 144,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6542",
@@ -1444,7 +1511,8 @@
    "ret_1y": -13,
    "avg_vol_lots": 8,
    "flew": false,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "7828",
@@ -1463,7 +1531,8 @@
    "ret_1y": 355,
    "avg_vol_lots": 198,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "4129",
@@ -1482,7 +1551,8 @@
    "ret_1y": -25,
    "avg_vol_lots": 354,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6712",
@@ -1501,7 +1571,8 @@
    "ret_1y": 8,
    "avg_vol_lots": 340,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6955",
@@ -1520,7 +1591,8 @@
    "ret_1y": -27,
    "avg_vol_lots": 10,
    "flew": false,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "6231",
@@ -1539,7 +1611,8 @@
    "ret_1y": -13,
    "avg_vol_lots": 190,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2451",
@@ -1558,7 +1631,8 @@
    "ret_1y": 192,
    "avg_vol_lots": 5612,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "4951",
@@ -1577,7 +1651,8 @@
    "ret_1y": 7,
    "avg_vol_lots": 155,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "2706",
@@ -1596,7 +1671,8 @@
    "ret_1y": -4,
    "avg_vol_lots": 86,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "6925",
@@ -1615,7 +1691,8 @@
    "ret_1y": -63,
    "avg_vol_lots": 21,
    "flew": false,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "2408",
@@ -1634,7 +1711,8 @@
    "ret_1y": 932,
    "avg_vol_lots": 86142,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "3094",
@@ -1653,7 +1731,8 @@
    "ret_1y": 84,
    "avg_vol_lots": 3939,
    "flew": true,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   },
   {
    "code": "8272",
@@ -1672,7 +1751,8 @@
    "ret_1y": -25,
    "avg_vol_lots": 8,
    "flew": false,
-   "thin": true
+   "thin": true,
+   "gm_spike": false
   },
   {
    "code": "6741",
@@ -1691,7 +1771,8 @@
    "ret_1y": -20,
    "avg_vol_lots": 295,
    "flew": false,
-   "thin": false
+   "thin": false,
+   "gm_spike": false
   }
  ]
 }

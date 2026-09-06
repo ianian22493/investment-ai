@@ -218,6 +218,14 @@ def load_valuations():
 FLEW_POS_PCT = 70    # 52週位置 >70% = 貼近高檔
 FLEW_1Y_PCT = 150    # 一年漲幅 >150% = 已噴(如廣閎科+227%)
 THIN_LOTS = 30       # 近20日均量 <30張 = 薄量不可乾淨進出(創為/鋼聯/邦睿型)
+GM_SPIKE_PP = 8      # 單季毛利跳升 >8pp = 查一次性(退稅/處分/里程碑/並表)·別當結構上移(喬山Q2 +11pp=關稅退稅教訓)
+
+
+def margin_spike_flag(rows):
+    """單季毛利異常跳升就掛旗標——提醒「結構上移」前先拆一次性，別讓退稅/處分灌大的季度騙進排名。"""
+    for r in rows:
+        t = r.get("gm_trend_pp")
+        r["gm_spike"] = bool(t is not None and t > GM_SPIKE_PP)
 
 def yf_flags(rows):
     """對已 capped 的 track 候選補：市值(億)/52週位置/一年漲幅/均量(張)＋已飛、薄量旗標。"""
@@ -341,6 +349,9 @@ def main():
     # 第二層旗標補強（只跑 capped 後的候選）：市值/已飛/流動性
     yf_flags(track_a)
     yf_flags(track_b)
+    # 單季毛利跳升旗標（用篩選器自有 gm_trend_pp，不需 yfinance）
+    margin_spike_flag(track_a)
+    margin_spike_flag(track_b)
 
     out = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M %z"),
@@ -353,6 +364,7 @@ def main():
             "金額單位：千元。gm=最新季毛利率%，gm_trend_pp=較前一儲存季的百分點變化（需累積兩季後才有值）",
             "第二層旗標(yfinance補·capped後才跑)：mcap_e=市值(億)、pos_52w=52週位置%、ret_1y=一年漲幅%、avg_vol_lots=近20日均量(張)、flew=已飛(位置>70%或一年>150%·別追鐵律#9)、thin=薄量(<30張/日·不可乾淨進出)。值為 null=yfinance當次抓不到",
             "10倍種子讀法：找 mcap_e 小 × gm_trend_pp>0 × rev_yoy>0 × flew=false × thin=false；flew=true 多是已噴回檔(廣閎科型)、thin=true 多是不可交易(邦睿型)",
+            "gm_spike=true=單季毛利跳升>8pp：別當『結構上移』直接進排名，先拆一次性(關稅退稅/資產處分/里程碑分潤/併購並表)vs 真結構，用常態毛利重評因子(喬山Q2 51→63是$40M退稅一次性=教訓)",
             f"one_off_risk=true 表示產業別屬 {sorted(ONE_OFF_INDUSTRIES)}，注意一次性認列",
         ],
         "track_a": track_a,
