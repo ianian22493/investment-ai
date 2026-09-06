@@ -359,7 +359,7 @@ def main():
             continue
         r = rev.get(code, {})
         cum = r.get("cum_yoy")
-        if not (cum and cum > 0):            # 要成長(累計YoY>0)=反慢速純防禦股
+        if not (cum and 0 < cum <= 100):     # 要成長但濾掉 >100% 的循環暴衝(記憶體/鋼鐵/航運頂陷阱洗版·非品質龍頭)
             continue
         pe = val.get(code, {}).get("pe")
         if pe is None or pe <= 0 or pe > 20:  # 便宜(龍頭跌到相對便宜)
@@ -368,15 +368,17 @@ def main():
             continue
         prev = prev_fin.get(code, {})
         gm_trend = round(f["gm"] - prev["gm"], 2) if prev.get("gm") is not None else None
+        if gm_trend is not None and gm_trend < -2:  # 毛利在崩的不算品質龍頭(嘉澤型剔除)
+            continue
         track_c.append({
             "code": code, "name": r.get("name"), "industry": r.get("industry"),
             "market": r.get("market"), "gm": gm, "gm_trend_pp": gm_trend, "eps": eps,
             "rev_yoy": r.get("yoy"), "rev_cum_yoy": cum,
             "pe": pe, "pb": val.get(code, {}).get("pb"),
         })
-    # 排序：價值成長比(累計成長/PE)高者優先＝「便宜又在長」浮上來
-    track_c.sort(key=lambda x: -((x["rev_cum_yoy"] or 0) / (x["pe"] or 999)))
-    track_c = track_c[:TRACK_CAP]
+    # 先取「最便宜」的一批做旗標補強（品質龍頭以便宜為要件；★不用成長/PE比排序·免得溫和成長的龍頭被循環暴衝擠掉、連喬山型都漏）
+    track_c.sort(key=lambda x: (x["pe"] or 999))
+    track_c = track_c[:200]
 
     # 第二層旗標補強（只跑 capped 後的候選）：市值/已飛/流動性
     yf_flags(track_a)
@@ -386,6 +388,12 @@ def main():
     margin_spike_flag(track_a)
     margin_spike_flag(track_b)
     margin_spike_flag(track_c)
+
+    # Track C 品質龍頭第二層硬篩（旗標補強後）：剔除已飛/薄量/市值<50億(非龍頭)，按市值大→小排(龍頭優先)，留 TRACK_CAP 檔
+    track_c = [r for r in track_c
+               if not r.get("flew") and not r.get("thin") and (r.get("mcap_e") or 0) >= 50]
+    track_c.sort(key=lambda x: -(x.get("mcap_e") or 0))
+    track_c = track_c[:TRACK_CAP]
 
     out = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M %z"),
