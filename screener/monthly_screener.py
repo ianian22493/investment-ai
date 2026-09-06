@@ -20,6 +20,7 @@ monthly_screener.py — 台股長波寶藏股「第一層漏斗」月度資料�
   Track A 雙擊型：當月營收 ≥1 億、當月與累計 YoY 皆 >0、
                   歷史夠深時要求連續 ≥3 個月 YoY>0；附毛利率與趨勢、PE/PB
   Track B 收稅口/成長：毛利率 ≥50% 且 EPS>0（市值過濾留給第二層人工驗證）
+  Track C 品質成長龍頭：便宜(PE≤20)×成長(累計YoY>0)×已獲利×gm≥15，補「喬山型」(便宜龍頭+搶市佔·非雙擊非收稅口)盲點
 快照只有累積夠久（≥3 個月營收、≥2 季損益）才會啟用趨勢條件，之前為 bootstrap 模式。
 """
 
@@ -346,12 +347,45 @@ def main():
     track_b.sort(key=lambda x: (-(x["gm"]), -(x["rev_yoy"] or -999)))
     track_b = track_b[:TRACK_CAP]
 
+    # Track C：品質成長龍頭（補「喬山型」盲點）
+    # 便宜 × 有成長(反慢速防禦) × 已獲利 × 中等以上品質；★刻意「不」要求毛利上移(雙擊)或 gm≥50(收稅口)
+    # ——這條專抓雙擊/收稅口兩張網漏掉的「便宜龍頭+搶市佔/擴產」型；「是不是龍頭+有無成長催化」留第二層質化判斷
+    track_c = []
+    for code, f in fin.items():
+        eps, gm = f.get("eps"), f.get("gm")
+        if eps is None or eps <= 0:          # 已獲利
+            continue
+        if gm is None or gm < 15:            # 品質下限(濾掉超薄毛利商品股·但遠低於收稅口50)
+            continue
+        r = rev.get(code, {})
+        cum = r.get("cum_yoy")
+        if not (cum and cum > 0):            # 要成長(累計YoY>0)=反慢速純防禦股
+            continue
+        pe = val.get(code, {}).get("pe")
+        if pe is None or pe <= 0 or pe > 20:  # 便宜(龍頭跌到相對便宜)
+            continue
+        if r.get("industry") in ONE_OFF_INDUSTRIES:
+            continue
+        prev = prev_fin.get(code, {})
+        gm_trend = round(f["gm"] - prev["gm"], 2) if prev.get("gm") is not None else None
+        track_c.append({
+            "code": code, "name": r.get("name"), "industry": r.get("industry"),
+            "market": r.get("market"), "gm": gm, "gm_trend_pp": gm_trend, "eps": eps,
+            "rev_yoy": r.get("yoy"), "rev_cum_yoy": cum,
+            "pe": pe, "pb": val.get(code, {}).get("pb"),
+        })
+    # 排序：價值成長比(累計成長/PE)高者優先＝「便宜又在長」浮上來
+    track_c.sort(key=lambda x: -((x["rev_cum_yoy"] or 0) / (x["pe"] or 999)))
+    track_c = track_c[:TRACK_CAP]
+
     # 第二層旗標補強（只跑 capped 後的候選）：市值/已飛/流動性
     yf_flags(track_a)
     yf_flags(track_b)
+    yf_flags(track_c)
     # 單季毛利跳升旗標（用篩選器自有 gm_trend_pp，不需 yfinance）
     margin_spike_flag(track_a)
     margin_spike_flag(track_b)
+    margin_spike_flag(track_c)
 
     out = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M %z"),
@@ -365,10 +399,12 @@ def main():
             "第二層旗標(yfinance補·capped後才跑)：mcap_e=市值(億)、pos_52w=52週位置%、ret_1y=一年漲幅%、avg_vol_lots=近20日均量(張)、flew=已飛(位置>70%或一年>150%·別追鐵律#9)、thin=薄量(<30張/日·不可乾淨進出)。值為 null=yfinance當次抓不到",
             "10倍種子讀法：找 mcap_e 小 × gm_trend_pp>0 × rev_yoy>0 × flew=false × thin=false；flew=true 多是已噴回檔(廣閎科型)、thin=true 多是不可交易(邦睿型)",
             "gm_spike=true=單季毛利跳升>8pp：別當『結構上移』直接進排名，先拆一次性(關稅退稅/資產處分/里程碑分潤/併購並表)vs 真結構，用常態毛利重評因子(喬山Q2 51→63是$40M退稅一次性=教訓)",
+            "track_c=品質成長龍頭(補喬山型盲點):便宜(PE≤20)×成長(累計YoY>0)×已獲利×gm≥15·刻意不要求毛利上移或gm≥50。第二層再質化判「是不是龍頭+有無搶市佔/擴產/新市場催化」。★獨立於雙擊/收稅口寶藏榜、不進日常pick頁、不進五因子排名——是壓艙/成長核心倉的補網",
             f"one_off_risk=true 表示產業別屬 {sorted(ONE_OFF_INDUSTRIES)}，注意一次性認列",
         ],
         "track_a": track_a,
         "track_b": track_b,
+        "track_c": track_c,
     }
     OUT_PATH.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"wrote {OUT_PATH.relative_to(ROOT)}  (A:{len(track_a)} B:{len(track_b)}, mode={out['mode']})")
