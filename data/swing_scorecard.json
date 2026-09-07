@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T08:37:00+08:00",
+  "generated_at": "2026-09-07T16:39:22+08:00",
   "_doc": "Swing pick 系統記分卡（機器可讀）。讀取者：寶藏股研究室季度審判日（quarterly-holdings-judgment-day 排程）。short_term=改版前(1-3日動能)、swing=2026-07-17 起(10-22 交易日波段)。alpha=vs 0050 同期。",
   "swing_era_start": "2026-07-17",
   "by_era": {
@@ -19,18 +19,19 @@
       }
     },
     "swing": {
-      "total": 8,
-      "traded": 7,
+      "total": 9,
+      "traded": 8,
       "not_filled": 1,
       "wins": 2,
-      "win_rate_pct": 28.6,
-      "avg_return_pct": -0.63,
-      "avg_alpha_pct": 1.37,
-      "avg_hold_days": 5.0,
+      "win_rate_pct": 25.0,
+      "avg_return_pct": -0.76,
+      "avg_alpha_pct": 0.26,
+      "avg_hold_days": 7.1,
       "exit_reasons": {
         "stop": 5,
         "target": 2,
-        "not_filled": 1
+        "not_filled": 1,
+        "time": 1
       }
     }
   },
@@ -51,16 +52,16 @@
       }
     },
     "2026Q3": {
-      "total": 12,
-      "traded": 11,
+      "total": 13,
+      "traded": 12,
       "not_filled": 1,
       "wins": 2,
-      "win_rate_pct": 18.2,
-      "avg_return_pct": -1.19,
-      "avg_alpha_pct": 0.85,
-      "avg_hold_days": 3.6,
+      "win_rate_pct": 16.7,
+      "avg_return_pct": -1.22,
+      "avg_alpha_pct": 0.09,
+      "avg_hold_days": 5.2,
       "exit_reasons": {
-        "time": 1,
+        "time": 2,
         "stop": 8,
         "target": 2,
         "not_filled": 1
@@ -69,37 +70,28 @@
   },
   "open_positions": [
     {
-      "code": "2618",
-      "name": "長榮航",
-      "entry_date": "2026-08-05",
-      "current_return_pct": -0.701,
-      "days_held": 21
-    },
-    {
       "code": "2383",
       "name": "台光電",
       "entry_date": "2026-08-30",
-      "current_return_pct": -1.545,
-      "days_held": 5
+      "current_return_pct": -0.091,
+      "days_held": 6
     },
     {
       "code": "3006",
       "name": "晶豪科",
       "entry_date": "2026-09-01",
-      "current_return_pct": 4.112,
-      "days_held": 1
+      "current_return_pct": 11.028,
+      "days_held": 2
+    },
+    {
+      "code": "3605",
+      "name": "宏致",
+      "entry_date": "2026-09-07",
+      "current_return_pct": null,
+      "days_held": null
     }
   ],
   "recent_resolved": [
-    {
-      "date": "2026-07-13",
-      "code": "3005",
-      "name": "神基",
-      "return_pct": -2.174,
-      "alpha_pct": -0.665,
-      "exit": "stop",
-      "days": 1
-    },
     {
       "date": "2026-07-16",
       "code": "2467",
@@ -171,6 +163,15 @@
       "alpha_pct": null,
       "exit": "not_filled",
       "days": 0
+    },
+    {
+      "date": "2026-08-05",
+      "code": "2618",
+      "name": "長榮航",
+      "return_pct": -1.636,
+      "alpha_pct": -7.513,
+      "exit": "time",
+      "days": 22
     },
     {
       "date": "2026-08-06",
