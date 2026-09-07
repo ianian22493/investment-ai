@@ -1,11 +1,9 @@
 {
-  "fetched_at": "2026-09-07T16:31:13.748714+08:00",
+  "fetched_at": "2026-09-08T01:21:28.600670+08:00",
   "indices": {
     "taiex": {
-      "close": 47326.27,
-      "prev_close": 46551.13,
-      "change": 775.14,
-      "change_pct": 1.67
+      "close": 46551.13,
+      "change_pct": 0
     },
     "sp500": {
       "close": 7718.6,
@@ -20,10 +18,10 @@
       "change_pct": -0.29
     },
     "vix": {
-      "close": 15.03,
+      "close": 15.3,
       "prev_close": 14.53,
-      "change": 0.5,
-      "change_pct": 3.44
+      "change": 0.77,
+      "change_pct": 5.3
     }
   },
   "tw_stocks": {
@@ -124,7 +122,7 @@
         "ma60": 2394.25,
         "above_ma20": true,
         "above_ma60": true,
-        "vol_5d_avg": 22406276.0
+        "vol_5d_avg": 22451876.0
       }
     },
     "2536": {
@@ -301,19 +299,19 @@
   "fx": {
     "usd_twd": 32.0,
     "twd_per_jpy": null,
-    "jpy_per_usd": 156.25
+    "jpy_per_usd": 154.8
   },
   "portfolio_value": {
-    "tw_stocks_twd": 3640428,
+    "tw_stocks_twd": 3650508,
     "tw_stocks_live": [
       {
         "code": "00675L",
         "name": "富邦臺灣加權正2",
         "shares": 200,
-        "value": 64410,
+        "value": 66550,
         "cost": 51167,
-        "pnl": 13243,
-        "pnl_pct": 25.88,
+        "pnl": 15383,
+        "pnl_pct": 30.06,
         "type": "leveraged_ETF",
         "strategy": "trade",
         "sector": "2X槓桿ETF-加權"
@@ -322,10 +320,10 @@
         "code": "00685L",
         "name": "群益臺灣加權正2",
         "shares": 1000,
-        "value": 12130,
+        "value": 12520,
         "cost": 9363,
-        "pnl": 2767,
-        "pnl_pct": 29.55,
+        "pnl": 3157,
+        "pnl_pct": 33.72,
         "type": "leveraged_ETF",
         "strategy": "trade",
         "sector": "2X槓桿ETF-加權(拆分後)"
@@ -370,10 +368,10 @@
         "code": "1736",
         "name": "喬山",
         "shares": 1000,
-        "value": 125500,
+        "value": 126000,
         "cost": 126000,
-        "pnl": -500,
-        "pnl_pct": -0.4,
+        "pnl": 0,
+        "pnl_pct": 0.0,
         "type": "stock",
         "strategy": "long",
         "sector": "健身器材",
@@ -396,10 +394,10 @@
         "code": "2308",
         "name": "台達電",
         "shares": 60,
-        "value": 109500,
+        "value": 111000,
         "cost": 103870,
-        "pnl": 5630,
-        "pnl_pct": 5.42,
+        "pnl": 7130,
+        "pnl_pct": 6.86,
         "_note": "2026-09-01 加碼10股@1760(50→60·AI電源散熱收稅口)。加碼參考:~1750起10股分批·金字塔往下(1650/1550)·單檔上限4-5%·論述沒破(毛利守32%/AI資料中心占比續升)才續接;算進總AI曝險",
         "type": "stock",
         "strategy": "long",
@@ -445,10 +443,10 @@
         "code": "3546",
         "name": "宇峻",
         "shares": 1000,
-        "value": 71500,
+        "value": 72500,
         "cost": 72600,
-        "pnl": -1100,
-        "pnl_pct": -1.52,
+        "pnl": -100,
+        "pnl_pct": -0.14,
         "type": "stock",
         "strategy": "long",
         "sector": "遊戲軟體",
@@ -470,10 +468,10 @@
         "code": "6442",
         "name": "光聖",
         "shares": 130,
-        "value": 228150,
+        "value": 221000,
         "cost": 242577,
-        "pnl": -14427,
-        "pnl_pct": -5.95,
+        "pnl": -21577,
+        "pnl_pct": -8.89,
         "type": "stock",
         "strategy": "both",
         "sector": "通訊網路-光通訊"
@@ -482,10 +480,10 @@
         "code": "6534",
         "name": "正瀚",
         "shares": 1000,
-        "value": 91100,
+        "value": 92400,
         "cost": 92000,
-        "pnl": -900,
-        "pnl_pct": -0.98,
+        "pnl": 400,
+        "pnl_pct": 0.43,
         "type": "stock",
         "strategy": "long",
         "sector": "農業生技",
@@ -495,20 +493,20 @@
         "code": "8299",
         "name": "群聯",
         "shares": 130,
-        "value": 261950,
+        "value": 272350,
         "cost": 287322,
-        "pnl": -25372,
-        "pnl_pct": -8.83,
+        "pnl": -14972,
+        "pnl_pct": -5.21,
         "type": "stock",
         "strategy": "long",
         "sector": "半導體-NAND控制IC"
       }
     ],
     "tw_summary_live": {
-      "total_value": 3640428,
+      "total_value": 3650508,
       "total_cost": 3047290,
-      "total_pnl": 593138,
-      "total_pnl_pct": 19.46,
+      "total_pnl": 603218,
+      "total_pnl_pct": 19.8,
       "broker": "國泰證券"
     },
     "us_stocks_twd": 453306,
@@ -677,13 +675,13 @@
     "funds_twd": 170085,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 10863819,
-    "total_gross_twd": 26263819,
+    "net_assets_twd": 10873899,
+    "total_gross_twd": 26273899,
     "allocation_pct": {
       "tw_stocks": 13.9,
       "us_stocks": 1.7,
       "funds": 0.6,
-      "real_estate": 83.8
+      "real_estate": 83.7
     }
   },
   "tw_positions_live": [],
@@ -698,86 +696,86 @@
   },
   "institutional_market": {
     "foreign_net_amount": 88307738645,
-    "trust_net_amount": 9870371215,
+    "trust_net_amount": 8724052469,
     "dealer_net_amount": 15687071384,
-    "total_institutional_net": 113865181244,
+    "total_institutional_net": 112718862498,
     "foreign_net_positive": true,
     "date": "20260907",
     "foreign_net_shares": 88307738645,
-    "trust_net_shares": 9870371215,
+    "trust_net_shares": 8724052469,
     "dealer_net_shares": 15687071384,
     "unit": "TWD"
   },
   "margin_balance": {
-    "margin_balance_amount": 581894588000,
-    "margin_prev_balance": 578739307000,
-    "margin_change_amount": 3155281000,
-    "margin_change_pct": 0.545,
-    "short_balance_units": 219160,
-    "short_prev_units": 222843,
-    "date": "20260904"
+    "margin_balance_amount": 588271579000,
+    "margin_prev_balance": 581894588000,
+    "margin_change_amount": 6376991000,
+    "margin_change_pct": 1.096,
+    "short_balance_units": 211213,
+    "short_prev_units": 219160,
+    "date": "20260907"
   },
   "ai_sector": {
     "constituents": {
       "2330": {
-        "close": 2460.0,
-        "change_pct": 2.07
+        "close": null,
+        "change_pct": null
       },
       "2454": {
-        "close": 4760.0,
-        "change_pct": 7.81
+        "close": null,
+        "change_pct": null
       },
       "3017": {
-        "close": 3420.0,
-        "change_pct": -4.2
+        "close": null,
+        "change_pct": null
       },
       "3653": {
-        "close": 5655.0,
-        "change_pct": -3.74
+        "close": null,
+        "change_pct": null
       },
       "6669": {
-        "close": 2490.0,
-        "change_pct": -2.92
+        "close": null,
+        "change_pct": null
       },
       "3661": {
-        "close": 4040.0,
-        "change_pct": -4.27
+        "close": null,
+        "change_pct": null
       },
       "00891": {
         "close": 35.86,
         "change_pct": 2.57
       }
     },
-    "avg_change_pct": -0.383,
-    "median_change_pct": -2.92,
+    "avg_change_pct": null,
+    "median_change_pct": null,
     "count": 7
   },
   "news": {
     "tw": [
-      "亞股上周遭外資賣超...台股被砍逾700億元淪最大提款機 - Yahoo股市",
-      "9月台股期指漲761點 - UDN",
+      "【Follow法人】外資買超883億元史上第四大！豪砸近400億元加碼台積電逾1.6萬張 - Yahoo股市",
+      "22周淨流入中止！全球股市淨流出55.9億美元 台股遭外資賣超22.2億美元亞股最慘 - news.cnyes.com",
+      "高盛上看台股54000點！企業獲利今年估增62%，北亞晶片鏈成贏家｜股市話題｜豐雲學堂2026 年 09 月 - sinotrade.com.tw",
+      "【台股-9/7盤後解析】 - CMoney",
+      "台股8月漲逾3千點！140萬人獲利了結 退場人數1個月翻6倍 - Yahoo股市",
+      "押注8月營收外資歸隊 台股強漲重返47000點大關 - rti.org.tw",
       "比00919猛！9月逾20檔台股ETF要除息 3檔年息衝破20% - Yahoo股市",
-      "台股大紅包來了！興櫃股王抽中現賺257萬 10檔抽籤股一次看 - Yahoo股市",
       "【Hot台股】發哥觸漲停！網嗨「輝達投資聯發科賺錢了」分析師：別急著預設高點 - Yahoo股市",
-      "【Follow法人】美股休市一天！外資狂掃883億元「史上第四大」 連2買超台股破1445億元 - Yahoo股市",
-      "台股站穩4萬7大關！ 漲775點創2個月收盤最高 - Yahoo股市",
-      "看多台股？外資上周大買00403A、倒貨0050反一 - Yahoo股市",
-      "睽違兩個月！台股盤中漲逾600點站上4萬7大關 - Yahoo股市",
-      "個股概覽 | 個股 - 股市 - CMoney",
-      "高盛最新亞太策略，北亞晶片鏈成贏家，台股獲利今年估增62%，12個月高點上看54000點｜股市話題 - sinotrade.com.tw",
-      "《台股盤後》收漲775點、日K連二紅，重返47K-新聞內容-基金 - MoneyDJ"
+      "台股8月飆3009點！4券商大進補 統一證累計賺破百億 大展證年增814% - Yahoo股市",
+      "台股大紅包來了！興櫃股王抽中現賺257萬 10檔抽籤股一次看 - Yahoo股市",
+      "8996 高力- 股市最新爆料，掌握股友們對眾個股股價、技術分析、新聞的第一手... - 股市爆料同學會 - CMoney",
+      "看多台股？外資上周大買00403A、倒貨0050反一 - Yahoo股市"
     ],
     "us": [
-      "The New York Stock Exchange | NYSE - NYSE",
-      "Stocks slip on Wall Street under pressure from rising oil prices, bond sell-off - PBS",
-      "Is the stock market open on Labor Day? Here's the holiday trading schedule for 2026. - Yahoo Finance",
+      "Wall Street ends lower as solid jobs data fuels hawkish Fed bets - Reuters",
+      "The Stock Market Is Flashing a Warning Seen Only 6 Times Since 1871, and History Is Crystal Clear That a Disaster Could Be Heading Toward Wall Street - Yahoo Finance",
+      "Top Wall Street analysts like these 3 stocks for the long haul - CNBC",
       "Wall Street futures mixed after jobs data lifts Sept Fed hike odds - Investing.com",
-      "Wall Street Week Ahead - Seeking Alpha",
-      "Wall Street week ahead: The market focuses on key inflation updates - LancasterOnline",
-      "US Stock Market: Wall Street braces for CPI test as Fed rate-hike bets hang in balance - The Economic Times",
-      "The Stock Market Is Doing Something for Only the 2nd Time in Nearly 156 Years, and History Says It Foreshadows Disaster for Wall Street - The Motley Fool",
-      "'Don't get too comfortable': Wall Street’s ‘fear gauge’ hits 2026 low — here's why it's unlikely to last - CNBC",
-      "Five Below (NASDAQ:FIVE) Stock Rating Lowered by Wall Street Zen - MarketBeat"
+      "Wall Street Is Underestimating This Stock. Here's My Case for Why It Could Triple in 7 Years. - The Motley Fool",
+      "Oracle Has Fallen Nearly 20% in 2026: One Wall Street Firm Says It’s Going to Double and Then Some - Yahoo Finance",
+      "The Stock Market Is Doing Something for Only the 2nd Time in Nearly 156 Years, and History Says It Foreshadows Disaster for Wall Street - Yahoo Finance",
+      "Tesla Says This Time Is Different. Wall Street Is Split on Whether to Believe It - Yahoo Finance",
+      "The Stock Market Is Flashing a Warning Seen Only 6 Times Since 1871, and History Is Crystal Clear That a Disaster Could Be Heading Toward Wall Street - The Motley Fool",
+      "The World’s Craziest Stock Market Has Turned Into a Fright Ride - WSJ"
     ]
   }
 }
