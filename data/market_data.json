@@ -1,9 +1,11 @@
 {
-  "fetched_at": "2026-09-08T01:21:28.600670+08:00",
+  "fetched_at": "2026-09-08T08:31:10.079912+08:00",
   "indices": {
     "taiex": {
-      "close": 46551.13,
-      "change_pct": 0
+      "close": 47326.27,
+      "prev_close": 46551.13,
+      "change": 775.14,
+      "change_pct": 1.67
     },
     "sp500": {
       "close": 7718.6,
@@ -302,7 +304,7 @@
     "jpy_per_usd": 154.8
   },
   "portfolio_value": {
-    "tw_stocks_twd": 3650508,
+    "tw_stocks_twd": 3642958,
     "tw_stocks_live": [
       {
         "code": "00675L",
@@ -368,10 +370,10 @@
         "code": "1736",
         "name": "喬山",
         "shares": 1000,
-        "value": 126000,
+        "value": 125500,
         "cost": 126000,
-        "pnl": 0,
-        "pnl_pct": 0.0,
+        "pnl": -500,
+        "pnl_pct": -0.4,
         "type": "stock",
         "strategy": "long",
         "sector": "健身器材",
@@ -394,10 +396,10 @@
         "code": "2308",
         "name": "台達電",
         "shares": 60,
-        "value": 111000,
+        "value": 109500,
         "cost": 103870,
-        "pnl": 7130,
-        "pnl_pct": 6.86,
+        "pnl": 5630,
+        "pnl_pct": 5.42,
         "_note": "2026-09-01 加碼10股@1760(50→60·AI電源散熱收稅口)。加碼參考:~1750起10股分批·金字塔往下(1650/1550)·單檔上限4-5%·論述沒破(毛利守32%/AI資料中心占比續升)才續接;算進總AI曝險",
         "type": "stock",
         "strategy": "long",
@@ -443,10 +445,10 @@
         "code": "3546",
         "name": "宇峻",
         "shares": 1000,
-        "value": 72500,
+        "value": 71500,
         "cost": 72600,
-        "pnl": -100,
-        "pnl_pct": -0.14,
+        "pnl": -1100,
+        "pnl_pct": -1.52,
         "type": "stock",
         "strategy": "long",
         "sector": "遊戲軟體",
@@ -468,10 +470,10 @@
         "code": "6442",
         "name": "光聖",
         "shares": 130,
-        "value": 221000,
+        "value": 228150,
         "cost": 242577,
-        "pnl": -21577,
-        "pnl_pct": -8.89,
+        "pnl": -14427,
+        "pnl_pct": -5.95,
         "type": "stock",
         "strategy": "both",
         "sector": "通訊網路-光通訊"
@@ -480,10 +482,10 @@
         "code": "6534",
         "name": "正瀚",
         "shares": 1000,
-        "value": 92400,
+        "value": 91100,
         "cost": 92000,
-        "pnl": 400,
-        "pnl_pct": 0.43,
+        "pnl": -900,
+        "pnl_pct": -0.98,
         "type": "stock",
         "strategy": "long",
         "sector": "農業生技",
@@ -493,20 +495,20 @@
         "code": "8299",
         "name": "群聯",
         "shares": 130,
-        "value": 272350,
+        "value": 261950,
         "cost": 287322,
-        "pnl": -14972,
-        "pnl_pct": -5.21,
+        "pnl": -25372,
+        "pnl_pct": -8.83,
         "type": "stock",
         "strategy": "long",
         "sector": "半導體-NAND控制IC"
       }
     ],
     "tw_summary_live": {
-      "total_value": 3650508,
+      "total_value": 3642958,
       "total_cost": 3047290,
-      "total_pnl": 603218,
-      "total_pnl_pct": 19.8,
+      "total_pnl": 595668,
+      "total_pnl_pct": 19.55,
       "broker": "國泰證券"
     },
     "us_stocks_twd": 453306,
@@ -675,13 +677,13 @@
     "funds_twd": 170085,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 10873899,
-    "total_gross_twd": 26273899,
+    "net_assets_twd": 10866349,
+    "total_gross_twd": 26266349,
     "allocation_pct": {
       "tw_stocks": 13.9,
       "us_stocks": 1.7,
       "funds": 0.6,
-      "real_estate": 83.7
+      "real_estate": 83.8
     }
   },
   "tw_positions_live": [],
@@ -718,64 +720,64 @@
   "ai_sector": {
     "constituents": {
       "2330": {
-        "close": null,
-        "change_pct": null
+        "close": 2460.0,
+        "change_pct": 2.07
       },
       "2454": {
-        "close": null,
-        "change_pct": null
+        "close": 4760.0,
+        "change_pct": 7.81
       },
       "3017": {
-        "close": null,
-        "change_pct": null
+        "close": 3420.0,
+        "change_pct": -4.2
       },
       "3653": {
-        "close": null,
-        "change_pct": null
+        "close": 5655.0,
+        "change_pct": -3.74
       },
       "6669": {
-        "close": null,
-        "change_pct": null
+        "close": 2490.0,
+        "change_pct": -2.92
       },
       "3661": {
-        "close": null,
-        "change_pct": null
+        "close": 4040.0,
+        "change_pct": -4.27
       },
       "00891": {
         "close": 35.86,
         "change_pct": 2.57
       }
     },
-    "avg_change_pct": null,
-    "median_change_pct": null,
+    "avg_change_pct": -0.383,
+    "median_change_pct": -2.92,
     "count": 7
   },
   "news": {
     "tw": [
-      "【Follow法人】外資買超883億元史上第四大！豪砸近400億元加碼台積電逾1.6萬張 - Yahoo股市",
-      "22周淨流入中止！全球股市淨流出55.9億美元 台股遭外資賣超22.2億美元亞股最慘 - news.cnyes.com",
-      "高盛上看台股54000點！企業獲利今年估增62%，北亞晶片鏈成贏家｜股市話題｜豐雲學堂2026 年 09 月 - sinotrade.com.tw",
-      "【台股-9/7盤後解析】 - CMoney",
       "台股8月漲逾3千點！140萬人獲利了結 退場人數1個月翻6倍 - Yahoo股市",
-      "押注8月營收外資歸隊 台股強漲重返47000點大關 - rti.org.tw",
+      "22周淨流入中止！全球股市淨流出55.9億美元 台股遭外資賣超22.2億美元亞股最慘 - news.cnyes.com",
+      "台股定期定額投資增溫 8月金額飆上次高 - UDN",
+      "《台北股市》投信07日賣超股：華通、遠東新、華邦電 - 富聯網",
+      "【台股-9/7盤後解析】 - CMoney",
+      "【Follow法人】外資買超883億元史上第四大！豪砸近400億元加碼台積電逾1.6萬張 - Yahoo股市",
+      "台股大紅包來了！興櫃股王抽中現賺257萬 10檔抽籤股一次看 - Yahoo股市",
       "比00919猛！9月逾20檔台股ETF要除息 3檔年息衝破20% - Yahoo股市",
       "【Hot台股】發哥觸漲停！網嗨「輝達投資聯發科賺錢了」分析師：別急著預設高點 - Yahoo股市",
       "台股8月飆3009點！4券商大進補 統一證累計賺破百億 大展證年增814% - Yahoo股市",
-      "台股大紅包來了！興櫃股王抽中現賺257萬 10檔抽籤股一次看 - Yahoo股市",
-      "8996 高力- 股市最新爆料，掌握股友們對眾個股股價、技術分析、新聞的第一手... - 股市爆料同學會 - CMoney",
-      "看多台股？外資上周大買00403A、倒貨0050反一 - Yahoo股市"
+      "高盛上看台股54000點！企業獲利今年估增62%，北亞晶片鏈成贏家｜股市話題｜豐雲學堂2026 年 09 月 - sinotrade.com.tw",
+      "TWA00 加權指數- 大航運-散裝航運的多重宇宙😆 - 股市爆料同學會 - CMoney"
     ],
     "us": [
-      "Wall Street ends lower as solid jobs data fuels hawkish Fed bets - Reuters",
-      "The Stock Market Is Flashing a Warning Seen Only 6 Times Since 1871, and History Is Crystal Clear That a Disaster Could Be Heading Toward Wall Street - Yahoo Finance",
       "Top Wall Street analysts like these 3 stocks for the long haul - CNBC",
+      "The Stock Market Is Flashing a Warning Seen Only 6 Times Since 1871, and History Is Crystal Clear That a Disaster Could Be Heading Toward Wall Street - Yahoo Finance",
       "Wall Street futures mixed after jobs data lifts Sept Fed hike odds - Investing.com",
       "Wall Street Is Underestimating This Stock. Here's My Case for Why It Could Triple in 7 Years. - The Motley Fool",
       "Oracle Has Fallen Nearly 20% in 2026: One Wall Street Firm Says It’s Going to Double and Then Some - Yahoo Finance",
       "The Stock Market Is Doing Something for Only the 2nd Time in Nearly 156 Years, and History Says It Foreshadows Disaster for Wall Street - Yahoo Finance",
-      "Tesla Says This Time Is Different. Wall Street Is Split on Whether to Believe It - Yahoo Finance",
       "The Stock Market Is Flashing a Warning Seen Only 6 Times Since 1871, and History Is Crystal Clear That a Disaster Could Be Heading Toward Wall Street - The Motley Fool",
-      "The World’s Craziest Stock Market Has Turned Into a Fright Ride - WSJ"
+      "The World’s Craziest Stock Market Has Turned Into a Fright Ride - WSJ",
+      "Wall Street closes lower as oil prices jump, indexes notch monthly gains - Reuters",
+      "The New York Stock Exchange | NYSE - NYSE"
     ]
   }
 }
