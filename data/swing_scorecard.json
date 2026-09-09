@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-09T08:37:38+08:00",
+  "generated_at": "2026-09-09T16:39:18+08:00",
   "_doc": "Swing pick 系統記分卡（機器可讀）。讀取者：寶藏股研究室季度審判日（quarterly-holdings-judgment-day 排程）。short_term=改版前(1-3日動能)、swing=2026-07-17 起(10-22 交易日波段)。alpha=vs 0050 同期。",
   "swing_era_start": "2026-07-17",
   "by_era": {
@@ -19,17 +19,17 @@
       }
     },
     "swing": {
-      "total": 9,
-      "traded": 8,
+      "total": 10,
+      "traded": 9,
       "not_filled": 1,
-      "wins": 2,
-      "win_rate_pct": 25.0,
-      "avg_return_pct": -0.76,
-      "avg_alpha_pct": 0.26,
-      "avg_hold_days": 7.1,
+      "wins": 3,
+      "win_rate_pct": 33.3,
+      "avg_return_pct": 1.09,
+      "avg_alpha_pct": 1.88,
+      "avg_hold_days": 6.8,
       "exit_reasons": {
         "stop": 5,
-        "target": 2,
+        "target": 3,
         "not_filled": 1,
         "time": 1
       }
@@ -52,18 +52,18 @@
       }
     },
     "2026Q3": {
-      "total": 13,
-      "traded": 12,
+      "total": 14,
+      "traded": 13,
       "not_filled": 1,
-      "wins": 2,
-      "win_rate_pct": 16.7,
-      "avg_return_pct": -1.22,
-      "avg_alpha_pct": 0.09,
-      "avg_hold_days": 5.2,
+      "wins": 3,
+      "win_rate_pct": 23.1,
+      "avg_return_pct": 0.09,
+      "avg_alpha_pct": 1.32,
+      "avg_hold_days": 5.1,
       "exit_reasons": {
         "time": 2,
         "stop": 8,
-        "target": 2,
+        "target": 3,
         "not_filled": 1
       }
     }
@@ -73,34 +73,18 @@
       "code": "2383",
       "name": "台光電",
       "entry_date": "2026-08-30",
-      "current_return_pct": -2.909,
-      "days_held": 7
-    },
-    {
-      "code": "3006",
-      "name": "晶豪科",
-      "entry_date": "2026-09-01",
-      "current_return_pct": 11.589,
-      "days_held": 3
+      "current_return_pct": -2.273,
+      "days_held": 8
     },
     {
       "code": "3605",
       "name": "宏致",
       "entry_date": "2026-09-07",
-      "current_return_pct": 3.333,
-      "days_held": 1
+      "current_return_pct": 7.917,
+      "days_held": 2
     }
   ],
   "recent_resolved": [
-    {
-      "date": "2026-07-16",
-      "code": "2467",
-      "name": "志聖",
-      "return_pct": -3.548,
-      "alpha_pct": 2.326,
-      "exit": "stop",
-      "days": 1
-    },
     {
       "date": "2026-07-19",
       "code": "2645",
@@ -181,6 +165,15 @@
       "alpha_pct": 14.437,
       "exit": "target",
       "days": 6
+    },
+    {
+      "date": "2026-09-01",
+      "code": "3006",
+      "name": "晶豪科",
+      "return_pct": 15.888,
+      "alpha_pct": 14.781,
+      "exit": "target",
+      "days": 4
     }
   ]
 }
