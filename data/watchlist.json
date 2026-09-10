@@ -1,6 +1,6 @@
 {
  "_doc": "機器可讀觀察名單（價格/指數觸發專用）。人讀的完整版含事件觸發在 Cowork\\寶藏股研究室\\觀察名單.md——兩邊的價格觸發必須同步維護，事件型觸發（認證公告、財報條件）無法自動監測，只存在 md。rule=zone：start=起手上緣、add=加碼上緣（更深），到區間會顯示在每日 pick 頁與 hub。 【2026-08-29新增 rule=watch：候補/S0觀察區——週檢會掃論述變化，但generate.py/哨兵只認zone故不進pick頁、不發到價提醒。】",
- "updated": "2026-09-06",
+ "updated": "2026-09-10",
  "panic": {
   "vix_above": 25,
   "twii_daily_drop_pct_below": -2.5,
@@ -208,17 +208,6 @@
    "tier": "觀察·AI retimer show-me"
   },
   {
-   "symbol": "3546.TWO",
-   "name": "宇峻",
-   "priority": 23,
-   "rule": "watch",
-   "start": 72,
-   "add": 64,
-   "note": "🔴遊戲營收4年平+EPS靠業外轉投資(非本業)·PE14在業外EPS上=價值陷阱。扳機=本業營益真加速 or 新遊戲hit;否則季底減速確認徹底移除",
-   "_last_deep_dig": "2026-09-06",
-   "tier": "觀察·移除候選"
-  },
-  {
    "symbol": "6534.TW",
    "name": "正瀚",
    "priority": 3,
@@ -359,6 +348,16 @@
    "rule": "below_price",
    "value": 2.9,
    "note": "GRAB加碼:≤$2.90"
+  },
+  {
+   "symbol": "2645.TW",
+   "name": "長榮航太",
+   "priority": 16,
+   "rule": "watch",
+   "tier": "寶藏觀察",
+   "start": 155,
+   "add": 133,
+   "note": "寶藏觀察·品質航太MRO(★非無人機·drone僅8-16%小kicker)(2026-09-07)：全球前十大飛機MRO·真毛利結構上移16→20%(勝喬山假的)·機隊老化+交付delay durable tailwind·營收+15%CAGR/ROE15/淨利20億/2026E EPS8.97·籌碼超鎖大戶80.9%(長榮集團)。★但fully-valued:fwd PE19/PB4.86/3倍run過(56→252→174)=非誤殺。扳機=回檔到誤殺帶(起手≤155 PE17/加碼≤133 PE15)→升正表。rule=watch:週檢盯到價、不進pick頁"
   }
  ]
 }
