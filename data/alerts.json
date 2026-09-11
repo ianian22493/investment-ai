@@ -1,7 +1,7 @@
 {
- "checked_at": "2026-09-10 16:33 +0800",
+ "checked_at": "2026-09-11 08:32 +0800",
  "hit_count": 6,
- "new_hit_count": 2,
+ "new_hit_count": 0,
  "failed": [],
  "upcoming_events": [],
  "results": [
@@ -11,7 +11,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 16.4",
+   "detail": "VIX 17.8",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -20,7 +20,7 @@
    "name": "加權指數",
    "rule": "daily_drop_below_-2.5",
    "hit": false,
-   "detail": "單日 -0.51%",
+   "detail": "單日 +0.16%",
    "note": "恐慌日條件二：照恐慌日SOP操作"
   },
   {
@@ -155,7 +155,7 @@
    "vol": 54,
    "thin": false,
    "zone_since": "2026-09-10",
-   "days_in_zone": 1,
+   "days_in_zone": 2,
    "priority": 3,
    "tier": null,
    "rev": {
@@ -267,7 +267,7 @@
    "vol": 74,
    "thin": false,
    "zone_since": "2026-09-03",
-   "days_in_zone": 8,
+   "days_in_zone": 9,
    "priority": 2,
    "tier": null,
    "rev": {
@@ -276,16 +276,17 @@
     "cum_yoy": 41.9,
     "streak": 10,
     "qoq": 45.0,
-    "gm": null,
+    "gm": 32.12,
     "gm_quarter": "26Q2",
-    "eps": null,
+    "eps": 8.98,
     "gm_series": [
-     30.4
+     30.4,
+     32.1
     ],
     "gm_warn": false,
     "trend": "🔻減速",
     "signal": "caution",
-    "brief": "7月營收 YoY +22%（🔻減速、連10月正、累計+42%）",
+    "brief": "7月營收 YoY +22%（🔻減速、連10月正、累計+42%、毛利32%·26Q2）",
     "as_of": "11507"
    },
    "chip": {
@@ -322,16 +323,17 @@
     "cum_yoy": 60.2,
     "streak": 14,
     "qoq": 5.0,
-    "gm": null,
+    "gm": 69.31,
     "gm_quarter": "26Q2",
-    "eps": null,
+    "eps": 7.57,
     "gm_series": [
-     70.2
+     70.2,
+     69.3
     ],
     "gm_warn": false,
     "trend": "🔻減速",
     "signal": "caution",
-    "brief": "7月營收 YoY +43%（🔻減速、連14月正、累計+60%）",
+    "brief": "7月營收 YoY +43%（🔻減速、連14月正、累計+60%、毛利69%🏰·26Q2）",
     "as_of": "11507"
    },
    "chip": {
@@ -374,7 +376,7 @@
    "start": 385,
    "add": 345,
    "status": "接近",
-   "vol": 338,
+   "vol": 337,
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
@@ -412,7 +414,7 @@
    "start": 145,
    "add": 122,
    "status": "接近",
-   "vol": 142,
+   "vol": 141,
    "thin": false,
    "zone_since": null,
    "days_in_zone": 0,
@@ -424,16 +426,17 @@
     "cum_yoy": 3.9,
     "streak": 4,
     "qoq": 19.0,
-    "gm": null,
+    "gm": 34.37,
     "gm_quarter": "26Q2",
-    "eps": null,
+    "eps": 4.16,
     "gm_series": [
-     34.5
+     34.5,
+     34.4
     ],
     "gm_warn": false,
     "trend": "🔥加速",
     "signal": "confirm",
-    "brief": "7月營收 YoY +36%（🔥加速、連4月正、累計+4%）",
+    "brief": "7月營收 YoY +36%（🔥加速、連4月正、累計+4%、毛利34%·26Q2）",
     "as_of": "11507"
    }
   },
@@ -506,7 +509,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-09-10（0 天前）",
+   "detail": "_updated=2026-09-11（0 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -524,7 +527,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": false,
-   "detail": "合計佔 US 部位 29.9%（上限 40%）",
+   "detail": "合計佔 US 部位 29.6%（上限 40%）",
    "note": "Musk 因子上限 40%（純資訊·2026-08-28使用者調高：又瑄刻意接受AI/Musk高集中·信AI是趨勢·非violation。真集中到誇張才提醒）"
   },
   {
@@ -533,7 +536,7 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": false,
-   "detail": "合計佔 US 部位 16.8%（上限 30%）",
+   "detail": "合計佔 US 部位 16.7%（上限 30%）",
    "note": "資安/AI因子上限 30%（純資訊·2026-08-28調高：使用者要AI高集中·非該減碼提醒）"
   }
  ]
