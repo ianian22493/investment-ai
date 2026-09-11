@@ -280,11 +280,18 @@ def scan() -> list:
     cur_date = dates[-1]
     base_date = dates[-5] if len(dates) >= 5 else None  # 需5週才算趨勢
     cur = hist[cur_date]
+    # 前一季毛利（抓一次）：最新季(累計)gm vs 前季 gm 發散>8pp＝一次性嫌疑
+    #  安瑞3664教訓(2026-09-12)：Q1 gm36%→H1 gm92%(反推單季>100%不可能)＝一次性灌毛利
+    #  的假拐點，卻靠這假 gm 被撈進 S0 宇宙。標🚩並沉底、不讓它排最前騙人。
+    fin_files = _fin_files()
+    prev_fin = json.load(open(fin_files[-2], encoding="utf-8")) if len(fin_files) >= 2 else {}
     out = []
     for c, u in uni.items():
         ch = cur.get(c)
         if not ch:
             continue
+        gm_prev = (prev_fin.get(c) or {}).get("gm")
+        gm_spike = round(u["gm"] - gm_prev, 1) if (gm_prev is not None and u["gm"] - gm_prev > 8.0) else None
         big = ch.get("big", 0)
         trend_pp = None
         if base_date and c in hist.get(base_date, {}):
@@ -307,10 +314,10 @@ def scan() -> list:
         out.append({"code": c, "gm": u["gm"], "eps": u["eps"], "sector": u.get("sector", ""),
                     "big": big, "k1000": ch.get("k1000", 0), "trend_pp": trend_pp,
                     "signal": signal, "eps_trend": et, "narrowing": narrowing,
-                    "golden": golden, "bs": bs, "weeks": len(dates)})
-    # 排序：黃金組合(①累積×③收窄)→收窄→籌碼(累積>集中>中性>派發)→趨勢pp→大戶%水平
+                    "golden": golden, "gm_spike": gm_spike, "bs": bs, "weeks": len(dates)})
+    # 排序：一次性gm嫌疑🚩沉底 → 黃金組合(①累積×③收窄)→收窄→籌碼(累積>集中>中性>派發)→趨勢pp→大戶%水平
     _cp = {"accumulate": 0, "concentrate": 1, "neutral": 2, "distribute": 3}
-    out.sort(key=lambda x: (not x["golden"], not x["narrowing"],
+    out.sort(key=lambda x: (bool(x.get("gm_spike")), not x["golden"], not x["narrowing"],
                             _cp.get(x["signal"], 2), -(x["trend_pp"] or -99), -x["big"]))
     return out
 
@@ -335,6 +342,7 @@ if __name__ == "__main__":
             et = r["eps_trend"]
             etxt = f"eps{et['prev']:+.2f}→{et['cur']:+.2f} {et['label']}" if et else "eps趨勢—"
             gold = "⭐黃金" if r["golden"] else ""
+            spike = f" 🚩一次性gm嫌疑({r['gm_spike']:+.0f}pp vs前季)" if r.get("gm_spike") else ""
             bs = r.get("bs")
             btxt = ""
             if bs:
@@ -342,4 +350,4 @@ if __name__ == "__main__":
                     btxt += f" capex{bs['capex_qoq']:+.0f}%QoQ"     # ④
                 if bs.get("tpct", 0) >= 0.5:
                     btxt += f" 庫藏{bs['tpct']:.1f}%"               # ⑤
-            print(f"  {r['code']} [{r['sector']}] gm{r['gm']:.0f}% | 大戶{r['big']:.1f}% 趨勢{t}{mark} | {etxt}{btxt} {gold}")
+            print(f"  {r['code']} [{r['sector']}] gm{r['gm']:.0f}% | 大戶{r['big']:.1f}% 趨勢{t}{mark} | {etxt}{btxt} {gold}{spike}")
