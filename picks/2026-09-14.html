@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yuzu Pick · Daily Journal</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&family=Noto+Serif+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="picks.css">
+</head>
+<body>
+
+<!--
+  ════════════════════════════════════════════════════════════════════
+  PICK DAY TEMPLATE · Yuzu Capital /picks/
+  Data contract: inject the pick JSON into the <script id="pick-data"> tag
+  below (generate.py replaces the DATA_JSON token — spelled without braces
+  here so the injection only ever matches the script tag, not this comment).
+  If left unreplaced, the page renders with SAMPLE data as a standalone mockup.
+  Every field has a fallback — missing fields never crash the page.
+  ════════════════════════════════════════════════════════════════════
+-->
+<script id="pick-data" type="application/json">{"date": "2026-09-14", "regime": "區間盤", "risk_level": "moderate", "trading_budget": "35% · ~NT$ 375,827", "code": "2615", "name": "萬海", "verdict": "推薦出手", "confidence": 0.7, "entry_zone": "111.0-112.0", "stop_loss": "103.5（前波低點下方）", "target": "130.0（前高壓力區）", "hold_days": "10-22 個交易日", "ref_close": 112.0, "risk_reward": "1:2.11", "context_paragraph": "目前的市場環境處於一個較為複雜的區間震盪階段，全球資金流動呈現分歧。今日台股大盤加權指數從高點顯著回落1.61%，尤其外資大幅賣超近900億台幣，導致市場上漲家數遠少於下跌家數，顯示整體市場情緒偏向謹慎甚至悲觀。然而，美股主要指數卻呈現強勁上漲，VIX恐慌指數維持在15.84，並未顯示出顯著的短期恐慌。這種台美兩地走勢的背離，以及台股本身在歷史高檔區的震盪，意味著接下來一個月大盤可能難以出現全面性的趨勢行情。資金將會更集中在具備強勁基本面動能且技術位階合理的個股，而非廣泛輪動。我的策略將專注於捕捉這種結構性機會，而非盲目追逐大盤反彈。此時，嚴格的風險控制和明確的出場紀律至關重要，以應對區間盤的快速變化和潛在的突發事件。", "why_this_stock": "在眾多掃描器篩選出的候選股中，萬海（2615）因其強勁的營收動能及良好的技術位階優勢脫穎而出。近期的月營收表現持續超乎預期，顯示貨運量與運價的回升趨勢，支撐了其基本面向上動能，這在當前多數產業面臨逆風的環境下顯得難能可貴。相較於其他候選股，萬海所處的航運產業週期正值築底反轉階段，而非面臨成長高原期的不確定性。技術面上，股價在經歷一波上漲後，能回檔至短期均線（MA20）附近獲得支撐，並維持在季線（MA60）之上，顯示出市場資金的認可及相對強度。這不僅提供了一個相對安全的買點，也避免了追高風險，是此波段操作的關鍵考量。", "entry_rationale": "本次進場價區設定在111.0元至112.0元，主要是基於股價回測月線（MA20）尋求支撐的技術考量。今日收盤價112.0元正好觸及MA20，此處通常會吸引短線買盤進駐，形成初步的技術性支撐。我的計畫是在這個區間內分批掛單，以確保能夠平均成本並捕捉到最優的買點。例如，可以先在112.0元附近掛單少量，若盤中或隔日有更深的回測，則在111.0元附近補充第二批，但總成交價位務必控制在111.0-112.0元區間內。這個價位買進，能讓我們利用MA20作為一個動態支撐點，同時也提供了足夠的緩衝空間來應對短期市場波動。", "stop_rationale": "停損點設定在103.5元，是基於技術面上「前波低點下方」的原則。檢視K線圖，103.5元略低於近期盤整區的底部支撐，此位置若被收盤價跌破，則意味著短期上升趨勢可能已被破壞，甚至有轉弱的風險。將停損設在此處，給予了約7.6%的潛在損失空間（以112元進場計算），這在10-22個交易日的波段操作中，屬於可接受的正常震盪範圍。這個距離既能避免因盤中或短期波動而過早出場，又能有效控制風險，防止潛在虧損擴大。一旦收盤價跌破此防線，不應抱持僥倖心態，應堅決執行出場。", "target_rationale": "本次波段的目標價設定在130.0元，主要考量是「前高壓力區」以及合理的風險報酬比。觀察萬海過去的股價走勢，130.0元是近期幾次上攻未能有效突破的關鍵阻力位，此處通常會累積較多套牢賣壓或獲利了結賣壓。以112.0元均價計算，130.0元代表約16%的潛在漲幅，這在我們預期的2-4週持有期間內，是相對合理的報酬目標，也符合波段操作預期約10-20%的區間。達成此目標，代表股價突破近期壓力區，或者至少觸及壓力區後有足夠的獲利空間可以安全出場。", "hold_rationale": "持有期間設定為10至22個交易日，約為2至4週，這是根據航運股波段行情的展開特性以及潛在催化劑的時程所評估。航運業的基本面動能，如運價指數的變化和每月營收公告，通常需要數週時間才能充分反映在股價上。在技術面上，股價從MA20回測後需要時間進行築底、蓄勢，並嘗試突破前高，這個過程往往不會在幾個交易日內完成。此外，我們也考慮到市場在區間盤整格局下，資金輪動速度較慢，需要較長時間才能將買盤推升至目標價位。這個時間區間提供了足夠的彈性，既能捕捉趨勢的展開，又不過於長期暴露於市場風險。", "risk_scenarios": [{"trigger": "若收盤跌破 103.5 元（停損位）", "action": "隔日開盤即刻出場，不凹單，避免損失擴大", "severity": "stop", "rationale": "跌破前波低點下方支撐，上升趨勢結構可能已遭破壞，需立即停損。"}, {"trigger": "若收盤跌破月線（MA20）且次日未能收復，或週線跌破 MA60", "action": "減少 1/3 部位，並將停損位調整至剩餘部位成本價", "severity": "hold", "rationale": "短期趨勢轉弱，但中長期趨勢尚存，先減碼降低風險，觀察後續支撐。"}, {"trigger": "若油價（布蘭特原油）連續三天收盤漲幅超過 5%，或突破 95 美元/桶", "action": "重新評估並考慮減少部位，尤其是營運成本壓力劇增時", "severity": "hold", "rationale": "航運業燃油成本佔比高，油價急漲會侵蝕獲利，影響基本面預期。"}, {"trigger": "若貨櫃運價指數（SCFI/CCFI）連續兩週下跌且跌幅超過 10%", "action": "考慮提前出場，或將停損上移至成本價", "severity": "hold", "rationale": "運價是航運股基本面核心，趨勢轉弱則上漲動能消失。"}, {"trigger": "若大盤加權指數收盤跌破季線（MA60），且外資連續五日賣超台股", "action": "將停損點上移至成本價，並密切關注個股表現，可能提前出場", "severity": "hold", "rationale": "整體市場風險情緒惡化，即使個股強勢也難獨善其身，優先保本。"}, {"trigger": "若股價浮盈達到 +6% (約 118.7 元以上)", "action": "立即將停損單上移至成本價 (111.0-112.0元之間)，確保本金安全", "severity": "go", "rationale": "這是預設的風險管理策略，確保達到一定獲利後不會倒虧，鎖定初步成果。"}, {"trigger": "若收盤價觸及或突破 130.0 元（目標價）", "action": "隔日開盤分批出場，可保留少量觀察是否續強，但大部分獲利入袋", "severity": "go", "rationale": "達到預設獲利目標，是執行交易計畫的關鍵，落袋為安。"}], "execution_checklist": [{"time": "進場期(D1-D3)", "action": "在 111.0-112.0 元區間內分批掛單，確保成交均價控制在此範圍，並於成交後立即設置好 103.5 元的停損單。"}, {"time": "第 1 週檢查", "action": "每日收盤檢視股價是否穩守 MA20，若浮盈已達 +6% (約 118.7 元以上)，則立即將停損單上移至成本價 (111.0-112.0 元之間)。"}, {"time": "第 2 週檢查", "action": "持續關注運價指數、油價及大盤整體狀況。若股價表現強勁並突破前期高點，則考慮將停損點進一步上移至近期盤整區低點。若遲遲未動，需檢視是否有風險劇本觸發。"}, {"time": "第 3-4 週", "action": "若接近目標價 130.0 元，準備分批獲利了結。若股價仍在區間震盪，則依據風險劇本重新評估持有必要性，考慮在 22 個交易日結束前，不管盈虧皆減碼或出場大部分部位。"}, {"time": "出場紀律", "action": "無論是否達到目標價，只要收盤價跌破 103.5 元，隔日開盤無條件出場。若觸及目標價 130.0 元，則分批出場獲利了結。若趨勢不明顯且持有期將屆，則在最後一週內逐步減碼至空倉。"}], "devils_advocate": {"verdict": "強烈反對", "summary": "Devil's Advocate (DA) 團隊認為，當前市場潛藏的深層風險並未在主流分析中得到充分反映，其對於台股目前高檔震盪及全球宏觀經濟逆風的判斷顯得過度樂觀。DA 強調，在如此動盪的時期，採行「進攻型」的波段策略猶如盲人摸象，尤其對於堅定持倉的長期信念，可能導致投資組合對市場結構性變化反應遲鈍，進而忽略尾部風險的傳導效應。", "counter_arguments": ["本次操作屬於短中期波段交易（10-22個交易日），而非長期持有，故受長期宏觀經濟逆風與結構性變化影響相對較小，透過嚴格停損控制單筆交易風險。", "萬海所處的航運業受AI概念股估值泡沫破裂的直接衝擊較小，且其基本面動能主要來自全球貨運供需及運價反彈，與整體科技板塊的連動性相對獨立。", "針對地緣政治風險，我們設定了明確的收盤級別停損點，能有效限制單次虧損幅度。且航運股在某些衝突情境下，若導致航線重組或運力緊張，反而可能帶來短線利多，但這並非主要考量，重點仍在嚴謹的風控。"]}, "correlation": {"pick_code": "2615", "pick_sector": "航運-散裝", "pick_sector_family": "航運", "matches": [], "family_exposure_pct": 0.0, "exact_exposure_pct": 0.0, "warning_level": "none", "summary": "2615(航運-散裝) 跟你目前的持股沒有明顯產業重疊"}, "open_positions": [{"id": 24, "date": "2026-08-30", "target_date": "2026-08-31", "stock_code": "2383", "stock_name": "台光電", "entry_zone": "5480.0-5550.0", "stop_loss": "5100.0（MA60下方技術支撐）", "target": "6350.0（前高壓力區間）", "hold_days": "10-22 個交易日", "ref_close": 5490.0, "max_gain_pct": 4.273, "max_drawdown_pct": -5.273, "hold_days_actual": 10, "verdict": "謹慎試單", "confidence": 0.0, "exit_reason": "pending", "entry_fill_date": "2026-08-31", "entry_fill_price": 5500.0, "current_return_pct": -2.455, "waiting_fill": false}, {"id": 26, "date": "2026-09-07", "target_date": "2026-09-08", "stock_code": "3605", "stock_name": "宏致", "entry_zone": "119.0-120.0", "stop_loss": "114.0（前波低點下方技術支撐）", "target": "137.0（前高壓力）", "hold_days": "10-22 個交易日", "ref_close": 120.5, "max_gain_pct": 12.083, "max_drawdown_pct": 0.0, "hold_days_actual": 4, "verdict": "推薦出手", "confidence": 0.0, "exit_reason": "pending", "entry_fill_date": "2026-09-08", "entry_fill_price": 120.0, "current_return_pct": 2.083, "waiting_fill": false}], "max_positions": 5, "treasure_watch": null, "panic_sop": {"triggered": false, "reasons": [], "vix": 15.84, "taiex_chg_pct": -1.61, "rules": {"vix_above": 25, "twii_daily_drop_pct_below": -2.5}, "cooldown": {"active": false, "last_panic": "2026-07-28", "trading_days_since": 5, "required": 3}}, "position_sizing": null, "watchlist_zones": [{"code": "6902", "name": "GOGOLOOK", "px": 121.0, "start": 118, "add": 100, "status": "接近", "hit": false, "note": "寶藏正表#1·防詐信任科技收稅口(全榜結構最乾淨)：Whoscall母公司、gm89-90%、營運槓桿已兌現。護城河=26億筆電話資料庫+台灣無同業+東亞東南亞寡占；三腿=消費防詐(廣告+訂閱~73%)/企業ASI防詐情資(日星歐美)/fintech導流(27%)。★2026-09-12深挖：fwd FY2026 EPS≈6.5-6.7 已由 H1 EPS 3.33(Q2營益+413%營運槓桿、營益6374萬>淨利5961萬=業外乾淨) run-rate推定確認→起手118(PE~18)/加碼100(PE~15)估值錨成立、不再卡 yfinance forwardEps(10.28失真、連4週無解已用H1實績取代)。8月營收1.12億創單月新高YoY+29.55%、累計+28.2%。fintech是導流/媒合非放款(89%毛利即證明無呆帳帳=信用放款地雷不成立)。風險：估值已不便宜(現價1年+52%、fwd PE~17=非便宜撿·加碼靠回檔≤112或恐慌)、kill-switch(Google/Apple原生防詐→公司重心移B2G/ASI情資+海外緩解)、掛牌track record短。", "vol": 69, "thin": false, "days_in_zone": 0, "rev": {"month": "7月", "yoy": 30.8, "cum_yoy": 28.0, "streak": 14, "qoq": 8.0, "gm": 89.34, "gm_quarter": "26Q2", "eps": 3.33, "gm_series": [89.1, 89.3], "gm_warn": false, "trend": "高檔穩健", "signal": "confirm", "brief": "7月營收 YoY +31%（高檔穩健、連14月正、累計+28%、毛利89%🏰·26Q2）", "as_of": "11507"}, "chip": {"big": 70.3, "k1000": 58.9, "retail": 3.7, "trend_pp": -0.6, "signal": "neutral", "brief": "大戶70%·千張59%·散戶4%（籌碼超集中🔒、大戶-0.6pp持平）", "as_of": "20260911"}, "priority": 1, "tier": null, "held": null}, {"code": "1256", "name": "鮮活果汁-KY", "px": 171.0, "start": 211, "add": 155, "status": "起手區", "hit": true, "note": "寶藏起手區·手搖飲賣鏟子收稅口(誤殺·中國曝險但生意在旺)：新茶飲原料(果汁/糖漿/果粉)供應商、深耕中國20年隱形冠軍。2026營收爆發(4月+56%/1-7月+42%創同期高)、EPS拚12、PE~15還沒飛。與麗豐-KY關鍵差異=麗豐中國生意在死(萎縮停配)、鮮活在旺(新茶飲拉貨+昆山屏東新產能+出口基地分散地緣)。加碼 ≤155(China驚嚇拉回，技術位不變)。死因:中國集中度高(政策/消費/地緣)=部位上限理由不是不碰理由、新茶飲競爭+退燒、客戶集中。論述=中國營收動能→rev_momentum自動盯、一轉弱warn亮紅燈。量~73張(小量限價)。★2026-09-05週檢升#8(原#9)＋本週新進場：8月營收6.49億創新高、YoY+25.55%(較7月+21.99%再加速、逆轉4-7月連續減速趨勢)+昆山二期新產能投產，現價173已跌破起手175進場(本週首度)。★2026-09-12週檢：解除「gm=null」缺口——Q2毛利率33.44%(QoQ+3.05pp、YoY+2.89pp)確認結構上移，第一權重訊號轉正；Q2 EPS 5.74/H1 EPS 8.98(YoY+118%)使TTM EPS彈升至15.61(H1 3.24+5.74、加回2025Q3 4.94+Q4 1.88)，依原PE~13.5錨反推起手價由175上調至211(13.5×15.61，獲利成長使便宜價上移>10%門檻，觸發鐵律4調整)。現價171仍在新起手區內，訊號更強非變貴", "vol": 75, "thin": false, "days_in_zone": 11, "rev": {"month": "7月", "yoy": 22.0, "cum_yoy": 41.9, "streak": 10, "qoq": 45.0, "gm": 32.12, "gm_quarter": "26Q2", "eps": 8.98, "gm_series": [30.4, 32.1], "gm_warn": false, "trend": "🔻減速", "signal": "caution", "brief": "7月營收 YoY +22%（🔻減速、連10月正、累計+42%、毛利32%·26Q2）", "as_of": "11507"}, "chip": {"big": 59.9, "k1000": 47.1, "retail": 13.2, "trend_pp": 0.0, "signal": "neutral", "brief": "大戶60%·千張47%·散戶13%（集中、大戶+0.0pp持平）", "as_of": "20260911"}, "priority": 2, "tier": null, "held": {"shares": 1000, "avg_cost": 170.0, "pnl_pct": 0.6}}, {"code": "7749", "name": "意騰-KY", "px": 349.5, "start": 340, "add": 290, "status": "接近", "hit": false, "note": "寶藏起手區·AI邊緣聲學IP收稅口(品質對但別付貴,買在回檔)：AI IP授權占營收60%(recurring權利金收過路費)+Edge ASIC 40%、毛利70%🏰。聰明錢=聯發科(2454)入股+策略夥伴(車電IP整進SoC)。稅基=Switch2 GameChat AI聲學ASIC放量+手機/筆電AI IP滲透+TWS耳機/會議音箱。營收2026年5月+73.7%/累計+64%、2025全年+85%。PE28=成長溢價非誤殺,現~368、近3月-24%(從545崩到300再彈)波動大。起手 ≤340、加碼 ≤290(往近期低300靠、別追PE28)。死因:Switch2客戶集中(遊戲機週期)、2025/6才上市track record短+鎖股解禁賣壓、聯發科依賴(大腿也是天花板)、ASIC占比升則毛利稀釋、量~189張。★2026-09-05週檢降#9(原#7)：連續二度營收減速(5月+74%→7月+43%)+大戶籌碼連4週派發🔴(-3.3pp)，vs譜瑞/鮮活本週營收動能轉強，五因子第三位訊號(營收加速)判意騰暫居後。★2026-09-12週檢升#3(原#4)：8月營收1.99億、YoY+61%，逆轉連兩月減速趨勢(5月+74%→7月+43%→8月反彈至+61%)，累計前8月14.92億YoY+60%，公司看Q3續正向、Q4估再調漲價。營收加速訊號(第三因子)強力回升，優先序超越正瀚。籌碼派發訊號因chip/latest.json本週無新TDCC快照(仍停在09-04)暫無法覆核，留意下次快照", "vol": 240, "thin": false, "days_in_zone": 0, "rev": {"month": "7月", "yoy": 42.7, "cum_yoy": 60.2, "streak": 14, "qoq": 5.0, "gm": 69.31, "gm_quarter": "26Q2", "eps": 7.57, "gm_series": [70.2, 69.3], "gm_warn": false, "trend": "🔻減速", "signal": "caution", "brief": "7月營收 YoY +43%（🔻減速、連14月正、累計+60%、毛利69%🏰·26Q2）", "as_of": "11507"}, "chip": {"big": 45.7, "k1000": 29.0, "retail": 13.1, "trend_pp": -3.5, "signal": "distribute", "brief": "大戶46%·千張29%·散戶13%（中等、大戶-3.5pp↓派發🔴）", "as_of": "20260911"}, "priority": 3, "tier": null, "held": null}, {"code": "4571", "name": "鈞興-KY", "px": 150.5, "start": 145, "add": 122, "status": "接近", "hit": false, "note": "寶藏起手區·智能傳動齒輪雙擊+機器人design-win(2026-09-06獵雷升回·原8/28誤踢S0)：★本業已是真雙擊(營益10.6→17.3%多年結構上移·gm34.5為2019Q3來最佳·driver=產品結構優化+越南廠規模)+打進四大工業機器人廠斜齒輪(5/6軸)+機器人齒輪占比突破10%/Q1+49%/全年上看2.3億+近3成+Q4人形關節模組出貨4家。業外乾淨/ROE14-16/PE18(fwd13.7)/均量204張。⚠️2026核心循環軟(電動工具revG-8%·關稅低基期·7月營收+40.8%回溫中)+人形諧波減速機仍送樣(未兌現kicker·非主論述)。起手≤145(PE~16·近base138)/加碼≤122(PE~13.5·深回)。等20d續穩+核心回溫。★勝台灣精銳(它PE33+業外假EPS+178%·同賽道更差)。★2026-09-12深挖(輪值·無前次紀錄)：多年年度數據全乾淨——毛利率2022:28.35%→2023:28.37%→2024:30.91%→2025:32.77%連4年結構上移(非單季spike)；ROE 2023年10.5%→2024/2025年穩定15-16%；負債極低(Total Debt僅NT$2-3千萬 vs 股東權益NT$29-32億，槓桿近乎為零)；WebSearch查無現增/私募/CB稀釋跡象。2026-09-03法說重申機器人齒輪全年2.3億guidance、越南二廠9月底完工Q4搬遷，Q2毛利34.24%(YoY+3.92pp)延續結構改善但業外匯損侵蝕稅後(EPS年減0.68%)。地雷清單13條逐一查過均乾淨，維持#5", "vol": 140, "thin": false, "days_in_zone": 0, "rev": {"month": "7月", "yoy": 36.1, "cum_yoy": 3.9, "streak": 4, "qoq": 19.0, "gm": 34.37, "gm_quarter": "26Q2", "eps": 4.16, "gm_series": [34.5, 34.4], "gm_warn": false, "trend": "🔥加速", "signal": "confirm", "brief": "7月營收 YoY +36%（🔥加速、連4月正、累計+4%、毛利34%·26Q2）", "as_of": "11507"}, "chip": {"big": 66.1, "k1000": 55.7, "retail": 12.2, "trend_pp": -0.2, "signal": "neutral", "brief": "大戶66%·千張56%·散戶12%（集中、大戶-0.2pp持平）", "as_of": "20260911"}, "priority": 5, "tier": null, "held": null}, {"code": "6643", "name": "M31", "px": 406.0, "start": 385, "add": 345, "status": "接近", "hit": false, "note": "寶藏起手區·彩券格(2026-09-06使用者留榜·看好潛力)：矽智財純IP·★真拐點已在Q2啟動(淨損Q1 -0.49億→Q2 -0.03億逼近損平·營收+7%)+<16nm授權金+700%+2nm已tape-out(權利金年底/2027貢獻)=投資期收尾→收成。⚠️仍pre-profit(Q2還沒轉正)+IP lumpy+收成delay過一次(Q1北美deal遞延)=彩券規格≤1%·絕不動房款·接受歸零。起手≤385(近3月base 367上緣·現408之下別追)/加碼≤345(跌破base恐慌超跌·非破論述才加)。扳機=Q3真轉正 or 2nm權利金開始認列→升級加碼;若turn先確認沒回385反噴用逃生閥現價小量上車。均量333張OK/inst7%。★2026-09-12深挖(輪值·無前次紀錄)：①8月營收1.76億、MoM+6.5%、YoY+73.1%(累計1-8月11.59億YoY+4.1%)＝Q3動能明確加速，扳機「Q3真轉正」進度中；②★cap-table硬訊號：2026-08-05董事會通過私募現增引進信驊(5274，方法論自身S1範本股)為策略投資人、募資1.87億元，屬強聰明錢背書(非空穴來風合作)，用途強化營運資金+深化既有合作；③⚠️多年獲利體檢：EPS 2022:9.15→2023:10.41(峰)→2024:3.04(-71%)→2025:1.69(-84%累計)，ROE同步從2023年約21%崩到2025年約3.7%——目前的「轉正拐點」是從三年結構性獲利崩壞的谷底反彈，非單季暫時性波動，維持彩券規格與≤1%不變，Q3財報是關鍵驗證點。無CB/現增稀釋疑慮(私募對象為策略夥伴非套利方)", "vol": 344, "thin": false, "days_in_zone": 0, "rev": {"month": "7月", "yoy": 29.2, "cum_yoy": -2.9, "streak": 1, "qoq": -8.0, "gm": 100.0, "gm_quarter": "26Q2", "eps": -1.24, "gm_series": [100.0, 100.0], "gm_warn": false, "trend": "🔥加速", "signal": "confirm", "brief": "7月營收 YoY +29%（🔥加速、季環比-8%、累計-3%、毛利100%🏰·26Q2）", "as_of": "11507"}, "chip": {"big": 37.2, "k1000": 33.4, "retail": 29.5, "trend_pp": null, "signal": "neutral", "brief": "大戶37%·千張33%·散戶30%（散戶多籌碼鬆、趨勢累積中）", "as_of": "20260911"}, "priority": 6, "tier": "彩券", "held": null}], "watchlist_events": [], "probation": {"launch": "2026-08-07", "n": 1, "mean_alpha": 14.78, "mean_return": 15.89, "win_rate": 100, "weeks_since": 5.3, "status": "probation", "badge": "試用期 1/10｜alpha +14.8%", "reason": "C1 上線 5.3 週、1 筆結案，live alpha +14.78%（樣本未滿 10，暫不判定）。"}, "swing_record": {"n": 12, "win_rate": 42, "mean_alpha": 1.3, "mean_return": 0.1, "trades": [{"date": "2026-07-12", "code": "2356", "name": "英業達", "ret": -2.6, "alpha": -2.8, "win": false, "era": "old"}, {"date": "2026-07-13", "code": "3005", "name": "神基", "ret": -2.2, "alpha": -0.7, "win": false, "era": "old"}, {"date": "2026-07-16", "code": "2467", "name": "志聖", "ret": -3.5, "alpha": 2.3, "win": true, "era": "old"}, {"date": "2026-07-19", "code": "2645", "name": "長榮航太", "ret": -8.5, "alpha": -12.2, "win": false, "era": "old"}, {"date": "2026-07-20", "code": "2887", "name": "台新新光金", "ret": -6.3, "alpha": -0.8, "win": false, "era": "old"}, {"date": "2026-07-21", "code": "2059", "name": "川湖", "ret": -8.2, "alpha": 0.4, "win": true, "era": "old"}, {"date": "2026-07-22", "code": "8028", "name": "昇陽半導體", "ret": -7.6, "alpha": -1.2, "win": false, "era": "old"}, {"date": "2026-07-26", "code": "6944", "name": "兆聯實業", "ret": -7.7, "alpha": -3.3, "win": false, "era": "old"}, {"date": "2026-08-03", "code": "6214", "name": "精誠", "ret": 16.6, "alpha": 12.3, "win": true, "era": "old"}, {"date": "2026-08-05", "code": "2618", "name": "長榮航", "ret": -1.6, "alpha": -7.5, "win": false, "era": "old"}, {"date": "2026-08-06", "code": "2359", "name": "所羅門", "ret": 17.4, "alpha": 14.4, "win": true, "era": "old"}, {"date": "2026-09-01", "code": "3006", "name": "晶豪科", "ret": 15.9, "alpha": 14.8, "win": true, "era": "new"}]}, "prev_date": "2026-09-11", "next_date": null}</script>
+
+<div class="page">
+
+  <!-- Dashboard continuity band -->
+  <div class="return-band">
+    <a class="rb-back" href="https://ianian22493.github.io/">← 柚子首頁</a>
+    <span class="rb-logo"><img src="../favicon.svg" alt="">YUZU CAPITAL</span>
+    <span class="rb-meta" id="rb-date">—</span>
+  </div>
+
+  <!-- 1 · HERO -->
+  <header class="hero">
+    <div class="hero-date" id="hero-date"></div>
+    <div class="hero-verdict" id="hero-verdict">—</div>
+    <p class="hero-sub" id="hero-sub"></p>
+  </header>
+
+  <!-- 2 · STOCK CARD -->
+  <section class="sec" style="border-bottom:none; padding-bottom:14px">
+    <div class="stock-card">
+      <div class="stock-id">
+        <span class="stock-code" id="stock-code">—</span>
+        <span class="stock-name" id="stock-name">—</span>
+      </div>
+      <div class="stock-verdict-wrap">
+        <div class="stock-verdict" id="stock-verdict">—</div>
+        <div class="conf-bar"><i id="conf-fill" style="width:0%"></i></div>
+        <div class="stock-conf" id="stock-conf">conf —</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2B · HOLDINGS CORRELATION (只在有相關性時顯示) -->
+  <section class="sec" id="corr-sec" style="border-bottom:none; padding-top:2px; padding-bottom:0; display:none">
+    <div class="corr-card" id="corr-card"></div>
+  </section>
+
+  <!-- 2C · SWING BOOK (在倉部位，有部位才顯示) -->
+  <section class="sec" id="swing-sec" style="border-bottom:none; padding-top:2px; padding-bottom:0; display:none">
+    <div class="swing-book" id="swing-book"></div>
+  </section>
+
+  <!-- 3 · KEY NUMBERS -->
+  <section class="sec" style="border-bottom:none; padding-top:14px">
+    <div class="keynums">
+      <div class="keynum entry">
+        <div class="kn-label">Entry</div>
+        <div class="kn-val" id="kn-entry">—</div>
+        <div class="kn-sub" id="kn-entry-sub">進場區</div>
+      </div>
+      <div class="keynum stop">
+        <div class="kn-label">Stop</div>
+        <div class="kn-val" id="kn-stop">—</div>
+        <div class="kn-sub">停損</div>
+      </div>
+      <div class="keynum target">
+        <div class="kn-label">Target</div>
+        <div class="kn-val" id="kn-target">—</div>
+        <div class="kn-sub" id="kn-rr">目標</div>
+      </div>
+      <div class="keynum hold">
+        <div class="kn-label">Hold</div>
+        <div class="kn-val" id="kn-hold">—</div>
+        <div class="kn-sub">天</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3B · POSITION SIZING（買多少 · 有資料才顯示）-->
+  <section class="sec" id="sizing-sec" style="border-top:none; padding-top:0; display:none">
+    <div class="sizing-card" id="sizing-card"></div>
+  </section>
+
+  <!-- 4 · CHART -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">04</span> 走勢圖 · CHART</div>
+    <a id="tv-link" href="#" target="_blank" rel="noopener" class="tv-cta">
+      <div class="tv-cta-icon">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"/>
+          <path d="M7 14l3-3 3 3 5-6"/>
+          <circle cx="7" cy="14" r="1.2" fill="currentColor"/>
+          <circle cx="10" cy="11" r="1.2" fill="currentColor"/>
+          <circle cx="13" cy="14" r="1.2" fill="currentColor"/>
+          <circle cx="18" cy="8"  r="1.2" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="tv-cta-body">
+        <div class="tv-cta-h"><span id="tv-cta-name">—</span> <span id="tv-cta-code" class="tv-cta-code">—</span></div>
+        <div class="tv-cta-sub">在 TradingView 開完整 K 線圖 · 日線 / 週線 / 技術指標</div>
+      </div>
+      <div class="tv-cta-arrow">→</div>
+    </a>
+  </section>
+
+  <!-- 5 · DEEP ANALYSIS -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">05</span> 深度分析 · ANALYSIS</div>
+    <div id="analysis"></div>
+  </section>
+
+  <!-- 6 · DEVIL'S ADVOCATE -->
+  <section class="sec" id="devil-sec">
+    <div class="sec-label"><span class="sec-no">06</span> 反方論述 · DEVIL'S ADVOCATE</div>
+    <div class="devil">
+      <div class="devil-head">
+        <span class="devil-who">⚔ DA · 反對派</span>
+        <span class="devil-verdict" id="devil-verdict">—</span>
+      </div>
+      <p class="devil-summary" id="devil-summary"></p>
+      <div class="devil-args" id="devil-args"></div>
+    </div>
+  </section>
+
+  <!-- 7 · RISK SCENARIOS -->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">07</span> 風險劇本 · IF → THEN</div>
+    <p class="prose" style="font-size:14.5px; color:var(--ink2); margin-bottom:16px">
+      像臨床的決策規則 —— 看到什麼狀況，就做什麼動作。盤中照表操課，不臨場猶豫。
+    </p>
+    <div class="risk-list" id="risk-list"></div>
+  </section>
+
+  <!-- 8 · EXECUTION CHECKLIST（波段版：按持有階段組織）-->
+  <section class="sec">
+    <div class="sec-label"><span class="sec-no">08</span> 波段照護計畫 · CARE PLAN</div>
+    <div class="check-progress">
+      <span id="check-count">0 / 0</span>
+      <span class="cp-bar"><i id="check-bar" style="width:0%"></i></span>
+      <button class="check-reset" id="check-reset">重置</button>
+    </div>
+    <div class="checklist" id="checklist"></div>
+  </section>
+
+  <!-- FOOTER NAV -->
+  <nav class="foot-nav">
+    <a class="home" href="https://ianian22493.github.io/">← 柚子首頁</a>
+    <span class="fn-spacer"></span>
+    <a href="#" id="prev-pick">← 前一筆</a>
+    <a href="index.html">月曆</a>
+    <a href="#" id="next-pick">下一筆 →</a>
+  </nav>
+
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   SAMPLE DATA — used when the DATA_JSON token is left unreplaced
+   (mockup mode, i.e. opening this template file directly)
+   ════════════════════════════════════════════════════════════════ */
+const SAMPLE = {
+  date: "2026-06-19",
+  regime: "中性偏多",
+  risk_level: "中",
+  trading_budget: "NT$ 80,000",
+  code: "2317", name: "鴻海",
+  verdict: "進攻", confidence: 0.85,
+  entry_zone: "286–290", stop_loss: "282",
+  target: "303", hold_days: "5–10",
+  ref_close: 289.0, risk_reward: "3.2",
+  context_paragraph: "今日台股 regime 為中性偏多，加權指數站回月線，外資由連續賣超轉為小幅買超，市場情緒從謹慎轉為觀望。AI 伺服器與散熱類股出現資金輪動跡象，但整體量能尚未放大，屬於「可以小量試單、不宜重壓」的盤勢。在這個 regime 下，系統的交易預算控制在 8 萬，單一部位不超過總資金的 4%。",
+  why_this_stock: "鴻海是這波 AI 伺服器代工的核心受惠者，且本益比相對同業仍偏低。相較於股價已大漲的散熱股，鴻海的風險報酬比更乾淨——下檔有月線與前低雙重支撐，上檔則有法人目標價空間。在十幾檔候選中，它是「故事好、技術面剛突破、但還沒漲完」的少數標的。",
+  entry_rationale: "286–290 是這兩天的盤整區上緣，今日收 289 剛好站上。建議在 286–290 之間進場，若開盤跳空過高（>293）則放棄追，等回測。",
+  stop_rationale: "282 是前一波低點與月線的交會處。跌破代表這次突破失敗，必須無條件停損，不凹單。以 289 進場計算，停損約 -2.4%。",
+  target_rationale: "303 是去年高點的頸線壓力，也是法人最近一致上調的目標價區。風險報酬比 3.2，符合系統「報酬至少是風險 2.5 倍才出手」的門檻。",
+  hold_rationale: "這是波段而非當沖，預計持有 5–10 個交易日。若 3 日內未表態（量縮價平），可考慮提前出場換股。",
+  devils_advocate: {
+    verdict: "謹慎反對",
+    summary: "我承認故事好，但時機有疑慮。這個位置是「突破當天追高」，而突破常有假突破。",
+    counter_arguments: [
+      "今日量能只有 5 日均量的 1.05 倍，突破缺乏量能背書，假突破機率不低。",
+      "外資雖轉買超，但金額僅 12 億，相對大盤盤面屬於雜訊等級，不足以構成趨勢確認。",
+      "鴻海權值股屬性，容易被大盤拖累——若加權指數回檔，個股技術面再好也難獨善其身。"
+    ]
+  },
+  risk_scenarios: [
+    { trigger: "若開盤跌破 282", action: "立刻停損出場", severity: "stop", rationale: "前波低點與月線交會，跌破代表突破失敗，紀律性停損。" },
+    { trigger: "若開盤量未達 5 日均量 1.2x", action: "不進場、續觀察", severity: "hold", rationale: "突破需要量能背書，量不到寧可錯過也不冒假突破風險。" },
+    { trigger: "若跳空開高 >293", action: "放棄追高、等回測", severity: "hold", rationale: "進場成本墊高會破壞風險報酬比，等回到 286–290 再說。" },
+    { trigger: "若盤中放量站上 295", action: "可加碼至滿倉", severity: "go", rationale: "量價齊揚確認趨勢，是這次劇本中唯一加碼條件。" },
+    { trigger: "若收盤跌回 285 以下", action: "隔日減半部位", severity: "hold", rationale: "收盤破進場區下緣代表多方力竭，先降低曝險。" }
+  ],
+  execution_checklist: [
+    { time: "盤前", action: "確認 286–290 在開盤跳空合理範圍內，未跳空過高" },
+    { time: "09:00", action: "觀察開盤量能與第一根 K 棒方向" },
+    { time: "09:30", action: "若量達 5 日均量 1.2x 且價在 286–290 → 進場" },
+    { time: "盤中", action: "設好 282 停損單，放著不動" },
+    { time: "收盤", action: "若收 285 以下 → 記錄，準備隔日減半" }
+  ],
+  watchlist_zones: [
+    { code:"6534", name:"正瀚", priority:3, px:95.0, start:92, add:82, status:"接近", hit:false, rev:{yoy:29,month:"6月",trend:"🔥加速",signal:"confirm",brief:"6月營收 YoY +29%（🔥加速、連13月正、累計+4%、毛利86%🏰）"} },
+    { code:"3546", name:"宇峻", priority:5, px:71.0, start:72, add:64, status:"起手區", hit:true, days_in_zone:2, note:"遊戲收稅口、連年配股、財報加速股價沒動", rev:{yoy:44,month:"6月",trend:"高檔穩健",signal:"confirm",brief:"6月營收 YoY +44%（高檔穩健、連5月正、累計+48%、毛利89%🏰·26Q1）"}, chip:{big:34,k1000:23,retail:20,signal:"neutral",brief:"大戶34%·千張23%·散戶20%（散戶多籌碼鬆、趨勢累積中）"}},
+    { code:"5306", name:"桂盟", priority:6, px:94.5, start:88, add:82, status:"還遠", hit:false, rev:{yoy:32,trend:"🔥加速",signal:"confirm",brief:"6月營收 YoY +32%（🔥加速、連4月正、累計+8%）"} },
+    { code:"2755", name:"揚秦", priority:7, px:103.5, start:105, add:92, status:"起手區", hit:true, days_in_zone:1, thin:true, vol:55, note:"餐飲展店成長+配股大方、超秦雞肉鏈護城河", rev:{yoy:18,trend:"穩定高成長",signal:"confirm",brief:"6月營收 YoY +18%（穩定高成長、連13月正、累計+19%）"} },
+    { code:"4571", name:"鈞興-KY", priority:8, px:163.0, start:160, add:142, status:"接近", hit:false, rev:{yoy:6,trend:"持平",signal:"neutral",brief:"6月營收 YoY +6%（持平、連3月正、累計-1%）"} }
+  ],
+  watchlist_events: [ { symbol:"3546.TWO", name:"宇峻", date:"2026-08-11", type:"Q2財報", days_away:4, note:"檢驗遊戲營收持續性、毛利89%守不守得住" } ],
+  probation: { status:"probation", badge:"試用期 0/10", n:0, mean_alpha:null, reason:"C1 上線 0.0 週、尚無結案實單。累積中——先讓它跑、別當主力。" }
+};
+
+/* ════════════════════════════════════════════════════════════════
+   LOAD DATA — JSON injection or SAMPLE fallback
+   ════════════════════════════════════════════════════════════════ */
+let DATA;
+{
+  const raw = (document.getElementById('pick-data')?.textContent || '').trim();
+  if (!raw || raw.startsWith('{{')) {
+    // Mockup mode: template opened directly, token unreplaced → demo data.
+    DATA = SAMPLE;
+  } else {
+    try { DATA = JSON.parse(raw); }
+    catch(e){
+      // Real page with broken data: never silently show SAMPLE as if it
+      // were today's analysis — render an explicit error state instead.
+      DATA = {};
+      document.body.insertAdjacentHTML('afterbegin',
+        '<div style="background:#8a2222;color:#fff;padding:14px 20px;font-size:15px;line-height:1.6">' +
+        '⚠ 本頁資料載入失敗（pick-data JSON 解析錯誤）。以下欄位皆為空白佔位，' +
+        '不是今日實際分析——請檢查 picks/generate.py 的輸出。</div>');
+    }
+  }
+}
+
+const f = (v, dflt='—') => (v === undefined || v === null || v === '') ? dflt : v;
+
+/* ── Date formatting ── */
+const WD = ['日','一','二','三','四','五','六'];
+function fmtDate(iso){
+  if(!iso) return {full:'—', wd:'', mono:'—'};
+  const d = new Date(iso + 'T00:00:00');
+  if(isNaN(d)) return {full:iso, wd:'', mono:iso};
+  return {
+    full: `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`,
+    wd: `星期${WD[d.getDay()]}`,
+    mono: iso.replace(/-/g,' · ')
+  };
+}
+
+/* ════════════════ RENDER ════════════════ */
+const dt = fmtDate(DATA.date);
+document.getElementById('rb-date').textContent = dt.mono;
+
+document.getElementById('hero-date').innerHTML = `
+  <span>${dt.full}</span>
+  <span class="weekday">${dt.wd}</span>
+`;
+document.getElementById('hero-verdict').textContent = f(DATA.verdict, '進攻');
+
+const heroChips = `
+  <span class="hero-chiprow" style="margin-top:14px">
+    <span class="chip regime"><span class="dot"></span>REGIME · ${f(DATA.regime)}</span>
+    <span class="chip risk"><span class="dot"></span>風險 · ${f(DATA.risk_level)}</span>
+    <span class="chip budget"><span class="dot"></span>預算 · ${f(DATA.trading_budget)}</span>
+  </span>`;
+document.getElementById('hero-sub').innerHTML =
+  `今天系統決定<span class="accent"> 開波段倉</span>。以下是未來 2 週-1 個月的完整劇本與風險控制。` + heroChips;
+
+/* Stock card */
+document.getElementById('stock-code').textContent = f(DATA.code);
+document.getElementById('stock-name').textContent = f(DATA.name);
+document.getElementById('stock-verdict').textContent = f(DATA.verdict);
+const conf = Math.round((DATA.confidence || 0) * 100);
+document.getElementById('conf-fill').style.width = conf + '%';
+document.getElementById('stock-conf').textContent = `信心 · ${conf}%`;
+
+/* Key numbers */
+document.getElementById('kn-entry').textContent = f(DATA.entry_zone);
+document.getElementById('kn-entry-sub').textContent = DATA.ref_close ? `收 ${DATA.ref_close}` : '進場區';
+document.getElementById('kn-stop').textContent = f(DATA.stop_loss);
+document.getElementById('kn-target').textContent = f(DATA.target);
+document.getElementById('kn-rr').textContent = DATA.risk_reward ? `R:R ${DATA.risk_reward}` : '目標';
+/* hold_days「10-22 個交易日」太長塞不下 kn-val — 抽數字區間，單位下移到 sub */
+(function(){
+  const hd = String(DATA.hold_days || '—');
+  const m = hd.match(/(\d+\s*[-~]\s*\d+|\d+)/);
+  const knHold = document.getElementById('kn-hold');
+  knHold.textContent = m ? m[1].replace(/\s/g,'') : f(DATA.hold_days);
+  const sub = knHold.nextElementSibling;
+  if(sub && sub.classList.contains('kn-sub')) sub.textContent = /交易日/.test(hd) ? '交易日' : '天';
+})();
+
+/* Tab title */
+if(DATA.code && DATA.code !== '—'){
+  document.title = `${DATA.code} ${DATA.name || ''} · ${DATA.verdict || 'Pick'} · Yuzu`;
+}
+
+/* 恐慌日 SOP 提示條（連動 #3）— 這天觸發了寶藏系統的恐慌日條件 */
+(function renderPanicStrip(){
+  const p = DATA.panic_sop;
+  if(!p || !p.triggered) return;
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  hero.insertAdjacentHTML('afterend', `
+    <div class="panic-strip">🚨 <b>恐慌日 SOP 條件觸發</b> — ${(p.reasons||[]).join(' · ')}。
+    Swing 停開新倉；長波買點窗口 → 寶藏股研究室「恐慌日SOP.md」照表操課。</div>`);
+})();
+
+/* 寶藏觀察名單·入場區（連動 #4）— 永遠列出全名單＋現價＋起手/加碼價，
+   到起手/加碼區者醒目標示。長波埋伏，與波段 pick 是兩套獨立紀律。 */
+(function renderWatchlistZones(){
+  const zs = DATA.watchlist_zones;
+  if(!zs || !zs.length) return;
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  const badge = s => {
+    if(s==='加碼區') return '<span style="background:#A67C00;color:#fff;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700">🔥 加碼區</span>';
+    if(s==='起手區') return '<span style="background:#C9A84C;color:#1a1a1a;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700">🎯 起手區</span>';
+    if(s==='接近')  return '<span style="color:#C9A84C;font-size:11px;font-weight:600">接近</span>';
+    return '<span style="color:var(--text3,#8a8a8a);font-size:11px">還遠</span>';
+  };
+  const revColor = {confirm:'var(--text3,#8a8a8a)', warn:'#C0392B', caution:'var(--text3,#8a8a8a)', neutral:'var(--text3,#8a8a8a)'};
+  const revTail = {confirm:'', warn:' ← 論述亮紅燈', caution:'', neutral:''};
+  const prioBadge = z => {
+    const p = z.priority;
+    if(!p) return '';
+    // 彩券只給明確標記的 Stage-0 題材股(z.tier)；否則照排名分主菜/時機/配菜(尾端歸配菜、不再自動變彩券)
+    const tierName = z.tier ? z.tier : (p<=3?'主菜':p<=6?'時機':'配菜');
+    const c='var(--text3,#8a8a8a)';
+    return `<span style="display:inline-block;font-size:10px;font-weight:700;color:${c};border:1px solid ${c};border-radius:4px;padding:0 4px;margin-right:5px">#${p} ${tierName}</span>`;
+  };
+  const rows = zs.map(z=>{
+    const hit = z.status==='加碼區' || z.status==='起手區';
+    const owned = !!z.held;
+    const bg = owned ? 'background:rgba(30,132,73,0.10);border-left:3px solid #1E8449;'
+             : hit ? 'background:rgba(201,168,76,0.15);' : '';
+    const heldBadge = owned ? `<span style="display:inline-block;font-size:10px;font-weight:700;color:#fff;background:${(z.held.pnl_pct??0)>=0?'#1E8449':'#C0392B'};border-radius:4px;padding:0 5px;margin-left:5px">✅持有 ${z.held.shares}股 ${(z.held.pnl_pct??0)>=0?'+':''}${z.held.pnl_pct??''}%</span>` : '';
+    const thinMark = z.thin ? ' <span style="color:#C0392B;font-size:10px">💧薄量</span>' : '';
+    const sub = hit ? `<div style="font-size:10.5px;color:var(--text3,#8a8a8a);padding:0 8px 5px;line-height:1.35">🎯 進場區第 ${z.days_in_zone||1} 天 · ${(z.note||'').slice(0,64)}</div>` : '';
+    const rev = z.rev ? `<div style="font-size:10.5px;padding:0 8px 5px;line-height:1.3;color:${revColor[z.rev.signal]||revColor.neutral};font-weight:${(z.rev.signal==='warn'||z.rev.signal==='confirm')?600:400}">📈 ${z.rev.brief}${revTail[z.rev.signal]||''}</div>` : '';
+    const chipColor = {accumulate:'var(--text3,#8a8a8a)', distribute:'#C0392B', neutral:'var(--text3,#8a8a8a)'};
+    const chip = (z.chip && (z.chip.signal==='accumulate'||z.chip.signal==='distribute')) ? `<div style="font-size:10.5px;padding:0 8px 5px;line-height:1.3;color:${chipColor[z.chip.signal]||chipColor.neutral};font-weight:600">💰 聰明錢：${z.chip.brief}</div>` : '';
+    const zoneLabel = owned ? `加碼≤${z.add??'—'}（持有中，跌到加碼區才補）` : `起手≤${z.start??'—'} · 加碼≤${z.add??'—'}`;
+    return `<div style="margin-top:3px;border-radius:5px;${bg}">
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 8px 3px;line-height:1.4">
+        <span style="flex:1;font-size:12px">${prioBadge(z)}<b>${z.code}</b> ${z.name}${heldBadge}${thinMark}</span>
+        <span style="font-size:12px;${hit?'color:#C9A84C;font-weight:700':''}">現 ${z.px??'—'}</span>
+        <span style="font-size:11px;color:var(--text3,#8a8a8a)">${zoneLabel}</span>
+        <span style="min-width:60px;text-align:right">${owned?'':badge(z.status)}</span>
+      </div>${rev}${chip}${sub}
+    </div>`;
+  }).join('');
+  const anyHit = zs.some(z=>z.status==='加碼區'||z.status==='起手區');
+  const asOf = (zs.find(z=>z.rev)||{}).rev; const asOfTxt = asOf&&asOf.month ? ` · 營收截至${asOf.month}` : '';
+  const evs = DATA.watchlist_events || [];
+  const evLine = evs.length ? `<div style="font-size:11px;color:#C9A84C;margin:3px 0 1px;padding:5px 8px;background:rgba(201,168,76,0.10);border-radius:5px">📅 近期財報/事件 &nbsp;${evs.map(e=>`${(e.date||'').slice(5)} <b>${e.name}</b> ${e.type||''}${e.days_away===0?'（今天）':e.days_away>0?`（還${e.days_away}天）`:'（剛過）'}`).join(' &nbsp;·&nbsp; ')}</div>` : '';
+  hero.insertAdjacentHTML('afterend', `
+    <div style="max-width:760px;margin:14px auto 0;padding:10px 14px;border:1px solid rgba(201,168,76,${anyHit?0.65:0.35});border-radius:8px;background:rgba(201,168,76,0.05)">
+      <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:#C9A84C">⭐ 寶藏觀察名單 · 入場區${anyHit?' &nbsp;—&nbsp; 🎯 有標的到價！':''}</div>
+      <div style="font-size:11px;color:var(--text3,#8a8a8a);margin:2px 0 3px">依 <b>#買進優先序</b>排（週檢更新）· <span style="color:#C9A84C;font-weight:700">金＝到價可買</span> · <span style="color:#C0392B;font-weight:700">紅＝警訊</span> · <span style="color:#1E8449;font-weight:700">綠＝持有中</span> · 📈月營收 💰大戶籌碼 · 掛限價分批別市價追${asOfTxt}</div>
+      ${evLine}${rows}
+    </div>`);
+})();
+
+/* 波段 C1 試用期體檢徽章（止血開關）— 副菜別當主力、別默默失血 */
+(function renderProbation(){
+  const p = DATA.probation;
+  if(!p || !p.badge) return;
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  const c = p.status==='suspended' ? {bg:'rgba(192,57,43,0.12)',bd:'#C0392B',fg:'#C0392B'}
+          : p.status==='active_pass' ? {bg:'rgba(30,132,73,0.10)',bd:'rgba(30,132,73,0.5)',fg:'#1E8449'}
+          : {bg:'rgba(138,138,138,0.08)',bd:'rgba(138,138,138,0.35)',fg:'var(--text3,#8a8a8a)'};
+  hero.insertAdjacentHTML('afterend', `
+    <div style="max-width:760px;margin:10px auto 0;padding:7px 12px;border:1px solid ${c.bd};border-radius:8px;background:${c.bg};font-size:11px;color:${c.fg};line-height:1.4">
+      🎲 <b>波段 C1</b> · ${p.badge}<span style="color:var(--text3,#8a8a8a)"> — ${p.reason||''}</span>
+    </div>`);
+})();
+
+/* 波段全紀錄（不限 C1 上線日）— 讓照紀律做的每一筆都看得到 alpha（含精誠/所羅門） */
+(function renderSwingRecord(){
+  const r = DATA.swing_record;
+  if(!r || !r.trades || !r.trades.length) return;
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  const rows = r.trades.slice().reverse().map(t=>{
+    const col = t.win ? '#1E8449' : '#C0392B';
+    const era = t.era==='new' ? '新C1' : '舊C1';
+    const rt = (t.ret>0?'+':'')+t.ret;
+    const al = (t.alpha>0?'+':'')+t.alpha;
+    return `<div style="display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-top:1px solid rgba(138,138,138,0.15)">
+      <span>${t.date.slice(5)} <b>${t.code} ${t.name||''}</b> <span style="color:var(--text3,#8a8a8a);font-size:9px">${era}</span></span>
+      <span style="color:${col};font-weight:600;white-space:nowrap">${rt}% <span style="opacity:.7">(α ${al}%)</span></span>
+    </div>`;
+  }).join('');
+  const ma = (r.mean_alpha>0?'+':'')+r.mean_alpha;
+  hero.insertAdjacentHTML('afterend', `
+    <details style="max-width:760px;margin:8px auto 0;padding:7px 12px;border:1px solid rgba(138,138,138,0.35);border-radius:8px;background:rgba(138,138,138,0.05);font-size:11px">
+      <summary style="cursor:pointer;color:var(--text2,#555)">📒 <b>波段全紀錄</b> · ${r.n} 筆結案 · 勝率 ${r.win_rate}% · 平均 alpha ${ma}%<span style="color:var(--text3,#8a8a8a)">（含 8/7 改版前，判對錯用 alpha）</span></summary>
+      <div style="margin-top:6px">${rows}</div>
+    </details>`);
+})();
+
+/* 寶藏雷達收斂徽章（連動 #2）— pick 命中寶藏觀察名單時顯示 */
+/* 部位大小建議（2026-07-24 風險基準法）— 有可算資料才顯示 */
+(function renderSizing(){
+  const s = DATA.position_sizing;
+  const sec = document.getElementById('sizing-sec');
+  const card = document.getElementById('sizing-card');
+  if(!sec || !card || !s) return;
+  if(!s.available){
+    // 倉滿/風控封鎖時交易預算為 0，不顯示（避免誤導）
+    return;
+  }
+  const bindingCls = s.binding === '風險上限' ? 'risk' : 'even';
+  card.innerHTML = `
+    <div class="sz-head">💰 部位大小建議 · POSITION SIZE
+      <span class="sz-badge ${bindingCls}">${s.binding}</span>
+    </div>
+    <div class="sz-main">
+      <div class="sz-lots">${s.lots_desc}</div>
+      <div class="sz-meta">
+        <span>約 NT$ ${Number(s.size_twd).toLocaleString()}</span>
+        <span>佔交易預算 ${s.size_pct_of_budget}%</span>
+      </div>
+    </div>
+    <div class="sz-risk">
+      觸停損最多虧 <b>NT$ ${Number(s.max_loss_twd).toLocaleString()}</b>
+      （交易預算的 ${s.max_loss_pct_of_budget}%，停損距進場 ${s.stop_distance_pct}%）
+    </div>
+    <div class="sz-note">風險基準法：每筆最多虧交易預算 ${s.risk_ceil_pct}%，停損越寬部位自動越小。
+      此為機械式建議，實際下單張數請自行判斷。</div>`;
+  sec.style.display = 'block';
+})();
+
+(function renderTreasure(){
+  const tw = DATA.treasure_watch;
+  if(!tw || !tw.code) return;
+  const card = document.querySelector('.stock-card');
+  if(!card) return;
+  card.insertAdjacentHTML('afterend', `
+    <div class="treasure-badge">
+      <span class="tb-star">⭐</span>
+      <div class="tb-body">
+        <div class="tb-title">寶藏雷達也在追蹤這檔</div>
+        <div class="tb-note">${tw.note || tw.rule || ''}</div>
+      </div>
+    </div>`);
+})();
+
+/* Swing book (波段在倉部位) — 有部位才顯示 */
+(function renderSwingBook(){
+  const ops = DATA.open_positions;
+  if(!ops || !ops.length) return;
+  const sec = document.getElementById('swing-sec');
+  const box = document.getElementById('swing-book');
+  if(!sec || !box) return;
+  const maxP = DATA.max_positions || 5;
+  const softP = DATA.soft_cap || 3;
+  const rows = ops.map(p => {
+    const waiting = p.waiting_fill;
+    const cur = waiting ? '待觸價'
+      : (typeof p.current_return_pct === 'number')
+        ? `${p.current_return_pct >= 0 ? '+' : ''}${p.current_return_pct.toFixed(1)}%` : '—';
+    const curCls = waiting ? ''
+      : (typeof p.current_return_pct === 'number')
+        ? (p.current_return_pct >= 0 ? 'up' : 'down') : '';
+    return `
+    <div class="sb-row">
+      <span class="sb-id"><b>${p.stock_code}</b> ${p.stock_name || ''}</span>
+      <span class="sb-date">${waiting ? ('進場區 ' + (p.entry_zone||'—')) : (p.date||'').slice(5) + ' 進'}</span>
+      <span class="sb-cur ${curCls}">${cur}</span>
+      <span class="sb-plan">停損 ${p.stop_loss || '—'} · 目標 ${p.target || '—'} · D+${p.hold_days_actual || 0}</span>
+    </div>`;
+  }).join('');
+  const capNote = ops.length >= softP ? `達基本 ${softP}·雷達高分可加至 ${maxP}` : `基本 ${softP}/上限 ${maxP}`;
+  box.innerHTML = `
+    <div class="sb-head">📒 波段在倉 ${ops.length} 檔 · ${capNote}</div>
+    ${rows}`;
+  sec.style.display = 'block';
+})();
+
+/* Holdings correlation (Task C) — 只在有 medium/high 警告時顯示 */
+(function renderCorr(){
+  const c = DATA.correlation;
+  if(!c || !c.matches || !c.matches.length) return;
+  if(c.warning_level === 'none') return;
+
+  const sec = document.getElementById('corr-sec');
+  const card = document.getElementById('corr-card');
+  if(!sec || !card) return;
+
+  const level = c.warning_level;
+  const icons = {high:'⚠', medium:'⚡', low:'📎'};
+  const titles = {
+    high:   '注意：與現有持股高度重疊',
+    medium: '提醒：與現有持股同大類',
+    low:    '參考：跟現有持股有輕微相關'
+  };
+  const chips = c.matches.map(m => `
+    <span class="corr-chip ${m.match_type}">
+      <span class="cc-code">${m.code}</span>
+      <span class="cc-name">${m.name}</span>
+      <span class="cc-sector">${m.sector}</span>
+    </span>`).join('');
+  card.className = 'corr-card warn-' + level;
+  card.innerHTML = `
+    <div class="corr-icon">${icons[level] || '📎'}</div>
+    <div class="corr-body">
+      <div class="corr-title">
+        ${titles[level] || titles.low}
+        <span class="corr-level ${level}">${level.toUpperCase()}</span>
+      </div>
+      <div class="corr-summary">${c.summary || ''}</div>
+      <div class="corr-matches">${chips}</div>
+    </div>`;
+  sec.style.display = 'block';
+})();
+
+/* Chart CTA — TradingView free-tier embed walls Taiwan-stock charts
+ * with "此商品僅在 TradingView 可用" for both widgetembed and mini
+ * widgets. Linking out to TV's public symbol page is the cleanest
+ * solution: the page itself is freely viewable with full chart. */
+if(DATA.code && DATA.code !== '—'){
+  const link = document.getElementById('tv-link');
+  link.href = `https://www.tradingview.com/symbols/TWSE-${DATA.code}/`;
+  document.getElementById('tv-cta-name').textContent = f(DATA.name);
+  document.getElementById('tv-cta-code').textContent = `TWSE:${DATA.code}`;
+}
+
+/* Deep analysis */
+const ANALYSIS = [
+  ['脈絡', DATA.context_paragraph],
+  ['為什麼是這檔', DATA.why_this_stock],
+  ['進場依據', DATA.entry_rationale],
+  ['停損依據', DATA.stop_rationale],
+  ['目標與持有', [DATA.target_rationale, DATA.hold_rationale].filter(Boolean).join(' ')]
+];
+document.getElementById('analysis').innerHTML = ANALYSIS.map(([title, body], i) => body ? `
+  <div class="analysis-block">
+    <div class="ab-head"><span class="ab-num">${i+1}</span><span class="ab-title">${title}</span></div>
+    <div class="ab-body${i===0?' lead-cap':''}"><p>${body}</p></div>
+  </div>` : '').join('') || '<p class="empty-field">尚無分析內容。</p>';
+
+/* Devil's advocate */
+const da = DATA.devils_advocate || {};
+if(da.summary || (da.counter_arguments||[]).length){
+  document.getElementById('devil-verdict').textContent = f(da.verdict, '反對');
+  document.getElementById('devil-summary').textContent = f(da.summary, '');
+  document.getElementById('devil-args').innerHTML =
+    (da.counter_arguments||[]).map(a => `<div class="devil-arg">${a}</div>`).join('');
+} else {
+  document.getElementById('devil-sec').style.display = 'none';
+}
+
+/* Risk scenarios */
+const SEV_ICON = {
+  stop: '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
+  hold: '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r=".6" fill="currentColor"/></svg>',
+  go:   '<svg class="rt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>'
+};
+document.getElementById('risk-list').innerHTML =
+  (DATA.risk_scenarios||[]).map(r => {
+    const sev = r.severity || 'hold';
+    return `
+    <div class="risk-card sev-${sev}">
+      <div class="risk-trigger">${SEV_ICON[sev]||SEV_ICON.hold}<span>${f(r.trigger)}</span></div>
+      <div class="risk-action"><span class="ra-arrow">→</span><span class="ra-text">${f(r.action)}</span></div>
+      ${r.rationale ? `<div class="risk-rationale">${r.rationale}</div>` : ''}
+    </div>`;
+  }).join('') || '<p class="empty-field">無風險劇本。</p>';
+
+/* Execution checklist · checkboxes persist in localStorage */
+const CHECK_KEY = 'yuzu-check-' + f(DATA.date, 'x') + '-' + f(DATA.code, 'x');
+let checkState = {};
+try { checkState = JSON.parse(localStorage.getItem(CHECK_KEY) || '{}'); } catch(e){}
+
+const checklist = DATA.execution_checklist || [];
+function renderChecklist(){
+  const host = document.getElementById('checklist');
+  host.innerHTML = checklist.map((c, i) => `
+    <div class="check-item ${checkState[i] ? 'done' : ''}" data-idx="${i}">
+      <div class="check-box" role="checkbox" aria-checked="${!!checkState[i]}" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+      </div>
+      <div class="check-body">
+        <div class="check-time">${f(c.time)}</div>
+        <div class="check-action">${f(c.action)}</div>
+      </div>
+    </div>`).join('') || '<p class="empty-field">無執行清單。</p>';
+  updateProgress();
+  host.querySelectorAll('.check-item').forEach(item => {
+    const toggle = () => {
+      const idx = item.dataset.idx;
+      checkState[idx] = !checkState[idx];
+      localStorage.setItem(CHECK_KEY, JSON.stringify(checkState));
+      item.classList.toggle('done', checkState[idx]);
+      item.querySelector('.check-box').setAttribute('aria-checked', !!checkState[idx]);
+      updateProgress();
+    };
+    item.querySelector('.check-box').addEventListener('click', toggle);
+    item.querySelector('.check-box').addEventListener('keydown', e => {
+      if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); toggle(); }
+    });
+  });
+}
+function updateProgress(){
+  const total = checklist.length;
+  const done = Object.values(checkState).filter(Boolean).length;
+  document.getElementById('check-count').textContent = `${done} / ${total}`;
+  document.getElementById('check-bar').style.width = total ? (done/total*100)+'%' : '0%';
+}
+document.getElementById('check-reset').addEventListener('click', () => {
+  checkState = {};
+  localStorage.removeItem(CHECK_KEY);
+  renderChecklist();
+});
+renderChecklist();
+
+/* Prev/next nav (wired by generator; demo = disabled) */
+if(DATA.prev_date) document.getElementById('prev-pick').href = DATA.prev_date + '.html';
+else document.getElementById('prev-pick').style.opacity = '.35';
+if(DATA.next_date) document.getElementById('next-pick').href = DATA.next_date + '.html';
+else document.getElementById('next-pick').style.opacity = '.35';
+
+if(window.applyGlossary) window.applyGlossary();
+</script>
+<script src="glossary.js"></script>
+
+</body>
+</html>
