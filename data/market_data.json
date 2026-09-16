@@ -1,27 +1,27 @@
 {
-  "fetched_at": "2026-09-16T00:24:05.340154+08:00",
+  "fetched_at": "2026-09-16T08:31:13.757584+08:00",
   "indices": {
     "taiex": {
       "close": 45862.52,
       "change_pct": 0
     },
     "sp500": {
-      "close": 7586.86,
+      "close": 7585.73,
       "prev_close": 7619.98,
-      "change": -33.12,
-      "change_pct": -0.43
+      "change": -34.25,
+      "change_pct": -0.45
     },
     "nasdaq": {
-      "close": 26019.39,
+      "close": 25981.57,
       "prev_close": 26186.41,
-      "change": -167.02,
-      "change_pct": -0.64
+      "change": -204.84,
+      "change_pct": -0.78
     },
     "vix": {
-      "close": 17.7,
+      "close": 17.2,
       "prev_close": 17.1,
-      "change": 0.6,
-      "change_pct": 3.51
+      "change": 0.1,
+      "change_pct": 0.58
     }
   },
   "tw_stocks": {
@@ -248,52 +248,52 @@
   },
   "us_stocks": {
     "AMZN": {
-      "close": 249.5,
-      "change_pct": -1.59
+      "close": null,
+      "change_pct": null
     },
     "CELH": {
-      "close": 27.82,
-      "change_pct": -2.21
+      "close": null,
+      "change_pct": null
     },
     "GOOGL": {
-      "close": 344.53,
-      "change_pct": -1.39
+      "close": null,
+      "change_pct": null
     },
     "MELI": {
-      "close": 1853.12,
-      "change_pct": -2.48
+      "close": null,
+      "change_pct": null
     },
     "MSFT": {
-      "close": 500.79,
-      "change_pct": -0.91
+      "close": null,
+      "change_pct": null
     },
     "NVDA": {
-      "close": 212.07,
-      "change_pct": 0.53
+      "close": null,
+      "change_pct": null
     },
     "ONDS": {
-      "close": 7.29,
-      "change_pct": 0.78
+      "close": null,
+      "change_pct": null
     },
     "RBRK": {
-      "close": 100.14,
-      "change_pct": -0.06
+      "close": null,
+      "change_pct": null
     },
     "S": {
-      "close": 23.33,
-      "change_pct": 3.21
+      "close": null,
+      "change_pct": null
     },
     "SOUN": {
-      "close": 6.3,
-      "change_pct": -2.7
+      "close": null,
+      "change_pct": null
     },
     "TSLA": {
-      "close": 360.91,
-      "change_pct": 0.54
+      "close": null,
+      "change_pct": null
     },
     "ZS": {
-      "close": 193.85,
-      "change_pct": 1.11
+      "close": null,
+      "change_pct": null
     }
   },
   "fx": {
@@ -302,16 +302,16 @@
     "jpy_per_usd": 155.04
   },
   "portfolio_value": {
-    "tw_stocks_twd": 3865084,
+    "tw_stocks_twd": 3880294,
     "tw_stocks_live": [
       {
         "code": "00675L",
         "name": "富邦臺灣加權正2",
         "shares": 200,
-        "value": 61260,
+        "value": 61940,
         "cost": 51167,
-        "pnl": 10093,
-        "pnl_pct": 19.73,
+        "pnl": 10773,
+        "pnl_pct": 21.05,
         "type": "leveraged_ETF",
         "strategy": "trade",
         "sector": "2X槓桿ETF-加權"
@@ -320,10 +320,10 @@
         "code": "00685L",
         "name": "群益臺灣加權正2",
         "shares": 1000,
-        "value": 11550,
+        "value": 11680,
         "cost": 9363,
-        "pnl": 2187,
-        "pnl_pct": 23.36,
+        "pnl": 2317,
+        "pnl_pct": 24.75,
         "type": "leveraged_ETF",
         "strategy": "trade",
         "sector": "2X槓桿ETF-加權(拆分後)"
@@ -368,10 +368,10 @@
         "code": "1736",
         "name": "喬山",
         "shares": 1000,
-        "value": 125000,
+        "value": 124000,
         "cost": 126000,
-        "pnl": -1000,
-        "pnl_pct": -0.79,
+        "pnl": -2000,
+        "pnl_pct": -1.59,
         "type": "stock",
         "strategy": "long",
         "sector": "健身器材",
@@ -394,10 +394,10 @@
         "code": "2308",
         "name": "台達電",
         "shares": 80,
-        "value": 133600,
+        "value": 129600,
         "cost": 136870,
-        "pnl": -3270,
-        "pnl_pct": -2.39,
+        "pnl": -7270,
+        "pnl_pct": -5.31,
         "_note": "2026-09-14 再加10股@1600(70→80·均價1710.9·DCA下階·AI電源散熱收稅口)；金字塔:1760→1700→1600(此筆)→下階1550·單檔上限4-5%·毛利守32%/AI資料中心占比續升才續接；算進總AI曝險",
         "type": "stock",
         "strategy": "long",
@@ -456,10 +456,10 @@
         "code": "6442",
         "name": "光聖",
         "shares": 130,
-        "value": 196300,
+        "value": 206700,
         "cost": 242577,
-        "pnl": -46277,
-        "pnl_pct": -19.08,
+        "pnl": -35877,
+        "pnl_pct": -14.79,
         "type": "stock",
         "strategy": "both",
         "sector": "通訊網路-光通訊"
@@ -468,10 +468,10 @@
         "code": "6534",
         "name": "正瀚",
         "shares": 1000,
-        "value": 89800,
+        "value": 90500,
         "cost": 92000,
-        "pnl": -2200,
-        "pnl_pct": -2.39,
+        "pnl": -1500,
+        "pnl_pct": -1.63,
         "type": "stock",
         "strategy": "long",
         "sector": "農業生技",
@@ -481,10 +481,10 @@
         "code": "8299",
         "name": "群聯",
         "shares": 130,
-        "value": 249600,
+        "value": 251550,
         "cost": 287322,
-        "pnl": -37722,
-        "pnl_pct": -13.13,
+        "pnl": -35772,
+        "pnl_pct": -12.45,
         "type": "stock",
         "strategy": "long",
         "sector": "半導體-NAND控制IC"
@@ -493,10 +493,10 @@
         "code": "1256",
         "name": "鮮活果汁-KY",
         "shares": 1000,
-        "value": 171000,
+        "value": 172000,
         "cost": 170000,
-        "pnl": 1000,
-        "pnl_pct": 0.59,
+        "pnl": 2000,
+        "pnl_pct": 1.18,
         "type": "stock",
         "strategy": "寶藏·收稅口(手搖飲原料)·非AI",
         "sector": "食品",
@@ -506,10 +506,10 @@
         "code": "3661",
         "name": "世芯-KY",
         "shares": 10,
-        "value": 33550,
+        "value": 35900,
         "cost": 36600,
-        "pnl": -3050,
-        "pnl_pct": -8.33,
+        "pnl": -700,
+        "pnl_pct": -1.91,
         "type": "stock",
         "strategy": "long",
         "sector": "AI ASIC設計",
@@ -519,10 +519,10 @@
         "code": "2645",
         "name": "長榮航太",
         "shares": 1000,
-        "value": 170000,
+        "value": 173000,
         "cost": 170000,
-        "pnl": 0,
-        "pnl_pct": 0.0,
+        "pnl": 3000,
+        "pnl_pct": 1.76,
         "type": "stock",
         "strategy": "long",
         "sector": "航太MRO+國防無人機",
@@ -530,26 +530,26 @@
       }
     ],
     "tw_summary_live": {
-      "total_value": 3865084,
+      "total_value": 3880294,
       "total_cost": 3384290,
-      "total_pnl": 480794,
-      "total_pnl_pct": 14.21,
+      "total_pnl": 496004,
+      "total_pnl_pct": 14.66,
       "broker": "國泰證券"
     },
-    "us_stocks_twd": 446057,
-    "us_stocks_usd": 13939.29,
+    "us_stocks_twd": 0,
+    "us_stocks_usd": 0,
     "us_stocks_live": [
       {
         "ticker": "AMZN",
         "name": "Amazon",
         "shares": 2,
         "avg_cost": 201.5,
-        "close": 249.5,
-        "value_usd": 499.0,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 403.0,
-        "pnl_usd": 96.0,
-        "pnl_pct": 23.82,
-        "change_pct": -1.59
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "CAVA",
@@ -568,12 +568,12 @@
         "name": "Celsius",
         "shares": 13,
         "avg_cost": 29.91,
-        "close": 27.82,
-        "value_usd": 361.66,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 388.83,
-        "pnl_usd": -27.17,
-        "pnl_pct": -6.99,
-        "change_pct": -2.21
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "DRAM",
@@ -592,108 +592,108 @@
         "name": "Alphabet",
         "shares": 7.00298,
         "avg_cost": 291.74,
-        "close": 344.53,
-        "value_usd": 2412.74,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 2043.07,
-        "pnl_usd": 369.67,
-        "pnl_pct": 18.09,
-        "change_pct": -1.39
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "MSFT",
         "name": "Microsoft",
         "shares": 6.0081,
         "avg_cost": 377.52,
-        "close": 500.79,
-        "value_usd": 3008.8,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 2268.18,
-        "pnl_usd": 740.62,
-        "pnl_pct": 32.65,
-        "change_pct": -0.91
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "NVDA",
         "name": "Nvidia",
         "shares": 4.00367,
         "avg_cost": 172.52,
-        "close": 212.07,
-        "value_usd": 849.06,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 690.71,
-        "pnl_usd": 158.35,
-        "pnl_pct": 22.93,
-        "change_pct": 0.53
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "ONDS",
         "name": "Ondas Holdings",
         "shares": 13,
         "avg_cost": 8.46,
-        "close": 7.29,
-        "value_usd": 94.77,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 110.0,
-        "pnl_usd": -15.23,
-        "pnl_pct": -13.85,
-        "change_pct": 0.78
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "RBRK",
         "name": "Rubrik",
         "shares": 9,
         "avg_cost": 47.06,
-        "close": 100.14,
-        "value_usd": 901.26,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 423.5,
-        "pnl_usd": 477.76,
-        "pnl_pct": 112.81,
-        "change_pct": -0.06
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "S",
         "name": "SentinelOne",
         "shares": 1,
         "avg_cost": 12.0,
-        "close": 23.33,
-        "value_usd": 23.33,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 12.0,
-        "pnl_usd": 11.33,
-        "pnl_pct": 94.42,
-        "change_pct": 3.21
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "SOUN",
         "name": "SoundHound AI",
         "shares": 16,
         "avg_cost": 6.22,
-        "close": 6.3,
-        "value_usd": 100.8,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 99.6,
-        "pnl_usd": 1.2,
-        "pnl_pct": 1.2,
-        "change_pct": -2.7
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "TSLA",
         "name": "Tesla",
         "shares": 12,
         "avg_cost": 361.23,
-        "close": 360.91,
-        "value_usd": 4330.92,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 4334.77,
-        "pnl_usd": -3.85,
-        "pnl_pct": -0.09,
-        "change_pct": 0.54
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "ZS",
         "name": "Zscaler",
         "shares": 7,
         "avg_cost": 141.33,
-        "close": 193.85,
-        "value_usd": 1356.95,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 989.33,
-        "pnl_usd": 367.62,
-        "pnl_pct": 37.16,
-        "change_pct": 1.11
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "BROS",
@@ -733,18 +733,18 @@
       }
     ],
     "us_cost_usd": 12860.09,
-    "us_pnl_usd": 1079.2,
-    "us_pnl_pct": 8.39,
+    "us_pnl_usd": -12860.09,
+    "us_pnl_pct": -100.0,
     "funds_twd": 170085,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 11081226,
-    "total_gross_twd": 26481226,
+    "net_assets_twd": 10650379,
+    "total_gross_twd": 26050379,
     "allocation_pct": {
-      "tw_stocks": 14.6,
-      "us_stocks": 1.7,
-      "funds": 0.6,
-      "real_estate": 83.1
+      "tw_stocks": 14.9,
+      "us_stocks": 0.0,
+      "funds": 0.7,
+      "real_estate": 84.5
     }
   },
   "tw_positions_live": [],
@@ -781,28 +781,28 @@
   "ai_sector": {
     "constituents": {
       "2330": {
-        "close": null,
-        "change_pct": null
+        "close": 2378.0,
+        "change_pct": 0.21
       },
       "2454": {
-        "close": null,
-        "change_pct": null
+        "close": 4430.0,
+        "change_pct": -2.85
       },
       "3017": {
-        "close": null,
-        "change_pct": null
+        "close": 3115.0,
+        "change_pct": -5.89
       },
       "3653": {
-        "close": null,
-        "change_pct": null
+        "close": 5310.0,
+        "change_pct": -8.76
       },
       "6669": {
-        "close": null,
-        "change_pct": null
+        "close": 2315.0,
+        "change_pct": 1.98
       },
       "3661": {
-        "close": null,
-        "change_pct": null
+        "close": 3355.0,
+        "change_pct": -6.55
       },
       "00891": {
         "close": null,
@@ -810,35 +810,35 @@
       }
     },
     "avg_change_pct": null,
-    "median_change_pct": null,
+    "median_change_pct": -2.85,
     "count": 7
   },
   "news": {
     "tw": [
-      "【Follow法人】外資狠砍力積電7.2萬張居冠！資金躲進金融電信股 光鼎連2日獲青睞 - Yahoo股市",
-      "台股擂台／「股市獲利王」何文高：台積電除息後 預期將再開偏多上漲格局 - 經濟日報",
-      "台股血洗千點美股來救! 國際股市「紅中透憂」台股買黑不買紅 - 自由財經",
+      "9月16日盤前／油市及債市干擾股市 台股震盪整理 提防外資壓低結算 - 經濟日報",
+      "股市最新爆料，掌握股友們對眾個股股價、技術分析、新聞的第一手... - 股市爆料同學會 - CMoney",
       "台股成交量「今年次低」！縮至6034億元 投顧總座點3大元凶：錢都被漢測抽走 - Yahoo股市",
+      "《台北股市》投信15日賣超股：華邦電、遠東新、南亞科 - ww2.money-link.com.tw",
+      "台股血洗千點美股來救! 國際股市「紅中透憂」台股買黑不買紅 - 自由財經",
       "美股亮出155年來僅現兩次的警訊！席勒本益比快追上網路泡沫時期股票抱長線先看懂指標｜看圖說股市 - Yahoo股市",
+      "【Follow法人】外資狠砍力積電7.2萬張居冠！資金躲進金融電信股 光鼎連2日獲青睞 - Yahoo股市",
+      "漢測凍資8656億！台股收黑量縮今年次低台達電回神攜資安、矽晶圓當救援隊｜Yahoo財經掃描 - Yahoo股市",
+      "「不配息0050」009816連跌5天！今年仍賺近6成 能加碼了？分析師：再等等 - Yahoo股市",
       "台股一反彈！20家券商前8月稅後年增率都破100％ 最強翻20倍 - Yahoo股市",
-      "股市金光閃閃！三大法人狂掃「這類股」逾8.4萬張 股民哭喊：太保守！ - Yahoo股市",
       "【Hot台股】大盤無量下跌...網哀「投信外資都去抽漢測了484」 分析師：影響有限 - Yahoo股市",
-      "搶搭13%配息列車！00919除息前夕爆量21萬張 衝台股第二大 - Yahoo股市",
-      "台積電明除息7元 台股一開盤先蒸發56點 - Yahoo股市",
-      "個股概覽 | 個股 - 股市 - CMoney",
-      "中視-股市最錢線-20260915-高閔漳-費半重挫台股有撐-研究資料2026第四季法人必選好股 - ctv.com.tw"
+      "個股概覽 | 個股 - 股市 - CMoney"
     ],
     "us": [
-      "Wall St wobbles as rising oil and Treasury yields stoke investor unease - Reuters",
-      "The Stock Market Could Be in for an Autumn Fall. Why Wall Street is Getting Nervous. - Barron's",
-      "Wall Street Expects Bad News From the Federal Reserve This Week. History Says a Stock Market Correction May Follow. - The Motley Fool",
-      "US stocks slip after oil prices and the bond market crank up the pressure - Pioneer Press",
-      "US stocks slip after oil prices and the bond market crank up the pressure - The News-Item",
-      "Why one Wall Street firm thinks this year’s stock-market rally is running out of road - MarketWatch",
-      "The stock market could do something strange this week after the Fed decision - cnbc.com",
+      "US stocks slip after oil prices and the bond market crank up the pressure - AP News",
       "Stock Market News, Sept. 14, 2026: 10-Year Treasury Yield Touches 5%, Pushed by Oil Surge - WSJ",
-      "AI stocks drop, but the rest of Wall Street holds steadier after oil prices give back an early jump - AP News",
-      "AI has been carrying the stock market. An industry pause could pull the rug out, warns this Wall Street giant. - MarketWatch"
+      "Wall Street Expects Bad News From the Federal Reserve This Week. History Says a Stock Market Correction May Follow. - The Motley Fool",
+      "The Stock Market Could Be in for an Autumn Fall. Why Wall Street is Getting Nervous. - Barron's",
+      "Wall Street slides as yields remain in focus ahead of the FOMC rate decision - Seeking Alpha",
+      "Why one Wall Street firm thinks this year’s stock-market rally is running out of road - MarketWatch",
+      "AI stocks hold a bit steadier on Wall Street as investors looks ahead to Fed decision - WFMZ.com",
+      "Wall Street ends down, calls for AI slowdown pummel chipmakers - Reuters",
+      "Wall Street firm believes the AI stock market boom is 'nearing an end.' Here's why - CNBC",
+      "If the Fed hikes rates, here's how the stock market might respond - marketplace.org"
     ]
   }
 }
