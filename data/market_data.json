@@ -1,20 +1,20 @@
 {
-  "fetched_at": "2026-09-24T00:13:57.685221+08:00",
+  "fetched_at": "2026-09-24T08:31:08.504933+08:00",
   "indices": {
     "taiex": {
       "close": 48157.29,
       "change_pct": 0
     },
     "sp500": {
-      "close": 7715.68,
+      "close": 7706.03,
       "change_pct": 0
     },
     "nasdaq": {
-      "close": 26965.72,
+      "close": 26936.04,
       "change_pct": 0
     },
     "vix": {
-      "close": 14.78,
+      "close": 15.18,
       "change_pct": 0
     }
   },
@@ -240,23 +240,56 @@
       }
     }
   },
-  "us_stocks": {},
+  "us_stocks": {
+    "AMZN": {
+      "close": null,
+      "change_pct": null
+    },
+    "CELH": {
+      "close": null,
+      "change_pct": null
+    },
+    "GOOGL": {
+      "close": null,
+      "change_pct": null
+    },
+    "MSFT": {
+      "close": null,
+      "change_pct": null
+    },
+    "NVDA": {
+      "close": null,
+      "change_pct": null
+    },
+    "ONDS": {
+      "close": null,
+      "change_pct": null
+    },
+    "SOUN": {
+      "close": null,
+      "change_pct": null
+    },
+    "TSLA": {
+      "close": null,
+      "change_pct": null
+    }
+  },
   "fx": {
     "usd_twd": 32.0,
     "twd_per_jpy": null,
     "jpy_per_usd": 157.98
   },
   "portfolio_value": {
-    "tw_stocks_twd": 4015562,
+    "tw_stocks_twd": 4008382,
     "tw_stocks_live": [
       {
         "code": "00675L",
         "name": "富邦臺灣加權正2",
         "shares": 200,
-        "value": 68320,
+        "value": 67520,
         "cost": 51167,
-        "pnl": 17153,
-        "pnl_pct": 33.52,
+        "pnl": 16353,
+        "pnl_pct": 31.96,
         "type": "leveraged_ETF",
         "strategy": "trade",
         "sector": "2X槓桿ETF-加權"
@@ -265,10 +298,10 @@
         "code": "00685L",
         "name": "群益臺灣加權正2",
         "shares": 1000,
-        "value": 12890,
+        "value": 12710,
         "cost": 9363,
-        "pnl": 3527,
-        "pnl_pct": 37.67,
+        "pnl": 3347,
+        "pnl_pct": 35.75,
         "type": "leveraged_ETF",
         "strategy": "trade",
         "sector": "2X槓桿ETF-加權(拆分後)"
@@ -313,10 +346,10 @@
         "code": "1736",
         "name": "喬山",
         "shares": 1000,
-        "value": 126000,
+        "value": 124500,
         "cost": 126000,
-        "pnl": 0,
-        "pnl_pct": 0.0,
+        "pnl": -1500,
+        "pnl_pct": -1.19,
         "type": "stock",
         "strategy": "long",
         "sector": "健身器材",
@@ -401,10 +434,10 @@
         "code": "6442",
         "name": "光聖",
         "shares": 130,
-        "value": 196950,
+        "value": 196300,
         "cost": 242577,
-        "pnl": -45627,
-        "pnl_pct": -18.81,
+        "pnl": -46277,
+        "pnl_pct": -19.08,
         "type": "stock",
         "strategy": "both",
         "sector": "通訊網路-光通訊"
@@ -413,10 +446,10 @@
         "code": "6534",
         "name": "正瀚",
         "shares": 1000,
-        "value": 90900,
+        "value": 90200,
         "cost": 92000,
-        "pnl": -1100,
-        "pnl_pct": -1.2,
+        "pnl": -1800,
+        "pnl_pct": -1.96,
         "type": "stock",
         "strategy": "long",
         "sector": "農業生技",
@@ -426,10 +459,10 @@
         "code": "8299",
         "name": "群聯",
         "shares": 130,
-        "value": 287950,
+        "value": 284050,
         "cost": 287322,
-        "pnl": 628,
-        "pnl_pct": 0.22,
+        "pnl": -3272,
+        "pnl_pct": -1.14,
         "type": "stock",
         "strategy": "long",
         "sector": "半導體-NAND控制IC"
@@ -438,10 +471,10 @@
         "code": "1256",
         "name": "鮮活果汁-KY",
         "shares": 1000,
-        "value": 167000,
+        "value": 167500,
         "cost": 170000,
-        "pnl": -3000,
-        "pnl_pct": -1.76,
+        "pnl": -2500,
+        "pnl_pct": -1.47,
         "type": "stock",
         "strategy": "寶藏·收稅口(手搖飲原料)·非AI",
         "sector": "食品",
@@ -451,10 +484,10 @@
         "code": "3661",
         "name": "世芯-KY",
         "shares": 10,
-        "value": 37600,
+        "value": 37150,
         "cost": 36600,
-        "pnl": 1000,
-        "pnl_pct": 2.73,
+        "pnl": 550,
+        "pnl_pct": 1.5,
         "type": "stock",
         "strategy": "long",
         "sector": "AI ASIC設計",
@@ -464,10 +497,10 @@
         "code": "2645",
         "name": "長榮航太",
         "shares": 1000,
-        "value": 172000,
+        "value": 172500,
         "cost": 170000,
-        "pnl": 2000,
-        "pnl_pct": 1.18,
+        "pnl": 2500,
+        "pnl_pct": 1.47,
         "type": "stock",
         "strategy": "long",
         "sector": "航太MRO+國防無人機",
@@ -475,10 +508,10 @@
       }
     ],
     "tw_summary_live": {
-      "total_value": 4015562,
+      "total_value": 4008382,
       "total_cost": 3384290,
-      "total_pnl": 631272,
-      "total_pnl_pct": 18.65,
+      "total_pnl": 624092,
+      "total_pnl_pct": 18.44,
       "broker": "國泰證券"
     },
     "us_stocks_twd": 0,
@@ -695,8 +728,8 @@
     "funds_twd": 170085,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 10785647,
-    "total_gross_twd": 26185647,
+    "net_assets_twd": 10778467,
+    "total_gross_twd": 26178467,
     "allocation_pct": {
       "tw_stocks": 15.3,
       "us_stocks": 0.0,
@@ -738,28 +771,28 @@
   "ai_sector": {
     "constituents": {
       "2330": {
-        "close": null,
-        "change_pct": null
+        "close": 2500.0,
+        "change_pct": 1.63
       },
       "2454": {
-        "close": null,
-        "change_pct": null
+        "close": 5185.0,
+        "change_pct": 0.1
       },
       "3017": {
-        "close": null,
-        "change_pct": null
+        "close": 3470.0,
+        "change_pct": 2.36
       },
       "3653": {
-        "close": null,
-        "change_pct": null
+        "close": 6410.0,
+        "change_pct": 9.95
       },
       "6669": {
-        "close": null,
-        "change_pct": null
+        "close": 2105.0,
+        "change_pct": -0.47
       },
       "3661": {
-        "close": null,
-        "change_pct": null
+        "close": 3760.0,
+        "change_pct": 1.21
       },
       "00891": {
         "close": null,
@@ -767,35 +800,35 @@
       }
     },
     "avg_change_pct": null,
-    "median_change_pct": null,
+    "median_change_pct": 1.63,
     "count": 7
   },
   "news": {
     "tw": [
       "台灣太猛了！台股市值衝世界第4 全球股市排名一次看 - 自由財經",
-      "台股第4季機會與風險並存 群益投顧維持高點53,000點 - UDN",
-      "加權指數昨改寫新高！全球股市市值比拚：台股已成第4大 - TVBS新聞網",
-      "TWA00 加權指數- 台股大盤＆台指期解夢- 股市爆料同學會 - CMoney",
+      "台股恐迎「中秋變盤」？他緊盯台積電這價位…曝「法人節前劇本」 - Yahoo股市",
+      "台股商品總規模衝破8兆 - UDN",
+      "全球股市市值比拚！台股躍居第4大 - 財經新聞 - PChome Online 新聞 - PChome Online 新聞",
       "【Yahoo早盤】台股漲逾500點重返4萬8 投顧董座呂仁傑：慎防開高走低 - Yahoo股市",
-      "台股「開高走低」成常態？股市小白好奇原因 內行人全說了 - 東森電視",
-      "《台北股市》台股儀表板今上線三面向資訊全揭露- 證券 - 工商時報",
       "台泥擬收購烏克蘭第二大水泥公司 股價急拉6%爆3倍大量 分析師籲勿追價 - Yahoo股市",
+      "台股「開高走低」成常態？股市小白好奇原因 內行人全說了 - Yahoo股市",
       "台股4萬8新高守不住！驚現逾500點上影線 分析師看多喊「免驚」 - Yahoo股市",
-      "融資斷頭違約全都露？台股儀表板23日正式上線 個股仍未公布 - Yahoo股市",
-      "台股第4季機會與風險並存 群益投顧維持高點53,000點 - UDN",
-      "台股「開高走低」成常態？股市小白好奇原因 內行人全說了 - news.ebc.net.tw"
+      "群益投顧估第四季台股上看53000點 台積電台達電「30檔明牌」一次看 - Yahoo股市",
+      "超車印度 台股市值躍世界第4 - UDN",
+      "TWA00 加權指數- 台股大盤＆台指期解夢- 股市爆料同學會 - CMoney",
+      "台股頻現「開高走低」！投資小白困惑原因 網點關鍵：獲利了結、短線賣壓 - Yahoo股市"
     ],
     "us": [
+      "Wall Street holds near its record after Brent oil falls below $100 per barrel - AP News",
+      "Pressure from the bond market hits a new level on Wall Street, and stocks slide on inflation worries - Yahoo Finance",
       "Wall Street gains day after Wall Street's tech-led rally (COMP:IND:) - Seeking Alpha",
-      "Wall Street rallies within 0.4% of its record after oil prices and bond yields ease - Yahoo! Finance Canada",
+      "Wall Street rallies within 0.4% of its record after oil prices and bond yields ease - thebusinessjournal.com",
       "Wall Street ticks to the edge of its record as Brent oil falls toward $98 per barrel - Spectrum News",
-      "Since 1871, the Stock Market Has Accomplished This Feat 6 Times, Including the Present -- and the Previous 5 Occurrences All Ended in Disaster - The Motley Fool",
-      "Wall Street Futures Point Lower as Investors Monitor Middle East Developments and AI: Dow Jones, S&P, Nasdaq - Yahoo Finance",
       "'Don't get too comfortable': Wall Street’s ‘fear gauge’ hits 2026 low — here's why it's unlikely to last - CNBC",
-      "Wall Street indexes slip as oil prices rise, retail results awaited - Reuters",
-      "Stock Market News, Sept. 14, 2026: 10-Year Treasury Yield Touches 5%, Pushed by Oil Surge - WSJ",
+      "Stock Market News, Sept. 17, 2026: Stocks Climbed as Markets Retrace Post-Fed Moves - WSJ",
       "3 Wall Street strategists on the question every investor is asking: Is the worst over for the stock market? - MarketWatch",
-      "Stock Market News, Sept. 17, 2026: Stocks Climbed as Markets Retrace Post-Fed Moves - WSJ"
+      "Wall Street ends down as US-Iran peace optimism fades - Reuters",
+      "Wall Street firm believes the AI stock market boom is 'nearing an end.' Here's why - CNBC"
     ]
   }
 }
