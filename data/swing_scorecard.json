@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-29T08:37:22+08:00",
+  "generated_at": "2026-09-29T16:42:24+08:00",
   "_doc": "Swing pick 系統記分卡（機器可讀）。讀取者：寶藏股研究室季度審判日（quarterly-holdings-judgment-day 排程）。short_term=改版前(1-3日動能)、swing=2026-07-17 起(10-22 交易日波段)。alpha=vs 0050 同期。",
   "swing_era_start": "2026-07-17",
   "by_era": {
@@ -19,9 +19,9 @@
       }
     },
     "swing": {
-      "total": 12,
+      "total": 13,
       "traded": 11,
-      "not_filled": 1,
+      "not_filled": 2,
       "wins": 4,
       "win_rate_pct": 36.4,
       "avg_return_pct": 1.52,
@@ -30,7 +30,7 @@
       "exit_reasons": {
         "stop": 6,
         "target": 4,
-        "not_filled": 1,
+        "not_filled": 2,
         "time": 1
       }
     }
@@ -52,9 +52,9 @@
       }
     },
     "2026Q3": {
-      "total": 16,
+      "total": 17,
       "traded": 15,
-      "not_filled": 1,
+      "not_filled": 2,
       "wins": 4,
       "win_rate_pct": 26.7,
       "avg_return_pct": 0.54,
@@ -64,7 +64,7 @@
         "time": 2,
         "stop": 9,
         "target": 4,
-        "not_filled": 1
+        "not_filled": 2
       }
     }
   },
@@ -73,41 +73,25 @@
       "code": "2615",
       "name": "萬海",
       "entry_date": "2026-09-13",
-      "current_return_pct": 3.587,
-      "days_held": 9
+      "current_return_pct": -0.448,
+      "days_held": 10
     },
     {
       "code": "3006",
       "name": "晶豪科",
       "entry_date": "2026-09-16",
-      "current_return_pct": -1.786,
-      "days_held": 6
+      "current_return_pct": 1.786,
+      "days_held": 7
     },
     {
       "code": "2426",
       "name": "鼎元",
       "entry_date": "2026-09-17",
-      "current_return_pct": 0.415,
-      "days_held": 5
-    },
-    {
-      "code": "6933",
-      "name": "AMAX-KY",
-      "entry_date": "2026-09-22",
-      "current_return_pct": null,
-      "days_held": 0
+      "current_return_pct": 3.42,
+      "days_held": 6
     }
   ],
   "recent_resolved": [
-    {
-      "date": "2026-07-21",
-      "code": "2059",
-      "name": "川湖",
-      "return_pct": -8.228,
-      "alpha_pct": 0.357,
-      "exit": "stop",
-      "days": 4
-    },
     {
       "date": "2026-07-22",
       "code": "8028",
@@ -188,6 +172,15 @@
       "alpha_pct": 16.897,
       "exit": "target",
       "days": 7
+    },
+    {
+      "date": "2026-09-22",
+      "code": "6933",
+      "name": "AMAX-KY",
+      "return_pct": null,
+      "alpha_pct": null,
+      "exit": "not_filled",
+      "days": 0
     }
   ]
 }
