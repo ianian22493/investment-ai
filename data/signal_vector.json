@@ -1,26 +1,28 @@
 {
   "market_regime_score": 0.0,
-  "trend_strength": 0.643,
-  "risk_pressure": 0.309,
-  "volatility_risk": 0.222,
-  "confidence_score": 0.825,
-  "scanner_momentum": 1.0,
-  "ai_sector_strength": 0.646,
+  "trend_strength": 0.5,
+  "risk_pressure": 0.312,
+  "volatility_risk": 0.159,
+  "confidence_score": 0.8,
+  "scanner_momentum": 0.983,
+  "ai_sector_strength": 0.4,
   "foreign_flow_strength": 0.719,
   "breadth_score": 0.434,
-  "liquidity_score": 0.442,
+  "liquidity_score": 0.378,
   "_sources": {
     "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
-    "trend_strength": "taiex_chg=+0.86%→base=0.643 market_overview_adj=+0.00",
-    "risk_pressure": "vix=16.8→0.238 tw_verdict_adj=-0.064 da_conf=0.90→0.135",
-    "volatility_risk": "vix=16.8→0.225×0.7 taiex_abs=0.86%→0.215×0.3",
-    "confidence_score": "avg_agent_conf=0.825 error_agents=0 degraded=0 penalty=0.00",
-    "scanner_momentum": "top9_avg=6.33/6.0",
-    "ai_sector_strength": "basket 7檔 avg=+1.25% → 0.65",
+    "trend_strength": "taiex_chg=+0.00%→base=0.500 market_overview_adj=+0.00",
+    "risk_pressure": "vix=16.8→0.241 tw_verdict_adj=-0.064 da_conf=0.90→0.135",
+    "volatility_risk": "vix=16.8→0.227×0.7 taiex_abs=0.00%→0.000×0.3",
+    "confidence_score": "avg_agent_conf=0.800 error_agents=0 degraded=0 penalty=0.00",
+    "scanner_momentum": "top10_avg=5.90/6.0",
+    "ai_sector_strength": "basket data unavailable → fallback news_hits=0",
     "foreign_flow_strength": "BFI82U_foreign_net=+219.4億元 → normalized=0.719 (÷500億 clamp±0.5)",
     "breadth_score": "MI_INDEX advance=422(+23漲停) decline=551(+2跌停) advance_ratio=0.434",
-    "liquidity_score": "margin_balance=6223億元 變化=+0.58% → score=0.442 (-2%→0.7, +2%→0.3)"
+    "liquidity_score": "margin_balance=6299億元 變化=+1.22% → score=0.378 (-2%→0.7, +2%→0.3)"
   },
-  "_data_gaps": [],
-  "_computed_at": "2026-10-01T16:38:35.512405+08:00"
+  "_data_gaps": [
+    "ai_sector_strength"
+  ],
+  "_computed_at": "2026-10-02T01:02:08.331304+08:00"
 }
