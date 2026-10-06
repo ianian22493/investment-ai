@@ -61,7 +61,9 @@ def fetch_twse_index() -> dict:
     for name, ticker in INDEX_TICKERS.items():
         try:
             t = yf.Ticker(ticker)
-            hist = t.history(period="2d")
+            # 2026-10-06 fix：period="2d" 對 ^TWII 盤前/資料延遲時常只回 1 筆 →
+            # 掉進 change_pct=0 的 fallback。改抓 5d 確保有前一交易日可算漲跌幅。
+            hist = t.history(period="5d")
             if len(hist) >= 2:
                 prev, curr = hist["Close"].iloc[-2], hist["Close"].iloc[-1]
                 result[name] = {
@@ -750,6 +752,11 @@ def run():
 
     print("  USD/TWD rate...")
     usd_twd = fetch_usd_twd() or 32.0
+
+    # 2026-10-06 fix：Frankfurter(ECB來源)不支援 TWD → twd_per_jpy 恆為 None。
+    # 用 usd_twd / jpy_per_usd 回算(例：32.0 / 158.23 ≈ 0.2022 TWD/JPY)。
+    if not jpy.get("twd_per_jpy") and jpy.get("jpy_per_usd"):
+        jpy["twd_per_jpy"] = round(usd_twd / jpy["jpy_per_usd"], 4)
 
     print("  computing portfolio value...")
     pf_value = compute_portfolio_value(portfolio, tw_prices, us_prices, usd_twd, tw_positions or None)
