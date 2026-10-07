@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-07T02:00:34.933701+08:00",
+  "fetched_at": "2026-10-07T08:31:11.989714+08:00",
   "indices": {
     "taiex": {
       "close": 49712.04,
@@ -8,22 +8,22 @@
       "change_pct": 2.55
     },
     "sp500": {
-      "close": 7826.11,
+      "close": 7818.93,
       "prev_close": 7773.95,
-      "change": 52.16,
-      "change_pct": 0.67
+      "change": 44.98,
+      "change_pct": 0.58
     },
     "nasdaq": {
-      "close": 27641.43,
+      "close": 27599.89,
       "prev_close": 27477.31,
-      "change": 164.12,
-      "change_pct": 0.6
+      "change": 122.58,
+      "change_pct": 0.45
     },
     "vix": {
-      "close": 15.09,
+      "close": 15.01,
       "prev_close": 15.52,
-      "change": -0.43,
-      "change_pct": -2.77
+      "change": -0.51,
+      "change_pct": -3.29
     }
   },
   "tw_stocks": {
@@ -250,56 +250,58 @@
   },
   "us_stocks": {
     "AMZN": {
-      "close": 255.46,
-      "change_pct": 1.61
+      "close": null,
+      "change_pct": null
     },
     "CELH": {
-      "close": 27.37,
-      "change_pct": -0.55
+      "close": null,
+      "change_pct": null
     },
     "GOOGL": {
-      "close": 347.53,
-      "change_pct": 0.31
+      "close": null,
+      "change_pct": null
     },
     "MELI": {
-      "close": 1840.52,
-      "change_pct": -1.08
+      "close": null,
+      "change_pct": null
     },
     "MSFT": {
-      "close": 531.7,
-      "change_pct": 1.24
+      "close": null,
+      "change_pct": null
     },
     "NVDA": {
-      "close": 239.98,
-      "change_pct": 0.45
+      "close": null,
+      "change_pct": null
     },
     "ONDS": {
-      "close": 7.53,
-      "change_pct": 1.55
+      "close": null,
+      "change_pct": null
     },
     "RBRK": {
-      "close": 126.21,
-      "change_pct": 2.87
+      "close": null,
+      "change_pct": null
     },
     "S": {
-      "close": 25.68,
-      "change_pct": 1.0
+      "close": null,
+      "change_pct": null
     },
     "SOUN": {
-      "close": 5.78,
-      "change_pct": -1.62
+      "close": null,
+      "change_pct": null
     },
     "TSLA": {
-      "close": 380.01,
-      "change_pct": 0.34
+      "close": null,
+      "change_pct": null
     },
     "ZS": {
-      "close": 208.99,
-      "change_pct": 3.56
+      "close": null,
+      "change_pct": null
     }
   },
   "fx": {
-    "usd_twd": 32.0
+    "usd_twd": 32.0,
+    "twd_per_jpy": 0.2026,
+    "jpy_per_usd": 157.98
   },
   "portfolio_value": {
     "tw_stocks_twd": 3841250,
@@ -497,20 +499,20 @@
       "total_pnl_pct": 22.74,
       "broker": "國泰證券"
     },
-    "us_stocks_twd": 468056,
-    "us_stocks_usd": 14626.76,
+    "us_stocks_twd": 0,
+    "us_stocks_usd": 0,
     "us_stocks_live": [
       {
         "ticker": "AMZN",
         "name": "Amazon",
         "shares": 2,
         "avg_cost": 201.5,
-        "close": 255.46,
-        "value_usd": 510.92,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 403.0,
-        "pnl_usd": 107.92,
-        "pnl_pct": 26.78,
-        "change_pct": 1.61
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "CAVA",
@@ -529,12 +531,12 @@
         "name": "Celsius",
         "shares": 13,
         "avg_cost": 29.91,
-        "close": 27.37,
-        "value_usd": 355.81,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 388.83,
-        "pnl_usd": -33.02,
-        "pnl_pct": -8.49,
-        "change_pct": -0.55
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "DRAM",
@@ -553,96 +555,96 @@
         "name": "Alphabet",
         "shares": 7.00298,
         "avg_cost": 291.74,
-        "close": 347.53,
-        "value_usd": 2433.75,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 2043.07,
-        "pnl_usd": 390.68,
-        "pnl_pct": 19.12,
-        "change_pct": 0.31
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "MSFT",
         "name": "Microsoft",
         "shares": 6.0081,
         "avg_cost": 377.52,
-        "close": 531.7,
-        "value_usd": 3194.51,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 2268.18,
-        "pnl_usd": 926.33,
-        "pnl_pct": 40.84,
-        "change_pct": 1.24
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "NVDA",
         "name": "Nvidia",
         "shares": 4.00367,
         "avg_cost": 172.52,
-        "close": 239.98,
-        "value_usd": 960.8,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 690.71,
-        "pnl_usd": 270.09,
-        "pnl_pct": 39.1,
-        "change_pct": 0.45
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "ONDS",
         "name": "Ondas Holdings",
         "shares": 14,
         "avg_cost": 8.36,
-        "close": 7.53,
-        "value_usd": 105.42,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 117.1,
-        "pnl_usd": -11.68,
-        "pnl_pct": -9.97,
-        "change_pct": 1.55
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "RBRK",
         "name": "Rubrik",
         "shares": 9,
         "avg_cost": 47.06,
-        "close": 126.21,
-        "value_usd": 1135.89,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 423.5,
-        "pnl_usd": 712.39,
-        "pnl_pct": 168.21,
-        "change_pct": 2.87
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "SOUN",
         "name": "SoundHound AI",
         "shares": 20,
         "avg_cost": 6.2,
-        "close": 5.78,
-        "value_usd": 115.6,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 124.08,
-        "pnl_usd": -8.48,
-        "pnl_pct": -6.83,
-        "change_pct": -1.62
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "TSLA",
         "name": "Tesla",
         "shares": 12,
         "avg_cost": 361.23,
-        "close": 380.01,
-        "value_usd": 4560.12,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 4334.77,
-        "pnl_usd": 225.35,
-        "pnl_pct": 5.2,
-        "change_pct": 0.34
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "ZS",
         "name": "Zscaler",
         "shares": 6,
         "avg_cost": 141.33,
-        "close": 208.99,
-        "value_usd": 1253.94,
+        "close": null,
+        "value_usd": null,
         "cost_usd": 848.0,
-        "pnl_usd": 405.94,
-        "pnl_pct": 47.87,
-        "change_pct": 3.56
+        "pnl_usd": null,
+        "pnl_pct": null,
+        "change_pct": null
       },
       {
         "ticker": "BROS",
@@ -706,18 +708,18 @@
       }
     ],
     "us_cost_usd": 13106.64,
-    "us_pnl_usd": 1520.12,
-    "us_pnl_pct": 11.6,
+    "us_pnl_usd": -13106.64,
+    "us_pnl_pct": -100.0,
     "funds_twd": 170085,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 11079391,
-    "total_gross_twd": 26479391,
+    "net_assets_twd": 10611335,
+    "total_gross_twd": 26011335,
     "allocation_pct": {
-      "tw_stocks": 14.5,
-      "us_stocks": 1.8,
-      "funds": 0.6,
-      "real_estate": 83.1
+      "tw_stocks": 14.8,
+      "us_stocks": 0.0,
+      "funds": 0.7,
+      "real_estate": 84.6
     }
   },
   "tw_positions_live": [],
@@ -754,28 +756,28 @@
   "ai_sector": {
     "constituents": {
       "2330": {
-        "close": null,
-        "change_pct": null
+        "close": 2585.0,
+        "change_pct": 0.39
       },
       "2454": {
-        "close": null,
-        "change_pct": null
+        "close": 4920.0,
+        "change_pct": -4.74
       },
       "3017": {
-        "close": null,
-        "change_pct": null
+        "close": 3685.0,
+        "change_pct": 2.79
       },
       "3653": {
-        "close": null,
-        "change_pct": null
+        "close": 7080.0,
+        "change_pct": -1.73
       },
       "6669": {
-        "close": null,
-        "change_pct": null
+        "close": 2290.0,
+        "change_pct": 6.51
       },
       "3661": {
-        "close": null,
-        "change_pct": null
+        "close": 4180.0,
+        "change_pct": 5.82
       },
       "00891": {
         "close": null,
@@ -783,35 +785,35 @@
       }
     },
     "avg_change_pct": null,
-    "median_change_pct": null,
+    "median_change_pct": 2.79,
     "count": 7
   },
   "news": {
     "tw": [
-      "散戶又「FOMO」？25萬人怕錯失5萬點今遭割韭菜 專家喊「小套不嚴重」 - Yahoo股市",
-      "台股4萬9高點，0050太貴買不下手，跌10％再買比較賺？回測23年揭逢低買進真相：大多數人的選擇都是錯的 - 今周刊",
-      "台積電領軍台股飆新高 寫十大驚奇 - UDN",
       "台股逼近5萬點！ 一票散戶「越漲越痛苦」 1原因害他們全賣光 - Yahoo股市",
+      "台積電領軍台股飆新高 寫十大驚奇 - UDN",
+      "台股4萬9高點，0050太貴買不下手，跌10％再買比較賺？回測23年揭逢低買進真相：大多數人的選擇都是錯的 - 今周刊",
       "【Hot台股】聯發科重摔近5%失守5000元！網喊「明天再來抄底 」 分析師：今天可布局 - Yahoo股市",
+      "散戶不要亂買！分析師曝光6檔寶藏好股 小心台股大危機 - Yahoo股市",
       "【Yahoo早盤】台股剩32點衝關5萬點卻翻黑？分析師陳石輝：今站穩機會不大 - Yahoo股市",
+      "台股強攻5萬點危機重重？瑤池金母高點出貨6檔熱門股 聯電、日月光、富世達都重槍 - Yahoo股市",
       "台股快5萬點不敢買？復華投信：緊抱獲利上修龍頭股 - Yahoo股市",
       "台股今年漲7成向上還有戲？國泰曝關鍵數字：台股總市值上看200兆元 - Yahoo股市",
       "台股首見單月營收破兆！鴻海9月營收1兆1586億元 年增38% - Yahoo股市",
-      "台股10月成交量首破兆元！分析師續看多：散戶、法人全衝了 - Yahoo股市",
       "台股這禮拜衝5萬點？專家爆「2時段」是歡樂採購期 - Yahoo股市",
       "臺股儀表板怎麼用？三大查詢與風險觀測一次看懂！｜股市話題｜豐雲學堂 2026 年 10 月 - 永豐金證券"
     ],
     "us": [
-      "Stock Market Today: S&P 500 Hits New Record High - WSJ",
-      "Wall Street is booming. Surging yields could shake things up - CNN",
-      "Wall Street Eyes Record Bonuses as Profit Heads Past $90 Billion - Yahoo Finance",
-      "Wall Street profits soar to $45.9 billion in first half of 2026, report shows - Reuters",
-      "Wall Street points toward gains, oil prices fall as markets await next week’s earnings ramp-up - The Morning Call",
-      "Wall Street rallies toward an all-time high - LancasterOnline",
+      "US stocks hit record high, shrugging off bond market turmoil - CNN",
+      "Wall Street rallies toward an all-time high - AP News",
       "Stock Market News, Oct. 5, 2026: 10-Year Yield Rises; Nasdaq Jumps to New High - WSJ",
+      "Wall Street Eyes Record Bonuses as Profit Heads Past $90 Billion - Yahoo Finance",
+      "Wall Street is booming. Surging yields could shake things up - CNN",
+      "Wall Street bonanza! The Street on track to hit a record $90 billion in profits: Report - InvestmentNews",
+      "Wall Street profits soar to $45.9 billion in first half of 2026, report shows - Reuters",
+      "Wall Street shares notch records as oil prices stabilize, bond yields retreat - Reuters",
       "S&P 500 closes little changed as investors weigh sticky inflation and await Nvidia earnings - CNBC",
-      "Sleepless on Wall Street: All-Night Stock Exchanges Coming Soon - Bloomberg.com",
-      "Wall Street Is Going 24/7 - Seeking Alpha"
+      "Sleepless on Wall Street: All-Night Stock Exchanges Coming Soon - Bloomberg.com"
     ]
   }
 }
