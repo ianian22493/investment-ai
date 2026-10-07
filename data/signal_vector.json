@@ -1,28 +1,26 @@
 {
-  "market_regime_score": 0.9,
-  "trend_strength": 1.0,
-  "risk_pressure": 0.236,
-  "volatility_risk": 0.308,
-  "confidence_score": 0.863,
+  "market_regime_score": 0.0,
+  "trend_strength": 0.495,
+  "risk_pressure": 0.254,
+  "volatility_risk": 0.134,
+  "confidence_score": 0.8,
   "scanner_momentum": 1.0,
-  "ai_sector_strength": 0.4,
-  "foreign_flow_strength": 0.433,
-  "breadth_score": 0.471,
-  "liquidity_score": 0.432,
+  "ai_sector_strength": 0.297,
+  "foreign_flow_strength": 0.37,
+  "breadth_score": 0.603,
+  "liquidity_score": 0.463,
   "_sources": {
-    "market_regime_score": "regime=趨勢多頭(base=+0.8) risk_level=low(delta=+0.10)",
-    "trend_strength": "taiex_chg=+2.55%→base=0.925 market_overview_adj=+0.08",
-    "risk_pressure": "vix=15.0→0.150 tw_verdict_adj=-0.064 da_conf=1.00→0.150",
-    "volatility_risk": "vix=15.0→0.167×0.7 taiex_abs=2.55%→0.637×0.3",
-    "confidence_score": "avg_agent_conf=0.863 error_agents=0 degraded=0 penalty=0.00",
+    "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
+    "trend_strength": "taiex_chg=-0.03%→base=0.495 market_overview_adj=+0.00",
+    "risk_pressure": "vix=15.7→0.183 tw_verdict_adj=-0.064 da_conf=0.90→0.135",
+    "volatility_risk": "vix=15.7→0.189×0.7 taiex_abs=0.03%→0.007×0.3",
+    "confidence_score": "avg_agent_conf=0.800 error_agents=0 degraded=0 penalty=0.00",
     "scanner_momentum": "top4_avg=6.25/6.0",
-    "ai_sector_strength": "basket data unavailable → fallback news_hits=0",
-    "foreign_flow_strength": "BFI82U_foreign_net=-66.6億元 → normalized=0.433 (÷500億 clamp±0.5)",
-    "breadth_score": "MI_INDEX advance=462(+10漲停) decline=519(+2跌停) advance_ratio=0.471",
-    "liquidity_score": "margin_balance=6377億元 變化=+0.68% → score=0.432 (-2%→0.7, +2%→0.3)"
+    "ai_sector_strength": "basket 7檔 avg=-1.74% → 0.30",
+    "foreign_flow_strength": "BFI82U_foreign_net=-130.4億元 → normalized=0.370 (÷500億 clamp±0.5)",
+    "breadth_score": "MI_INDEX advance=588(+12漲停) decline=387(+4跌停) advance_ratio=0.603",
+    "liquidity_score": "margin_balance=6400億元 變化=+0.37% → score=0.463 (-2%→0.7, +2%→0.3)"
   },
-  "_data_gaps": [
-    "ai_sector_strength"
-  ],
-  "_computed_at": "2026-10-07T08:40:06.927484+08:00"
+  "_data_gaps": [],
+  "_computed_at": "2026-10-07T22:17:08.286116+08:00"
 }
