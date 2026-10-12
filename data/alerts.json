@@ -1,17 +1,9 @@
 {
- "checked_at": "2026-10-11 16:31 +0800",
- "hit_count": 11,
- "new_hit_count": 0,
+ "checked_at": "2026-10-13 03:41 +0800",
+ "hit_count": 12,
+ "new_hit_count": 2,
  "failed": [],
- "upcoming_events": [
-  {
-   "symbol": "1256.TW",
-   "date": "2026-10-10",
-   "type": "9月營收",
-   "note": "9月營收截至10/10查無公告(Yahoo未收錄)·Q3旺季月、去年9月4.2億YoY-2.95%低基期(2026-10-10週檢)",
-   "days_away": -1
-  }
- ],
+ "upcoming_events": [],
  "results": [
   {
    "key": "panic|vix",
@@ -19,7 +11,7 @@
    "name": "VIX",
    "rule": "above_25",
    "hit": false,
-   "detail": "VIX 14.8",
+   "detail": "VIX 15.3",
    "note": "恐慌日條件一：照恐慌日SOP操作"
   },
   {
@@ -73,7 +65,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 5.39 vs 觸發價 6.33",
+   "detail": "現價 5.03 vs 觸發價 6.33",
    "note": "持倉停損：跌破成本價＝出場（零成本退出權）"
   },
   {
@@ -82,7 +74,7 @@
    "name": "SoundHound",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 5.39 vs 觸發價 5.9",
+   "detail": "現價 5.03 vs 觸發價 5.9",
    "note": "回補評估區 5.8 接近（另需 LivePerson 合併財報過關，看觀察名單）"
   },
   {
@@ -91,7 +83,7 @@
    "name": "SpaceX",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 162.57 vs 觸發價 130.0",
+   "detail": "現價 163.82 vs 觸發價 130.0",
    "note": "解禁賣壓觀察區（Q4 解禁後；前提先減 TSLA 至 Musk 桶≤25%）"
   },
   {
@@ -100,7 +92,7 @@
    "name": "CAVA",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 53.64 vs 觸發價 55.0",
+   "detail": "現價 51.98 vs 觸發價 55.0",
    "note": "美股寶藏分散器加碼區：跌破 $55（~$62 已是可接受小起始）。Q2財報看同店/展店/利潤率"
   },
   {
@@ -109,7 +101,7 @@
    "name": "CRH plc",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 81.54 vs 觸發價 90.0",
+   "detail": "現價 80.99 vs 觸發價 90.0",
    "note": "美股誤殺·北美建材骨材寡占雙擊(等確認)：跌破 $90 才起手（8/20季掃紀律：訊號優先序毛利連2季>一季，CRH只有一季margin改善、還可能是Arcosa併購並表灌的會計效果非結構性→需Q3拆organic vs併購確認連兩季上移再起始）。Q2淨利+13%基本面好、跌-28%是guidance維持+Arcosa($85億)暫停回購的失望非惡化;收稅口=骨材運費高→地區定價權;順風IIJA基建+資料中心混凝土;13F Durable+80%/Baillie近乎從零建倉。可替換環泥(退場候選)的建材曝險。死因：Arcosa灌margin歸因錯誤、循環股(住宅軟/升息)、IIJA撥款慢、併整風險。目標$115~120"
   },
   {
@@ -118,7 +110,7 @@
    "name": "CRH plc",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 81.54 vs 觸發價 85.0",
+   "detail": "現價 80.99 vs 觸發價 85.0",
    "note": "美股誤殺·加碼區：跌破 $85（破區間底更深）。品質收稅口·防禦-循環兼具、比FPS穩比ACN多護城河+聰明錢"
   },
   {
@@ -185,9 +177,9 @@
    "priority": 2,
    "tier": null,
    "rev": {
-    "month": "8月",
-    "yoy": 29.5,
-    "cum_yoy": 28.2,
+    "month": "9月",
+    "yoy": 17.9,
+    "cum_yoy": 26.9,
     "streak": 15,
     "qoq": 8.0,
     "gm": 89.34,
@@ -198,10 +190,10 @@
      89.3
     ],
     "gm_warn": false,
-    "trend": "高檔穩健",
-    "signal": "confirm",
-    "brief": "8月營收 YoY +30%（高檔穩健、連15月正、累計+28%、毛利89%🏰·26Q2）",
-    "as_of": "11508"
+    "trend": "🔻減速",
+    "signal": "caution",
+    "brief": "9月營收 YoY +18%（🔻減速、連15月正、累計+27%、毛利89%🏰·26Q2）",
+    "as_of": "11509"
    },
    "chip": {
     "big": 67.3,
@@ -237,28 +229,9 @@
    "vol": 32,
    "thin": false,
    "zone_since": "2026-09-03",
-   "days_in_zone": 39,
+   "days_in_zone": 41,
    "priority": 3,
    "tier": null,
-   "rev": {
-    "month": "8月",
-    "yoy": 25.5,
-    "cum_yoy": 38.9,
-    "streak": 11,
-    "qoq": 43.0,
-    "gm": 32.12,
-    "gm_quarter": "26Q2",
-    "eps": 8.98,
-    "gm_series": [
-     30.4,
-     32.1
-    ],
-    "gm_warn": false,
-    "trend": "高檔穩健",
-    "signal": "confirm",
-    "brief": "8月營收 YoY +26%（高檔穩健、連11月正、累計+39%、毛利32%·26Q2）",
-    "as_of": "11508"
-   },
    "chip": {
     "big": 59.9,
     "k1000": 47.1,
@@ -288,11 +261,11 @@
    "priority": 4,
    "tier": null,
    "rev": {
-    "month": "8月",
-    "yoy": 60.5,
-    "cum_yoy": 60.3,
-    "streak": 15,
-    "qoq": -1.0,
+    "month": "9月",
+    "yoy": -23.1,
+    "cum_yoy": 44.8,
+    "streak": 0,
+    "qoq": 3.0,
     "gm": 69.31,
     "gm_quarter": "26Q2",
     "eps": 7.57,
@@ -301,10 +274,10 @@
      69.3
     ],
     "gm_warn": false,
-    "trend": "高檔穩健",
-    "signal": "confirm",
-    "brief": "8月營收 YoY +60%（高檔穩健、連15月正、累計+60%、毛利69%🏰·26Q2）",
-    "as_of": "11508"
+    "trend": "⚠️轉負",
+    "signal": "warn",
+    "brief": "9月營收 YoY -23%（⚠️轉負、累計+45%、毛利69%🏰·26Q2）",
+    "as_of": "11509"
    },
    "chip": {
     "big": 45.7,
@@ -353,11 +326,11 @@
    "priority": 5,
    "tier": "彩券",
    "rev": {
-    "month": "8月",
-    "yoy": 73.1,
-    "cum_yoy": 4.1,
-    "streak": 2,
-    "qoq": 12.0,
+    "month": "9月",
+    "yoy": 23.0,
+    "cum_yoy": 6.0,
+    "streak": 3,
+    "qoq": 17.0,
     "gm": 100.0,
     "gm_quarter": "26Q2",
     "eps": -1.24,
@@ -366,10 +339,10 @@
      100.0
     ],
     "gm_warn": false,
-    "trend": "🔥加速",
-    "signal": "confirm",
-    "brief": "8月營收 YoY +73%（🔥加速、累計+4%、毛利100%🏰·26Q2）",
-    "as_of": "11508"
+    "trend": "持平",
+    "signal": "neutral",
+    "brief": "9月營收 YoY +23%（持平、連3月正、累計+6%、毛利100%🏰·26Q2）",
+    "as_of": "11509"
    },
    "chip": {
     "big": 37.1,
@@ -400,11 +373,11 @@
    "priority": 1,
    "tier": null,
    "rev": {
-    "month": "8月",
-    "yoy": -4.0,
-    "cum_yoy": 2.6,
-    "streak": 0,
-    "qoq": 12.0,
+    "month": "9月",
+    "yoy": 27.6,
+    "cum_yoy": 4.9,
+    "streak": 1,
+    "qoq": 31.0,
     "gm": 34.37,
     "gm_quarter": "26Q2",
     "eps": 4.16,
@@ -413,10 +386,10 @@
      34.4
     ],
     "gm_warn": false,
-    "trend": "⚠️轉負",
-    "signal": "warn",
-    "brief": "8月營收 YoY -4%（⚠️轉負、累計+3%、毛利34%·26Q2）",
-    "as_of": "11508"
+    "trend": "🔥加速",
+    "signal": "confirm",
+    "brief": "9月營收 YoY +28%（🔥加速、累計+5%、毛利34%·26Q2）",
+    "as_of": "11509"
    },
    "chip": {
     "big": 66.0,
@@ -433,8 +406,8 @@
    "symbol": "AVGO",
    "name": "Broadcom",
    "rule": "below_price",
-   "hit": false,
-   "detail": "現價 361.54 vs 觸發價 357.0",
+   "hit": true,
+   "detail": "現價 355.43 vs 觸發價 357.0",
    "note": "AI-infra品質mega-cap起手區:≤$357(現~357已回檔-26%·fwd PE18.5合理)。博通AI客製ASIC(Google/Meta)+網通+軟體·$1.7兆。三檔AI-infra(CRDO/AAOI/AVGO)唯一品質+可設價。分批DCA≤1-2%。加深AI集中(純資訊)。死因:mega-cap穩健非10倍、ASIC客戶集中、AI capex循環"
   },
   {
@@ -443,7 +416,7 @@
    "name": "Broadcom",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 361.54 vs 觸發價 320.0",
+   "detail": "現價 355.43 vs 觸發價 320.0",
    "note": "AVGO加碼區:深回檔≤$320"
   },
   {
@@ -452,7 +425,7 @@
    "name": "Nu Holdings",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 16.12 vs 觸發價 15.0",
+   "detail": "現價 16.01 vs 觸發價 15.0",
    "note": "非AI拉美數位銀行起手:≤$15(現15.37回血中·別追20d+11%彈·小回檔進)。Q2淨利$11億+49%/ROE33%頂級/營收+39%/fwd13.4便宜/巴菲特持有。非AI EM分散腿·品質+便宜+回血。EM故部位≤1-2%。死因:巴西總經/信貸循環/EM波動"
   },
   {
@@ -461,7 +434,7 @@
    "name": "Nu Holdings",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 16.12 vs 觸發價 13.0",
+   "detail": "現價 16.01 vs 觸發價 13.0",
    "note": "NU加碼:深回檔≤$13"
   },
   {
@@ -470,7 +443,7 @@
    "name": "Grab Holdings",
    "rule": "below_price",
    "hit": true,
-   "detail": "現價 3.19 vs 觸發價 3.3",
+   "detail": "現價 3.16 vs 觸發價 3.3",
    "note": "東南亞super-app·等20d止穩才進:≤$3.30(現3.42貼52週低·20d-7%還軟)。Q2轉盈$235M/EBITDA+54%/上調財測+$7.5億回購=拐點真;但fwd24.6貴+還在低點軟→止穩才進、小量。死因:貴+東南亞競爭(GoTo/Sea)+EM波動"
   },
   {
@@ -479,7 +452,7 @@
    "name": "Grab Holdings",
    "rule": "below_price",
    "hit": false,
-   "detail": "現價 3.19 vs 觸發價 2.9",
+   "detail": "現價 3.16 vs 觸發價 2.9",
    "note": "GRAB加碼:≤$2.90"
   },
   {
@@ -515,7 +488,7 @@
    "name": "持倉檔時效",
    "rule": "stale_portfolio",
    "hit": false,
-   "detail": "_updated=2026-10-07（4 天前）",
+   "detail": "_updated=2026-10-07（6 天前）",
    "note": "超過 30 天未更新＝規格檢查可能基於幽靈持倉；下單後回報研究員更新"
   },
   {
@@ -533,7 +506,7 @@
    "name": "Musk桶",
    "rule": "factor_over_limit",
    "hit": false,
-   "detail": "合計佔 US 部位 28.3%（上限 40%）",
+   "detail": "合計佔 US 部位 28.2%（上限 40%）",
    "note": "Musk 因子上限 40%（純資訊·2026-08-28使用者調高：又瑄刻意接受AI/Musk高集中·信AI是趨勢·非violation。真集中到誇張才提醒）"
   },
   {
@@ -542,16 +515,16 @@
    "name": "資安因子",
    "rule": "factor_over_limit",
    "hit": false,
-   "detail": "合計佔 US 部位 15.6%（上限 30%）",
+   "detail": "合計佔 US 部位 15.2%（上限 30%）",
    "note": "資安/AI因子上限 30%（純資訊·2026-08-28調高：使用者要AI高集中·非該減碼提醒）"
   },
   {
-   "key": "4571.TW|rev_warn",
-   "symbol": "4571.TW",
-   "name": "鈞興-KY",
+   "key": "7749.TW|rev_warn",
+   "symbol": "7749.TW",
+   "name": "意騰-KY",
    "rule": "rev_warn",
    "hit": true,
-   "detail": "🔴 論述亮紅燈：8月營收 YoY -4%（⚠️轉負、累計+3%、毛利34%·26Q2）",
+   "detail": "🔴 論述亮紅燈：9月營收 YoY -23%（⚠️轉負、累計+45%、毛利69%🏰·26Q2）",
    "note": "月營收轉負＝收稅口/雙擊論述正在破。去審：是一次性還是趨勢？是→從入場區撤出、記分卡標壞；否→續觀察。"
   }
  ]

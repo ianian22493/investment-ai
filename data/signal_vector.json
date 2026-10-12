@@ -1,26 +1,28 @@
 {
   "market_regime_score": 0.0,
   "trend_strength": 0.335,
-  "risk_pressure": 0.277,
-  "volatility_risk": 0.187,
-  "confidence_score": 0.75,
-  "scanner_momentum": 1.0,
-  "ai_sector_strength": 0.516,
+  "risk_pressure": 0.308,
+  "volatility_risk": 0.198,
+  "confidence_score": 0.825,
+  "scanner_momentum": 0.979,
+  "ai_sector_strength": 0.4,
   "foreign_flow_strength": 0.0,
-  "breadth_score": 0.44,
-  "liquidity_score": 0.4,
+  "breadth_score": 0.544,
+  "liquidity_score": 0.393,
   "_sources": {
     "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
     "trend_strength": "taiex_chg=-0.99%→base=0.335 market_overview_adj=+0.00",
-    "risk_pressure": "vix=14.8→0.142 tw_verdict_adj=-0.000 da_conf=0.90→0.135",
-    "volatility_risk": "vix=14.8→0.161×0.7 taiex_abs=0.99%→0.247×0.3",
-    "confidence_score": "avg_agent_conf=0.750 error_agents=0 degraded=0 penalty=0.00",
-    "scanner_momentum": "top8_avg=6.00/6.0",
-    "ai_sector_strength": "basket 7檔 avg=+0.14% → 0.52",
-    "foreign_flow_strength": "BFI82U_foreign_net=-758.5億元 → normalized=0.000 (÷500億 clamp±0.5)",
-    "breadth_score": "MI_INDEX advance=425(+14漲停) decline=540(+2跌停) advance_ratio=0.440",
-    "liquidity_score": "margin_balance=6464億元 變化=+1.00% → score=0.400 (-2%→0.7, +2%→0.3)"
+    "risk_pressure": "vix=15.3→0.166 tw_verdict_adj=-0.000 da_conf=0.95→0.142",
+    "volatility_risk": "vix=15.3→0.177×0.7 taiex_abs=0.99%→0.247×0.3",
+    "confidence_score": "avg_agent_conf=0.825 error_agents=0 degraded=0 penalty=0.00",
+    "scanner_momentum": "top8_avg=5.88/6.0",
+    "ai_sector_strength": "basket data unavailable → fallback news_hits=0",
+    "foreign_flow_strength": "BFI82U_foreign_net=-522.0億元 → normalized=0.000 (÷500億 clamp±0.5)",
+    "breadth_score": "MI_INDEX advance=538(+25漲停) decline=451(+2跌停) advance_ratio=0.544",
+    "liquidity_score": "margin_balance=6533億元 變化=+1.07% → score=0.393 (-2%→0.7, +2%→0.3)"
   },
-  "_data_gaps": [],
-  "_computed_at": "2026-10-11T16:36:32.235943+08:00"
+  "_data_gaps": [
+    "ai_sector_strength"
+  ],
+  "_computed_at": "2026-10-13T03:45:31.731804+08:00"
 }
