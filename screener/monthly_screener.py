@@ -104,26 +104,38 @@ def to_f(v):
 # ── 1. 月營收 ────────────────────────────────────────────────────────────────
 
 def load_revenue():
-    """回傳 (data_month, {code: {...}})，金額單位千元。"""
-    merged, data_month = {}, None
+    """回傳 (data_month, {code: {...}})，金額單位千元。
+    data_month 取兩市場中最新的資料年月；舊月份的列丟掉（避免上市/上櫃不同月混算）。"""
+    rows = []
     for market, url in REV_URLS:
         for row in fetch_json(url):
-            code = str(
-                key_by_substr(row, "公司代號", exact=["公司代號", "SecuritiesCompanyCode"]) or ""
-            ).strip()
-            if not code or not code.isdigit():
-                continue
             month = str(key_by_substr(row, "資料年月") or "").strip()
-            data_month = data_month or month
-            merged[code] = {
-                "name": key_by_substr(row, "公司名稱", exact=["公司名稱", "CompanyName"]),
-                "industry": key_by_substr(row, "產業別") or "",
-                "market": market,
-                "rev": to_f(key_by_substr(row, "當月營收")),
-                "yoy": to_f(key_by_substr(row, "去年同月增減")),
-                "mom": to_f(key_by_substr(row, "上月比較增減")),
-                "cum_yoy": to_f(key_by_substr(row, "前期比較增減")),
-            }
+            rows.append((market, month, row))
+    months = {}
+    for market, month, _ in rows:
+        months.setdefault(market, set()).add(month)
+    data_month = max((m for _, m, _ in rows if m), default=None)
+    if any(ms != {data_month} for ms in months.values()):
+        gha_warn(f"月營收資料年月不一致 {dict((k, sorted(v)) for k, v in months.items())}"
+                 f" — 只用 {data_month}，其餘丟棄")
+    merged = {}
+    for market, month, row in rows:
+        if month != data_month:
+            continue
+        code = str(
+            key_by_substr(row, "公司代號", exact=["公司代號", "SecuritiesCompanyCode"]) or ""
+        ).strip()
+        if not code or not code.isdigit():
+            continue
+        merged[code] = {
+            "name": key_by_substr(row, "公司名稱", exact=["公司名稱", "CompanyName"]),
+            "industry": key_by_substr(row, "產業別") or "",
+            "market": market,
+            "rev": to_f(key_by_substr(row, "當月營收")),
+            "yoy": to_f(key_by_substr(row, "去年同月增減")),
+            "mom": to_f(key_by_substr(row, "上月比較增減")),
+            "cum_yoy": to_f(key_by_substr(row, "前期比較增減")),
+        }
     if not merged:
         raise RuntimeError("no revenue rows fetched")
     return data_month, merged
@@ -228,12 +240,26 @@ def margin_spike_flag(rows):
         t = r.get("gm_trend_pp")
         r["gm_spike"] = bool(t is not None and t > GM_SPIKE_PP)
 
-def yf_flags(rows):
-    """對已 capped 的 track 候選補：市值(億)/52週位置/一年漲幅/均量(張)＋已飛、薄量旗標。"""
+def gha_warn(msg):
+    """大聲警告：stdout 一行 + GitHub Actions ::warning:: 註記（會出現在 run 摘要頁）。"""
+    print(f"  [WARN] {msg}")
+    print(f"::warning title=monthly_screener::{msg}")
+
+
+def yf_flags(rows, label=""):
+    """對已 capped 的 track 候選補：市值(億)/52週位置/一年漲幅/均量(張)＋已飛、薄量旗標。
+    回傳成功取得資料的檔數；yf_ok=False 的列代表旗標是「未知」而非「沒飛/不薄」。"""
     try:
         import yfinance as yf
-    except Exception:
-        return
+    except Exception as e:  # noqa: BLE001
+        gha_warn(f"yfinance import failed ({e!r}) — {label} {len(rows)} 檔第二層旗標全部留空；"
+                 "CI 是否漏了 pip install？")
+        for r in rows:
+            r.update({"mcap_e": None, "pos_52w": None, "ret_1y": None, "avg_vol_lots": None,
+                      "flew": False, "thin": False, "yf_ok": False})
+        return 0
+    ok = 0
+    last_err = None
     for r in rows:
         code, mk = r.get("code"), r.get("market", "twse")
         sufs = [".TWO", ".TW"] if mk == "tpex" else [".TW", ".TWO"]
@@ -255,8 +281,11 @@ def yf_flags(rows):
                     mc = (tk.info or {}).get("marketCap")
                 mcap_e = round(mc / 1e8) if mc else None
                 break
-            except Exception:
+            except Exception as e:  # noqa: BLE001
+                last_err = e
                 continue
+        r["yf_ok"] = pos is not None or mcap_e is not None
+        ok += r["yf_ok"]
         r["mcap_e"] = mcap_e          # 市值(億 TWD)
         r["pos_52w"] = pos            # 52週位置 %(0=一年低/100=一年高)
         r["ret_1y"] = ret1y           # 一年漲幅 %
@@ -264,6 +293,11 @@ def yf_flags(rows):
         r["flew"] = bool((pos is not None and pos > FLEW_POS_PCT)
                          or (ret1y is not None and ret1y > FLEW_1Y_PCT))   # 🚀已飛
         r["thin"] = bool(vlots is not None and vlots < THIN_LOTS)          # ⚠️薄量
+    print(f"  yfinance {label}: {ok}/{len(rows)} 檔取得旗標")
+    if rows and ok < len(rows) * 0.5:
+        gha_warn(f"yfinance {label} 只取得 {ok}/{len(rows)} 檔旗標（Yahoo 擋 CI/限流？）"
+                 f" last_err={last_err!r}")
+    return ok
 
 
 def main():
@@ -273,6 +307,13 @@ def main():
     print("fetching monthly revenue…")
     data_month, rev = load_revenue()
     print(f"  {len(rev)} companies, data_month={data_month}")
+    # 預期資料月 = 執行日的上個月（民國年）；openapi 在 11 日上午常還沒換月（2026-09-11 08:21、
+    # 2026-10-11 09:08 兩次都拿到前前月）。舊了就大聲警告並寫進輸出，讓下游/人看得到。
+    first = now.replace(day=1) - timedelta(days=1)
+    expected_month = f"{first.year - 1911}{first.month:02d}"
+    data_month_stale = (data_month or "") < expected_month
+    if data_month_stale:
+        gha_warn(f"月營收 data_month={data_month} 落後預期 {expected_month}（openapi 尚未更新？晚點重跑）")
 
     print("fetching quarterly financials…")
     fin_tag, fin = load_financials()
@@ -381,30 +422,46 @@ def main():
     track_c = track_c[:200]
 
     # 第二層旗標補強（只跑 capped 後的候選）：市值/已飛/流動性
-    yf_flags(track_a)
-    yf_flags(track_b)
-    yf_flags(track_c)
+    yf_stats = {
+        "track_a": yf_flags(track_a, "track_a"),
+        "track_b": yf_flags(track_b, "track_b"),
+        "track_c_pre": yf_flags(track_c, "track_c"),
+    }
     # 單季毛利跳升旗標（用篩選器自有 gm_trend_pp，不需 yfinance）
     margin_spike_flag(track_a)
     margin_spike_flag(track_b)
     margin_spike_flag(track_c)
 
     # Track C 品質龍頭第二層硬篩（旗標補強後）：剔除已飛/薄量/市值<50億(非龍頭)，按市值大→小排(龍頭優先)，留 TRACK_CAP 檔
+    # ★fail-open：市值未知(yfinance 沒抓到)時保留並標 mcap_unknown，不當成 <50億剔除
+    #   （2026-09/10 CI 沒裝 yfinance → mcap 全 null → track_c 被清成 0 檔的教訓）
+    for r in track_c:
+        r["mcap_unknown"] = r.get("mcap_e") is None
     track_c = [r for r in track_c
-               if not r.get("flew") and not r.get("thin") and (r.get("mcap_e") or 0) >= 50]
-    track_c.sort(key=lambda x: -(x.get("mcap_e") or 0))
+               if not r.get("flew") and not r.get("thin")
+               and (r["mcap_unknown"] or r["mcap_e"] >= 50)]
+    # 已知市值大→小在前；未知市值排後面、維持原本 PE 低→高順序（sort 是 stable）
+    track_c.sort(key=lambda x: (x["mcap_unknown"], -(x.get("mcap_e") or 0)))
     track_c = track_c[:TRACK_CAP]
+    n_unknown = sum(r["mcap_unknown"] for r in track_c)
+    if n_unknown:
+        gha_warn(f"track_c {n_unknown}/{len(track_c)} 檔市值未知、未經市值/已飛/薄量硬篩（fail-open 保留）")
 
     out = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M %z"),
         "data_month_roc": data_month,
+        "expected_month_roc": expected_month,
+        "data_month_stale": data_month_stale,
         "fin_quarter_roc": fin_tag,
+        "yf_ok_counts": yf_stats,
+        "track_c_mcap_unknown": n_unknown,
         "rev_history_depth_months": hist_depth,
         "mode": "bootstrap（歷史<3個月，連續條件未啟用，僅要求當月+累計YoY>0）" if bootstrap
                 else "full（連續3個月以上YoY>0 已啟用）",
         "notes": [
             "金額單位：千元。gm=最新季毛利率%，gm_trend_pp=較前一儲存季的百分點變化（需累積兩季後才有值）",
-            "第二層旗標(yfinance補·capped後才跑)：mcap_e=市值(億)、pos_52w=52週位置%、ret_1y=一年漲幅%、avg_vol_lots=近20日均量(張)、flew=已飛(位置>70%或一年>150%·別追鐵律#9)、thin=薄量(<30張/日·不可乾淨進出)。值為 null=yfinance當次抓不到",
+            "第二層旗標(yfinance補·capped後才跑)：mcap_e=市值(億)、pos_52w=52週位置%、ret_1y=一年漲幅%、avg_vol_lots=近20日均量(張)、flew=已飛(位置>70%或一年>150%·別追鐵律#9)、thin=薄量(<30張/日·不可乾淨進出)。值為 null=yfinance當次抓不到；yf_ok=false 時 flew/thin=false 代表『未知』不是『沒飛/不薄』",
+            "track_c 的 mcap_unknown=true=市值未知、fail-open 保留（未經市值≥50億/已飛/薄量硬篩），排在已知市值者之後、依 PE 低→高",
             "10倍種子讀法：找 mcap_e 小 × gm_trend_pp>0 × rev_yoy>0 × flew=false × thin=false；flew=true 多是已噴回檔(廣閎科型)、thin=true 多是不可交易(邦睿型)",
             "gm_spike=true=單季毛利跳升>8pp：別當『結構上移』直接進排名，先拆一次性(關稅退稅/資產處分/里程碑分潤/併購並表)vs 真結構，用常態毛利重評因子(喬山Q2 51→63是$40M退稅一次性=教訓)",
             "track_c=品質成長龍頭(補喬山型盲點):便宜(PE≤20)×成長(累計YoY>0)×已獲利×gm≥15·刻意不要求毛利上移或gm≥50。第二層再質化判「是不是龍頭+有無搶市佔/擴產/新市場催化」。★獨立於雙擊/收稅口寶藏榜、不進日常pick頁、不進五因子排名——是壓艙/成長核心倉的補網",
@@ -415,7 +472,7 @@ def main():
         "track_c": track_c,
     }
     OUT_PATH.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"wrote {OUT_PATH.relative_to(ROOT)}  (A:{len(track_a)} B:{len(track_b)}, mode={out['mode']})")
+    print(f"wrote {OUT_PATH.relative_to(ROOT)}  (A:{len(track_a)} B:{len(track_b)} C:{len(track_c)}, mode={out['mode']})")
 
 
 if __name__ == "__main__":

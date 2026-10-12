@@ -8,6 +8,8 @@ on:
   schedule:
     - cron: '30 16 10 * *'   # UTC 10日16:30 = 台灣 11日 00:30（備援一）
     - cron: '30 22 10 * *'   # UTC 10日22:30 = 台灣 11日 06:30（備援二）
+    # openapi 在 11 日上午常還沒換月（09:08 仍是前前月）→ 補一道下午重跑，冪等覆寫
+    - cron: '30 8 11 * *'    # UTC 11日08:30 = 台灣 11日 16:30（備援三·換月保險）
 
 permissions:
   contents: write
@@ -27,7 +29,11 @@ jobs:
         with:
           python-version: '3.12'
 
-      # 純 stdlib，無需 pip install；不用 LLM、不吃 Gemini quota
+      # 主流程純 stdlib；第二層旗標（市值/已飛/薄量）需要 yfinance。不用 LLM、不吃 Gemini quota
+      # （2026-09、2026-10 兩次 CI 因沒裝 yfinance → 旗標全 null、track_c 0 檔）
+      - name: Install yfinance
+        run: pip install "yfinance>=1.4,<2.0"
+
       - name: Run screener
         run: python screener/monthly_screener.py
 
