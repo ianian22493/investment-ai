@@ -156,85 +156,92 @@
   "fx_fund": {
     "output": {
       "verdict": "增加定額",
-      "confidence": 0.8,
-      "summary": "日圓匯率目前處於歷史偏弱區間，為長期投資者提供了有利的累積點，且兩支日本基金績效表現良好。考量日圓的長期升值潛力及紀律投資原則，建議本月維持並適度增加定期定額金額，以把握低匯率成本的機會。",
+      "confidence": 0.9,
+      "summary": "日幣目前處於歷史偏弱水位（158.23），對於台灣投資人而言是長期累積日幣資產的有利時機。基金績效表現良好，尤其瀚亞基金報酬亮眼。綜合考量下，建議維持定期定額紀律，並適度增加總定額金額，以把握匯率優勢。",
       "key_insights": [
-        "日幣現值USD/JPY 158.48，處於歷史偏弱區間（150-160），對台灣投資人換匯購買日圓計價資產成本較低，相對有利。",
-        "兩支基金績效皆為正報酬，其中瀚亞日本動力股票基金AJ表現尤為出色（25.78%），顯示日本股市表現強勁。",
-        "雖然全球市場情緒趨於觀望，但日幣尚未跌破極端（>160），維持定期定額紀律並在低點加碼符合日幣長期升值資產的投資策略。",
-        "需持續關注日本央行（BOJ）政策動向，這將是影響日幣走勢的關鍵因素。"
+        "日幣匯率 USD/JPY 158.23 處於偏弱區間（150-160），對台灣投資人以台幣買入日幣計價資產有利。",
+        "瀚亞日本動力股票基金AJ表現優異，報酬率達25.78%，遠優於野村基金的11.25%。",
+        "儘管市場情緒偏向防守，但長期定期定額策略應利用日幣弱勢區間，持續投入並可考慮增加額度。",
+        "BOJ（日本央行）政策動向將持續影響日幣走勢，需密切關注。"
       ],
       "recommendations": [
         {
           "action": "ADD",
-          "target": "定期定額總金額",
-          "detail": "考量日圓匯率偏弱且基金績效良好，建議適度增加每月定期定額總金額，例如增加10%-20%，以在相對低點累積更多日圓資產。",
-          "urgency": "MED"
+          "target": "每月定額總額",
+          "detail": "考量日幣處於歷史偏弱水位，為長期累積資產的有利時機，建議將每月定額總額從 ¥75,000 增加至 ¥85,000。",
+          "urgency": "HIGH"
         },
         {
-          "action": "REBALANCE",
-          "target": "基金定額比例",
-          "detail": "鑑於瀚亞日本動力股票基金AJ的優異表現，可考慮將其每月投入比例提高，例如將野村的部分資金轉移至瀚亞，以優化整體報酬潛力。",
-          "urgency": "LOW"
+          "action": "HOLD",
+          "target": "瀚亞日本動力股票基金AJ（日圓）",
+          "detail": "瀚亞基金表現優異，建議將此基金每月定額從 ¥60,000 調整至 ¥70,000，以持續投資表現優異的標的並承接新增額度。",
+          "urgency": "HIGH"
+        },
+        {
+          "action": "HOLD",
+          "target": "野村（愛爾蘭）日本策略價值基金（T日圓類股）",
+          "detail": "野村基金表現雖不及瀚亞，仍屬正向，建議維持此基金每月定額於 ¥15,000，保持分散配置。",
+          "urgency": "HIGH"
         },
         {
           "action": "WATCH",
-          "target": "USD/JPY 匯率及BOJ政策",
-          "detail": "密切關注日幣匯率走勢，若USD/JPY持續走弱至160以上，應重新評估策略，可能需考慮暫停或減少定額；同時持續追蹤日本央行政策，以判斷潛在的干預或升息風險。",
-          "urgency": "HIGH"
+          "target": "日幣匯率 USD/JPY",
+          "detail": "持續關注 BOJ 政策動向及日幣兌美元匯率，若日幣進一步走弱至160以上，可考慮再次檢視並增加定額。",
+          "urgency": "MED"
         }
       ],
       "risk_flags": [
-        "日幣匯率可能短期內持續走弱，導致潛在的未實現匯率損失。",
-        "全球經濟不確定性及台灣股市修正，可能間接影響日本股市表現。",
-        "日本央行（BOJ）政策的不確定性，可能導致日幣波動加劇。"
+        "全球經濟不確定性及市場波動，可能對日本股市表現造成壓力。",
+        "日本央行（BOJ）政策若有意外轉向，可能導致日幣短期內大幅波動。",
+        "新聞情緒顯示市場偏向防守，提醒投資人在操作上仍需保持謹慎。"
       ],
-      "agent_note": "本分析基於保守謹慎的投資偏見，強調日幣長期升值潛力及定期定額紀律，並利用當前日幣匯率偏弱的機會進行布局。全球市場的觀望情緒已納入考量，但針對日幣及日本基金的特定優勢仍是決策重點。"
+      "agent_note": "本建議依據保守謹慎的角色偏見提供，強調長期紀律性投資與利用匯率弱勢累積資產的策略。"
     },
-    "cached_at": "2026-10-13T16:35:12.503556+08:00",
+    "cached_at": "2026-10-14T01:29:05.438177+08:00",
     "ttl_days": 3,
-    "portfolio_hash": "badbdc5a6957"
+    "portfolio_hash": "77ce3f73bed8"
   },
   "asset_allocation": {
     "output": {
       "verdict": "稍微過度集中",
-      "confidence": 0.9,
-      "summary": "您的房貸健康度極佳，月付壓力輕且LTV安全，短期現金流充裕足以應付未來一年裝修等費用。主要資產集中於房產，雖然在首購族中屬常態，但長期可考慮逐步增加其他資產多元性。",
+      "confidence": 0.95,
+      "summary": "您的房貸健康度極佳，且未來12個月的現金流充裕，足以應付預期支出，壓力測試下淨資產仍具韌性。然而，資產配置上存在房產與台股的高度集中現象，建議未來逐步考量多元化配置。",
       "key_insights": [
-        "房貸狀況非常健康，LTV 70%與月付佔月收入26%皆在安全範圍內，即使房貸/淨資產比高，對首購族而言亦屬正常。",
-        "未來12個月現金流充足，可用資金（存款+薪資）足以覆蓋所有已知大額支出，無流動性風險。",
-        "房產佔總資產比重高達71%，存在單一資產集中風險；但房貸之上疊加的投資槓桿比例極小（正二/槓桿ETF僅佔總資產約0.55%），不構成顯著威脅。",
-        "在極端壓力測試下，淨資產仍能維持約390萬台幣，顯示具備一定抗風險能力。",
-        "台股目前有部分虧損部位，但整體投資部位佔比和虧損金額尚在可承受範圍。"
+        "房貸LTV 70%與月付/月收入26%均處於非常健康的區間，顯示財務負擔能力良好。",
+        "未來12個月現金需求與可用資金之間有充裕的緩衝，流動性無虞，已將裝潢與家具費用納入並覆蓋。",
+        "房貸之上疊加的投資槓桿（正二）金額極小（NT$81,870），不構成顯著風險。",
+        "資產配置高度集中於房產（71.2%）與台股（24.7%），雖然房貸本身健康，但整體資產多元性較低。",
+        "在極端壓力測試情境下，淨資產仍維持近一半的價值（NT$3,869,020），顯示良好的財務韌性。"
       ],
       "recommendations": [
         {
-          "action": "HOLD",
-          "target": "Overall Portfolio",
-          "detail": "維持現有健康財務狀況，確保現金儲備足夠應付未來已規劃的裝修等費用，無需急迫調整。",
-          "urgency": "LOW"
-        },
-        {
-          "action": "ADD",
-          "target": "Diversified Non-Real Estate Assets",
-          "detail": "長期而言，在有額外資金時，可考慮逐步增加非房產類型的多元化投資（如全球型ETF），以降低資產過度集中於房地產的風險。",
+          "action": "WATCH",
+          "target": "Overall Portfolio Diversification",
+          "detail": "考慮在未來數年內，將部分新增資金或投資收益投入更多元化的資產類別（例如，增加美股、全球型ETF、債券或其他抗通膨資產），以降低單一資產波動對整體資產的影響。",
           "urgency": "MED"
         },
         {
-          "action": "WATCH",
-          "target": "Leveraged Investments",
-          "detail": "持續監控正二/槓桿ETF部位，確保其佔總資產比重維持極小，避免因市場波動產生不成比例的風險。",
+          "action": "HOLD",
+          "target": "Current Mortgage Status",
+          "detail": "您的房貸條件健康且可負擔，無須急於調整或提前還款，可維持現有計畫。",
           "urgency": "LOW"
+        },
+        {
+          "action": "WATCH",
+          "target": "Taiwan Stock Portfolio",
+          "detail": "雖然台股虧損部位金額尚小，但若台股投資中存在較高的單一個股集中度，建議長期規劃逐步分散，降低單一公司營運風險。",
+          "urgency": "MED"
         }
       ],
       "risk_flags": [
-        "資產高度集中於房地產 (71% of total assets)"
+        "資產配置高度集中於房產與台股，缺乏多元化保護。",
+        "台股持股可能存在單一個股或產業集中風險（依據虧損部位推測，但缺乏完整持股明細確認）。"
       ],
-      "agent_note": "Confidentiality, honesty, and adherence to calibrated risk principles confirmed. Specifically, normal mortgage leverage (LTV ≤ 80% & payment ≤ 40% income) is not flagged as a crisis. Focus is placed on actual '疊加'杠杆, concentration, and cash flow gaps."
+      "agent_note": "Based on the calibrated risk control principles, I have focused on identifying true risks such as asset concentration and explicit investment leverage, while confirming that the normal leverage associated with a healthy first-time mortgage is not considered a crisis. The analysis confirms strong liquidity and stress test resilience."
     },
-    "cached_at": "2026-10-13T16:35:39.618458+08:00",
+    "cached_at": "2026-10-14T01:29:40.522582+08:00",
     "ttl_days": 3,
-    "portfolio_hash": "badbdc5a6957"
+    "portfolio_hash": "77ce3f73bed8"
   },
   "portfolio_master": {
     "output": {
@@ -293,38 +300,40 @@
       ],
       "agent_note": "本Portfolio Desk嚴格遵守職責限制，僅整合持倉分析並提供客觀觀點，未涉及任何資金再分配、倉位比例建議或超越其他Desk權限之行為。特別是關於跨市場配置比重及資金保留優先順序之問題，本Desk職責範圍不予處理，避免違反硬性規定。"
     },
-    "cached_at": "2026-10-13T16:38:32.340903+08:00",
+    "cached_at": "2026-10-14T01:31:37.096929+08:00",
     "ttl_days": 3,
-    "portfolio_hash": "badbdc5a6957"
+    "portfolio_hash": "77ce3f73bed8"
   },
   "wealth_master": {
     "output": {
       "verdict": "穩健",
-      "confidence": 0.9,
-      "summary": "客戶短期流動性極佳，未來12個月的現金需求（包含購屋與裝修款項）可由銀行存款及年薪資收入完全覆蓋，無現金流壓力。主要資產集中於預售屋房產，此為長期結構性配置，不影響短期流動性健康度。",
+      "confidence": 0.95,
+      "summary": "客戶具備強健的現金流及充裕的流動性，可輕鬆覆蓋未來12個月的預期義務。儘管資產結構存在高度集中於房產與台股的長期風險，但短期內流動性壓力極低，且房貸健康度良好。",
       "key_insights": [
-        "未來12個月現金流充裕，可用資金足以覆蓋所有預計需求，資金缺口為負數。",
-        "房產佔總資產比例高達71%，為結構性集中風險，但短期內流動性不受影響。",
-        "客戶房貸健康度極佳，月付壓力輕且LTV安全。",
-        "日圓匯率目前偏弱，日幣基金agent認為有利於長期累積。"
+        "未來12個月現金流充裕，薪資與存款足以覆蓋所有預期義務，無現金缺口。",
+        "流動性風險評估為低，無迫切資金壓力。",
+        "資產配置高度集中於房產與台股，形成結構性風險，需長期關注多元化。",
+        "房貸健康度極佳，槓桿風險可控。",
+        "日幣資產長期累積具匯率優勢，可作為多元配置一環。"
       ],
       "recommendations": [],
       "risk_flags": [
-        "資產高度集中於房地產 (71% of total assets)，建議長期規劃資產多元性。"
+        "資產配置高度集中於房產與台股，缺乏多元化保護。",
+        "台股持股可能存在單一個股或產業集中風險（需進一步確認持股明細）。"
       ],
-      "agent_note": "本評估僅提供財富層風險評估，不含任何資產配置或交易指令。",
+      "agent_note": "本委員會嚴格遵守職責限制，僅提供財富層面風險評估作為Capital Flow Engine輸入，不提供任何資金分配或交易指令。recommendations欄位特意留空以符合此限制。",
       "structural_risk": "high",
       "liquidity_risk": "low",
       "cashflow_stability": "stable",
       "risk_level": "low",
       "cash_crunch_risk": false,
       "upcoming_obligations": [
-        "未來12個月購屋/裝修款項總計 NT$1,830,000"
+        "未來12個月購屋/裝修款 NT$1,830,000"
       ],
       "leverage_health": "健康"
     },
-    "cached_at": "2026-10-13T16:38:59.720294+08:00",
+    "cached_at": "2026-10-14T01:32:16.148331+08:00",
     "ttl_days": 3,
-    "portfolio_hash": "badbdc5a6957"
+    "portfolio_hash": "77ce3f73bed8"
   }
 }
