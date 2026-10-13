@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-13T08:37:48+08:00",
+  "generated_at": "2026-10-13T16:39:33+08:00",
   "_doc": "Swing pick 系統記分卡（機器可讀）。讀取者：寶藏股研究室季度審判日（quarterly-holdings-judgment-day 排程）。short_term=改版前(1-3日動能)、swing=2026-07-17 起(10-22 交易日波段)。alpha=vs 0050 同期。",
   "swing_era_start": "2026-07-17",
   "by_era": {
@@ -19,16 +19,16 @@
       }
     },
     "swing": {
-      "total": 15,
-      "traded": 12,
+      "total": 17,
+      "traded": 14,
       "not_filled": 3,
       "wins": 5,
-      "win_rate_pct": 41.7,
-      "avg_return_pct": 2.56,
-      "avg_alpha_pct": 3.94,
-      "avg_hold_days": 7.4,
+      "win_rate_pct": 35.7,
+      "avg_return_pct": 1.15,
+      "avg_alpha_pct": 2.08,
+      "avg_hold_days": 7.6,
       "exit_reasons": {
-        "stop": 6,
+        "stop": 8,
         "target": 5,
         "not_filled": 3,
         "time": 1
@@ -52,32 +52,33 @@
       }
     },
     "2026Q3": {
-      "total": 18,
-      "traded": 16,
+      "total": 19,
+      "traded": 17,
       "not_filled": 2,
       "wins": 5,
-      "win_rate_pct": 31.2,
-      "avg_return_pct": 1.38,
-      "avg_alpha_pct": 3.01,
-      "avg_hold_days": 5.9,
+      "win_rate_pct": 29.4,
+      "avg_return_pct": 0.86,
+      "avg_alpha_pct": 1.97,
+      "avg_hold_days": 6.4,
       "exit_reasons": {
         "time": 2,
-        "stop": 9,
+        "stop": 10,
         "target": 5,
         "not_filled": 2
       }
     },
     "2026Q4": {
-      "total": 1,
-      "traded": 0,
+      "total": 2,
+      "traded": 1,
       "not_filled": 1,
       "wins": 0,
-      "win_rate_pct": null,
-      "avg_return_pct": null,
-      "avg_alpha_pct": null,
-      "avg_hold_days": null,
+      "win_rate_pct": 0.0,
+      "avg_return_pct": -7.15,
+      "avg_alpha_pct": -3.63,
+      "avg_hold_days": 3.0,
       "exit_reasons": {
-        "not_filled": 1
+        "not_filled": 1,
+        "stop": 1
       }
     }
   },
@@ -86,50 +87,25 @@
       "code": "2615",
       "name": "萬海",
       "entry_date": "2026-09-13",
-      "current_return_pct": null,
+      "current_return_pct": 8.969,
       "days_held": 18
-    },
-    {
-      "code": "3006",
-      "name": "晶豪科",
-      "entry_date": "2026-09-16",
-      "current_return_pct": null,
-      "days_held": 15
-    },
-    {
-      "code": "6426",
-      "name": "統新",
-      "entry_date": "2026-10-06",
-      "current_return_pct": null,
-      "days_held": 3
     },
     {
       "code": "1727",
       "name": "中華化",
       "entry_date": "2026-10-11",
       "current_return_pct": null,
+      "days_held": 0
+    },
+    {
+      "code": "3665",
+      "name": "貿聯-KY",
+      "entry_date": "2026-10-13",
+      "current_return_pct": null,
       "days_held": null
     }
   ],
   "recent_resolved": [
-    {
-      "date": "2026-08-03",
-      "code": "6214",
-      "name": "精誠",
-      "return_pct": 16.61,
-      "alpha_pct": 12.296,
-      "exit": "target",
-      "days": 9
-    },
-    {
-      "date": "2026-08-04",
-      "code": "2395",
-      "name": "研華",
-      "return_pct": null,
-      "alpha_pct": null,
-      "exit": "not_filled",
-      "days": 0
-    },
     {
       "date": "2026-08-05",
       "code": "2618",
@@ -176,6 +152,15 @@
       "days": 7
     },
     {
+      "date": "2026-09-16",
+      "code": "3006",
+      "name": "晶豪科",
+      "return_pct": -7.5,
+      "alpha_pct": -12.645,
+      "exit": "stop",
+      "days": 15
+    },
+    {
       "date": "2026-09-17",
       "code": "2426",
       "name": "鼎元",
@@ -201,6 +186,15 @@
       "alpha_pct": null,
       "exit": "not_filled",
       "days": 0
+    },
+    {
+      "date": "2026-10-06",
+      "code": "6426",
+      "name": "統新",
+      "return_pct": -7.153,
+      "alpha_pct": -3.634,
+      "exit": "stop",
+      "days": 3
     }
   ]
 }
