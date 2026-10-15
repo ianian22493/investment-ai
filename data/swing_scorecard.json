@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T08:38:06+08:00",
+  "generated_at": "2026-10-15T16:39:24+08:00",
   "_doc": "Swing pick 系統記分卡（機器可讀）。讀取者：寶藏股研究室季度審判日（quarterly-holdings-judgment-day 排程）。short_term=改版前(1-3日動能)、swing=2026-07-17 起(10-22 交易日波段)。alpha=vs 0050 同期。",
   "swing_era_start": "2026-07-17",
   "by_era": {
@@ -19,16 +19,16 @@
       }
     },
     "swing": {
-      "total": 17,
-      "traded": 14,
+      "total": 19,
+      "traded": 16,
       "not_filled": 3,
       "wins": 5,
-      "win_rate_pct": 35.7,
-      "avg_return_pct": 1.15,
-      "avg_alpha_pct": 2.08,
-      "avg_hold_days": 7.6,
+      "win_rate_pct": 31.2,
+      "avg_return_pct": 0.15,
+      "avg_alpha_pct": 1.45,
+      "avg_hold_days": 6.9,
       "exit_reasons": {
-        "stop": 8,
+        "stop": 10,
         "target": 5,
         "not_filled": 3,
         "time": 1
@@ -68,17 +68,17 @@
       }
     },
     "2026Q4": {
-      "total": 2,
-      "traded": 1,
+      "total": 4,
+      "traded": 3,
       "not_filled": 1,
       "wins": 0,
       "win_rate_pct": 0.0,
-      "avg_return_pct": -7.15,
-      "avg_alpha_pct": -3.63,
-      "avg_hold_days": 3.0,
+      "avg_return_pct": -6.93,
+      "avg_alpha_pct": -2.96,
+      "avg_hold_days": 2.3,
       "exit_reasons": {
         "not_filled": 1,
-        "stop": 1
+        "stop": 3
       }
     }
   },
@@ -87,43 +87,11 @@
       "code": "2615",
       "name": "萬海",
       "entry_date": "2026-09-13",
-      "current_return_pct": 12.108,
-      "days_held": 20
-    },
-    {
-      "code": "1727",
-      "name": "中華化",
-      "entry_date": "2026-10-11",
-      "current_return_pct": -2.392,
-      "days_held": 1
-    },
-    {
-      "code": "3665",
-      "name": "貿聯-KY",
-      "entry_date": "2026-10-13",
-      "current_return_pct": -0.445,
-      "days_held": 1
+      "current_return_pct": 6.726,
+      "days_held": 21
     }
   ],
   "recent_resolved": [
-    {
-      "date": "2026-08-05",
-      "code": "2618",
-      "name": "長榮航",
-      "return_pct": -1.636,
-      "alpha_pct": -7.513,
-      "exit": "time",
-      "days": 22
-    },
-    {
-      "date": "2026-08-06",
-      "code": "2359",
-      "name": "所羅門",
-      "return_pct": 17.438,
-      "alpha_pct": 14.437,
-      "exit": "target",
-      "days": 6
-    },
     {
       "date": "2026-08-30",
       "code": "2383",
@@ -195,6 +163,24 @@
       "alpha_pct": -3.634,
       "exit": "stop",
       "days": 3
+    },
+    {
+      "date": "2026-10-11",
+      "code": "1727",
+      "name": "中華化",
+      "return_pct": -7.177,
+      "alpha_pct": -1.914,
+      "exit": "stop",
+      "days": 2
+    },
+    {
+      "date": "2026-10-13",
+      "code": "3665",
+      "name": "貿聯-KY",
+      "return_pct": -6.459,
+      "alpha_pct": -3.345,
+      "exit": "stop",
+      "days": 2
     }
   ]
 }
