@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-16T08:38:07+08:00",
+  "generated_at": "2026-10-18T16:40:05+08:00",
   "_doc": "Swing pick 系統記分卡（機器可讀）。讀取者：寶藏股研究室季度審判日（quarterly-holdings-judgment-day 排程）。short_term=改版前(1-3日動能)、swing=2026-07-17 起(10-22 交易日波段)。alpha=vs 0050 同期。",
   "swing_era_start": "2026-07-17",
   "by_era": {
@@ -19,19 +19,19 @@
       }
     },
     "swing": {
-      "total": 19,
-      "traded": 16,
+      "total": 20,
+      "traded": 17,
       "not_filled": 3,
-      "wins": 5,
-      "win_rate_pct": 31.2,
-      "avg_return_pct": 0.15,
-      "avg_alpha_pct": 1.45,
-      "avg_hold_days": 6.9,
+      "wins": 6,
+      "win_rate_pct": 35.3,
+      "avg_return_pct": 0.72,
+      "avg_alpha_pct": 1.9,
+      "avg_hold_days": 7.8,
       "exit_reasons": {
         "stop": 10,
         "target": 5,
         "not_filled": 3,
-        "time": 1
+        "time": 2
       }
     }
   },
@@ -52,16 +52,16 @@
       }
     },
     "2026Q3": {
-      "total": 19,
-      "traded": 17,
+      "total": 20,
+      "traded": 18,
       "not_filled": 2,
-      "wins": 5,
-      "win_rate_pct": 29.4,
-      "avg_return_pct": 0.86,
-      "avg_alpha_pct": 1.97,
-      "avg_hold_days": 6.4,
+      "wins": 6,
+      "win_rate_pct": 33.3,
+      "avg_return_pct": 1.36,
+      "avg_alpha_pct": 2.39,
+      "avg_hold_days": 7.3,
       "exit_reasons": {
-        "time": 2,
+        "time": 3,
         "stop": 10,
         "target": 5,
         "not_filled": 2
@@ -82,25 +82,8 @@
       }
     }
   },
-  "open_positions": [
-    {
-      "code": "2615",
-      "name": "萬海",
-      "entry_date": "2026-09-13",
-      "current_return_pct": 6.726,
-      "days_held": 21
-    }
-  ],
+  "open_positions": [],
   "recent_resolved": [
-    {
-      "date": "2026-08-30",
-      "code": "2383",
-      "name": "台光電",
-      "return_pct": -7.273,
-      "alpha_pct": null,
-      "exit": "stop",
-      "days": 13
-    },
     {
       "date": "2026-09-01",
       "code": "3006",
@@ -118,6 +101,15 @@
       "alpha_pct": 16.897,
       "exit": "target",
       "days": 7
+    },
+    {
+      "date": "2026-09-13",
+      "code": "2615",
+      "name": "萬海",
+      "return_pct": 9.865,
+      "alpha_pct": 8.658,
+      "exit": "time",
+      "days": 22
     },
     {
       "date": "2026-09-16",

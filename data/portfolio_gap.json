@@ -1,39 +1,39 @@
 {
- "generated_at": "2026-10-16 08:38 +0800",
- "fx_usd_twd": 32.2076,
- "total_equity_twd": 4483749,
+ "generated_at": "2026-10-18 16:40 +0800",
+ "fx_usd_twd": 32.3603,
+ "total_equity_twd": 4400025,
  "doc": "組合缺口透鏡（尊重又瑄政策版）：台股重與AI重是刻意選擇→policy_accepted不示警；guard_breached=連AI多頭也該守的底線（Musk單人/單因子）；opportunities=缺口機會（選項非義務）。",
  "policy_note": "又瑄政策：①台股重=房款台幣負債匹配（正確）②AI重=信長期趨勢的高信念配置。工具只在 Musk/單因子越線、或集中超出政策上限時提醒。",
  "geography": {
-  "TW": 84.3,
+  "TW": 84.2,
   "US": 11.3,
   "EM": 0.0,
-  "DM-ex-US": 4.4
+  "DM-ex-US": 4.5
  },
  "exposures": {
-  "AI合計(hardware+software)": 24.5,
+  "AI合計(hardware+software)": 27.5,
   "US-megacap-tech": 4.5,
   "Musk": 3.1,
   "cybersecurity": 1.7,
-  "AI-hardware": 15.5,
+  "AI-hardware": 18.6,
   "AI-software": 9.0,
   "speculative": 0.1,
-  "core-ETF": 16.7,
-  "非科技分散(消費/金融/防禦)": 26.0,
+  "core-ETF": 16.5,
+  "非科技分散(消費/金融/防禦)": 26.8,
   "EM(新興市場)": 0.0,
-  "非美非台(海外分散)": 4.4
+  "非美非台(海外分散)": 4.5
  },
  "guard_breached": [],
  "policy_accepted": [
   {
    "factor": "台股重（房款流動性）",
-   "now": 84.3,
+   "now": 84.2,
    "accepted_upto": 92,
    "status": "政策接受"
   },
   {
    "factor": "AI 高信念配置",
-   "now": 24.5,
+   "now": 27.5,
    "accepted_upto": 75,
    "status": "政策接受"
   }
@@ -47,13 +47,12 @@
   },
   {
    "direction": "美台以外地區",
-   "now": 4.4,
+   "now": 4.5,
    "suggest": 10,
    "note": "地緣目前集中美+台；想分散地緣風險時可往這找"
   }
  ],
  "untagged": [
-  "1256",
   "2645",
   "BROS",
   "CRH",

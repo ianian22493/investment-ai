@@ -1,28 +1,26 @@
 {
   "market_regime_score": 0.0,
-  "trend_strength": 0.598,
-  "risk_pressure": 0.358,
-  "volatility_risk": 0.195,
-  "confidence_score": 0.8,
-  "scanner_momentum": 0.983,
-  "ai_sector_strength": 0.4,
-  "foreign_flow_strength": 0.0,
-  "breadth_score": 0.199,
-  "liquidity_score": 0.579,
+  "trend_strength": 0.55,
+  "risk_pressure": 0.47,
+  "volatility_risk": 0.256,
+  "confidence_score": 0.812,
+  "scanner_momentum": 1.0,
+  "ai_sector_strength": 0.573,
+  "foreign_flow_strength": 0.039,
+  "breadth_score": 0.705,
+  "liquidity_score": 0.513,
   "_sources": {
     "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
-    "trend_strength": "taiex_chg=+0.59%→base=0.598 market_overview_adj=+0.00",
-    "risk_pressure": "vix=16.5→0.223 tw_verdict_adj=-0.000 da_conf=0.90→0.135",
-    "volatility_risk": "vix=16.5→0.215×0.7 taiex_abs=0.59%→0.147×0.3",
-    "confidence_score": "avg_agent_conf=0.800 error_agents=0 degraded=0 penalty=0.00",
-    "scanner_momentum": "top10_avg=5.90/6.0",
-    "ai_sector_strength": "basket data unavailable → fallback news_hits=0",
-    "foreign_flow_strength": "BFI82U_foreign_net=-3025.6億元 → normalized=0.000 (÷500億 clamp±0.5)",
-    "breadth_score": "MI_INDEX advance=200(+4漲停) decline=805(+21跌停) advance_ratio=0.199",
-    "liquidity_score": "margin_balance=6464億元 變化=-0.79% → score=0.579 (-2%→0.7, +2%→0.3)"
+    "trend_strength": "taiex_chg=+0.30%→base=0.550 market_overview_adj=+0.00",
+    "risk_pressure": "vix=20.0→0.399 tw_verdict_adj=-0.064 da_conf=0.90→0.135",
+    "volatility_risk": "vix=20.0→0.333×0.7 taiex_abs=0.30%→0.075×0.3",
+    "confidence_score": "avg_agent_conf=0.812 error_agents=0 degraded=0 penalty=0.00",
+    "scanner_momentum": "top10_avg=6.00/6.0",
+    "ai_sector_strength": "basket 7檔 avg=+0.62% → 0.57",
+    "foreign_flow_strength": "BFI82U_foreign_net=-461.5億元 → normalized=0.039 (÷500億 clamp±0.5)",
+    "breadth_score": "MI_INDEX advance=684(+19漲停) decline=286(+0跌停) advance_ratio=0.705",
+    "liquidity_score": "margin_balance=6456億元 變化=-0.13% → score=0.513 (-2%→0.7, +2%→0.3)"
   },
-  "_data_gaps": [
-    "ai_sector_strength"
-  ],
-  "_computed_at": "2026-10-16T08:36:23.588102+08:00"
+  "_data_gaps": [],
+  "_computed_at": "2026-10-18T16:36:52.702748+08:00"
 }
