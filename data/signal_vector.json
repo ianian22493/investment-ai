@@ -1,28 +1,26 @@
 {
   "market_regime_score": 0.0,
-  "trend_strength": 0.312,
-  "risk_pressure": 0.32,
-  "volatility_risk": 0.241,
-  "confidence_score": 0.787,
-  "scanner_momentum": 1.0,
-  "ai_sector_strength": 0.4,
-  "foreign_flow_strength": 0.522,
-  "breadth_score": 0.612,
+  "trend_strength": 0.128,
+  "risk_pressure": 0.402,
+  "volatility_risk": 0.333,
+  "confidence_score": 0.669,
+  "scanner_momentum": 0.5,
+  "ai_sector_strength": 0.112,
+  "foreign_flow_strength": 0.0,
+  "breadth_score": 0.246,
   "liquidity_score": 0.402,
   "_sources": {
     "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
-    "trend_strength": "taiex_chg=-1.13%→base=0.312 market_overview_adj=+0.00",
-    "risk_pressure": "vix=16.7→0.234 tw_verdict_adj=-0.064 da_conf=1.00→0.150",
-    "volatility_risk": "vix=16.7→0.223×0.7 taiex_abs=1.13%→0.282×0.3",
-    "confidence_score": "avg_agent_conf=0.787 error_agents=0 degraded=0 penalty=0.00",
-    "scanner_momentum": "top10_avg=6.00/6.0",
-    "ai_sector_strength": "basket data unavailable → fallback news_hits=0",
-    "foreign_flow_strength": "BFI82U_foreign_net=+22.4億元 → normalized=0.522 (÷500億 clamp±0.5)",
-    "breadth_score": "MI_INDEX advance=600(+24漲停) decline=380(+1跌停) advance_ratio=0.612",
+    "trend_strength": "taiex_chg=-1.81%→base=0.198 market_overview_adj=-0.07",
+    "risk_pressure": "vix=18.5→0.323 tw_verdict_adj=-0.064 da_conf=0.95→0.142",
+    "volatility_risk": "vix=18.5→0.282×0.7 taiex_abs=1.81%→0.453×0.3",
+    "confidence_score": "avg_agent_conf=0.719 error_agents=0 degraded=1 penalty=0.05",
+    "scanner_momentum": "no candidates loaded",
+    "ai_sector_strength": "basket 7檔 avg=-3.32% → 0.11",
+    "foreign_flow_strength": "BFI82U_foreign_net=-816.6億元 → normalized=0.000 (÷500億 clamp±0.5)",
+    "breadth_score": "MI_INDEX advance=247(+3漲停) decline=756(+5跌停) advance_ratio=0.246",
     "liquidity_score": "margin_balance=6444億元 變化=+0.98% → score=0.402 (-2%→0.7, +2%→0.3)"
   },
-  "_data_gaps": [
-    "ai_sector_strength"
-  ],
-  "_computed_at": "2026-10-22T08:35:05.155824+08:00"
+  "_data_gaps": [],
+  "_computed_at": "2026-10-22T16:45:29.856778+08:00"
 }
