@@ -1,29 +1,29 @@
 {
-  "fetched_at": "2026-10-27T16:31:14.915029+08:00",
+  "fetched_at": "2026-10-28T01:34:03.048466+08:00",
   "indices": {
     "taiex": {
-      "close": 46096.23,
-      "prev_close": 46041.43,
-      "change": 54.8,
-      "change_pct": 0.12
+      "close": 46041.43,
+      "prev_close": 46887.77,
+      "change": -846.34,
+      "change_pct": -1.81
     },
     "sp500": {
-      "close": 7676.77,
-      "prev_close": 7623.68,
-      "change": 53.09,
-      "change_pct": 0.7
+      "close": 7721.42,
+      "prev_close": 7676.77,
+      "change": 44.65,
+      "change_pct": 0.58
     },
     "nasdaq": {
-      "close": 26169.38,
-      "prev_close": 25955.34,
-      "change": 214.04,
-      "change_pct": 0.82
+      "close": 26473.85,
+      "prev_close": 26169.38,
+      "change": 304.47,
+      "change_pct": 1.16
     },
     "vix": {
-      "close": 18.38,
+      "close": 17.75,
       "prev_close": 18.39,
-      "change": -0.01,
-      "change_pct": -0.05
+      "change": -0.64,
+      "change_pct": -3.48
     }
   },
   "tw_stocks": {
@@ -124,7 +124,7 @@
         "ma60": 2425.25,
         "above_ma20": false,
         "above_ma60": false,
-        "vol_5d_avg": 28598753.0
+        "vol_5d_avg": 29032353.0
       }
     },
     "2536": {
@@ -184,7 +184,7 @@
         "ma60": 752.32,
         "above_ma20": true,
         "above_ma60": true,
-        "vol_5d_avg": 1375292.0
+        "vol_5d_avg": 1407692.0
       }
     },
     "3703": {
@@ -204,7 +204,7 @@
         "ma60": 19.95,
         "above_ma20": true,
         "above_ma60": true,
-        "vol_5d_avg": 2318721.0
+        "vol_5d_avg": 2405521.0
       }
     },
     "4588": {
@@ -250,70 +250,70 @@
   },
   "us_stocks": {
     "AMZN": {
-      "close": 249.09,
-      "change_pct": 0.44
+      "close": 253.4,
+      "change_pct": 1.73
     },
     "CELH": {
-      "close": 28.15,
-      "change_pct": -1.12
+      "close": 27.93,
+      "change_pct": -0.78
     },
     "GOOGL": {
-      "close": 316.8,
-      "change_pct": -1.06
+      "close": 321.2,
+      "change_pct": 1.39
     },
     "MELI": {
-      "close": 1668.72,
-      "change_pct": -7.81
+      "close": 1687.76,
+      "change_pct": 1.14
     },
     "MSFT": {
       "close": 532.6,
-      "change_pct": 1.54
+      "change_pct": 0.0
     },
     "NVDA": {
-      "close": 216.0,
-      "change_pct": 2.39
+      "close": 217.73,
+      "change_pct": 0.8
     },
     "ONDS": {
-      "close": 6.16,
-      "change_pct": -0.65
+      "close": 6.66,
+      "change_pct": 8.04
     },
     "RBRK": {
-      "close": 133.4,
-      "change_pct": 3.62
+      "close": 136.93,
+      "change_pct": 2.64
     },
     "S": {
-      "close": 25.5,
-      "change_pct": 6.25
+      "close": 25.82,
+      "change_pct": 1.24
     },
     "SOUN": {
-      "close": 4.24,
-      "change_pct": -4.29
+      "close": 4.46,
+      "change_pct": 5.19
     },
     "TSLA": {
-      "close": 391.62,
-      "change_pct": 5.21
+      "close": 406.54,
+      "change_pct": 3.81
     },
     "ZS": {
-      "close": 260.45,
-      "change_pct": 2.08
+      "close": 261.18,
+      "change_pct": 0.28
     }
   },
   "fx": {
     "usd_twd": 32.0,
-    "twd_per_jpy": 0.2032,
-    "jpy_per_usd": 157.45
+    "twd_per_jpy": 0.2028,
+    "jpy_per_usd": 157.82
   },
   "portfolio_value": {
-    "tw_stocks_twd": 3352140,
+    "tw_stocks_twd": 3346810,
     "tw_stocks_live": [
       {
         "code": "00675L",
         "name": "富邦臺灣加權正2",
         "shares": 200,
-        "value": 62200,
+        "value": 62100,
         "cost": 51167,
-        "pnl": 11033,
-        "pnl_pct": 21.56,
+        "pnl": 10933,
+        "pnl_pct": 21.37,
         "type": "leveraged_ETF",
         "strategy": "trade",
         "sector": "2X槓桿ETF-加權"
@@ -322,10 +322,10 @@
         "code": "00685L",
         "name": "群益臺灣加權正2",
         "shares": 1000,
-        "value": 11780,
+        "value": 11750,
         "cost": 9363,
-        "pnl": 2417,
-        "pnl_pct": 25.81,
+        "pnl": 2387,
+        "pnl_pct": 25.49,
         "type": "leveraged_ETF",
         "strategy": "trade",
         "sector": "2X槓桿ETF-加權(拆分後)"
@@ -370,10 +370,10 @@
         "code": "2308",
         "name": "台達電",
         "shares": 100,
-        "value": 156000,
+        "value": 151000,
         "cost": 169920,
-        "pnl": -13920,
-        "pnl_pct": -8.19,
+        "pnl": -18920,
+        "pnl_pct": -11.13,
         "_note": "2026-09-14 再加10股@1600(70→80·均價1710.9·DCA下階·AI電源散熱收稅口)；金字塔:1760→1700→1600(此筆)→下階1550·單檔上限4-5%·毛利守32%/AI資料中心占比續升才續接；算進總AI曝險。2026-10-15深挖:三支AI中最穩的核心藍籌(兆元級·多元AI電源+液冷+EV+自動化·日均額203億)。真AI盈餘加速EPS 13→23(25)→~40(26e)→60-70(27e)·毛利28→37%擴張·AI電源全球王有訂價權(12kW漲2x)·800V 2026H2小量→2027放量kicker。大戶80.9%緊鎖近週加碼。PE~41(26)/~26(27)不便宜但藍籌AI合理。-35%離高=修正錯殺非壞掉。判定:續抱+延續DCA(1600/1550)。盯:Q3毛利(花旗警告零組件成本稀釋2-3季·守32%底)/800V進度/AI伺服器佔比續升。別接今天-6%第一天刀。2026-10-15加碼20股(1640/1665各10·80→100·均價1710.9→1699·延續DCA金字塔1600/1550)",
         "type": "stock",
         "strategy": "long",
@@ -432,10 +432,10 @@
         "code": "6442",
         "name": "光聖",
         "shares": 150,
-        "value": 211500,
+        "value": 207000,
         "cost": 273277,
-        "pnl": -61777,
-        "pnl_pct": -22.61,
+        "pnl": -66277,
+        "pnl_pct": -24.25,
         "_note": "2026-10-15深挖:真AI成長(非循環)·與群聯鏡像=『貴但真』。AI資料中心光連接收稅口·光被動>80%·客戶美系CSP·訂單到明年初·管理層見2029。毛利32→60%兩年站穩(真非庫存財)·9月營收創高+97%·大戶54-58%穩+最新週加碼57.85%🟢。PE44trail/~34fwd(26E~45)。CPO/矽光子(NVIDIA鏈+英特磊換股+合聖FAU)=2027免費選擇權。判定:體質沒壞的超跌成長·核心抱+回檔分批加。加碼梯(止穩後):1450-1500/1300/1150。盯:CSP capex風向(罩門)+月營收能見度·PE別追過fwd40·別接今天-5.8%第一天刀。2026-10-15加碼20股(1530/1540各10·130→150·均價1866→1822)=回檔分批加執行(略高於梯首階1450-1500·符合精神)",
         "type": "stock",
         "strategy": "both",
@@ -445,10 +445,10 @@
         "code": "8299",
         "name": "群聯",
         "shares": 160,
-        "value": 300800,
+        "value": 305600,
         "cost": 342322,
-        "pnl": -41522,
-        "pnl_pct": -12.13,
+        "pnl": -36722,
+        "pnl_pct": -10.73,
         "_note": "2026-10-15深挖:★重分類=循環股(非long複利)·與光聖鏡像=『便宜是假的』。NAND超級循環正中央(月營收YoY+370%/毛利63.8%)但那是庫存時間財·會先於循環回落。forward PE6.5=循環頂幻覺(用頂峰EPS算)·2023谷底EPS僅17.6(頂峰1/16)。大戶派發43%→38.5%🔴。判定:核心可抱賭循環到2027H2+領2027大股利(把頂峰盈餘換現金)·但別加碼攤平(PE低是陷阱不是價值)。賣出訊號(見一個先減):①毛利從60字頭回落(最早裂縫)②月營收YoY動能急殺③NAND報價見頂。盯毛利不是盯NAND價。2026-10-15加碼30股(1810/1840/1850各10·130→160·均價2210→2140)★逆『別攤平』深挖建議的信念加碼(使用者決定·尊重);循環賣訊(毛利回落/月營收動能急殺/NAND見頂)仍為出場紀律",
         "type": "stock",
         "strategy": "long",
@@ -458,10 +458,10 @@
         "code": "2645",
         "name": "長榮航太",
         "shares": 1000,
-        "value": 169000,
+        "value": 168500,
         "cost": 170000,
-        "pnl": -1000,
-        "pnl_pct": -0.59,
+        "pnl": -1500,
+        "pnl_pct": -0.88,
         "type": "stock",
         "strategy": "long",
         "sector": "航太MRO+國防無人機",
@@ -469,26 +469,26 @@
       }
     ],
     "tw_summary_live": {
-      "total_value": 3352140,
+      "total_value": 3346810,
       "total_cost": 2755074,
-      "total_pnl": 597066,
-      "total_pnl_pct": 21.67,
+      "total_pnl": 591736,
+      "total_pnl_pct": 21.48,
       "broker": "國泰證券"
     },
-    "us_stocks_twd": 472997,
-    "us_stocks_usd": 14781.15,
+    "us_stocks_twd": 481640,
+    "us_stocks_usd": 15051.25,
     "us_stocks_live": [
       {
         "ticker": "AMZN",
         "name": "Amazon",
         "shares": 2,
         "avg_cost": 201.5,
-        "close": 249.09,
-        "value_usd": 498.18,
+        "close": 253.4,
+        "value_usd": 506.8,
         "cost_usd": 403.0,
-        "pnl_usd": 95.18,
-        "pnl_pct": 23.62,
-        "change_pct": 0.44
+        "pnl_usd": 103.8,
+        "pnl_pct": 25.76,
+        "change_pct": 1.73
       },
       {
         "ticker": "CAVA",
@@ -507,12 +507,12 @@
         "name": "Celsius",
         "shares": 13,
         "avg_cost": 29.91,
-        "close": 28.15,
-        "value_usd": 365.95,
+        "close": 27.93,
+        "value_usd": 363.09,
         "cost_usd": 388.83,
-        "pnl_usd": -22.88,
-        "pnl_pct": -5.88,
-        "change_pct": -1.12
+        "pnl_usd": -25.74,
+        "pnl_pct": -6.62,
+        "change_pct": -0.78
       },
       {
         "ticker": "DRAM",
@@ -531,12 +531,12 @@
         "name": "Alphabet",
         "shares": 7.00298,
         "avg_cost": 291.74,
-        "close": 316.8,
-        "value_usd": 2218.54,
+        "close": 321.2,
+        "value_usd": 2249.36,
         "cost_usd": 2043.07,
-        "pnl_usd": 175.47,
-        "pnl_pct": 8.59,
-        "change_pct": -1.06
+        "pnl_usd": 206.29,
+        "pnl_pct": 10.1,
+        "change_pct": 1.39
       },
       {
         "ticker": "MSFT",
@@ -548,79 +548,79 @@
         "cost_usd": 2268.18,
         "pnl_usd": 931.73,
         "pnl_pct": 41.08,
-        "change_pct": 1.54
+        "change_pct": 0.0
       },
       {
         "ticker": "NVDA",
         "name": "Nvidia",
         "shares": 4.00367,
         "avg_cost": 172.52,
-        "close": 216.0,
-        "value_usd": 864.79,
+        "close": 217.73,
+        "value_usd": 871.72,
         "cost_usd": 690.71,
-        "pnl_usd": 174.08,
-        "pnl_pct": 25.2,
-        "change_pct": 2.39
+        "pnl_usd": 181.01,
+        "pnl_pct": 26.21,
+        "change_pct": 0.8
       },
       {
         "ticker": "ONDS",
         "name": "Ondas Holdings",
         "shares": 14,
         "avg_cost": 8.36,
-        "close": 6.16,
-        "value_usd": 86.24,
+        "close": 6.66,
+        "value_usd": 93.24,
         "cost_usd": 117.1,
-        "pnl_usd": -30.86,
-        "pnl_pct": -26.35,
-        "change_pct": -0.65
+        "pnl_usd": -23.86,
+        "pnl_pct": -20.38,
+        "change_pct": 8.04
       },
       {
         "ticker": "RBRK",
         "name": "Rubrik",
         "shares": 9,
         "avg_cost": 47.06,
-        "close": 133.4,
-        "value_usd": 1200.6,
+        "close": 136.93,
+        "value_usd": 1232.37,
         "cost_usd": 423.5,
-        "pnl_usd": 777.1,
-        "pnl_pct": 183.49,
-        "change_pct": 3.62
+        "pnl_usd": 808.87,
+        "pnl_pct": 191.0,
+        "change_pct": 2.64
       },
       {
         "ticker": "SOUN",
         "name": "SoundHound AI",
         "shares": 20,
         "avg_cost": 6.2,
-        "close": 4.24,
-        "value_usd": 84.8,
+        "close": 4.46,
+        "value_usd": 89.2,
         "cost_usd": 124.08,
-        "pnl_usd": -39.28,
-        "pnl_pct": -31.66,
-        "change_pct": -4.29
+        "pnl_usd": -34.88,
+        "pnl_pct": -28.11,
+        "change_pct": 5.19
       },
       {
         "ticker": "TSLA",
         "name": "Tesla",
         "shares": 12,
         "avg_cost": 361.23,
-        "close": 391.62,
-        "value_usd": 4699.44,
+        "close": 406.54,
+        "value_usd": 4878.48,
         "cost_usd": 4334.77,
-        "pnl_usd": 364.67,
-        "pnl_pct": 8.41,
-        "change_pct": 5.21
+        "pnl_usd": 543.71,
+        "pnl_pct": 12.54,
+        "change_pct": 3.81
       },
       {
         "ticker": "ZS",
         "name": "Zscaler",
         "shares": 6,
         "avg_cost": 141.33,
-        "close": 260.45,
-        "value_usd": 1562.7,
+        "close": 261.18,
+        "value_usd": 1567.08,
         "cost_usd": 848.0,
-        "pnl_usd": 714.7,
-        "pnl_pct": 84.28,
-        "change_pct": 2.08
+        "pnl_usd": 719.08,
+        "pnl_pct": 84.8,
+        "change_pct": 0.28
       },
       {
         "ticker": "BROS",
@@ -684,16 +684,16 @@
       }
     ],
     "us_cost_usd": 13106.64,
-    "us_pnl_usd": 1674.51,
-    "us_pnl_pct": 12.78,
+    "us_pnl_usd": 1944.61,
+    "us_pnl_pct": 14.84,
     "funds_twd": 170085,
     "real_estate_twd": 22000000,
     "loan_twd": 15400000,
-    "net_assets_twd": 10595222,
-    "total_gross_twd": 25995222,
+    "net_assets_twd": 10598535,
+    "total_gross_twd": 25998535,
     "allocation_pct": {
       "tw_stocks": 12.9,
-      "us_stocks": 1.8,
+      "us_stocks": 1.9,
       "funds": 0.7,
       "real_estate": 84.6
     }
@@ -709,25 +709,25 @@
     "total_stocks": 1076
   },
   "institutional_market": {
-    "foreign_net_amount": -8103915678,
-    "trust_net_amount": 23645327285,
-    "dealer_net_amount": -12399047408,
-    "total_institutional_net": 3142364199,
+    "foreign_net_amount": -8038873139,
+    "trust_net_amount": 23604506258,
+    "dealer_net_amount": -12398774110,
+    "total_institutional_net": 3166859009,
     "foreign_net_positive": false,
     "date": "20261027",
-    "foreign_net_shares": -8103915678,
-    "trust_net_shares": 23645327285,
-    "dealer_net_shares": -12399047408,
+    "foreign_net_shares": -8038873139,
+    "trust_net_shares": 23604506258,
+    "dealer_net_shares": -12398774110,
     "unit": "TWD"
   },
   "margin_balance": {
-    "margin_balance_amount": 633880174000,
-    "margin_prev_balance": 644373624000,
-    "margin_change_amount": -10493450000,
-    "margin_change_pct": -1.628,
-    "short_balance_units": 216539,
-    "short_prev_units": 192598,
-    "date": "20261022"
+    "margin_balance_amount": 623386860000,
+    "margin_prev_balance": 633880174000,
+    "margin_change_amount": -10493314000,
+    "margin_change_pct": -1.655,
+    "short_balance_units": 217708,
+    "short_prev_units": 216539,
+    "date": "20261027"
   },
   "ai_sector": {
     "constituents": {
@@ -766,30 +766,30 @@
   },
   "news": {
     "tw": [
-      "台股上週跌1069點上市公司總市值險守150兆元大關| 股市要聞| 股市 - UDN",
-      "【Hot台股】南亞衝高後跳水跌逾3%！網哀「多蛙連環套」分析師：不宜搶反彈 - Yahoo股市",
+      "新台幣狂貶最大元兇！ 央行揭外資今年匯出近2.5兆元 - Yahoo股市",
       "股票套牢該停損還攤平？台股老手「解套3招」滾出7500萬身價！裕民、國產…「抱股30年」3檔口袋名單曝光 - 今周刊",
-      "外資退居配角？投信大買236億、自營商賣超124億元 台股震盪908點收高 - UDN",
+      "散戶瘋台股！9月證券劃撥存款、融資餘額雙創高 定儲資金也搬家 - 自由財經",
+      "美股反彈助攻！台股開高一度大漲逾500點 台積電翻紅、台達電反壓重 - udn",
+      "台股大吸金9月散戶風向球創新紀錄- 股市爆料同學會 - CMoney",
+      "【Follow法人】外資賣超81億元！友達遭倒貨近9.6萬張登榜首 再拋台玻破萬張 - Yahoo股市",
+      "【Hot台股】南亞衝高後跳水跌逾3%！網哀「多蛙連環套」分析師：不宜搶反彈 - Yahoo股市",
       "台股5萬點不遠了？童子賢看好台積電全年EPS衝百元：本益比不算高 - Yahoo股市",
+      "【10月台股ETF風雲榜】瑤池金母00981A慘跌末段班 五檔跌10%最兇 - Yahoo股市",
       "台股失守4萬6000點有危險！分析師示警「選前賣壓恐引爆」 揭大盤最慘下探點位 - Yahoo股市",
-      "台股開高後跌破4萬6大關！「瑤池金母師兄弟」下滑炸掉41萬 00406A跌破9元狂轟93萬張 - Yahoo股市",
-      "面板雙虎不同調！友達衝高翻黑 群創一度漲逾4% 分析師建議先觀望 - Yahoo股市",
-      "台股失守46K、記憶體出場護盤！南亞科飆漲6%「這檔」沒跟上慘崩7% 旺宏、力成下午舉行法說會 - Yahoo股市",
-      "iPhone Duo爆災情！軸承三雄全倒新日興重挫逾9% 分析師：失望性賣壓出籠 - Yahoo股市",
-      "股市最錢線-20261027-高閔漳-AI-帶旺被動元件-三大機會台廠誰賺翻-台股破季線-好買點-中視-中視新聞-股市最錢線-高閔漳-分析師-股票-股市看中視-華冠投顧- 中視全球資訊網 - 中視全球資訊網",
-      "3264 欣銓 - 感恩～賣了換買247現股 - 股市爆料同學會 - CMoney"
+      "TWA00 加權指數- 🌟10/27 追蹤個股，重點分析🧐 - 股市爆料同學會 - CMoney",
+      "台股上週跌1069點上市公司總市值險守150兆元大關| 股市要聞| 股市 - udn"
     ],
     "us": [
-      "Wall Street rises as AI stocks keep swinging - AP News",
-      "Stock futures are mixed after Wall Street starts the week on a winning note: Live updates - CNBC",
+      "S&P 500 rises as chip stocks gain for a second day, oil prices ease: Live updates - CNBC",
+      "Wall Street closes lower to end rocky week By Reuters - Investing.com",
+      "Wall Street points higher in heavy week of earnings; GM heads to Nasdaq after 115 years on the NYSE - The Morning Call",
       "Top Wall Street analysts prefer these 3 dividend stocks for stable income - CNBC",
-      "Stock Market News, Sept. 17, 2026: Stocks Climbed as Markets Retrace Post-Fed Moves - WSJ",
-      "Wall St Week Ahead As AI rally wobbles, stock market's spotlight turns to earnings - Reuters",
-      "The stock market has already crashed: Why a Wall Street veteran says Nike is the ultimate turnaround trade. - MarketWatch",
-      "Wall Street Says Stay With Stocks Despite Late ‘90s Dot-Com Vibe - Bloomberg.com",
-      "The Stock Market Is Doing Something for Only the 2nd Time in Nearly 156 Years, and History Says It Foreshadows Disaster for Wall Street - The Motley Fool",
-      "Stock Market News, Oct. 22, 2026: Tech Selloff Deepens as Flight Into Treasurys Drives Yields Lower - WSJ",
-      "Wall Street firm believes the AI stock market boom is 'nearing an end.' Here's why - CNBC"
+      "Tech firms track Wall St rally on mixed day for stock markets - AFP.com",
+      "Wall Street drifts as Broadcom and other AI-related stocks support the market - LancasterOnline",
+      "US Stock Futures Gain, Oil Falls on Iran Comments: Markets Wrap - Bloomberg.com",
+      "Wall St rises as AI momentum holds heading into key earnings, Fed decision - Reuters",
+      "Warren Buffett’s Warning Could Haunt Wall Street in 2027. History Says the Stock Market Could Make a Big Move. - The Motley Fool",
+      "Stock Market Today (Oct. 27, 2026): S&P 500 climbs as Wall Street gears up for earnings, Fed meeting - Yahoo"
     ]
   }
 }
