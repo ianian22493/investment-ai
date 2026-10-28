@@ -1,9 +1,9 @@
 {
   "market_regime_score": 0.0,
   "trend_strength": 0.52,
-  "risk_pressure": 0.336,
-  "volatility_risk": 0.179,
-  "confidence_score": 0.812,
+  "risk_pressure": 0.338,
+  "volatility_risk": 0.18,
+  "confidence_score": 0.775,
   "scanner_momentum": 0.5,
   "ai_sector_strength": 0.4,
   "foreign_flow_strength": 0.66,
@@ -12,9 +12,9 @@
   "_sources": {
     "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
     "trend_strength": "taiex_chg=+0.12%→base=0.520 market_overview_adj=+0.00",
-    "risk_pressure": "vix=17.3→0.265 tw_verdict_adj=-0.064 da_conf=0.90→0.135",
-    "volatility_risk": "vix=17.3→0.243×0.7 taiex_abs=0.12%→0.030×0.3",
-    "confidence_score": "avg_agent_conf=0.812 error_agents=0 degraded=0 penalty=0.00",
+    "risk_pressure": "vix=17.3→0.267 tw_verdict_adj=-0.064 da_conf=0.90→0.135",
+    "volatility_risk": "vix=17.3→0.245×0.7 taiex_abs=0.12%→0.030×0.3",
+    "confidence_score": "avg_agent_conf=0.775 error_agents=0 degraded=0 penalty=0.00",
     "scanner_momentum": "no candidates loaded",
     "ai_sector_strength": "basket data unavailable → fallback news_hits=0",
     "foreign_flow_strength": "BFI82U_foreign_net=+159.6億元 → normalized=0.660 (÷500億 clamp±0.5)",
@@ -24,5 +24,5 @@
   "_data_gaps": [
     "ai_sector_strength"
   ],
-  "_computed_at": "2026-10-29T00:35:06.950990+08:00"
+  "_computed_at": "2026-10-29T02:05:19.309828+08:00"
 }
