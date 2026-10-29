@@ -1,28 +1,28 @@
 {
   "market_regime_score": 0.0,
-  "trend_strength": 0.52,
-  "risk_pressure": 0.324,
-  "volatility_risk": 0.17,
-  "confidence_score": 0.725,
-  "scanner_momentum": 0.5,
+  "trend_strength": 0.84,
+  "risk_pressure": 0.295,
+  "volatility_risk": 0.301,
+  "confidence_score": 0.812,
+  "scanner_momentum": 0.983,
   "ai_sector_strength": 0.4,
-  "foreign_flow_strength": 0.66,
-  "breadth_score": 0.718,
-  "liquidity_score": 0.357,
+  "foreign_flow_strength": 0.0,
+  "breadth_score": 0.239,
+  "liquidity_score": 0.474,
   "_sources": {
     "market_regime_score": "regime=區間盤(base=+0.0) risk_level=moderate(delta=+0.00)",
-    "trend_strength": "taiex_chg=+0.12%→base=0.520 market_overview_adj=+0.00",
-    "risk_pressure": "vix=16.9→0.245 tw_verdict_adj=-0.064 da_conf=0.95→0.142",
-    "volatility_risk": "vix=16.9→0.230×0.7 taiex_abs=0.12%→0.030×0.3",
-    "confidence_score": "avg_agent_conf=0.725 error_agents=0 degraded=0 penalty=0.00",
-    "scanner_momentum": "no candidates loaded",
+    "trend_strength": "taiex_chg=+2.04%→base=0.840 market_overview_adj=+0.00",
+    "risk_pressure": "vix=16.3→0.216 tw_verdict_adj=-0.064 da_conf=0.95→0.142",
+    "volatility_risk": "vix=16.3→0.211×0.7 taiex_abs=2.04%→0.510×0.3",
+    "confidence_score": "avg_agent_conf=0.812 error_agents=0 degraded=0 penalty=0.00",
+    "scanner_momentum": "top10_avg=5.90/6.0",
     "ai_sector_strength": "basket data unavailable → fallback news_hits=0",
-    "foreign_flow_strength": "BFI82U_foreign_net=+159.6億元 → normalized=0.660 (÷500億 clamp±0.5)",
-    "breadth_score": "MI_INDEX advance=714(+32漲停) decline=280(+2跌停) advance_ratio=0.718",
-    "liquidity_score": "margin_balance=6323億元 變化=+1.43% → score=0.357 (-2%→0.7, +2%→0.3)"
+    "foreign_flow_strength": "BFI82U_foreign_net=-688.2億元 → normalized=0.000 (÷500億 clamp±0.5)",
+    "breadth_score": "MI_INDEX advance=232(+7漲停) decline=737(+3跌停) advance_ratio=0.239",
+    "liquidity_score": "margin_balance=6339億元 變化=+0.26% → score=0.474 (-2%→0.7, +2%→0.3)"
   },
   "_data_gaps": [
     "ai_sector_strength"
   ],
-  "_computed_at": "2026-10-29T08:35:22.239390+08:00"
+  "_computed_at": "2026-10-30T00:48:39.508572+08:00"
 }
