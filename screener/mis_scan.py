@@ -15,9 +15,10 @@ mis_scan.py — 誤殺掃描 helper（①資料化前導檢查 ②循環股旗�
   4. ②循環旗標：鋼/航運/水泥/塑膠/造紙/玻璃/橡膠 + 記憶體/MLCC/面板(硬編碼)
        → 循環股「跌深」多是循環見頂非誤殺（盈餘創高+股價跌＝給低PE），
          **改看合約價/稼動率/月營收動能·不看跌幅**；歸「循環·另眼看」不進乾淨誤殺
-  5. 分類輸出：🟢乾淨誤殺(營收正+eps沒崩+非循環) / 🔄循環另眼看 / 🔴價值陷阱
-     → 只深挖🟢那批的「為什麼跌」（多半是暫時毛利/情緒殺＝真誤殺）
-（③聰明錢疊加＝大戶累積 待下一版）
+  5. 分類輸出：🏆頂級誤殺(gm≥50止穩·川湖等級優先看) / 🟢乾淨誤殺(營收正+eps沒崩+非循環)
+       / 🔄循環另眼看 / 🔴價值陷阱 / 🔪頂級但還在落(gm≥50·跌夠但近20日仍急殺=落刀·別接·等止穩)
+     → 只深挖🏆🟢那批的「為什麼跌」（多半是暫時毛利/情緒殺＝真誤殺）；🔪是頂級股但還在落、等站回月線再進
+（③聰明錢疊加＝大戶累積 已上線·④2026-10-31新增🏆頂級tier+🔪落刀不丟棄，補「頂級股被top14埋掉/被止穩濾網藏起來」兩洞）
 
 用法：cd /c/tmp/investment-ai && python screener/mis_scan.py
 硬規則：只產研究清單、不下單不push；🟢仍要人工深挖前導才可買；信念錯配不買。
@@ -133,7 +134,7 @@ def scan(eps_min=EPS_MIN, gm_min=GM_MIN, drop_min=DROP_MIN) -> dict:
     s1codes = _s1_hot_codes()   # ②S1加速榜
     pool = [c for c, v in q2.items()
             if (v.get("eps") or 0) > eps_min and (v.get("gm") or 0) >= gm_min and c not in WATCHLIST]
-    out = {"clean": [], "cyclical": [], "trap": []}
+    out = {"clean": [], "cyclical": [], "trap": [], "knife": []}
     for i in range(0, len(pool), 40):
         chunk = pool[i:i + 40]
         tks = " ".join(f"{c}.TW" for c in chunk) + " " + " ".join(f"{c}.TWO" for c in chunk)
@@ -152,8 +153,9 @@ def scan(eps_min=EPS_MIN, gm_min=GM_MIN, drop_min=DROP_MIN) -> dict:
                 cur, hi = ser.iloc[-1], ser.max()
                 frm = (cur / hi - 1) * 100
                 d20 = (cur / ser.iloc[-21] - 1) * 100 if len(ser) >= 21 else 0
-                if frm >= -drop_min or d20 <= -12:      # 沒跌夠 or 還在急殺
+                if frm >= -drop_min:                    # 沒跌夠＝跳過
                     break
+                falling = d20 <= -12                    # 跌夠但近20日仍急殺＝落刀→捕捉進knife(不丟棄·如川湖/致茂崩盤當天)
                 sec = sectors.get(c, "")
                 ryoy = (rev.get(c) or {}).get("yoy")            # 營收燈(單月)
                 rcum = (rev.get(c) or {}).get("cum_yoy")        # 累計YoY(較穩·抓lumpy單月騙過的衰退)
@@ -177,12 +179,15 @@ def scan(eps_min=EPS_MIN, gm_min=GM_MIN, drop_min=DROP_MIN) -> dict:
                 # 需求存疑＝用「累計YoY」判(較穩)：單月會被 lumpy 騙(波力單月+27%但累計-7%在衰退)。
                 rec["margin_dip"] = bool(et and et["label"] == "惡化🔴")  # 標margin dip(強誤殺線索)
                 declining = (rcum is not None and rcum < 0) or (rcum is None and ryoy is not None and ryoy < 0)
+                rec["premium"] = (rec.get("gm") or 0) >= 50   # 🏆頂級moat(gm≥50·川湖等級)
                 if _is_cyclical(c, sec):
                     out["cyclical"].append(rec)
                 elif declining:
                     out["trap"].append(rec)               # 累計營收在衰退＝需求存疑，別急著當誤殺
+                elif falling:
+                    out["knife"].append(rec)              # 🔪跌夠但還在落＝頂級也要等止穩(不丟棄)
                 else:
-                    out["clean"].append(rec)              # 🟢累計營收正+非循環＝誤殺候選(含暫時毛利dip型)
+                    out["clean"].append(rec)              # 🟢止穩+累計營收正+非循環＝誤殺候選(含暫時毛利dip型)
                 break
     for k in out:
         out[k].sort(key=lambda x: x["from_high"])          # 跌最深優先
@@ -215,7 +220,11 @@ if __name__ == "__main__":
         return 1 if pe is None else (0 if pe < 18 else (1 if pe < 30 else 2))
     clean = sorted(r["clean"], key=lambda x: (not x.get("s1_hot"), _cp.get(x.get("chip_sig", ""), 2),
                                               _pr(x), not x.get("margin_dip"), x["from_high"]))
-    print(f"🟢 乾淨誤殺候選（營收正+非循環）{len(r['clean'])} 檔——只深挖這批（💠毛利dip強誤殺·大戶累積🟢優先）：")
+    prem = [x for x in clean if x.get("premium")]
+    print(f"🏆 頂級誤殺（gm≥50·止穩·川湖等級）{len(prem)} 檔——品質天花板優先看：")
+    for x in prem[:10]:
+        print(_fmt(x, chip=True))
+    print(f"\n🟢 乾淨誤殺候選（營收正+非循環）{len(r['clean'])} 檔——深挖這批（💠毛利dip強誤殺·大戶累積🟢優先）：")
     for x in clean[:14]:
         print(_fmt(x, chip=True))
     print(f"\n🔄 循環·另眼看（跌深≠誤殺·改看合約價/稼動率月營收）{len(r['cyclical'])} 檔：")
@@ -223,4 +232,8 @@ if __name__ == "__main__":
         print(_fmt(x))
     print(f"\n🔴 營收轉負·需求存疑（別急著當誤殺·先查是lumpy還是真衰退）{len(r['trap'])} 檔：")
     for x in r["trap"][:8]:
+        print(_fmt(x))
+    knife = sorted([x for x in r["knife"] if x.get("premium")], key=lambda x: x["from_high"])
+    print(f"\n🔪 頂級但還在落·等止穩（gm≥50·跌夠但近20日仍急殺·如川湖/致茂崩盤日）{len(knife)} 檔——別接刀、等站回月線：")
+    for x in knife[:10]:
         print(_fmt(x))
